@@ -38,11 +38,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2553655556247500357, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 40
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 2553655556247500357, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 40
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 2553655556247500357, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -108,6 +108,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6199260760478515061, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9139313966675071150, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -120,6 +124,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1121882081474889120, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3606023464289716711}
+    - targetCorrespondingSourceObject: {fileID: 1121882081474889120, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2222468474429921381}
   m_SourcePrefab: {fileID: 100100000, guid: 459405fd1e8326e4c8da2e24169a58b5, type: 3}
 --- !u!1 &8922426546350156372 stripped
 GameObject:
@@ -138,3 +145,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcd914b7a81b074cbf663bd21dce9e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &2222468474429921381
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8922426546350156372}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
