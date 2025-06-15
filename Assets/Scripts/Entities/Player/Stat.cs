@@ -58,7 +58,7 @@ public class Stat
         recuperationMarkers.Remove(key);
     }
 
-    public void Consume(float value, float speed)
+    public void Consume(float value, float speed = 1f)
     {
         Value -= value * speed; 
     }
