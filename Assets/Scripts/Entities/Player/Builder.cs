@@ -63,6 +63,8 @@ public class Builder : MonoBehaviour
             int terrainLayerMask = LayerMask.GetMask("Terrain");
             Ray ray = new Ray(source.position, source.forward);
 
+            Debug.DrawRay(source.position, source.forward * 300f, Color.red, 1f);
+
             if (Physics.Raycast(ray, out RaycastHit hit, 300f, terrainLayerMask))
             {
                 bool isTerrain = hit.transform.gameObject.CompareTag("Terrain");

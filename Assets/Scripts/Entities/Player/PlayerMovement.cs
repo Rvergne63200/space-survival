@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 public class PlayerMovement : MonoBehaviour
@@ -36,6 +36,12 @@ public class PlayerMovement : MonoBehaviour
     private float jumpConsumingCountdown = 0f;
     private float jumpCountdown = 0f;
 
+
+    private Collider playerCollider;
+    private Vector3 boxExtents = new Vector3(0.4f, 0.5f, 0.4f);
+    private float maxDistance = 0.8f;
+    private float angleThreshold = 80f;
+
     public PlayerMovement() => ModeManager.Instance.ev_OnUpdateOptions.AddListener(OnUpdateOptions);
     public void OnUpdateOptions()
     {
@@ -48,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
         inputActions = new PlayerInputActions();
         speed = baseSpeed;
         rigidbody = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<Collider>();
     }
 
     private void Start()
@@ -91,8 +98,27 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     void Update()
     {
+        if (playerCollider != null)
+        {
+            Collider[] overlaps = Physics.OverlapBox(transform.position + Vector3.up * 0.1f, boxExtents, transform.rotation);
+            foreach (var col in overlaps)
+            {
+                if (col == playerCollider || col.isTrigger)
+                    continue;
+
+                if (Physics.ComputePenetration(
+                    playerCollider, transform.position, transform.rotation,
+                    col, col.transform.position, col.transform.rotation,
+                    out Vector3 directionPenetration, out float distancePenetration) && distancePenetration > 0f)
+                {
+                    transform.position += directionPenetration * distancePenetration;
+                }
+            }
+        }
+
         if (endurance.Value < 0.5)
         {
             sprint = false;
@@ -129,6 +155,7 @@ public class PlayerMovement : MonoBehaviour
 
         rigidbody.AddForce(force, ForceMode.Force);
 
+
         if (jumpConsumingCountdown > 0)
         {
             jumpConsumingCountdown -= Time.deltaTime;
@@ -143,23 +170,45 @@ public class PlayerMovement : MonoBehaviour
 
     private void KeepDistanceWithObstacles(ref Vector3 targetVelocity)
     {
-        Vector3 rayOrigin = transform.position + Vector3.up * 0.2f;
-        Vector3 rayDirection = targetVelocity.normalized;
-        Vector3 rayForm = new Vector3(1.8f, 0.75f, 0.1f);
-        float rayLength = 0.4f;
+        if (playerCollider == null || targetVelocity.sqrMagnitude < 0.001f)
+            return;
 
-        if (Physics.BoxCast(rayOrigin, rayForm, rayDirection, out RaycastHit hit, Quaternion.LookRotation(rayDirection), rayLength))
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+        Vector3 direction = targetVelocity.normalized;
+
+        if (Physics.BoxCast(origin, boxExtents, direction, out RaycastHit hit, Quaternion.LookRotation(direction), maxDistance))
         {
             if (!hit.collider.isTrigger)
             {
-                targetVelocity = Vector3.ProjectOnPlane(targetVelocity * 0.3f, hit.normal);
+                Vector3 normal = hit.normal;
+                float angle = Vector3.Angle(-normal, direction);
+
+                if (angle < angleThreshold)
+                {
+                    bool compute = Physics.ComputePenetration(
+                        playerCollider, transform.position, transform.rotation,
+                        hit.collider, hit.collider.transform.position, hit.collider.transform.rotation,
+                        out Vector3 directionPenetration, out float distancePenetration);
+
+                    if ( compute && distancePenetration > 0f)
+                    {
+                        transform.position += directionPenetration.normalized * 0.3f;
+                    }
+
+                    Vector3 pushIntoWall = Vector3.Project(targetVelocity, -normal);
+                    if (Vector3.Dot(pushIntoWall, -normal) > 0.01f)
+                    {
+                        targetVelocity -= pushIntoWall;
+                    }
+                }
             }
         }
     }
 
+
     public void Jump()
     {
-        if(active && endurance.Value > jumpEnduranceCost && IsGrounded() && jumpCountdown <= 0)
+        if(endurance.Value > jumpEnduranceCost && IsGrounded() && jumpCountdown <= 0 && active)
         {
             rigidbody.AddForce(Vector3.up * jumpIntensity * 0.2f, ForceMode.Impulse);
             jumpConsumingCountdown = jumpEnduranceCost / jumpEnduranceConsumeSpeed;

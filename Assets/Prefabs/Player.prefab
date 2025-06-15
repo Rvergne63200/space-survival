@@ -156,9 +156,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 8970575601521021453}
   forwardDirection: {fileID: 0}
-  baseSpeed: 5
-  sprintSpeed: 12
-  acceleration: 30
+  baseSpeed: 3
+  sprintSpeed: 6
+  acceleration: 120
   item:
     _data: {fileID: 11400000, guid: 54d530aa7c3d3a7409abbadbb4db0f87, type: 2}
   jumpIntensity: 1800
