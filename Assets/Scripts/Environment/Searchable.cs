@@ -4,6 +4,11 @@ public class Searchable : MonoBehaviour, IInterractable
 {
     public ItemStorage storage;
 
+    public string GetAction()
+    {
+        return "Open";
+    }
+
     public void Interract(GameObject interractor)
     {
         Searcher searcher = interractor.GetComponent<Searcher>();

@@ -17,9 +17,9 @@ GameObject:
   - component: {fileID: 1590000315623345688}
   - component: {fileID: 8970575601521021453}
   - component: {fileID: 3455654060436501799}
-  - component: {fileID: 3570617525106556862}
   - component: {fileID: 1451931091579967756}
   - component: {fileID: 5633327051373276397}
+  - component: {fileID: 3570617525106556862}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -295,33 +295,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 0}
---- !u!114 &3570617525106556862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8774627701926431398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e7915c18fa9f4845bd0c1a59b05a198, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ev_pickup:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PickupInfoGroupUI, Assembly-CSharp
-        m_MethodName: OnPickupItems
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1451931091579967756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,6 +327,33 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InventoryContentUI, Assembly-CSharp
         m_MethodName: SetInventory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3570617525106556862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8774627701926431398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e7915c18fa9f4845bd0c1a59b05a198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ev_pickup:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PickupInfoGroupUI, Assembly-CSharp
+        m_MethodName: OnPickupItems
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

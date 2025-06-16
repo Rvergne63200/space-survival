@@ -134,6 +134,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 2590400415438524035, guid: 31296384072ccb0409917ed2b6db73ef, type: 3}
+      propertyPath: input
+      value: F
+      objectReference: {fileID: 0}
+    - target: {fileID: 2590400415438524035, guid: 31296384072ccb0409917ed2b6db73ef, type: 3}
+      propertyPath: interractor
+      value: 
+      objectReference: {fileID: 357102860}
     - target: {fileID: 3282162642857770570, guid: 31296384072ccb0409917ed2b6db73ef, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -324,6 +332,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c90ee05d14f4aca439ef205f7b8c0c24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &357102860 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3455654060436501799, guid: 0b69f9f6c6b0f1443b76d40c763d9d9c, type: 3}
+  m_PrefabInstance: {fileID: 357102857}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769500892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d3fd6c3b05abc4a9618dfbcf8ce40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &658603960 stripped
