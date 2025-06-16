@@ -6,14 +6,16 @@ public class SceneLoader : MonoBehaviour
     public string sceneName;
     public Vector3 position;
 
-
-    private void OnTriggerEnter(Collider other)
+    public void LoadScene()
     {
         SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
 
-        foreach (GameObject obj in PrepareGameObjects.dontDestroyObjects)
+        if (PrepareGameObjects.dontDestroyObjects != null)
         {
-            obj.transform.position = position;
+            foreach (GameObject obj in PrepareGameObjects.dontDestroyObjects)
+            {
+                obj.transform.position = position;
+            }
         }
     }
 }

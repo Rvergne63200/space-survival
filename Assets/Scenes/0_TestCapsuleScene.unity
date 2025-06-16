@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: 0_TestScene
-  position: {x: 2047.53, y: 105.85, z: 2065}
+  position: {x: 2047, y: 101, z: 2065}
 --- !u!1 &1287386123
 GameObject:
   m_ObjectHideFlags: 0
