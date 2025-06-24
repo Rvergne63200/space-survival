@@ -1,14 +1,16 @@
 using UnityEngine;
 
-public class PlayerInventoryContentUI : InventoryContentUI
+public class PlayerInventoryContentUI : ItemCollectionUI<Item>
 {
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         gameObject.SetActive(false);
 
         PlayerInventory inventory = parentUI.playerInventory;
         inventory.ev_UpdateIsOpen.AddListener(SetVisible);
 
-        this.inventory = inventory;
+        this.Inventory = inventory.Content;
     }
 }

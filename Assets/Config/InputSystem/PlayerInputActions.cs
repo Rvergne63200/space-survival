@@ -253,7 +253,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Use1"",
                     ""type"": ""Button"",
                     ""id"": ""56d89a4b-541e-4636-b9e1-86025995db91"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -262,7 +262,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Use2"",
                     ""type"": ""Button"",
                     ""id"": ""6d02118e-0cd0-4fac-828c-b1bb50f4a37e"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -271,7 +271,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Inventory"",
                     ""type"": ""Button"",
                     ""id"": ""98a8502a-7ece-49a4-a566-0c570bc8af35"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -284,6 +284,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drop"",
+                    ""type"": ""Button"",
+                    ""id"": ""82c73db2-36d1-4c72-a601-df1e2cc3fa79"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeHandedItem"",
+                    ""type"": ""Value"",
+                    ""id"": ""142a54cb-732c-427a-8345-58f699754a26"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -352,6 +370,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""CloseInterfaces"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01afc05b-8f40-49aa-ace2-9d7fd973be36"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92d13a31-076b-4b58-bba8-90ee8df2fea7"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeHandedItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -374,6 +414,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Actions_Use2 = m_Actions.FindAction("Use2", throwIfNotFound: true);
         m_Actions_Inventory = m_Actions.FindAction("Inventory", throwIfNotFound: true);
         m_Actions_CloseInterfaces = m_Actions.FindAction("CloseInterfaces", throwIfNotFound: true);
+        m_Actions_Drop = m_Actions.FindAction("Drop", throwIfNotFound: true);
+        m_Actions_ChangeHandedItem = m_Actions.FindAction("ChangeHandedItem", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -676,6 +718,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Actions_Use2;
     private readonly InputAction m_Actions_Inventory;
     private readonly InputAction m_Actions_CloseInterfaces;
+    private readonly InputAction m_Actions_Drop;
+    private readonly InputAction m_Actions_ChangeHandedItem;
     /// <summary>
     /// Provides access to input actions defined in input action map "Actions".
     /// </summary>
@@ -711,6 +755,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Actions/CloseInterfaces".
         /// </summary>
         public InputAction @CloseInterfaces => m_Wrapper.m_Actions_CloseInterfaces;
+        /// <summary>
+        /// Provides access to the underlying input action "Actions/Drop".
+        /// </summary>
+        public InputAction @Drop => m_Wrapper.m_Actions_Drop;
+        /// <summary>
+        /// Provides access to the underlying input action "Actions/ChangeHandedItem".
+        /// </summary>
+        public InputAction @ChangeHandedItem => m_Wrapper.m_Actions_ChangeHandedItem;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -755,6 +807,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @CloseInterfaces.started += instance.OnCloseInterfaces;
             @CloseInterfaces.performed += instance.OnCloseInterfaces;
             @CloseInterfaces.canceled += instance.OnCloseInterfaces;
+            @Drop.started += instance.OnDrop;
+            @Drop.performed += instance.OnDrop;
+            @Drop.canceled += instance.OnDrop;
+            @ChangeHandedItem.started += instance.OnChangeHandedItem;
+            @ChangeHandedItem.performed += instance.OnChangeHandedItem;
+            @ChangeHandedItem.canceled += instance.OnChangeHandedItem;
         }
 
         /// <summary>
@@ -784,6 +842,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @CloseInterfaces.started -= instance.OnCloseInterfaces;
             @CloseInterfaces.performed -= instance.OnCloseInterfaces;
             @CloseInterfaces.canceled -= instance.OnCloseInterfaces;
+            @Drop.started -= instance.OnDrop;
+            @Drop.performed -= instance.OnDrop;
+            @Drop.canceled -= instance.OnDrop;
+            @ChangeHandedItem.started -= instance.OnChangeHandedItem;
+            @ChangeHandedItem.performed -= instance.OnChangeHandedItem;
+            @ChangeHandedItem.canceled -= instance.OnChangeHandedItem;
         }
 
         /// <summary>
@@ -910,5 +974,19 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCloseInterfaces(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Drop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDrop(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangeHandedItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangeHandedItem(InputAction.CallbackContext context);
     }
 }

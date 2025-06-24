@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,7 +8,7 @@ using UnityEngine.Events;
 public class ItemCollection<T> where T : Item
 {
     [SerializeField]
-    UnityEvent ev_Update;
+    public UnityEvent ev_Update;
 
     [SerializeField]
     private List<ItemSlot<T>> _slots;
@@ -16,40 +17,52 @@ public class ItemCollection<T> where T : Item
         get => _slots;
         private set
         {
-            if(value.Count > Size)
+            List<ItemSlot<T>> slots = new List<ItemSlot<T>>();
+
+            for (int i = 0; i < MaxSize; i++)
             {
-                Debug.Log("Le tableau original est plus grand que la collection");
-                return;
+                ItemSlot<T> slot;
+
+                if (value != null && i < value.Count && value[i] != null)
+                {
+                    slot = value[i];
+                }
+                else
+                {
+                    slot = new ItemSlot<T>();
+                }
+
+                slots.Insert(i, slot);
             }
 
-            _slots = value;
+            _slots = slots;
             ev_Update.Invoke();
         }
     }
 
     [SerializeField]
-    private int _size;
-    public int Size
+    private int _maxSize;
+    public int MaxSize
     {
-        get => _size;
+        get => _maxSize;
         private set
         {
-            _size = value;
+            _maxSize = value;
             Slots = Slots;
         }
     }
 
-    public ItemCollection(int size = 0, List<ItemSlot<T>> slots = null, UnityEvent ev = null)
+    public ItemCollection(int maxSize = 0, List<ItemSlot<T>> slots = null, UnityEvent ev = null)
     {
         ev_Update = (ev == null) ? new UnityEvent() : ev;
 
-        Size = size;
+        MaxSize = maxSize;
         Slots = slots;
     }
 
     public void Set(ItemSlot<T> slot, int pos)
     {
-        if (pos >= Size)
+        if (pos >= MaxSize)
         {
             Debug.Log("Cet emplacement n'existe pas");
             return;
@@ -68,10 +81,72 @@ public class ItemCollection<T> where T : Item
     }
 
     public int Add(T item, int count)
-    {
+    {       
         if (item == null)
         {
             Debug.Log("Inutile d'ajouter un élément vide à la liste");
+            return count;
+        }
+
+        ItemSlot<T> slot = GetFirstSlotNotFull(item);
+
+        if(slot == null)
+        {
+            int index = GetFirstEmptySlot();
+
+            if(index < 0 || index >= MaxSize)
+            {
+                ev_Update.Invoke();
+                return count;
+            }
+
+            if (index >= Slots.Count || Slots[index] == null)
+            {
+                slot = new ItemSlot<T>();
+                Set(slot, index);
+            }
+            else
+            {
+                slot = Slots[index];
+            }
+        }
+
+        int rest = slot.Add(item, count);
+
+        if (rest > 0)
+        {
+            rest = Add(item, rest);
+        }
+        else
+        {
+            ev_Update.Invoke();
+        }
+
+        return rest;
+    }
+
+    public int RemoveFromSlot(int index, int count)
+    {
+        if (index < 0 || index > MaxSize)
+        {
+            Debug.Log("Slot invalide");
+            return count;
+        }
+
+        if (Slots[index] == null)
+        {
+            Debug.Log("Slot vide");
+            return count;
+        }
+
+        return Slots[index].Remove(count);
+    }
+
+    public int RemoveItem(T item, int count)
+    {
+        if (item == null)
+        {
+            Debug.Log("On ne peut pas supprimer un élément inéxistant");
             return count;
         }
 
@@ -79,61 +154,18 @@ public class ItemCollection<T> where T : Item
 
         if (index < 0)
         {
-            index = GetFirstEmptySlot();
-
-            if(index < 0)
-            {
-                Debug.Log("Aucun emplacement libre na été trouvé");
-                return count;
-            }
-        }
-
-        if (index >= Slots.Count || Slots[index] == null)
-        {
-            Set(new ItemSlot<T>(), index);
-        }
-
-        int rest = Slots[index].Add(item, count);
-
-        ev_Update.Invoke();
-
-        return rest;
-    }
-
-    public void RemoveFromSlot(int index, int count)
-    {
-        if (index < 0 || index > Size)
-        {
-            Debug.Log("Slot invalide");
-            return;
-        }
-
-        if (Slots[index] == null)
-        {
-            Debug.Log("Slot vide");
-            return;
-        }
-
-        Slots[index].Remove(count);
-    }
-
-    public void RemoveItem(T item, int count)
-    {
-        if (item == null)
-        {
-            Debug.Log("On ne peut pas supprimer un élément inéxistant");
-            return;
-        }
-
-        int index = GetLastIndex(item);
-
-        if (index < 0)
-        {
             Debug.Log("Objet introuvable");
-            return;
+            return count;
         }
 
-        RemoveFromSlot(index, count);
+        count = RemoveFromSlot(index, count);
+
+        if (count > 0)
+        {
+            count = RemoveItem(item, count);
+        }
+
+        return count;
     }
 
     public int GetLastIndex(T item)
@@ -159,9 +191,27 @@ public class ItemCollection<T> where T : Item
         return index;
     }
 
+    public ItemSlot<T> GetFirstSlotNotFull(T item)
+    {
+        if(item == null)
+        {
+            return null;
+        }
+
+        foreach (ItemSlot<T> slot in Slots)
+        {
+            if(slot?.Item?.Data?.Id == item?.Data.Id && !slot.IsFull())
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
     public int GetFirstEmptySlot()
     {
-        for(int i = 0; i < Size; i++)
+        for(int i = 0; i < MaxSize; i++)
         {
             if(i >= Slots.Count)
             {

@@ -4,7 +4,7 @@ public class Searchable : MonoBehaviour, IInterractable
 {
     public ItemStorage storage;
 
-    public string GetAction()
+    public string GetInfo()
     {
         return "Open";
     }

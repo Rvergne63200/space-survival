@@ -1,23 +1,22 @@
 using UnityEngine;
-using UnityEngine.Events;
 using System.Collections.Generic;
 
 public class PlayerStats : MonoBehaviour
 {
     [SerializeField]
-    private List<SerializableKeyValuePair<string, Stat>> stats;
+    private List<SerializableKeyValuePair<StatName, Stat>> stats;
 
     public void Update()
     {
-        foreach(SerializableKeyValuePair<string, Stat> stat in stats)
+        foreach(SerializableKeyValuePair<StatName, Stat> stat in stats)
         {
             stat.Value.Actualize(Time.deltaTime);
         }
     }
 
-    public Stat Get(string id)
+    public Stat Get(StatName id)
     {
-        foreach(SerializableKeyValuePair<string, Stat> stat in stats)
+        foreach(SerializableKeyValuePair<StatName, Stat> stat in stats)
         {
             if(stat.Key == id)
             {

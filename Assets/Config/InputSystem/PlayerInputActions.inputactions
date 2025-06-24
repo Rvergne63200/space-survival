@@ -167,7 +167,7 @@
                     "name": "Use1",
                     "type": "Button",
                     "id": "56d89a4b-541e-4636-b9e1-86025995db91",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -176,7 +176,7 @@
                     "name": "Use2",
                     "type": "Button",
                     "id": "6d02118e-0cd0-4fac-828c-b1bb50f4a37e",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -185,7 +185,7 @@
                     "name": "Inventory",
                     "type": "Button",
                     "id": "98a8502a-7ece-49a4-a566-0c570bc8af35",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -198,6 +198,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Drop",
+                    "type": "Button",
+                    "id": "82c73db2-36d1-4c72-a601-df1e2cc3fa79",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeHandedItem",
+                    "type": "Value",
+                    "id": "142a54cb-732c-427a-8345-58f699754a26",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -264,6 +282,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "CloseInterfaces",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01afc05b-8f40-49aa-ace2-9d7fd973be36",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92d13a31-076b-4b58-bba8-90ee8df2fea7",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeHandedItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

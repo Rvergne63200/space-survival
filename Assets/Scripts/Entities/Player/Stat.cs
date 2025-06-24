@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
 
 [Serializable]
 public class Stat
@@ -10,13 +10,13 @@ public class Stat
     public UnityEvent<float> ev_updateMaxValue;
     public UnityEvent<float> ev_updateRecuperation;
 
-    private Dictionary<string, float> recuperationMarkers;
+    private Dictionary<string, StatMarker> recuperationMarkers;
 
     public float baseRegeneration;
 
     public Stat()
     {
-        recuperationMarkers = new Dictionary<string, float>();
+        recuperationMarkers = new Dictionary<string, StatMarker>();
     }
 
     [SerializeField]
@@ -40,17 +40,33 @@ public class Stat
     {
         float recuperation = baseRegeneration;
 
-        foreach(float marker in recuperationMarkers.Values)
+        foreach(KeyValuePair<string, StatMarker> pair in recuperationMarkers)
         {
-            recuperation += marker;
+            if(pair.Value.Duration <= 0)
+            {
+                RemoveMarker(pair.Key);
+                break;
+            }
+
+            if(pair.Value.Duration < speed)
+            {
+                recuperation += pair.Value.Modifier * (pair.Value.Duration / speed);
+                pair.Value.Actualize(pair.Value.Duration);
+            }
+            else
+            {
+                recuperation += pair.Value.Modifier;
+                pair.Value.Actualize(speed);
+            }
         }
 
         Value += recuperation * speed;
     }
 
-    public void AddMarker(string key, float value)
+    public void AddMarker(string key, float value, float duration = Mathf.Infinity)
     {
-        recuperationMarkers[key] = value;
+        StatMarker marker = new StatMarker(value, duration);
+        recuperationMarkers[key] = marker;
     }
 
     public void RemoveMarker(string key)
@@ -58,8 +74,8 @@ public class Stat
         recuperationMarkers.Remove(key);
     }
 
-    public void Consume(float value, float speed = 1f)
+    public void Consume(float value)
     {
-        Value -= value * speed; 
+        Value -= value; 
     }
 }

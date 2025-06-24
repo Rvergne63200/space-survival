@@ -32,18 +32,21 @@ public class ItemSlot<T> where T : Item
         ev_update.Invoke(this);
     }
 
-    public void Remove(int count)
+    public int Remove(int count)
     {
         Quantity -= count;
 
         if(Quantity <= 0)
         {
             Clear();
+            return Mathf.Abs(Quantity);
         }
         else
         {
             ev_update.Invoke(this);
         }
+
+        return 0;
     }
 
     public int Add(T item, int count)
@@ -78,6 +81,21 @@ public class ItemSlot<T> where T : Item
         return 0;
     }
 
+    public bool IsFull()
+    {
+        if(Item == null)
+        {
+            return false;
+        }
+
+        return Quantity >= Item.Data.StackMax;
+    }
+
+    public bool IsEmpty()
+    {
+        return Item == null || Quantity <= 0;
+    }
+
     public void Switch(ItemSlot<T> slot)
     {
         T item = slot?.Item;
@@ -91,5 +109,29 @@ public class ItemSlot<T> where T : Item
         if (currentItem != null && currentCount > 0) slot.Add(currentItem, currentCount);
 
         if (item != null && count > 0) this.Add(item, count);
+    }
+
+    public void Drop(int count, GameObject source)
+    {
+        if(Item == null || Quantity <= 0)
+        {
+            return;
+        }
+
+        int quantityToDrop = Mathf.Clamp(count, 0, Quantity);
+        GameObject objectToInstantiate = Item.Data.Model;
+        Item itemToDrop = Item;
+
+        Remove(quantityToDrop);
+        GameObject instance = GameObject.Instantiate(objectToInstantiate, source.transform.position + source.transform.forward * 1f, source.transform.rotation, null);
+        Pickupable pickupable = instance.GetComponent<Pickupable>();
+
+        pickupable.item = itemToDrop;
+        pickupable.count = quantityToDrop;
+        pickupable.identified = true;
+
+        Rigidbody rb = instance.AddComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.AddForce(source.transform.forward * 50f);
     }
 }

@@ -33,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
     public float jumpEnduranceCost = 5f;
     public float jumpEnduranceConsumeSpeed = 20f;
 
-    private float jumpConsumingCountdown = 0f;
     private float jumpCountdown = 0f;
 
 
@@ -59,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        endurance = stats.Get("endurance");
+        endurance = stats.Get(StatName.Endurance);
     }
 
 
@@ -137,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (sprint)
             {
-                endurance.Consume(sprintEnduranceConsumeSpeed, Time.deltaTime);
+                endurance.Consume(sprintEnduranceConsumeSpeed * Time.deltaTime);
             }
 
             Vector3 cameraForward = forwardDirection.forward;
@@ -153,19 +152,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocityChange = targetVelocity - new Vector3(currentVelocity.x, 0f, currentVelocity.z);
         Vector3 force = velocityChange * acceleration;
 
-        rigidbody.AddForce(force, ForceMode.Force);
-
-
-        if (jumpConsumingCountdown > 0)
-        {
-            jumpConsumingCountdown -= Time.deltaTime;
-            endurance.Consume(jumpEnduranceConsumeSpeed * Time.deltaTime);
-        }
-
-        if (jumpCountdown > 0)
-        {
-            jumpCountdown -= Time.deltaTime;
-        }
+        rigidbody.AddForce(force, ForceMode.Force); 
     }
 
     private void KeepDistanceWithObstacles(ref Vector3 targetVelocity)
@@ -211,8 +198,7 @@ public class PlayerMovement : MonoBehaviour
         if(endurance.Value > jumpEnduranceCost && IsGrounded() && jumpCountdown <= 0 && active)
         {
             rigidbody.AddForce(Vector3.up * jumpIntensity * 0.2f, ForceMode.Impulse);
-            jumpConsumingCountdown = jumpEnduranceCost / jumpEnduranceConsumeSpeed;
-            jumpCountdown = 1.2f;
+            endurance.AddMarker("player_jump_" + Time.fixedDeltaTime.ToString(), jumpEnduranceCost * 4f, 0.25f);
         }
     }
 

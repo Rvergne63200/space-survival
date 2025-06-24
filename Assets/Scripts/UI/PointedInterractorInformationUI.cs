@@ -26,7 +26,7 @@ public class PointedInterractorInformationUI : MonoBehaviour
             return;
         }
 
-        text.text = pointed.GetAction() + " <" + input.ToUpper() + ">";
+        text.text = pointed.GetInfo() + " <" + input.ToUpper() + ">";
         gameObject.SetActive(true);
     }
 }

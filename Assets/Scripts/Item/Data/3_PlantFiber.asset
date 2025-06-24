@@ -17,3 +17,4 @@ MonoBehaviour:
   _name: Plant Fibers
   _description: Fibers, comming from plants
   _sprite: {fileID: 21300000, guid: 17140e59711297c47b6438d2a2328e20, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}

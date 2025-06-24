@@ -17,3 +17,4 @@ MonoBehaviour:
   _name: Branch
   _description: A branch...
   _sprite: {fileID: 21300000, guid: 4f83da16a2d475f42a8fb81cd908c3fd, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}

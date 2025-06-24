@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 1451931091579967756}
   - component: {fileID: 5633327051373276397}
   - component: {fileID: 3570617525106556862}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -180,19 +180,7 @@ MonoBehaviour:
   _content:
     ev_Update:
       m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: InventoryContentUI, Assembly-CSharp
-          m_MethodName: UpdateUI
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+        m_Calls: []
     _slots:
     - _ev_update:
         m_PersistentCalls:
@@ -218,22 +206,181 @@ MonoBehaviour:
       _item:
         _data: {fileID: 11400000, guid: bf01d85bb4224584dace5fabfe69fc8a, type: 2}
       _quantity: 80
-    _size: 32
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 11400000, guid: 3c599f0131199d54a8bedb90e3e42ec2, type: 2}
+      _quantity: 14
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    _maxSize: 32
   ev_UpdateIsOpen:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InventoryContentUI, Assembly-CSharp
-        m_MethodName: SetVisible
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+  ev_UpdateHandedIndex:
+    m_PersistentCalls:
+      m_Calls: []
   draggingSlot:
     _ev_update:
       m_PersistentCalls:
@@ -241,6 +388,48 @@ MonoBehaviour:
     _item:
       _data: {fileID: 0}
     _quantity: 0
+  _toolBar:
+    ev_Update:
+      m_PersistentCalls:
+        m_Calls: []
+    _slots:
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 11400000, guid: 3c599f0131199d54a8bedb90e3e42ec2, type: 2}
+      _quantity: 12
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    - _ev_update:
+        m_PersistentCalls:
+          m_Calls: []
+      _item:
+        _data: {fileID: 0}
+      _quantity: 0
+    _maxSize: 6
 --- !u!114 &8970575601521021453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,7 +443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats:
-  - _key: health
+  - _key: 0
     _value:
       ev_updateValue:
         m_PersistentCalls:
@@ -268,7 +457,7 @@ MonoBehaviour:
       baseRegeneration: 0
       _value: 100
       _maxValue: 100
-  - _key: endurance
+  - _key: 1
     _value:
       ev_updateValue:
         m_PersistentCalls:
@@ -295,6 +484,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 0}
+  ev_UpdatePointed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1451931091579967756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,8 +517,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InventoryContentUI, Assembly-CSharp
-        m_MethodName: SetInventory
+        m_TargetAssemblyTypeName: ItemStorageUI, Assembly-CSharp
+        m_MethodName: SetItemStorage
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

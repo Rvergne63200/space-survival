@@ -17,3 +17,4 @@ MonoBehaviour:
   _name: Rock
   _description: A simple rock
   _sprite: {fileID: 21300000, guid: 583675a75bcb2a941ac555b9ccd513a9, type: 3}
+  _model: {fileID: 5747709456442282497, guid: b75e095bfc2521d40b2a12cc6136db80, type: 3}

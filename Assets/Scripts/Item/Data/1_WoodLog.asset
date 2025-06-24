@@ -17,3 +17,4 @@ MonoBehaviour:
   _name: Wood Log
   _description: A simple wooden log, comming from a tree.
   _sprite: {fileID: 21300000, guid: 65c59ccc59b5690458cb9e5324edc5dc, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}

@@ -8,9 +8,11 @@ public class Pickupable : MonoBehaviour, IInterractable
     public Item item;
     public int count;
 
-    public string GetAction()
+    public bool identified = false;
+
+    public string GetInfo()
     {
-        return "Pickup";
+        return identified ? count + "x " + item?.Data.Name : "Pickup";
     }
 
     public void Interract(GameObject interractor)

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 
-[CreateAssetMenu()]
+[CreateAssetMenu(menuName = "Item/Item")]
 [Serializable]
 public class ItemData : ScriptableObject
 {
@@ -25,4 +25,8 @@ public class ItemData : ScriptableObject
     [SerializeField]
     private Sprite _sprite;
     public Sprite Sprite { get => _sprite; protected set => _sprite = value; }
+
+    [SerializeField]
+    private GameObject _model;
+    public GameObject Model { get => _model; protected set => _model = value; }
 }
