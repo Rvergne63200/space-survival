@@ -1,5 +1,5 @@
+using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadScene()
     {
-        SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        NetworkManager.singleton.ServerChangeScene(sceneName);
 
         if (PrepareGameObjects.dontDestroyObjects != null)
         {
@@ -17,5 +17,7 @@ public class SceneLoader : MonoBehaviour
                 obj.transform.position = position;
             }
         }
+
+        GameObject.FindGameObjectWithTag("Player").transform.position = position;
     }
 }

@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerToolBarUI : ItemCollectionUI<Item>
 {
-    protected override void Awake()
+    public override void AfterUpdatePlayer()
     {
-        base.Awake();
+        base.AfterUpdatePlayer();
 
-        PlayerInventory inventory = parentUI.playerInventory;
-        this.Inventory = inventory.ToolBar;
+        PlayerInventory inventory = parentUI.PlayerInventory;
+
+        this.Inventory = inventory?.ToolBar;
     }
 }

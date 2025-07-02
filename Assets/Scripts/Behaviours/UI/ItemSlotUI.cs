@@ -7,6 +7,6 @@ public class ItemSlotUI : InventorySlotUI<Item>
             setSlot(new ItemSlot<Item>());
         }
 
-        parentUI.playerInventory.TryMerge(slot, Direction.Out);
+        parentUI.PlayerInventory.TryMerge(slot, Direction.Out);
     }
 }

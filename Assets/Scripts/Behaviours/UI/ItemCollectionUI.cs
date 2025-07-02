@@ -44,8 +44,9 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
         ev_OnSlotsUpdated = new UnityEvent();
     }
 
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
         Inventory = Inventory;
     }
 

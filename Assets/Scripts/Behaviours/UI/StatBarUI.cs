@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using TMPro;
 
 public class StatBarUI : ParentedUI
@@ -12,15 +11,28 @@ public class StatBarUI : ParentedUI
     private float value;
     private float maxValue;
 
+    private Stat stat;
+
     public void SetStat(Stat stat)
     {
-        value = stat.Value;
-        maxValue = stat.Value;
+        if(this.stat != null)
+        {
+            stat.ev_updateValue.RemoveListener(UpdateValue);
+            stat.ev_updateMaxValue.RemoveListener(UpdateMaxValue);
+        }
 
-        UpdateUI();
+        this.stat = stat;
 
-        stat.ev_updateValue.AddListener(new UnityAction<float>(UpdateValue));
-        stat.ev_updateMaxValue.AddListener(new UnityAction<float>(UpdateMaxValue));
+        if (stat != null)
+        {
+            value = stat.Value;
+            maxValue = stat.Value;
+
+            UpdateUI();
+
+            stat.ev_updateValue.AddListener(UpdateValue);
+            stat.ev_updateMaxValue.AddListener(UpdateMaxValue);
+        }
     }
 
     public void UpdateValue(float value)

@@ -48,10 +48,14 @@ public class PlayerInterractor : MonoBehaviour
 
     private void Update()
     {
-        Ray ray = new Ray(source.position, source.forward);
+        if (source == null) return;
+
+        Ray ray = new Ray(source.position + source.forward.normalized * 2, source.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 10f))
         {
+            Debug.Log(hit.transform.gameObject);
+
             IInterractable interractable = hit.transform.GetComponent<IInterractable>();
 
             if (Pointed != interractable)

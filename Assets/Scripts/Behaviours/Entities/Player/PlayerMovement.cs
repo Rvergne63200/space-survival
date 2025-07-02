@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private new Rigidbody rigidbody;
 
     private PlayerInputActions inputActions;
-    public Transform forwardDirection;
+    private Forwarder forwarder;
     private Vector2 moveInput;
 
     public float baseSpeed = 1.5f;
@@ -54,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
         speed = baseSpeed;
         rigidbody = GetComponent<Rigidbody>();
         playerCollider = GetComponent<Collider>();
+        forwarder = GetComponentInChildren<Forwarder>();
     }
 
     private void Start()
@@ -95,10 +96,7 @@ public class PlayerMovement : MonoBehaviour
         inputActions.Movement.Disable();
     }
 
-
-
-
-    void Update()
+    void FixedUpdate()
     {
         if (playerCollider != null)
         {
@@ -139,12 +137,12 @@ public class PlayerMovement : MonoBehaviour
                 endurance.Consume(sprintEnduranceConsumeSpeed * Time.deltaTime);
             }
 
-            Vector3 cameraForward = forwardDirection.forward;
-            cameraForward.y = 0f;
+            Vector3 cameraForward = forwarder.Forward;
+            cameraForward.x = 0f;
 
             if (cameraForward != Vector3.zero)
             {
-                transform.rotation = Quaternion.LookRotation(cameraForward);
+                transform.rotation = Quaternion.Euler(cameraForward);
             }
         }
 

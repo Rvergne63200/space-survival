@@ -11,8 +11,10 @@ public class PickupInfoUI : ParentedUI
     private CanvasGroup group;
     private float countDown = 0f;
 
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
+
         countDown = durability;
         group = GetComponent<CanvasGroup>();
     }

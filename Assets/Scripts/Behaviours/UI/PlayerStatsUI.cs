@@ -7,15 +7,18 @@ public class PlayerStatsUI : ParentedUI
 
     private PlayerStats playerStats;
 
-
-    private void Start()
+    public override void AfterUpdatePlayer()
     {
-        playerStats = parentUI.playerStats;
+        base.AfterUpdatePlayer();
 
-        foreach(StatUIData stat in statUIDataCollection)
+        playerStats = parentUI.PlayerStats;
+
+        foreach (StatUIData stat in statUIDataCollection)
         {
             GameObject statUIObject = Instantiate(statPrefab, transform);
             StatBarUI UI = statUIObject.GetComponent<StatBarUI>();
+
+            UI.parentUI = parentUI;
             UI.SetColor(stat.color);
             UI.SetIcon(stat.sprite);
             UI.SetStat(playerStats.Get(stat.name));
