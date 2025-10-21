@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4221197894842714988}
   - component: {fileID: 5752419722846579353}
   - component: {fileID: 4331274981166176801}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,8 @@ GameObject:
   - component: {fileID: 9110994537960575103}
   - component: {fileID: 8959997147107904625}
   - component: {fileID: 2117812634505132389}
-  m_Layer: 0
+  - component: {fileID: 4073238564624092072}
+  m_Layer: 3
   m_Name: SceneLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,6 +211,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 27.96717, z: 0.9999999}
   m_Center: {x: 0, y: 13.483591, z: 0}
+--- !u!114 &4073238564624092072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3669101461006279440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05e4e06721e6d741893124716e7c299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneName: 0_Capsule
+  position: {x: 0, y: 0, z: 0}
 --- !u!1 &5733105502309356050
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +237,7 @@ GameObject:
   - component: {fileID: 7595210215643146319}
   - component: {fileID: 6135895484071513176}
   - component: {fileID: 7790573032275950089}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SpaceCapsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}

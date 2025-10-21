@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b934c77305ce677438743f62ed4b97a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 0_TestCapsuleScene
+  sceneName: 0_Capsule
   objectsToSave:
   - {fileID: 1769500892}
   - {fileID: 1357893171}

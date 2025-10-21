@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    public UnityEvent<TerrainData> ev_OnTerminateGeneration;
+
     public Vector2 size = new Vector2(0,0);
     public float height = 50f;
 
@@ -22,6 +25,8 @@ public class TerrainGenerator : MonoBehaviour
 
         terrain = GetComponent<Terrain>();
         terrain.terrainData = GenerateTerrainData(terrain.terrainData);
+
+        ev_OnTerminateGeneration.Invoke(terrain.terrainData);
     }
 
     private TerrainData GenerateTerrainData(TerrainData terrainData)
@@ -43,17 +48,34 @@ public class TerrainGenerator : MonoBehaviour
                 float xCoord = ((float)x + offsetX) / perlinX;
                 float yCoord = ((float)y + offsetY) / perlinY;
 
+
                 float baseHeigth = height;
                 float localVariation = Mathf.PerlinNoise(xCoord * 0.01f, yCoord * 0.01f) * perlinScale;
                 float globalVariation = Mathf.PerlinNoise(xCoord * 0.005f, yCoord * 0.005f) * 3 * perlinScale;
+
 
                 float hollowVariation = Mathf.PerlinNoise(xCoord * 0.001f, yCoord * 0.001f);
                 hollowVariation = Mathf.Clamp(hollowVariation - 0.7f, 0f, 1f);
                 hollowVariation *= 35 * perlinScale;
 
+
                 float mountainsVariation = Mathf.PerlinNoise((xCoord + 1024/perlinX) * 0.001f, (yCoord + 1024/perlinY) * 0.001f);
                 mountainsVariation = Mathf.Clamp(mountainsVariation - 0.5f, 0f, 1f);
                 mountainsVariation *= 40 * Mathf.Exp(mountainsVariation) * perlinScale;
+
+
+                Vector2 center = size / 2;
+                Vector2 position = new Vector2(x, y);
+
+
+                float centerDist = Vector2.Distance(position, center);
+
+                float f = Mathf.Pow(centerDist, 4) * 0.001f;
+                float reliefCoef = f / (1000000 + f);
+
+                mountainsVariation *= reliefCoef;
+                hollowVariation *= reliefCoef;
+
 
                 heights[x, y] = (baseHeigth + localVariation + globalVariation + mountainsVariation - hollowVariation) / maxHeight; 
             }

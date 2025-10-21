@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f05e4e06721e6d741893124716e7c299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 0_TestScene
+  sceneName: 0_World
   position: {x: 2047, y: 101, z: 2065}
 --- !u!1 &1287386123
 GameObject:
