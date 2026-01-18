@@ -4,10 +4,16 @@ using UnityEngine.InputSystem;
 public class Builder : MonoBehaviour
 {
     public GameObject build;
-
     private GameObject currentBuild;
 
-    public Transform source;
+    private PlayerContext playerContext => GetComponent<PlayerContext>();
+
+    private Transform Source
+    {
+        get => playerContext?.PlayerManager.ViewSource ?? null;
+        set => Source = value;
+    }
+
     private PlayerInputActions inputActions;
 
     void Awake()
@@ -34,7 +40,7 @@ public class Builder : MonoBehaviour
         if(currentBuild == null)
         {
             int terrainLayerMask = LayerMask.GetMask("Terrain");
-            Ray ray = new Ray(source.position, source.forward);
+            Ray ray = new Ray(Source.position, Source.forward);
 
             if (Physics.Raycast(ray, out RaycastHit hit, 300f, terrainLayerMask))
             {
@@ -61,9 +67,9 @@ public class Builder : MonoBehaviour
         if (currentBuild != null)
         {
             int terrainLayerMask = LayerMask.GetMask("Terrain");
-            Ray ray = new Ray(source.position, source.forward);
+            Ray ray = new Ray(Source.position, Source.forward);
 
-            Debug.DrawRay(source.position, source.forward * 300f, Color.red, 1f);
+            Debug.DrawRay(Source.position, Source.forward * 300f, Color.red, 1f);
 
             if (Physics.Raycast(ray, out RaycastHit hit, 300f, terrainLayerMask))
             {

@@ -39,8 +39,9 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
     protected Action ac_OnClearInterface = () => { };
 
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         ev_OnSlotsUpdated = new UnityEvent();
     }
 
@@ -51,6 +52,8 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
 
     protected void UpdateItemCollectionUI<U>(ItemCollection<U> collection, ref GameObject[] slotsUI) where U : T
     {
+        slotPrefab.GetComponent<InventorySlotUI<U>>().parentUI = parentUI;
+
         slotsUI = new GameObject[collection.Slots.Count];
 
         for (int i = 0; i < transform.childCount; i++)
@@ -67,10 +70,7 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
             }
 
             slotsUI[j] = Instantiate(slotPrefab, transform);
-
             InventorySlotUI<U> slotUI = slotsUI[j].GetComponent<InventorySlotUI<U>>();
-            slotUI.parentUI = parentUI;
-
             slotUI.setSlot(collection.Slots[j]);
         }
 

@@ -7,12 +7,17 @@ public class PlayerStatsUI : ParentedUI
 
     private PlayerStats playerStats;
 
-
-    private void Start()
+    public override void OnUpdateManager(UIManager manager)
     {
-        playerStats = parentUI.playerStats;
+        if(manager == null)
+        {
+            return;
+        }
 
-        foreach(StatUIData stat in statUIDataCollection)
+        playerStats = manager.PlayerStats;
+        statPrefab.GetComponent<StatBarUI>().parentUI = parentUI;
+
+        foreach (StatUIData stat in statUIDataCollection)
         {
             GameObject statUIObject = Instantiate(statPrefab, transform);
             StatBarUI UI = statUIObject.GetComponent<StatBarUI>();

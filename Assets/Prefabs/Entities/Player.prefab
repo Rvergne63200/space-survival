@@ -14,12 +14,12 @@ GameObject:
   - component: {fileID: 4347485708697135101}
   - component: {fileID: 5134650689890712554}
   - component: {fileID: 3757315658717958218}
-  - component: {fileID: 1590000315623345688}
-  - component: {fileID: 8970575601521021453}
+  - component: {fileID: 7019758872836574315}
   - component: {fileID: 3455654060436501799}
   - component: {fileID: 1451931091579967756}
   - component: {fileID: 5633327051373276397}
   - component: {fileID: 3570617525106556862}
+  - component: {fileID: 3139602510462086486}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -154,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50999740b51d9c4492a5cb5c14ddf4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 8970575601521021453}
   forwardDirection: {fileID: 0}
   baseSpeed: 3
   sprintSpeed: 6
@@ -165,7 +164,7 @@ MonoBehaviour:
   sprintEnduranceConsumeSpeed: 5
   jumpEnduranceCost: 5
   jumpEnduranceConsumeSpeed: 20
---- !u!114 &1590000315623345688
+--- !u!114 &7019758872836574315
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -174,303 +173,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8774627701926431398}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c90ee05d14f4aca439ef205f7b8c0c24, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d5103fdf46fc6848a74f694d1a84f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _content:
-    ev_Update:
-      m_PersistentCalls:
-        m_Calls: []
-    _slots:
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: 4e871ee52b198cd41b66388d64c080f3, type: 2}
-      _quantity: 5
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: d3b8e752d5d377b4287510e49da39b14, type: 2}
-      _quantity: 2
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: bf01d85bb4224584dace5fabfe69fc8a, type: 2}
-      _quantity: 80
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: bf01d85bb4224584dace5fabfe69fc8a, type: 2}
-      _quantity: 80
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: 3c599f0131199d54a8bedb90e3e42ec2, type: 2}
-      _quantity: 14
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    _maxSize: 32
-  ev_UpdateIsOpen:
-    m_PersistentCalls:
-      m_Calls: []
-  ev_UpdateHandedIndex:
-    m_PersistentCalls:
-      m_Calls: []
-  draggingSlot:
-    _ev_update:
-      m_PersistentCalls:
-        m_Calls: []
-    _item:
-      _data: {fileID: 0}
-    _quantity: 0
-  _toolBar:
-    ev_Update:
-      m_PersistentCalls:
-        m_Calls: []
-    _slots:
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 11400000, guid: 3c599f0131199d54a8bedb90e3e42ec2, type: 2}
-      _quantity: 12
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    - _ev_update:
-        m_PersistentCalls:
-          m_Calls: []
-      _item:
-        _data: {fileID: 0}
-      _quantity: 0
-    _maxSize: 6
---- !u!114 &8970575601521021453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8774627701926431398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68880755869cfbc469d4434e81245470, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats:
-  - _key: 0
-    _value:
-      ev_updateValue:
-        m_PersistentCalls:
-          m_Calls: []
-      ev_updateMaxValue:
-        m_PersistentCalls:
-          m_Calls: []
-      ev_updateRecuperation:
-        m_PersistentCalls:
-          m_Calls: []
-      baseRegeneration: 0
-      _value: 100
-      _maxValue: 100
-  - _key: 1
-    _value:
-      ev_updateValue:
-        m_PersistentCalls:
-          m_Calls: []
-      ev_updateMaxValue:
-        m_PersistentCalls:
-          m_Calls: []
-      ev_updateRecuperation:
-        m_PersistentCalls:
-          m_Calls: []
-      baseRegeneration: 1
-      _value: 100
-      _maxValue: 100
 --- !u!114 &3455654060436501799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,7 +188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45d3fd6c3b05abc4a9618dfbcf8ce40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  source: {fileID: 0}
   ev_UpdatePointed:
     m_PersistentCalls:
       m_Calls: []
@@ -555,3 +259,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3139602510462086486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8774627701926431398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb3cd7bbe1280bf40bcea42be31fd431, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ev_updatePointedObject:
+    m_PersistentCalls:
+      m_Calls: []

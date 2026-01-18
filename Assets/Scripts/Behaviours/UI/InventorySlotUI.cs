@@ -14,8 +14,9 @@ public abstract class InventorySlotUI<T> : ParentedUI where T : Item
 
     protected UnityAction<ItemSlot<T>> ac_update;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         ac_update = new UnityAction<ItemSlot<T>>(UpdateSlot);
     }
 

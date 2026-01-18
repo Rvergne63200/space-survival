@@ -7,7 +7,7 @@ public class Pickuper : MonoBehaviour
 
     public int Pickup(Item item, int count)
     {
-        PlayerInventory inventory = GetComponent<PlayerInventory>();
+        PlayerInventory inventory = GetComponent<PlayerContext>().PlayerManager.Inventory;
         int rest = inventory.Add(item, count);
 
         ev_pickup.Invoke(count - rest, item.Data);

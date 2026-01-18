@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f63c6ad32ec056e4aa8f9f8eb14c36a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentUI: {fileID: 3941701102643481639}
   input: F
-  interractor: {fileID: 0}
 --- !u!225 &6003089617529646145
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -500,9 +500,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ebe469d10d78054682861d9949271bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInventory: {fileID: 0}
-  playerStats: {fileID: 0}
   dragginSlotUI: {fileID: 736592965635414673}
+  ev_updateManager:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1944737730636356293
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,7 +897,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6476448403790344177
 RectTransform:
   m_ObjectHideFlags: 0

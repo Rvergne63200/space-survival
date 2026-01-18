@@ -1,12 +1,29 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ParentUI : MonoBehaviour
 {
     private PlayerInputActions inputActions;
-    public PlayerInventory playerInventory;
-    public PlayerStats playerStats;
+
+    public UIManager _uiManager;
+    public UIManager UIManager 
+    { 
+        get => _uiManager; 
+        private set
+        {
+            _uiManager = value;
+            ev_updateManager.Invoke(_uiManager);
+        } 
+    }
 
     public GameObject dragginSlotUI;
+
+    public UnityEvent<UIManager> ev_updateManager = new();
+
+    public void Initialize(UIManager UIManager)
+    {
+        this.UIManager = UIManager;
+    }
 
     void Awake()
     {
@@ -16,7 +33,7 @@ public class ParentUI : MonoBehaviour
 
     private void Start()
     {
-        playerInventory.draggingSlot.ev_update.AddListener(OnUpdateDraggingItemSlot);
+        UIManager?.PlayerInventory.draggingSlot.ev_update.AddListener(OnUpdateDraggingItemSlot);
     }
 
     private void OnEnable()

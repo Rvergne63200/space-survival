@@ -5,11 +5,18 @@ public class PlayerMovement : MonoBehaviour
 {
     public static string OPTION_DISABLED = "player_movement_disabled";
 
-    public PlayerStats stats;
+    private PlayerStats Stats
+    {
+        get => context?.PlayerManager.Stats ?? null;
+        set => Stats = value;
+    }
+
+    private PlayerContext context;
+    
     private new Rigidbody rigidbody;
 
     private PlayerInputActions inputActions;
-    public Transform forwardDirection;
+    public Transform forwardDirection => context.PlayerManager.ViewSource;
     private Vector2 moveInput;
 
     public float baseSpeed = 1.5f;
@@ -50,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
+        context = GetComponent<PlayerContext>();
         inputActions = new PlayerInputActions();
         speed = baseSpeed;
         rigidbody = GetComponent<Rigidbody>();
@@ -58,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        endurance = stats.Get(StatName.Endurance);
+        endurance = Stats.Get(StatName.Endurance);
     }
 
 

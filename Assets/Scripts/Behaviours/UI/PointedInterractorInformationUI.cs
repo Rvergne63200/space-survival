@@ -1,26 +1,41 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class PointedInterractorInformationUI : MonoBehaviour
+public class PointedInterractorInformationUI : ParentedUI
 {
     private TextMeshProUGUI text;
     public string input;
-    public PlayerInterractor interractor;
 
-    private void Awake()
+    private UnityEvent<Transform> ev_updatePointedObject;
+
+    protected override void Awake()
     {
+        base.Awake();
         text = GetComponent<TextMeshProUGUI>();
     }
 
-    private void Start()
+    public override void OnUpdatePlayerContext(PlayerContext context)
     {
-        interractor.ev_UpdatePointed.AddListener(UpdatePointed);
-        UpdatePointed(null);
+        if(context == null)
+        {
+            return;
+        }
+
+        if (ev_updatePointedObject != null)
+        {
+            ev_updatePointedObject.RemoveListener(UpdatePointedObject);
+        }
+
+        ev_updatePointedObject = context.ev_updatePointedObject;
+        ev_updatePointedObject.AddListener(UpdatePointedObject);
     }
 
-    public void UpdatePointed(IInterractable pointed)
+    public void UpdatePointedObject(Transform pointedObject)
     {
-        if(pointed == null)
+        IInterractable pointed = parentUI.UIManager.PlayerContext.Interractable;
+
+        if (pointed == null)
         {
             gameObject.SetActive(false);
             return;

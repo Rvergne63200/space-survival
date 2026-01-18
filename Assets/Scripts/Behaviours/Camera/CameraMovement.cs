@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -7,13 +6,16 @@ public class CameraMovement : MonoBehaviour
 
     public float sensibility = 5f;
     public Vector3 offset;
-    public Transform target;
+    private Transform Target
+    {
+        get => context?.CameraManager.Target ?? null;
+    }
 
     private PlayerInputActions inputActions;
     private Vector2 rotation;
     private float verticalRotation = 0f;
     private float horizontalRotation = 0f;
-
+    private CameraContext context;
 
     private bool locked = false;
 
@@ -25,6 +27,7 @@ public class CameraMovement : MonoBehaviour
 
     void Awake()
     {
+        context = GetComponent<CameraContext>();
         inputActions = new PlayerInputActions();
     }
 
@@ -53,6 +56,7 @@ public class CameraMovement : MonoBehaviour
         horizontalRotation = horizontalRotation % 360;
 
         transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
-        transform.position = target.position + offset;
+
+        transform.position = Target.position + offset;
     }
 }

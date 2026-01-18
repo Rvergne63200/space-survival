@@ -1,14 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
+using TMPro;
 
 public class PlayerToolBarUI : ItemCollectionUI<Item>
 {
-    protected override void Awake()
+    public override void OnUpdateManager(UIManager manager)
     {
-        base.Awake();
+        if (manager == null)
+        {
+            return;
+        }
 
-        PlayerInventory inventory = parentUI.playerInventory;
-        this.Inventory = inventory.ToolBar;
+        this.Inventory = manager?.PlayerInventory?.ToolBar;
     }
 }

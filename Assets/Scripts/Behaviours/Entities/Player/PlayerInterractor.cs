@@ -4,28 +4,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerInterractor : MonoBehaviour
 {
-    public Transform source;
     private PlayerInputActions inputActions;
-
-    public UnityEvent<IInterractable> ev_UpdatePointed;
-
-    private IInterractable _pointed;
-    public IInterractable Pointed { 
-        get 
-        { 
-            return _pointed; 
-        } 
-        
-        set 
-        { 
-            _pointed = value;
-            ev_UpdatePointed.Invoke(value);
-        } 
-    }
+    private PlayerContext playerContext => GetComponent<PlayerContext>();
 
     void Awake()
     {
-        ev_UpdatePointed = new UnityEvent<IInterractable>();
         inputActions = new PlayerInputActions();
     }
 
@@ -43,33 +26,6 @@ public class PlayerInterractor : MonoBehaviour
 
     private void OnInterractPerformed(InputAction.CallbackContext context)
     {
-        Interract();
-    }
-
-    private void Update()
-    {
-        Ray ray = new Ray(source.position, source.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 10f))
-        {
-            IInterractable interractable = hit.transform.GetComponent<IInterractable>();
-
-            if (Pointed != interractable)
-            {
-                Pointed = interractable;
-            }
-        }
-        else if(Pointed != null)
-        {
-            Pointed = null;
-        }
-    }
-
-    private void Interract()
-    {
-        if (Pointed != null)
-        {
-            Pointed.Interract(gameObject);
-        }
+        playerContext.Interractable?.Interract(gameObject);
     }
 }
