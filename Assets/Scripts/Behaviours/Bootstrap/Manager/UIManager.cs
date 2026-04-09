@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
 
     public PlayerInventory PlayerInventory => playerManager.Inventory;
     public PlayerStats PlayerStats => playerManager.Stats;
+    public Pickuper Pickuper => playerManager.Pickuper;
 
 
     public PlayerContext PlayerContext => playerManager.Player?.GetComponent<PlayerContext>();
@@ -54,5 +55,11 @@ public class UIManager : MonoBehaviour
         );
 
         currentUI.GetComponent<ParentUI>().Initialize(this);
+        playerManager.ev_spawnPlayer.AddListener(UpdatePickuper);
+    }
+
+    public void UpdatePickuper(GameObject player)
+    {
+        player.GetComponent<Pickuper>().ev_pickup.AddListener(currentUI.GetComponentInChildren<PickupInfoGroupUI>().OnPickupItems);
     }
 }
