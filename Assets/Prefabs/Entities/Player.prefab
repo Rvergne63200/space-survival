@@ -154,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50999740b51d9c4492a5cb5c14ddf4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardDirection: {fileID: 0}
   baseSpeed: 3
   sprintSpeed: 6
   acceleration: 120
@@ -188,9 +187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45d3fd6c3b05abc4a9618dfbcf8ce40f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ev_UpdatePointed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1451931091579967756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +200,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   build: {fileID: 7986256412080422617, guid: dc12d42d1ee0bb847abe518f82e73f78, type: 3}
-  source: {fileID: 0}
 --- !u!114 &5633327051373276397
 MonoBehaviour:
   m_ObjectHideFlags: 0

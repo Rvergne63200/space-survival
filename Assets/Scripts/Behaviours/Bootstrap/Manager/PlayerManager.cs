@@ -36,8 +36,6 @@ public class PlayerManager : MonoBehaviour
 
         Instance = this;
 
-        SpawnPlayer(transform);
-
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
