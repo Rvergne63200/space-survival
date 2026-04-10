@@ -18,8 +18,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private PlayerStats stats;
     public PlayerStats Stats => stats;
 
-    public Pickuper Pickuper => currentPlayer.GetComponent<Pickuper>();
-
 
     private GameObject currentPlayer;
     public GameObject Player => currentPlayer;

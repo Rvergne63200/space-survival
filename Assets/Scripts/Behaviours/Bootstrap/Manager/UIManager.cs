@@ -15,7 +15,6 @@ public class UIManager : MonoBehaviour
 
     public PlayerInventory PlayerInventory => playerManager.Inventory;
     public PlayerStats PlayerStats => playerManager.Stats;
-    public Pickuper Pickuper => playerManager.Pickuper;
 
 
     public PlayerContext PlayerContext => playerManager.Player?.GetComponent<PlayerContext>();
@@ -55,11 +54,22 @@ public class UIManager : MonoBehaviour
         );
 
         currentUI.GetComponent<ParentUI>().Initialize(this);
-        playerManager.ev_spawnPlayer.AddListener(UpdatePickuper);
+        playerManager.ev_spawnPlayer.AddListener(OnSpawnPlayer);
+    }
+
+    public void OnSpawnPlayer(GameObject player)
+    {
+        UpdatePickuper(player);
+        UpdateSearcher(player);
     }
 
     public void UpdatePickuper(GameObject player)
     {
-        player.GetComponent<Pickuper>().ev_pickup.AddListener(currentUI.GetComponentInChildren<PickupInfoGroupUI>().OnPickupItems);
+        player.GetComponent<Pickuper>().ev_pickup.AddListener(currentUI.GetComponent<ParentUI>().PickupInfoGroupUI.OnPickupItems);
+    }
+
+    public void UpdateSearcher(GameObject player)
+    {
+        player.GetComponent<Searcher>().ev_UpdateSearchStorage.AddListener(currentUI.GetComponent<ParentUI>().SearchedItemStorageUI.SetItemStorage);
     }
 }

@@ -156,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        Vector3 currentVelocity = rigidbody.velocity;
+        Vector3 currentVelocity = rigidbody.linearVelocity;
         Vector3 velocityChange = targetVelocity - new Vector3(currentVelocity.x, 0f, currentVelocity.z);
         Vector3 force = velocityChange * acceleration;
 

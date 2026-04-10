@@ -5,7 +5,7 @@ public class SceneContext : MonoBehaviour
 {
     private void Awake()
     {
-        if (FindObjectOfType<Root>() == null)
+        if (FindAnyObjectByType<Root>() == null)
         {
             SceneManager.LoadScene("Bootstrap", LoadSceneMode.Additive);
         }

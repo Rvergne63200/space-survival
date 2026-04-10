@@ -20,6 +20,14 @@ public class ParentUI : MonoBehaviour
 
     public UnityEvent<UIManager> ev_updateManager = new();
 
+
+    [SerializeField] private PickupInfoGroupUI _pickupInfoGroupUI;
+    public PickupInfoGroupUI PickupInfoGroupUI { get => _pickupInfoGroupUI; private set => _pickupInfoGroupUI = value; }
+
+    [SerializeField] private ItemStorageUI _searchedItemStorageUI;
+    public ItemStorageUI SearchedItemStorageUI { get => _searchedItemStorageUI; private set => _searchedItemStorageUI = value; }
+
+
     public void Initialize(UIManager UIManager)
     {
         this.UIManager = UIManager;
