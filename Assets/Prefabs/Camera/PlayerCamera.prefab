@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aed7cfff0e486a4593ee8457204b6c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensibility: 100
+  sensibility: 50
   offset: {x: 0, y: 0.7, z: 0}
 --- !u!114 &5865490524692880577
 MonoBehaviour:
