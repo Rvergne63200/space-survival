@@ -4,7 +4,7 @@ public class CameraMovement : MonoBehaviour
 {
     public static string OPTION_CAMERA_LOCKED = "camera_movement_locked";
 
-    public float sensibility = 5f;
+    public float sensibility = 0.2f;
     public Vector3 offset;
     private Transform Target
     {
@@ -47,7 +47,7 @@ public class CameraMovement : MonoBehaviour
     {
         if (locked) return;
 
-        Vector2 input = rotation * sensibility * Time.deltaTime;
+        Vector2 input = rotation * sensibility;
 
         verticalRotation -= input.y;
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);

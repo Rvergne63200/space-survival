@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a384c6ee44a940c4981d7972563515d3, type: 3}
+  m_Name: 4_IronOre
+  m_EditorClassIdentifier: 
+  _id: 4
+  _stackMax: 99
+  _name: Iron Ore
+  _description: Fibers, comming from plants
+  _sprite: {fileID: 21300000, guid: 583675a75bcb2a941ac555b9ccd513a9, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
