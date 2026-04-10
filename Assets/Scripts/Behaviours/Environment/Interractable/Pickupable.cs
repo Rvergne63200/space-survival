@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Pickupable : MonoBehaviour, IInterractable
 {
@@ -10,9 +7,15 @@ public class Pickupable : MonoBehaviour, IInterractable
 
     public bool identified = false;
 
+    [SerializeField] private Sprite icon;
+
     public string GetInfo()
     {
         return identified ? count + "x " + item?.Data.Name : "Pickup";
+    }
+    public Sprite GetIcon()
+    {
+        return icon;
     }
 
     public void Interract(GameObject interractor)

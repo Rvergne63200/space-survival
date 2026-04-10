@@ -2,10 +2,13 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class PointedInterractorInformationUI : ParentedUI
 {
-    private TextMeshProUGUI text;
+    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private Image icon;
+
     private CanvasGroup canvasGroup;
     public string input;
 
@@ -19,7 +22,6 @@ public class PointedInterractorInformationUI : ParentedUI
     protected override void Awake()
     {
         base.Awake();
-        text = GetComponent<TextMeshProUGUI>();
         canvasGroup = GetComponent<CanvasGroup>();
 
         if (pointed != null) { 
@@ -60,7 +62,8 @@ public class PointedInterractorInformationUI : ParentedUI
 
         if (oldPointed == null && pointed != null)
         {
-            text.text = pointed.GetInfo() + " <" + input.ToUpper() + ">";
+            text.text = pointed.GetInfo() + " [" + input.ToUpper() + "]";
+            icon.sprite = pointed.GetIcon();
             FadeIn();
             return;
         }

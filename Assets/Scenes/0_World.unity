@@ -606,6 +606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   storage: {fileID: 1946250934}
+  icon: {fileID: 21300000, guid: c8a189b6e39df104289c82fbc75001ab, type: 3}
 --- !u!65 &1946250936
 BoxCollider:
   m_ObjectHideFlags: 0
