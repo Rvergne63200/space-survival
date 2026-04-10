@@ -250,6 +250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentUI: {fileID: 3941701102643481639}
   input: F
+  fadeDuration: 0.15
 --- !u!225 &6003089617529646145
 CanvasGroup:
   m_ObjectHideFlags: 0
