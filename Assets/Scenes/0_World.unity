@@ -227,9 +227,9 @@ GameObject:
   - component: {fileID: 1156575169}
   - component: {fileID: 1156575168}
   - component: {fileID: 1156575167}
-  - component: {fileID: 1156575170}
-  - component: {fileID: 1156575171}
   - component: {fileID: 1156575172}
+  - component: {fileID: 1156575173}
+  - component: {fileID: 1156575174}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
@@ -312,24 +312,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1156575170
+--- !u!114 &1156575172
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1156575166}
-  m_Enabled: 0
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70a90d366d2d5b49a85753e1bf6266a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5747709456442282497, guid: b75e095bfc2521d40b2a12cc6136db80, type: 3}
+--- !u!114 &1156575173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156575166}
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 091526d721d666642af0a376ced2584b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainGenerator
   ev_OnTerminateGeneration:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1156575171}
-        m_TargetAssemblyTypeName: TerrainRepositioner, Assembly-CSharp
-        m_MethodName: ReplaceObjects
+      - m_Target: {fileID: 1156575172}
+        m_TargetAssemblyTypeName: EnvironmentSpawner, Assembly-CSharp
+        m_MethodName: Spawn
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -351,14 +364,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  size: {x: 2048, y: 2048}
+  size: {x: 1024, y: 1024}
   height: 80
   perlinX: 0.7
   perlinY: 0.7
   perlinScale: 10
   maxHeight: 1024
   perlinOffset: {x: 256.12, y: 546584.4}
---- !u!114 &1156575171
+--- !u!114 &1156575174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -369,27 +382,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6085a9e5f99df1148abfb05af0aaf47a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainRepositioner
   placements:
   - gameObject: {fileID: 4657979389139924245}
-    position: {x: 1024, y: 1024}
-    height: 3
-  - gameObject: {fileID: 1946250933}
-    position: {x: 1038, y: 1024}
-    height: 0.5
---- !u!114 &1156575172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156575166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e70a90d366d2d5b49a85753e1bf6266a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 5747709456442282497, guid: b75e095bfc2521d40b2a12cc6136db80, type: 3}
+    position: {x: 512, y: 512}
+    height: 5
 --- !u!1 &1863405063
 GameObject:
   m_ObjectHideFlags: 0

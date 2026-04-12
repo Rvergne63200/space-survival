@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,28 +18,33 @@ public class TerrainGenerator : MonoBehaviour
 
     public Vector2 perlinOffset = new Vector2(256.12f, 546584.4f);
 
-
     private Terrain terrain;
+
 
     private void Start()
     {
-        perlinOffset = new Vector2(Random.Range(0, 99999.99f), Random.Range(0, 99999.99f));
-
         terrain = GetComponent<Terrain>();
-        terrain.terrainData = GenerateTerrainData(terrain.terrainData);
-
-        ev_OnTerminateGeneration.Invoke(terrain.terrainData);
+        perlinOffset = new Vector2(Random.Range(0, 99999.99f), Random.Range(0, 99999.99f));
+        Generate();
     }
 
-    private TerrainData GenerateTerrainData(TerrainData terrainData)
+    async void Generate()
     {
-        terrainData.heightmapResolution = (int)size.x + 1;
-        terrainData.size = new Vector3(size.x, maxHeight, size.y);
-        terrainData.SetHeights(0, 0, GenerateHeights(perlinX, perlinY, perlinOffset.x, perlinOffset.y));
-        return terrainData;
+        TerrainData data = terrain.terrainData;
+
+        data.heightmapResolution = (int)size.x + 1;
+        data.size = new Vector3(size.x, maxHeight, size.y);
+
+        float[,] heights = await Task.Run(() => GenerateHeights());
+
+        if (this == null) return;
+
+        data.SetHeights(0, 0, heights);
+
+        ev_OnTerminateGeneration.Invoke(data);
     }
 
-    private float[,] GenerateHeights(float perlinX, float perlinY, float offsetX, float offsetY)
+    private float[,] GenerateHeights()
     {
         float[,] heights = new float[(int)size.x, (int)size.y];
 
@@ -45,8 +52,8 @@ public class TerrainGenerator : MonoBehaviour
         {
             for(int y = 0; y < size.y; y++)
             {
-                float xCoord = ((float)x + offsetX) / perlinX;
-                float yCoord = ((float)y + offsetY) / perlinY;
+                float xCoord = ((float)x + perlinOffset.x) / perlinX;
+                float yCoord = ((float)y + perlinOffset.y) / perlinY;
 
 
                 float baseHeigth = height;
@@ -82,10 +89,5 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         return heights;
-    }
-
-    private void Update()
-    {
-        //terrain.terrainData = GenerateTerrainData(terrain.terrainData);
     }
 }

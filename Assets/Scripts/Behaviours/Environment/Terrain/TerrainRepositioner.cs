@@ -9,7 +9,7 @@ public class TerrainRepositioner : MonoBehaviour
         TerrainData data = gameObject.GetComponent<Terrain>().terrainData;
 
         ReplaceObjects(data);
-        GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(1024, data.GetHeight(1024, 1024) + 5, 1024);
+        GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3(512, data.GetHeight(512, 512) + 5, 512);
     }
 
     public void ReplaceObjects(TerrainData terrainData)
