@@ -14,7 +14,6 @@ public class EnvironmentSpawner : MonoBehaviour
     public void Spawn(TerrainData terrainData)
     {
         Vector3 size = terrainData.size;
-        //size = new Vector3(50, 0, 50);
 
         for (int x = 0; x < size.x; x++)
         {
@@ -25,7 +24,7 @@ public class EnvironmentSpawner : MonoBehaviour
 
                 if (random >= 999f)
                 {
-                    GameObject spawned = Instantiate(prefab, new Vector3(x, height + 0.2f, y), Random.rotation, transform);
+                    GameObject spawned = Instantiate(prefab, new Vector3(transform.position.x + x, height + 0.2f, transform.position.z + y), Random.rotation, transform);
                     spawned.transform.localScale = Vector3.one * Random.Range(1.80f, 1.20f) * 0.1f;
                 }
             }
