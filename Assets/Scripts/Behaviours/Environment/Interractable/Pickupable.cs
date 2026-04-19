@@ -13,6 +13,7 @@ public class Pickupable : MonoBehaviour, IInterractable
     {
         return identified ? count + "x " + item?.Data.Name : "Pickup";
     }
+
     public Sprite GetIcon()
     {
         return icon;

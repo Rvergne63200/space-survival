@@ -60,26 +60,6 @@ public class ItemCollection<T> where T : Item
         Slots = slots;
     }
 
-    public void Set(ItemSlot<T> slot, int pos)
-    {
-        if (pos >= MaxSize)
-        {
-            Debug.Log("Cet emplacement n'existe pas");
-            return;
-        }
-
-        if(pos >= Slots.Count)
-        {
-            Slots.Insert(pos, slot);
-        }
-        else
-        {
-            Slots[pos] = slot;
-        }
-
-        ev_Update.Invoke();
-    }
-
     public int Add(T item, int count)
     {       
         if (item == null)
@@ -103,7 +83,7 @@ public class ItemCollection<T> where T : Item
             if (index >= Slots.Count || Slots[index] == null)
             {
                 slot = new ItemSlot<T>();
-                Set(slot, index);
+                SetSlot(slot, index);
             }
             else
             {
@@ -125,24 +105,9 @@ public class ItemCollection<T> where T : Item
         return rest;
     }
 
-    public int RemoveFromSlot(int index, int count)
-    {
-        if (index < 0 || index > MaxSize)
-        {
-            Debug.Log("Slot invalide");
-            return count;
-        }
+    public int RemoveItem(T item, int count) => RemoveItem(item?.Data, count);
 
-        if (Slots[index] == null)
-        {
-            Debug.Log("Slot vide");
-            return count;
-        }
-
-        return Slots[index].Remove(count);
-    }
-
-    public int RemoveItem(T item, int count)
+    public int RemoveItem(ItemData item, int count)
     {
         if (item == null)
         {
@@ -160,7 +125,7 @@ public class ItemCollection<T> where T : Item
 
         count = RemoveFromSlot(index, count);
 
-        if (count > 0)
+        if(count > 0)
         {
             count = RemoveItem(item, count);
         }
@@ -168,19 +133,43 @@ public class ItemCollection<T> where T : Item
         return count;
     }
 
-    public int GetLastIndex(T item)
+
+    public int Count(T item) => Count(item?.Data);
+    public int Count(ItemData item)
+    {
+        if (item == null)
+        {
+            Debug.LogError("Invalid item data");
+            return -1;
+        }
+
+        int count = 0;
+
+        foreach (var slot in Slots)
+        {
+            if(slot.Item?.Data?.Id == item.Id)
+            {
+                count += slot.Quantity;
+            }
+        }
+
+        return count;
+    }
+
+
+    private int GetLastIndex(ItemData item)
     {
         int index = -1;
         int i = 0;
 
-        if (item == null)
+        if(item == null)
         {
             return -2;
         }
 
-        foreach (ItemSlot<T> slot in Slots)
+        foreach(ItemSlot<T> slot in Slots)
         {
-            if (slot?.Item?.Data?.Id == item?.Data.Id)
+            if(slot?.Item?.Data?.Id == item.Id)
             {
                 index = i;
             }
@@ -191,16 +180,20 @@ public class ItemCollection<T> where T : Item
         return index;
     }
 
-    public ItemSlot<T> GetFirstSlotNotFull(T item)
+
+
+    private ItemSlot<T> GetFirstSlotNotFull(T item) => GetFirstSlotNotFull(item?.Data);
+
+    private ItemSlot<T> GetFirstSlotNotFull(ItemData item)
     {
-        if(item == null)
+        if (item == null)
         {
             return null;
         }
 
         foreach (ItemSlot<T> slot in Slots)
         {
-            if(slot?.Item?.Data?.Id == item?.Data.Id && !slot.IsFull())
+            if (slot?.Item?.Data?.Id == item.Id && !slot.IsFull())
             {
                 return slot;
             }
@@ -209,7 +202,8 @@ public class ItemCollection<T> where T : Item
         return null;
     }
 
-    public int GetFirstEmptySlot()
+
+    private int GetFirstEmptySlot()
     {
         for(int i = 0; i < MaxSize; i++)
         {
@@ -231,5 +225,42 @@ public class ItemCollection<T> where T : Item
         }
 
         return -1;
+    }
+
+    private int RemoveFromSlot(int index, int count)
+    {
+        if (index < 0 || index > MaxSize)
+        {
+            Debug.Log("Slot invalide");
+            return count;
+        }
+
+        if (Slots[index] == null)
+        {
+            Debug.Log("Slot vide");
+            return count;
+        }
+
+        return Slots[index].Remove(count);
+    }
+
+    private void SetSlot(ItemSlot<T> slot, int pos)
+    {
+        if (pos >= MaxSize)
+        {
+            Debug.Log("Cet emplacement n'existe pas");
+            return;
+        }
+
+        if (pos >= Slots.Count)
+        {
+            Slots.Insert(pos, slot);
+        }
+        else
+        {
+            Slots[pos] = slot;
+        }
+
+        ev_Update.Invoke();
     }
 }

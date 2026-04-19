@@ -59,17 +59,25 @@ public class UIManager : MonoBehaviour
 
     public void OnSpawnPlayer(GameObject player)
     {
-        UpdatePickuper(player);
-        UpdateSearcher(player);
+        UpdatePickuper(player.GetComponent<Pickuper>());
+        UpdateSearcher(player.GetComponent<Searcher>());
+        UpdateCrafter(player.GetComponent<Crafter>());
     }
 
-    public void UpdatePickuper(GameObject player)
+    public void UpdatePickuper(Pickuper pickuper)
     {
-        player.GetComponent<Pickuper>().ev_pickup.AddListener(currentUI.GetComponent<ParentUI>().PickupInfoGroupUI.OnPickupItems);
+        pickuper.ev_pickup.AddListener(currentUI.GetComponent<ParentUI>().PickupInfoGroupUI.OnPickupItems);
     }
 
-    public void UpdateSearcher(GameObject player)
+    public void UpdateSearcher(Searcher searcher)
     {
-        player.GetComponent<Searcher>().ev_UpdateSearchStorage.AddListener(currentUI.GetComponent<ParentUI>().SearchedItemStorageUI.SetItemStorage);
+        searcher.ev_UpdateSearchStorage.AddListener(currentUI.GetComponent<ParentUI>().SearchedItemStorageUI.SetItemStorage);
+        currentUI.GetComponent<ParentUI>().SearchedItemStorageUI.SetInterfaceClearAction(searcher.ClearCurrentSearchedStorage);
+    }
+
+    public void UpdateCrafter(Crafter crafter)
+    {
+        crafter.ev_UpdateCraftingStation.AddListener(currentUI.GetComponent<ParentUI>().CraftingStationUI.SetCraftingStation);
+        currentUI.GetComponent<ParentUI>().CraftingStationUI.SetCrafter(crafter);
     }
 }

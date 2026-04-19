@@ -27,6 +27,9 @@ public class ParentUI : MonoBehaviour
     [SerializeField] private ItemStorageUI _searchedItemStorageUI;
     public ItemStorageUI SearchedItemStorageUI { get => _searchedItemStorageUI; private set => _searchedItemStorageUI = value; }
 
+    [SerializeField] private CraftingStationUI _craftingStationUI;
+    public CraftingStationUI CraftingStationUI { get => _craftingStationUI; private set => _craftingStationUI = value; }
+
 
     public void Initialize(UIManager UIManager)
     {

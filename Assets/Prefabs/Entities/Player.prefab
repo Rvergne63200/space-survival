@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 5633327051373276397}
   - component: {fileID: 3570617525106556862}
   - component: {fileID: 3139602510462086486}
+  - component: {fileID: 8804041250841832548}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -124,7 +125,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &5134650689890712554
 CapsuleCollider:
@@ -274,5 +275,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ev_updatePointedObject:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8804041250841832548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8774627701926431398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cc3b6528ec774843a1633802cd01e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Crafter
+  inventory: {fileID: 0}
+  ev_UpdateSearchStorage:
     m_PersistentCalls:
       m_Calls: []
