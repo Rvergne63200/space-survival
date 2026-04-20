@@ -12,7 +12,7 @@ public class BuildObject : MonoBehaviour
 
     public bool Check()
     {
-        return verifier.Check();
+        return verifier.IsValid;
     }
 
     public void Put()

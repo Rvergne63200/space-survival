@@ -18,7 +18,7 @@ public class BuildObjectTexture : MonoBehaviour
 
     private void Start()
     {
-        verifier.ev_updateInvalidCollision.AddListener(new UnityAction<int>(UpdateMaterials));
+        verifier.ev_updateValidity.AddListener(new UnityAction<bool>(UpdateMaterials));
         buildObject.ev_put.AddListener(new UnityAction(ResetMaterials));
         defaultMaterials = new Dictionary<MeshRenderer, Material>();
         meshs = buildObject.GetChilds<MeshRenderer>();
@@ -29,9 +29,9 @@ public class BuildObjectTexture : MonoBehaviour
         }
     }
 
-    public void UpdateMaterials(int invalidCollisions)
+    public void UpdateMaterials(bool check)
     {
-        ChangeAllMaterials(invalidCollisions > 0 ? invalidMaterial : validMaterial);
+        ChangeAllMaterials(check ? validMaterial : invalidMaterial);
     }
 
     private void ChangeAllMaterials(Material material)

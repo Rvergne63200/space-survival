@@ -4,6 +4,8 @@ using UnityEngine.Events;
 
 public class ChunkManager : MonoBehaviour
 {
+    public static ChunkManager Instance { get; private set; }
+
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] int chunkSize = 64;
     [SerializeField] int generationDistance = 2;
@@ -19,6 +21,17 @@ public class ChunkManager : MonoBehaviour
     HashSet<Vector2Int> generatedChunks = new HashSet<Vector2Int>();
 
     public HashSet<Transform> ToReplace = new HashSet<Transform>();
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     void Start()
     {
@@ -46,12 +59,105 @@ public class ChunkManager : MonoBehaviour
         UnloadNotNeededChunks(neededChunks);
     }
 
-    Vector2Int GetChunkFor(Vector3 position)
+    public Vector2Int GetChunkPositionFor(Vector3 position)
     {
         return new Vector2Int(
             Mathf.FloorToInt(position.x / chunkSize),
             Mathf.FloorToInt(position.z / chunkSize)
         );
+    }
+
+    public void FlattenTerrainAt(Vector3 worldPos, float radius, float targetHeight)
+    {
+        List<Terrain> terrains = GetChunksInRadius(worldPos, radius);
+
+        foreach (Terrain terrain in terrains)
+        {
+            FlattenOnChunk(terrain, worldPos, radius, targetHeight);
+        }
+    }
+
+    private void FlattenOnChunk(Terrain chunk, Vector3 worldPos, float flatRadius, float targetHeight)
+    {
+        TerrainData data = chunk.terrainData;
+        Vector3 chunkPos = chunk.transform.position;
+
+        int resolution = data.heightmapResolution;
+
+        float[,] heights = data.GetHeights(0, 0, resolution, resolution);
+
+        targetHeight = (targetHeight - chunkPos.y) / data.size.y;
+
+        for (int z = 0; z < resolution; z++)
+        {
+            for (int x = 0; x < resolution; x++)
+            {
+                float worldX = chunkPos.x + (x / (float)(resolution - 1)) * data.size.x;
+                float worldZ = chunkPos.z + (z / (float)(resolution - 1)) * data.size.z;
+
+                float dist = Vector2.Distance(
+                    new Vector2(worldX, worldZ),
+                    new Vector2(worldPos.x, worldPos.z)
+                );
+
+                float radius = flatRadius * 1.3f;
+
+                if (dist > radius) continue;
+
+                float falloff;
+
+                if(dist <= flatRadius)
+                {
+                    falloff = 1f;
+                }
+                else
+                {
+                    float t = (dist - flatRadius) / (radius - flatRadius);
+
+                    t = Mathf.Pow(t, 2f);
+
+                    falloff = Mathf.Lerp(1f, 0f, t);
+                }
+
+                heights[z, x] = Mathf.Lerp(heights[z, x], targetHeight, falloff);
+            }
+        }
+
+        data.SetHeights(0, 0, heights);
+    }
+
+    public List<Terrain> GetChunksInRadius(Vector3 position, float radius)
+    {
+        List<Terrain> chunks = new List<Terrain>();
+
+        int chunkRadius = Mathf.CeilToInt(radius / chunkSize);
+
+        Vector2Int centerChunkPos = GetChunkPositionFor(position);
+        
+        for(int x = -chunkRadius; x <= chunkRadius; x++)
+        {
+            for(int z = -chunkRadius; z <= chunkRadius; z++)
+            {
+                Vector2Int coord = new Vector2Int(
+                    centerChunkPos.x + x,
+                    centerChunkPos.y + z
+                );
+
+                if (!this.chunks.ContainsKey(coord)) continue;
+
+                GameObject chunk = this.chunks[coord];
+                if (!chunk.activeSelf) continue;
+
+                Terrain chunkTerrain = chunk.GetComponent<Terrain>();
+
+                if(chunkTerrain != null)
+                {
+                    chunks.Add(chunkTerrain);
+                }
+            }
+        }
+
+        return chunks;
     }
 
     void ReplaceObject(TerrainData terrainData, Vector3 chunkPosition, Transform objectToReplace)
@@ -62,7 +168,7 @@ public class ChunkManager : MonoBehaviour
 
     void LoadNeededChunks(HashSet<Vector2Int> neededChunks)
     {
-        Vector2Int playerChunk = GetChunkFor(playerTransform.position);
+        Vector2Int playerChunk = GetChunkPositionFor(playerTransform.position);
 
         for (int x = -generationDistance; x <= generationDistance; x++)
         {
@@ -124,7 +230,7 @@ public class ChunkManager : MonoBehaviour
 
         foreach(Transform objectToReplace in ToReplace)
         {
-            if (GetChunkFor(objectToReplace.position) == coord)
+            if (GetChunkPositionFor(objectToReplace.position) == coord)
             {
                 UnityAction<TerrainData> callback = null;
 
@@ -154,7 +260,7 @@ public class ChunkManager : MonoBehaviour
         chunk.SetActive(false);
     }
 
-    /*
+
     void OnDrawGizmos()
     {
         if (playerTransform == null) return;
@@ -196,5 +302,4 @@ public class ChunkManager : MonoBehaviour
             }
         }
     }
-    */
 }

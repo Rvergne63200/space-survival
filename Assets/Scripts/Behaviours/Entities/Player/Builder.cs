@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class Builder : MonoBehaviour
 {
@@ -55,11 +56,22 @@ public class Builder : MonoBehaviour
 
     private void OnValidatePosition(InputAction.CallbackContext context)
     {
-        if (currentBuild && currentBuild.GetComponent<BuildObject>().Check())
-        {
-            currentBuild.GetComponent<BuildObject>().Put();
-            currentBuild = null;
-        }
+        if (currentBuild == null) return;
+
+        BuildObject buildObject = currentBuild.GetComponent<BuildObject>();
+
+        if (!buildObject.Check()) return;
+
+        Vector3 position = currentBuild.transform.position;
+        float targetHeight = PutHeight(position.y);
+
+        if (ChunkManager.Instance == null) return;
+
+        ChunkManager.Instance.FlattenTerrainAt(position, (Mathf.Max(currentBuild.transform.localScale.x, currentBuild.transform.localScale.z) / 1.8f) + 0.1f, targetHeight);
+
+        buildObject.Put();
+
+        currentBuild = null;
     }
 
     private void Update()
@@ -74,8 +86,13 @@ public class Builder : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit, 300f, terrainLayerMask))
             {
                 bool isTerrain = hit.transform.gameObject.CompareTag("Terrain");
-                currentBuild.transform.position = new Vector3(hit.point.x, Mathf.Ceil(hit.point.y / 10f) * 10f, hit.point.z);
+                currentBuild.transform.position = new Vector3(hit.point.x, PutHeight(hit.point.y), hit.point.z);
             }
         } 
+    }
+
+    private float PutHeight(float height)
+    {
+        return height + 0.02f;
     }
 }
