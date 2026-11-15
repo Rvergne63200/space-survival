@@ -86,7 +86,14 @@ public class ChunkManager : MonoBehaviour
 
         float[,] heights = data.GetHeights(0, 0, resolution, resolution);
 
-        targetHeight = (targetHeight - chunkPos.y) / data.size.y;
+        // Conversion monde => heightmap
+        float normalizedTargetHeight = (targetHeight - chunkPos.y) / data.size.y;
+
+        // Idéalement expose ça en paramètre
+        float toleranceWorld = 4f;
+        float tolerance = toleranceWorld / data.size.y;
+
+        float radius = flatRadius * 1.3f;
 
         for (int z = 0; z < resolution; z++)
         {
@@ -100,26 +107,44 @@ public class ChunkManager : MonoBehaviour
                     new Vector2(worldPos.x, worldPos.z)
                 );
 
-                float radius = flatRadius * 1.3f;
-
                 if (dist > radius) continue;
 
+                // -------------------------
+                // 1. Falloff radial (plateau + pente)
+                // -------------------------
                 float falloff;
 
-                if(dist <= flatRadius)
+                if (dist <= flatRadius)
                 {
                     falloff = 1f;
                 }
                 else
                 {
                     float t = (dist - flatRadius) / (radius - flatRadius);
-
-                    t = Mathf.Pow(t, 2f);
-
+                    t = Mathf.Pow(t, 2f); // douceur de la pente
                     falloff = Mathf.Lerp(1f, 0f, t);
                 }
 
-                heights[z, x] = Mathf.Lerp(heights[z, x], targetHeight, falloff);
+                // -------------------------
+                // 2. Falloff vertical (tolérance douce)
+                // -------------------------
+                float currentHeight = heights[z, x];
+
+                float delta = currentHeight - (normalizedTargetHeight - tolerance);
+
+                float toleranceFactor = Mathf.Clamp01(delta / tolerance);
+
+                // adoucissement
+                toleranceFactor = Mathf.Pow(toleranceFactor, 2f);
+                // alternative :
+                // toleranceFactor = Mathf.SmoothStep(0f, 1f, toleranceFactor);
+
+                // -------------------------
+                // 3. Combinaison des deux
+                // -------------------------
+                float finalFalloff = falloff * toleranceFactor;
+
+                heights[z, x] = Mathf.Lerp(currentHeight, normalizedTargetHeight, finalFalloff);
             }
         }
 

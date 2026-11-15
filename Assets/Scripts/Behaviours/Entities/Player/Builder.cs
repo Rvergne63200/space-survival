@@ -63,7 +63,7 @@ public class Builder : MonoBehaviour
         if (!buildObject.Check()) return;
 
         Vector3 position = currentBuild.transform.position;
-        float targetHeight = PutHeight(position.y);
+        float targetHeight = position.y + 0.2f;
 
         if (ChunkManager.Instance == null) return;
 
@@ -86,13 +86,17 @@ public class Builder : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit, 300f, terrainLayerMask))
             {
                 bool isTerrain = hit.transform.gameObject.CompareTag("Terrain");
-                currentBuild.transform.position = new Vector3(hit.point.x, PutHeight(hit.point.y), hit.point.z);
+                currentBuild.transform.position = new Vector3(hit.point.x, PutHeight(hit.point.y) , hit.point.z);
             }
         } 
     }
 
     private float PutHeight(float height)
     {
-        return height + 0.02f;
+        float offset = 3f;
+        float step = 5f;
+        float snapped = Mathf.Round(height / step) * step + offset;
+
+        return snapped;
     }
 }
