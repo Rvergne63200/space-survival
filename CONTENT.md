@@ -28,9 +28,10 @@ Vue à la première personne uniquement.
 ### PlayerMovement
 - Joueur physique : Rigidbody de 75 kg avec rotations bloquées et **interpolation**, et collider capsule (rayon 0.5, hauteur 2, scale 0.85). Un matériau physique **sans friction** est créé dans `Awake` si aucun n'est assigné. Les entrées passent par le New Input System (`PlayerInputActions.Movement`).
 - Physique dans `FixedUpdate`. Le déplacement est relatif à la caméra (plan horizontal). La vitesse horizontale tend vers la vitesse visée avec une accélération plafonnée (`acceleration`, en m/s²).
-- **Marche** (`baseSpeed`, 3 dans le prefab) et **sprint** (`sprintSpeed`, 6). Le sprint consomme de l'endurance et s'arrête quand elle est vide.
-- **En l'air** : contrôle réduit (`airControl`, 20 %), et l'élan est conservé sans input.
-- **Saut** : impulsion verticale si le joueur est au sol, s'il a assez d'endurance et après un délai (`jumpCooldown`). Il pose un marker sur l'endurance.
+- **Marche** (`baseSpeed`, 4.5 m/s) et **sprint** (`sprintSpeed`, 7 m/s), avec une accélération de 50 m/s². Le sprint consomme de l'endurance et s'arrête quand elle est vide.
+- **Gravité renforcée** pour le joueur seulement (`gravityMultiplier`, ×2), pour un saut moins flottant.
+- **En l'air** : contrôle réduit (`airControl`, 30 %), et l'élan est conservé sans input.
+- **Saut** : vitesse verticale calculée pour atteindre `jumpHeight` (1.1 m, ~0.67 s en l'air). Possible si le joueur est au sol, s'il a assez d'endurance et après un délai (`jumpCooldown`). Il pose un marker sur l'endurance.
 - **Sol** (`IsGrounded`) : SphereCast sous la capsule (tolérance `groundCheckDistance`), qui ignore les triggers et le layer du joueur. Une surface plus pentue que `maxSlopeAngle` (45°) ne compte pas comme du sol.
 - **Murs et pentes raides** : les normales de contact raides sont collectées (`OnCollisionEnter` et `OnCollisionStay`). La composante de la vitesse visée dirigée vers ces surfaces est retirée, donc le joueur glisse le long sans grimper.
 - Le joueur s'oriente selon le forward de la caméra quand il bouge (`MoveRotation`).
@@ -38,6 +39,7 @@ Vue à la première personne uniquement.
 
 ### CameraMovement
 - Rotation à la souris (`sensibility`), pitch limité à ±90°. La caméra suit `Target.position + offset`.
+- **FOV au sprint** : le FOV augmente de `sprintFovIncrease` (+10°) quand `PlayerMovement.IsSprinting` est vrai, c'est-à-dire en sprint et plus vite que la marche. La transition est lissée (`fovChangeSpeed`) et le FOV de base est celui de la caméra.
 - Peut être bloquée par l'option de mode `camera_movement_locked`.
 
 ## 3. Stats du joueur

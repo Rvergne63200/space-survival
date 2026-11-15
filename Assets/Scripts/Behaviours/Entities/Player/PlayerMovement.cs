@@ -21,10 +21,13 @@ public class PlayerMovement : MonoBehaviour
     public Transform forwardDirection => context.PlayerManager.ViewSource;
     private Vector2 moveInput;
 
-    public float baseSpeed = 1.5f;
-    public float sprintSpeed = 3f;
-    public float acceleration = 30f;
-    public float airControl = 0.2f;
+    public float baseSpeed = 4.5f;
+    public float sprintSpeed = 7f;
+    public float acceleration = 50f;
+    public float airControl = 0.3f;
+
+    // Extra gravity applied to the player only, for a snappier jump than real gravity
+    public float gravityMultiplier = 2f;
 
 
     private float speed;
@@ -36,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool active = true;
 
-    public float jumpIntensity = 5f;
+    public float jumpHeight = 1.1f;
     public float jumpCooldown = 0.2f;
 
     public float sprintEnduranceConsumeSpeed = 5f;
@@ -51,6 +54,16 @@ public class PlayerMovement : MonoBehaviour
 
     private CapsuleCollider playerCollider;
     private readonly List<Vector3> wallNormals = new List<Vector3>();
+
+    // True only when the player actually moves faster than walking speed
+    public bool IsSprinting
+    {
+        get
+        {
+            Vector3 velocity = rigidbody.linearVelocity;
+            return sprint && active && new Vector2(velocity.x, velocity.z).magnitude > baseSpeed + 0.1f;
+        }
+    }
 
     public void OnUpdateOptions()
     {
@@ -197,6 +210,8 @@ public class PlayerMovement : MonoBehaviour
 
         ApplyHorizontalVelocity(targetVelocity);
 
+        rigidbody.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
+
         // Contacts are collected again by the next physics step
         wallNormals.Clear();
     }
@@ -267,7 +282,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if(endurance.Value > jumpEnduranceCost && jumpCountdown <= 0f && active && IsGrounded())
         {
-            rigidbody.AddForce(Vector3.up * jumpIntensity * 0.2f, ForceMode.Impulse);
+            // Velocity needed to reach jumpHeight with the player's gravity
+            float gravity = Physics.gravity.magnitude * gravityMultiplier;
+            Vector3 velocity = rigidbody.linearVelocity;
+            velocity.y = Mathf.Sqrt(2f * gravity * jumpHeight);
+            rigidbody.linearVelocity = velocity;
             endurance.AddMarker("player_jump_" + Time.fixedDeltaTime.ToString(), jumpEnduranceCost * 4f, 0.25f);
             jumpCountdown = jumpCooldown;
         }

@@ -20,6 +20,14 @@ public class CameraMovement : MonoBehaviour
 
     private bool locked = false;
 
+    public float sprintFovIncrease = 10f;
+    public float fovChangeSpeed = 8f;
+
+    private new Camera camera;
+    private float baseFov;
+    private Transform fovTarget;
+    private PlayerMovement fovTargetMovement;
+
     public void OnUpdateOptions()
     {
         locked = ModeManager.Instance.IsEnabled(OPTION_CAMERA_LOCKED);
@@ -29,6 +37,8 @@ public class CameraMovement : MonoBehaviour
     {
         context = GetComponent<CameraContext>();
         inputActions = new PlayerInputActions();
+        camera = GetComponent<Camera>();
+        baseFov = camera.fieldOfView;
     }
 
     private void OnEnable()
@@ -64,6 +74,8 @@ public class CameraMovement : MonoBehaviour
 
     void Update()
     {
+        UpdateFov();
+
         if (locked) return;
 
         Vector2 input = rotation * sensibility;
@@ -77,5 +89,23 @@ public class CameraMovement : MonoBehaviour
         transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
 
         transform.position = Target.position + offset;
+    }
+
+    private void UpdateFov()
+    {
+        Transform target = Target;
+
+        // The player is respawned on each scene load, so the cached movement must follow the target
+        if (target != fovTarget)
+        {
+            fovTarget = target;
+            fovTargetMovement = target != null ? target.GetComponent<PlayerMovement>() : null;
+        }
+
+        bool sprinting = fovTargetMovement != null && fovTargetMovement.IsSprinting;
+        float targetFov = baseFov + (sprinting ? sprintFovIncrease : 0f);
+
+        // Frame rate independent smoothing
+        camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, targetFov, 1f - Mathf.Exp(-fovChangeSpeed * Time.deltaTime));
     }
 }

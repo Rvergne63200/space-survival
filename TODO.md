@@ -13,7 +13,9 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
   - [x] Délai entre deux sauts (`jumpCooldown`), qui empêche le double saut juste après une impulsion.
 - [x] **[Mouvement]** Saccades : interpolation du Rigidbody activée dans `Player.prefab`.
 - [ ] **[Mouvement]** Déplacer le suivi de la caméra (`CameraMovement`) dans `LateUpdate`.
-- [ ] **[Mouvement]** Réglage : `acceleration` (120) correspond maintenant à des m/s², ce qui donne un démarrage quasi instantané. Ajuster si besoin.
+- [x] **[Mouvement]** Réglage des valeurs pour un déplacement plus dynamique, sur le modèle des FPS courants : marche 4.5 m/s, sprint 7 m/s, accélération 50 m/s², contrôle en l'air 30 %, saut de 1.1 m, gravité du joueur ×2 (~0.67 s en l'air).
+- [ ] **[Mouvement]** (À tester) Ajuster finement le ressenti en jeu : `baseSpeed`, `sprintSpeed`, `acceleration`, `jumpHeight`, `gravityMultiplier`. Pistes : FOV de base (60° vertical actuellement), head bob au sprint.
+- [x] **[Mouvement]** Augmentation du FOV au sprint (`CameraMovement.sprintFovIncrease`, +10°, transition lissée par `fovChangeSpeed`).
 - [ ] **[Terrain]** `ReplaceObject` place le pivot à +0.7 m du sol. Les pieds du joueur (demi-hauteur 0.85 m) arrivent donc 15 cm sous la surface. Calculer le décalage à partir du collider.
 - [ ] **[Mouvement]** Le nom du marker de saut utilise `Time.fixedDeltaTime`, qui est constant : la clé est toujours la même. Utiliser `Time.time` ou un compteur.
 - [ ] **[Stats]** À vérifier : le saut ajoute un marker **positif** sur l'endurance (`jumpEnduranceCost * 4` pendant 0.25 s). Il régénère donc de l'endurance au lieu d'en consommer.

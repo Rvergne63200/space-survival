@@ -162,12 +162,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50999740b51d9c4492a5cb5c14ddf4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseSpeed: 3
-  sprintSpeed: 6
-  acceleration: 120
+  baseSpeed: 4.5
+  sprintSpeed: 7
+  acceleration: 50
   item:
     _data: {fileID: 11400000, guid: 54d530aa7c3d3a7409abbadbb4db0f87, type: 2}
-  jumpIntensity: 1800
   sprintEnduranceConsumeSpeed: 5
   jumpEnduranceCost: 5
   jumpEnduranceConsumeSpeed: 20
