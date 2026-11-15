@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -48,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
     private float maxDistance = 0.8f;
     private float angleThreshold = 80f;
 
-    public PlayerMovement() => ModeManager.Instance.ev_OnUpdateOptions.AddListener(OnUpdateOptions);
     public void OnUpdateOptions()
     {
         active = !ModeManager.Instance.IsEnabled(OPTION_DISABLED);
@@ -72,35 +72,66 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Movement.Enable();
+        ModeManager.Instance.ev_OnUpdateOptions.AddListener(OnUpdateOptions);
+        OnUpdateOptions();
 
         // Movement
-        inputActions.Movement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        inputActions.Movement.Move.canceled += ctx => moveInput = Vector2.zero;
+        inputActions.Movement.Move.performed += OnMovePerformed;
+        inputActions.Movement.Move.canceled += OnMoveCanceled;
 
         // Sprint
-        inputActions.Movement.Sprint.performed += ctx => { 
-            if (endurance.Value > sprintEnduranceConsumeSpeed && !sprint)
-            {
-                sprint = true;
-            }
-        };
-
-        inputActions.Movement.Sprint.canceled += ctx =>
-        {
-            if(sprint)
-            {
-                sprint = false;
-            }
-        };
+        inputActions.Movement.Sprint.performed += OnSprintPerformed;
+        inputActions.Movement.Sprint.canceled += OnSprintCanceled;
 
         // Jump
-        inputActions.Movement.Jump.performed += ctx => Jump();
+        inputActions.Movement.Jump.performed += OnJumpPerformed;
+
+        inputActions.Movement.Enable();
     }
 
     private void OnDisable()
     {
+        ModeManager.Instance.ev_OnUpdateOptions.RemoveListener(OnUpdateOptions);
+
+        // Disable before unsubscribing so that canceled callbacks still reset the inputs
         inputActions.Movement.Disable();
+
+        inputActions.Movement.Move.performed -= OnMovePerformed;
+        inputActions.Movement.Move.canceled -= OnMoveCanceled;
+        inputActions.Movement.Sprint.performed -= OnSprintPerformed;
+        inputActions.Movement.Sprint.canceled -= OnSprintCanceled;
+        inputActions.Movement.Jump.performed -= OnJumpPerformed;
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext ctx)
+    {
+        moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext ctx)
+    {
+        moveInput = Vector2.zero;
+    }
+
+    private void OnSprintPerformed(InputAction.CallbackContext ctx)
+    {
+        if (endurance.Value > sprintEnduranceConsumeSpeed && !sprint)
+        {
+            sprint = true;
+        }
+    }
+
+    private void OnSprintCanceled(InputAction.CallbackContext ctx)
+    {
+        if (sprint)
+        {
+            sprint = false;
+        }
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext ctx)
+    {
+        Jump();
     }
 
 

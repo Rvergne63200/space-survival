@@ -20,6 +20,13 @@ public abstract class InventorySlotUI<T> : ParentedUI where T : Item
         ac_update = new UnityAction<ItemSlot<T>>(UpdateSlot);
     }
 
+    protected override void OnDestroy()
+    {
+        // ItemSlot outlives this UI (it belongs to a persistent ItemCollection)
+        slot?.ev_update.RemoveListener(new UnityAction<ItemSlot<T>>(UpdateSlot));
+        base.OnDestroy();
+    }
+
     public void setSlot(ItemSlot<T> slot)
     {
         if (this.slot != null && this.slot != slot)

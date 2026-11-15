@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class CameraMovement : MonoBehaviour
 
     private bool locked = false;
 
-    public CameraMovement () => ModeManager.Instance.ev_OnUpdateOptions.AddListener(OnUpdateOptions);
     public void OnUpdateOptions()
     {
         locked = ModeManager.Instance.IsEnabled(OPTION_CAMERA_LOCKED);
@@ -33,14 +33,33 @@ public class CameraMovement : MonoBehaviour
 
     private void OnEnable()
     {
+        ModeManager.Instance.ev_OnUpdateOptions.AddListener(OnUpdateOptions);
+        OnUpdateOptions();
+
+        inputActions.Camera.Rotation.performed += OnRotationPerformed;
+        inputActions.Camera.Rotation.canceled += OnRotationCanceled;
         inputActions.Camera.Enable();
-        inputActions.Camera.Rotation.performed += ctx => rotation = ctx.ReadValue<Vector2>();
-        inputActions.Camera.Rotation.canceled += ctx => rotation = Vector2.zero;
     }
 
     private void OnDisable()
     {
+        ModeManager.Instance.ev_OnUpdateOptions.RemoveListener(OnUpdateOptions);
+
+        // Disable before unsubscribing so that the canceled callback still resets the rotation
         inputActions.Camera.Disable();
+
+        inputActions.Camera.Rotation.performed -= OnRotationPerformed;
+        inputActions.Camera.Rotation.canceled -= OnRotationCanceled;
+    }
+
+    private void OnRotationPerformed(InputAction.CallbackContext ctx)
+    {
+        rotation = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnRotationCanceled(InputAction.CallbackContext ctx)
+    {
+        rotation = Vector2.zero;
     }
 
     void Update()

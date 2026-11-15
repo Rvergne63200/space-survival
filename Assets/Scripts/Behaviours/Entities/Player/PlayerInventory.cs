@@ -59,20 +59,49 @@ public class PlayerInventory : ItemStorage
 
     private void OnEnable()
     {
-        inputActions.Actions.Enable();
+        inputActions.Actions.Inventory.performed += OnInventoryPerformed;
+        inputActions.Actions.Drop.performed += OnDropPerformed;
+        inputActions.Actions.ChangeHandedItem.performed += OnChangeHandedItemPerformed;
+        inputActions.Actions.Use1.performed += OnUse1Performed;
+        inputActions.Actions.Use2.performed += OnUse2Performed;
 
-        inputActions.Actions.Inventory.performed += ctx => {
-            IsOpen = !IsOpen;
-        };
-        inputActions.Actions.Drop.performed += ctx => DropDraggingSlot();
-        inputActions.Actions.ChangeHandedItem.performed += ctx => ChangeHandedItem(ctx.control);
-        inputActions.Actions.Use1.performed += ctx => Use1();
-        inputActions.Actions.Use2.performed += ctx => Use2();
+        inputActions.Actions.Enable();
     }
 
     private void OnDisable()
     {
         inputActions.Actions.Disable();
+
+        inputActions.Actions.Inventory.performed -= OnInventoryPerformed;
+        inputActions.Actions.Drop.performed -= OnDropPerformed;
+        inputActions.Actions.ChangeHandedItem.performed -= OnChangeHandedItemPerformed;
+        inputActions.Actions.Use1.performed -= OnUse1Performed;
+        inputActions.Actions.Use2.performed -= OnUse2Performed;
+    }
+
+    private void OnInventoryPerformed(InputAction.CallbackContext ctx)
+    {
+        IsOpen = !IsOpen;
+    }
+
+    private void OnDropPerformed(InputAction.CallbackContext ctx)
+    {
+        DropDraggingSlot();
+    }
+
+    private void OnChangeHandedItemPerformed(InputAction.CallbackContext ctx)
+    {
+        ChangeHandedItem(ctx.control);
+    }
+
+    private void OnUse1Performed(InputAction.CallbackContext ctx)
+    {
+        Use1();
+    }
+
+    private void OnUse2Performed(InputAction.CallbackContext ctx)
+    {
+        Use2();
     }
 
 

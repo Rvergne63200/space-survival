@@ -4,6 +4,8 @@ public class ParentedUI : MonoBehaviour
 {
     public ParentUI parentUI;
 
+    private UIManager subscribedManager;
+
     protected virtual void Awake()
     {
         if(parentUI == null)
@@ -18,10 +20,38 @@ public class ParentedUI : MonoBehaviour
         SetupManager(parentUI.UIManager);
     }
 
+    protected virtual void OnDestroy()
+    {
+        if (parentUI != null)
+        {
+            parentUI.ev_updateManager.RemoveListener(OnUpdateManager);
+            parentUI.ev_updateManager.RemoveListener(SetupManager);
+        }
+
+        UnsubscribeManager();
+    }
+
     private void SetupManager(UIManager manager)
     {
+        UnsubscribeManager();
+
         OnUpdatePlayerContext(manager?.PlayerContext ?? null);
-        manager?.ev_updatePlayerContext.AddListener(OnUpdatePlayerContext);
+
+        if (manager != null)
+        {
+            manager.ev_updatePlayerContext.AddListener(OnUpdatePlayerContext);
+            subscribedManager = manager;
+        }
+    }
+
+    private void UnsubscribeManager()
+    {
+        if (subscribedManager != null)
+        {
+            subscribedManager.ev_updatePlayerContext.RemoveListener(OnUpdatePlayerContext);
+        }
+
+        subscribedManager = null;
     }
 
     public virtual void OnUpdateManager(UIManager manager)

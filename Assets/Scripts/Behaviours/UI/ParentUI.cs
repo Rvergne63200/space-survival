@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class ParentUI : MonoBehaviour
 {
@@ -49,13 +50,19 @@ public class ParentUI : MonoBehaviour
 
     private void OnEnable()
     {
+        inputActions.Actions.CloseInterfaces.performed += OnCloseInterfacesPerformed;
         inputActions.Actions.Enable();
-        inputActions.Actions.CloseInterfaces.performed += ctx => InterfaceManager.GetInstance().CloseInterfaces();
     }
 
     private void OnDisable()
     {
         inputActions.Actions.Disable();
+        inputActions.Actions.CloseInterfaces.performed -= OnCloseInterfacesPerformed;
+    }
+
+    private void OnCloseInterfacesPerformed(InputAction.CallbackContext ctx)
+    {
+        InterfaceManager.GetInstance().CloseInterfaces();
     }
 
     public void OnUpdateDraggingItemSlot(ItemSlot<Item> slot)

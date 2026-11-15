@@ -18,6 +18,7 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Bootstrap]** Build Settings : ajouter `0_MainMenu`, qui manque, et vérifier le `firstScene` du Bootstrapper.
 - [ ] **[Inventaire]** `DropDraggingSlot` appelle `Drop(..., gameObject)` avec le GameObject du PlayerInventory, qui est sur le PlayerManager. L'objet tombe donc à la position du manager, pas devant le joueur. Utiliser la position et la direction du joueur ou de la caméra.
 - [ ] **[Inventaire]** `ItemSlot.Drop` : crash si `Model` est null ou n'a pas de `Pickupable`. Ajouter des vérifications.
+- [ ] **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0` (`scroll.y / Mathf.Abs(scroll.y)`). Utiliser `Mathf.Sign`.
 - [ ] **[Inventaire]** `ItemCollection.RemoveFromSlot` : la borne `index > MaxSize` devrait être `>=`.
 - [ ] **[Inventaire]** `HandedCursorUI` : la vitesse de SmoothDamp est réinitialisée à chaque frame et le smoothTime vaut 0.007, donc le lissage est inefficace.
 - [ ] **[Interfaces]** À vérifier : l'objet tenu au curseur (`draggingSlot`) à la fermeture de l'inventaire. Il n'est pas remis dans l'inventaire.
@@ -86,13 +87,13 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Bootstrap]** Refondre le chargement de scènes pour un code propre, maintenable et évolutif (rôles clairs pour Root, SceneContext, Bootstrapper et les managers).
 - [ ] **[Bootstrap]** Revoir ce qui persiste entre deux scènes et comment.
 - [ ] **[Bootstrap]** Spawn du joueur : utiliser un point de spawn propre à la scène ou à l'entrée empruntée (`SceneLoader.position` n'est pas utilisé).
-- [ ] **[Global]** Gestion des abonnements aux events :
+- [x] **[Global]** Gestion des abonnements aux events :
   - `ModeManager` et `InterfaceManager` sont des singletons C# statiques. Les MonoBehaviour (PlayerMovement, CameraMovement) s'y abonnent dans leur **constructeur** et ne se désabonnent jamais, donc les listeners d'objets détruits s'accumulent.
-  - Les lambdas des inputs (PlayerMovement, PlayerInventory, ParentUI) ne sont jamais désabonnées.
+  - Les lambdas des inputs (PlayerMovement, CameraMovement, PlayerInventory, ParentUI) ne sont jamais désabonnées.
   - PlayerManager ne se désabonne pas de `SceneManager.sceneLoaded`.
-
-  Partout : s'abonner dans `OnEnable` et se désabonner dans `OnDisable`.
-- [ ] **[Mouvement]** Alternative à envisager : passer sur un `CharacterController` (ou un kinematic controller) plutôt qu'un Rigidbody.
+  - `InventorySlotUI` et `ParentedUI`, recréés à chaque mise à jour de l'inventaire, ne retirent pas leurs listeners (`ItemSlot.ev_update`, `ParentUI.ev_updateManager`, `UIManager.ev_updatePlayerContext`).
+- [ ] **[UI]** `ItemCollectionUI` et `PlayerStatsUI` modifient le **prefab asset** au runtime (`slotPrefab.GetComponent<...>().parentUI = parentUI`). En éditeur, la modification persiste dans l'asset, avec une référence vers un objet de scène. Assigner `parentUI` sur l'instance après l'`Instantiate`.
+- [ ] **[Global]** Les `PlayerInputActions` créés par chaque composant ne sont jamais `Dispose()` (un asset d'input est perdu à chaque respawn du joueur).- [ ] **[Mouvement]** Alternative à envisager : passer sur un `CharacterController` (ou un kinematic controller) plutôt qu'un Rigidbody.
 - [ ] **[Stats]** (Futur chantier) Refonte complète du HUD des stats, plus moderne. Exemple : afficher l'endurance seulement pendant qu'elle est consommée, avec autre chose qu'une barre.
 - [ ] **[Interaction]** Rendre le système d'interaction extensible à de nouveaux types (véhicules, récolte de plantes, portes, machines…). Par exemple : interaction maintenue ou instantanée, conditions (outil requis), plusieurs actions par objet. Ne plus dépendre de `GetComponent<Xxx>()` côté joueur pour chaque type.
 - [ ] **[Inventaire]** Les `Id` d'ItemData sont saisis à la main (risque de doublons). Envisager un identifiant généré ou unique.
