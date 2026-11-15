@@ -89,7 +89,7 @@ public class ChunkManager : MonoBehaviour
         // Conversion monde => heightmap
         float normalizedTargetHeight = (targetHeight - chunkPos.y) / data.size.y;
 
-        // Idéalement expose ça en paramètre
+        // IdÃ©alement expose Ã§a en paramÃ¨tre
         float toleranceWorld = 4f;
         float tolerance = toleranceWorld / data.size.y;
 
@@ -126,7 +126,7 @@ public class ChunkManager : MonoBehaviour
                 }
 
                 // -------------------------
-                // 2. Falloff vertical (tolérance douce)
+                // 2. Falloff vertical (tolÃ©rance douce)
                 // -------------------------
                 float currentHeight = heights[z, x];
 

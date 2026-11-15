@@ -64,7 +64,7 @@ public class ItemCollection<T> where T : Item
     {       
         if (item == null)
         {
-            Debug.Log("Inutile d'ajouter un élément vide à la liste");
+            Debug.Log("Inutile d'ajouter un Ã©lÃ©ment vide Ã  la liste");
             return count;
         }
 
@@ -111,7 +111,7 @@ public class ItemCollection<T> where T : Item
     {
         if (item == null)
         {
-            Debug.Log("On ne peut pas supprimer un élément inéxistant");
+            Debug.Log("On ne peut pas supprimer un Ã©lÃ©ment inÃ©xistant");
             return count;
         }
 

@@ -47,7 +47,7 @@ public class Crafter : MonoBehaviour
         foreach (RecipeData.ItemBlock result in recipe.Results)
         {
             int rest = inventory.Add(Item.CreateFromData(result.Item), result.Quantity);
-            // TODO : Penser à gérer le cas ou il n'y a plus de places dans l'inventaire
+            // TODO : Penser Ã  gÃ©rer le cas ou il n'y a plus de places dans l'inventaire
         }
     }
 
