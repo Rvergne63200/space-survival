@@ -187,8 +187,23 @@ public class ChunkManager : MonoBehaviour
 
     void ReplaceObject(TerrainData terrainData, Vector3 chunkPosition, Transform objectToReplace)
     {
-        float height = terrainData.GetHeight((int)(chunkPosition.x - objectToReplace.position.x), (int)(chunkPosition.z - objectToReplace.position.z));
-        objectToReplace.position = new Vector3(objectToReplace.position.x, height + 0.7f, objectToReplace.position.z);
+        Vector3 localPosition = objectToReplace.position - chunkPosition;
+        float height = chunkPosition.y + terrainData.GetInterpolatedHeight(
+            localPosition.x / terrainData.size.x,
+            localPosition.z / terrainData.size.z
+        );
+
+        Vector3 position = new Vector3(objectToReplace.position.x, height + 0.7f, objectToReplace.position.z);
+
+        // An interpolated rigidbody ignores direct transform changes, so it must be moved through the rigidbody
+        Rigidbody rigidbody = objectToReplace.GetComponent<Rigidbody>();
+        if (rigidbody != null)
+        {
+            rigidbody.position = position;
+            rigidbody.linearVelocity = Vector3.zero;
+        }
+
+        objectToReplace.position = position;
     }
 
     void LoadNeededChunks(HashSet<Vector2Int> neededChunks)

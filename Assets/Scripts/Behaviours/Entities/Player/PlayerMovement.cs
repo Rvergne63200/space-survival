@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
@@ -13,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private PlayerContext context;
-    
+
     private new Rigidbody rigidbody;
 
     private PlayerInputActions inputActions;
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     public float baseSpeed = 1.5f;
     public float sprintSpeed = 3f;
     public float acceleration = 30f;
+    public float airControl = 0.2f;
 
 
     private float speed;
@@ -35,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private bool active = true;
 
     public float jumpIntensity = 5f;
+    public float jumpCooldown = 0.2f;
 
     public float sprintEnduranceConsumeSpeed = 5f;
 
@@ -43,11 +46,11 @@ public class PlayerMovement : MonoBehaviour
 
     private float jumpCountdown = 0f;
 
+    public float maxSlopeAngle = 45f;
+    public float groundCheckDistance = 0.1f;
 
-    private Collider playerCollider;
-    private Vector3 boxExtents = new Vector3(0.4f, 0.5f, 0.4f);
-    private float maxDistance = 0.8f;
-    private float angleThreshold = 80f;
+    private CapsuleCollider playerCollider;
+    private readonly List<Vector3> wallNormals = new List<Vector3>();
 
     public void OnUpdateOptions()
     {
@@ -61,7 +64,20 @@ public class PlayerMovement : MonoBehaviour
         inputActions = new PlayerInputActions();
         speed = baseSpeed;
         rigidbody = GetComponent<Rigidbody>();
-        playerCollider = GetComponent<Collider>();
+        playerCollider = GetComponent<CapsuleCollider>();
+
+        // Without a frictionless material, friction against walls holds the player up while pushing into them
+        if (playerCollider.sharedMaterial == null)
+        {
+            playerCollider.sharedMaterial = new PhysicsMaterial("PlayerFrictionless")
+            {
+                dynamicFriction = 0f,
+                staticFriction = 0f,
+                bounciness = 0f,
+                frictionCombine = PhysicsMaterialCombine.Minimum,
+                bounceCombine = PhysicsMaterialCombine.Minimum
+            };
+        }
     }
 
     private void Start()
@@ -135,98 +151,113 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-
-
     void Update()
     {
-        if (playerCollider != null)
+        if (jumpCountdown > 0f)
         {
-            Collider[] overlaps = Physics.OverlapBox(transform.position + Vector3.up * 0.1f, boxExtents, transform.rotation);
-            foreach (var col in overlaps)
-            {
-                if (col == playerCollider || col.isTrigger)
-                    continue;
-
-                if (Physics.ComputePenetration(
-                    playerCollider, transform.position, transform.rotation,
-                    col, col.transform.position, col.transform.rotation,
-                    out Vector3 directionPenetration, out float distancePenetration) && distancePenetration > 0f)
-                {
-                    transform.position += directionPenetration * distancePenetration;
-                }
-            }
+            jumpCountdown -= Time.deltaTime;
         }
 
         if (endurance.Value < 0.5)
         {
             sprint = false;
         }
+    }
 
+    void FixedUpdate()
+    {
         speed = sprint ? sprintSpeed : baseSpeed;
 
-        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y).normalized;
-        Vector3 targetVelocity = transform.TransformDirection(move) * speed;
+        // Move relative to the camera, on the horizontal plane
+        Vector3 cameraForward = forwardDirection.forward;
+        cameraForward.y = 0f;
 
-        if(!active) targetVelocity = Vector3.zero;
+        if (cameraForward.sqrMagnitude < 0.0001f)
+        {
+            cameraForward = transform.forward;
+        }
+
+        cameraForward.Normalize();
+        Vector3 cameraRight = new Vector3(cameraForward.z, 0f, -cameraForward.x);
+
+        Vector3 move = (cameraForward * moveInput.y + cameraRight * moveInput.x).normalized;
+        Vector3 targetVelocity = active ? move * speed : Vector3.zero;
 
         if (targetVelocity != Vector3.zero)
         {
-            KeepDistanceWithObstacles(ref targetVelocity);
+            RemoveWallComponent(ref targetVelocity);
 
             if (sprint)
             {
                 endurance.Consume(sprintEnduranceConsumeSpeed * Time.deltaTime);
             }
 
-            Vector3 cameraForward = forwardDirection.forward;
-            cameraForward.y = 0f;
-
-            if (cameraForward != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(cameraForward);
-            }
+            rigidbody.MoveRotation(Quaternion.LookRotation(cameraForward));
         }
 
-        Vector3 currentVelocity = rigidbody.linearVelocity;
-        Vector3 velocityChange = targetVelocity - new Vector3(currentVelocity.x, 0f, currentVelocity.z);
-        Vector3 force = velocityChange * acceleration;
+        ApplyHorizontalVelocity(targetVelocity);
 
-        rigidbody.AddForce(force, ForceMode.Force); 
+        // Contacts are collected again by the next physics step
+        wallNormals.Clear();
     }
 
-    private void KeepDistanceWithObstacles(ref Vector3 targetVelocity)
+    private void ApplyHorizontalVelocity(Vector3 targetVelocity)
     {
-        if (playerCollider == null || targetVelocity.sqrMagnitude < 0.001f)
-            return;
+        bool grounded = IsGrounded();
 
-        Vector3 origin = transform.position + Vector3.up * 0.1f;
-        Vector3 direction = targetVelocity.normalized;
+        // In the air, keep the momentum when there is no input
+        if (!grounded && targetVelocity == Vector3.zero) return;
 
-        if (Physics.BoxCast(origin, boxExtents, direction, out RaycastHit hit, Quaternion.LookRotation(direction), maxDistance))
+        float maxVelocityChange = acceleration * (grounded ? 1f : airControl) * Time.fixedDeltaTime;
+
+        Vector3 currentVelocity = rigidbody.linearVelocity;
+        Vector3 horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+        Vector3 velocityChange = Vector3.MoveTowards(horizontalVelocity, targetVelocity, maxVelocityChange) - horizontalVelocity;
+
+        rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+    }
+
+    // Prevent pushing into walls and too steep slopes, which lets the player climb them
+    private void RemoveWallComponent(ref Vector3 targetVelocity)
+    {
+        foreach (Vector3 normal in wallNormals)
         {
-            if (!hit.collider.isTrigger)
+            Vector3 horizontalNormal = new Vector3(normal.x, 0f, normal.z);
+
+            if (horizontalNormal.sqrMagnitude < 0.0001f) continue;
+
+            horizontalNormal.Normalize();
+
+            float intoWall = Vector3.Dot(targetVelocity, horizontalNormal);
+
+            if (intoWall < 0f)
             {
-                Vector3 normal = hit.normal;
-                float angle = Vector3.Angle(-normal, direction);
+                targetVelocity -= intoWall * horizontalNormal;
+            }
+        }
+    }
 
-                if (angle < angleThreshold)
-                {
-                    bool compute = Physics.ComputePenetration(
-                        playerCollider, transform.position, transform.rotation,
-                        hit.collider, hit.collider.transform.position, hit.collider.transform.rotation,
-                        out Vector3 directionPenetration, out float distancePenetration);
+    private void OnCollisionEnter(Collision collision)
+    {
+        CollectWallNormals(collision);
+    }
 
-                    if ( compute && distancePenetration > 0f)
-                    {
-                        transform.position += directionPenetration.normalized * 0.3f;
-                    }
+    private void OnCollisionStay(Collision collision)
+    {
+        CollectWallNormals(collision);
+    }
 
-                    Vector3 pushIntoWall = Vector3.Project(targetVelocity, -normal);
-                    if (Vector3.Dot(pushIntoWall, -normal) > 0.01f)
-                    {
-                        targetVelocity -= pushIntoWall;
-                    }
-                }
+    private void CollectWallNormals(Collision collision)
+    {
+        float minGroundNormalY = Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad);
+
+        for (int i = 0; i < collision.contactCount; i++)
+        {
+            Vector3 normal = collision.GetContact(i).normal;
+
+            if (normal.y < minGroundNormalY)
+            {
+                wallNormals.Add(normal);
             }
         }
     }
@@ -234,19 +265,30 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
-        if(endurance.Value > jumpEnduranceCost && IsGrounded() && jumpCountdown <= 0 && active)
+        if(endurance.Value > jumpEnduranceCost && jumpCountdown <= 0f && active && IsGrounded())
         {
             rigidbody.AddForce(Vector3.up * jumpIntensity * 0.2f, ForceMode.Impulse);
             endurance.AddMarker("player_jump_" + Time.fixedDeltaTime.ToString(), jumpEnduranceCost * 4f, 0.25f);
+            jumpCountdown = jumpCooldown;
         }
     }
 
     public bool IsGrounded()
     {
-        float checkDistance = transform.localScale.y;
-        float checkingRadius = transform.localScale.x * 0.48f;
-        Vector3 origin = transform.position;
+        Vector3 scale = transform.lossyScale;
+        float radius = playerCollider.radius * Mathf.Max(scale.x, scale.z) * 0.95f;
+        float halfHeight = Mathf.Max(playerCollider.height * 0.5f * scale.y, radius);
 
-        return Physics.SphereCast(origin, checkingRadius, Vector3.down, out RaycastHit hit, checkDistance);
+        Vector3 origin = transform.TransformPoint(playerCollider.center);
+        float distance = halfHeight - radius + groundCheckDistance;
+        int layerMask = ~(1 << gameObject.layer);
+
+        if (!Physics.SphereCast(origin, radius, Vector3.down, out RaycastHit hit, distance, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            return false;
+        }
+
+        // A steep surface (wall, side of a dome) is not ground
+        return hit.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad);
     }
 }
