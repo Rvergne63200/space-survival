@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4585566941720663208}
   - component: {fileID: 7762335994472439272}
   - component: {fileID: 5865490524692880577}
+  - component: {fileID: 809371965912306591}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -118,5 +119,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68259af57814adb48a4b58d4add36711, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &809371965912306591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9063360765937022082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46616bdd181282bc252b02bf290865a1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  outlineShader: {fileID: 4800000, guid: 01d7f36b5fd695e52bc280d72a33b8c0, type: 3}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 3

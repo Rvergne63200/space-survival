@@ -92,6 +92,10 @@ Vue à la première personne uniquement.
 - **UI**
   - `PointedInterractorInformationUI` : affiche l'icône, le texte et la touche de l'objet pointé, avec un fondu.
   - `PickupInfoGroupUI` / `PickupInfoUI` : notification « +N Nom » avec icône, qui disparaît en fondu en 5 s.
+- **Contour de l'objet pointé** (`InteractableOutline`, sur le prefab `PlayerCamera`) : un contour blanc en espace écran entoure l'objet interactable pointé.
+  - Un `CommandBuffer` (`BeforeImageEffects`) dessine la silhouette des `MeshRenderer` et `SkinnedMeshRenderer` de l'objet, tous sous-meshes compris, dans une texture masque. Le shader `Hidden/InteractableOutline` (`Assets/Shaders`) trace ensuite le contour autour du masque.
+  - Le buffer n'est reconstruit que quand l'objet pointé change. Réglages : `outlineColor` (blanc) et `outlineWidth` (3 px).
+  - Le contour suit toute la silhouette, y compris les parties cachées derrière un autre objet.
 
 ## 6. Crafting
 

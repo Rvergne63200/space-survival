@@ -27,6 +27,7 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0` (`scroll.y / Mathf.Abs(scroll.y)`). Utiliser `Mathf.Sign`.
 - [ ] **[Inventaire]** `ItemCollection.RemoveFromSlot` : la borne `index > MaxSize` devrait être `>=`.
 - [ ] **[Inventaire]** `HandedCursorUI` : la vitesse de SmoothDamp est réinitialisée à chaque frame et le smoothTime vaut 0.007, donc le lissage est inefficace.
+- [ ] **[Interfaces]** (À vérifier dans un build) Le curseur reste visible après la fermeture d'une interface avec Échap. C'est probablement dû à l'éditeur Unity, qui libère le curseur sur Échap. Un réverrouillage à la frame suivante a été essayé sans succès en éditeur, puis abandonné.
 - [ ] **[Interfaces]** À vérifier : l'objet tenu au curseur (`draggingSlot`) à la fermeture de l'inventaire. Il n'est pas remis dans l'inventaire.
 - [ ] **[Interaction]** `PointedInterractorInformationUI` ne se met à jour qu'en passant de « rien » à « un objet » (ou l'inverse). Quand on passe directement d'un interactable à un autre, l'ancien texte reste. Le texte n'est pas non plus rafraîchi après un ramassage partiel.
 - [ ] **[Interaction]** `Searcher.Search` bascule ouvert/fermé. Interagir avec un autre conteneur pendant qu'un conteneur est ouvert le ferme au lieu d'ouvrir le nouveau.
@@ -60,6 +61,8 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Interaction]** Fermer le conteneur automatiquement quand le joueur s'éloigne.
 - [ ] **[Interaction]** Afficher un retour « inventaire plein » quand le ramassage est partiel ou impossible.
 - [ ] **[Interaction]** `PickupInfoGroupUI` : regrouper les notifications successives d'un même item. La branche « - » n'est jamais utilisée.
+- [x] **[Interaction]** Contour blanc autour de l'objet interactable pointé (`InteractableOutline` + shader `Hidden/InteractableOutline`).
+- [ ] **[Interaction]** (À voir) Contour : masquer les parties cachées par un autre objet (test de profondeur dans le masque), ou ajouter une légère animation d'apparition.
 - [ ] **[Crafting]** Fermer l'UI de craft quand le joueur s'éloigne de la station.
 - [ ] **[Crafting]** UI : indiquer si une recette est réalisable (ingrédients possédés / requis, recette grisée sinon).
 - [ ] **[Crafting]** UI : seul `Results[0]` est affiché. Gérer les recettes à plusieurs résultats.
