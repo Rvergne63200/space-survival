@@ -4,13 +4,17 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 
 ## Bug
 
-- [ ] **[Mouvement]** Le joueur s'accroche aux murs et peut les escalader. Causes probables :
-  - [ ] Aucun Physic Material sur le collider du joueur. La friction par défaut (0.6) le retient contre un mur pendant qu'il pousse dedans en l'air. Mettre un matériau à friction 0 (`Friction Combine = Minimum`).
-  - [ ] `IsGrounded()` : le SphereCast n'a ni layer mask ni test sur la normale de la surface. Il détecte les bords et les murs, ce qui permet de ressauter contre une paroi. Tester la normale (pente maximale) et utiliser un layer mask.
-  - [ ] La physique est faite dans `Update` (`AddForce` à chaque frame, dépendant du framerate) : la déplacer dans `FixedUpdate`.
-  - [ ] Les téléportations manuelles (`transform.position +=` dans la dépénétration et dans `KeepDistanceWithObstacles`) se battent avec le solveur physique et provoquent les glitchs. Les supprimer une fois les points ci-dessus corrigés.
-  - [ ] Limiter le contrôle en l'air (pas de vitesse horizontale forcée à 100 %).
-- [ ] **[Mouvement]** Saccades : activer l'interpolation du Rigidbody et déplacer la caméra dans `LateUpdate`.
+- [x] **[Mouvement]** Le joueur s'accroche aux murs et peut les escalader. Causes corrigées :
+  - [x] Aucun Physic Material sur le collider du joueur. Un matériau sans friction est maintenant créé dans `Awake` si aucun n'est assigné.
+  - [x] `IsGrounded()` : test sur la normale (`maxSlopeAngle`, 45°), tolérance réduite (`groundCheckDistance`, 10 cm), triggers et layer du joueur ignorés.
+  - [x] Physique déplacée dans `FixedUpdate` (vitesse visée et accélération plafonnée en m/s²).
+  - [x] Téléportations manuelles (dépénétration et `KeepDistanceWithObstacles`) supprimées. La composante de vitesse dirigée vers un mur ou une pente raide est retirée à partir des contacts.
+  - [x] Contrôle en l'air limité (`airControl`) et conservation de l'élan sans input.
+  - [x] Délai entre deux sauts (`jumpCooldown`), qui empêche le double saut juste après une impulsion.
+- [x] **[Mouvement]** Saccades : interpolation du Rigidbody activée dans `Player.prefab`.
+- [ ] **[Mouvement]** Déplacer le suivi de la caméra (`CameraMovement`) dans `LateUpdate`.
+- [ ] **[Mouvement]** Réglage : `acceleration` (120) correspond maintenant à des m/s², ce qui donne un démarrage quasi instantané. Ajuster si besoin.
+- [ ] **[Terrain]** `ReplaceObject` place le pivot à +0.7 m du sol. Les pieds du joueur (demi-hauteur 0.85 m) arrivent donc 15 cm sous la surface. Calculer le décalage à partir du collider.
 - [ ] **[Mouvement]** Le nom du marker de saut utilise `Time.fixedDeltaTime`, qui est constant : la clé est toujours la même. Utiliser `Time.time` ou un compteur.
 - [ ] **[Stats]** À vérifier : le saut ajoute un marker **positif** sur l'endurance (`jumpEnduranceCost * 4` pendant 0.25 s). Il régénère donc de l'endurance au lieu d'en consommer.
 - [ ] **[Stats]** `Stat.Actualize` : quand un marker expire, `RemoveMarker` puis `break` arrêtent la boucle. Les markers suivants ne sont pas appliqués pendant cette frame. Collecter les clés expirées et les supprimer après la boucle.
