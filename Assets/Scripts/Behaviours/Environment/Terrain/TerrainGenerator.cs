@@ -50,6 +50,12 @@ public class TerrainGenerator : MonoBehaviour
 
         data.SetHeights(0, 0, heights);
 
+        // Saved terrain flattenings (constructions), before the objects are placed on the terrain
+        if (ChunkManager.Instance != null)
+        {
+            ChunkManager.Instance.ApplyTerrainEdits(terrain);
+        }
+
         ev_OnTerminateGeneration.Invoke(data);
     }
 

@@ -12,6 +12,16 @@ public static class PlayerModeOptions
                 InterfaceManager.OPTION_CURSOR_VISIBLE,
                 CameraMovement.OPTION_CAMERA_LOCKED
             }
+        },
+        {
+            // Main menu: free cursor, no player control
+            PlayingMode.Menu, new HashSet<string>
+            {
+                PlayerMovement.OPTION_DISABLED,
+                PlayerInventory.OPTION_USE_DISABLED,
+                InterfaceManager.OPTION_CURSOR_VISIBLE,
+                CameraMovement.OPTION_CAMERA_LOCKED
+            }
         }
     };
 

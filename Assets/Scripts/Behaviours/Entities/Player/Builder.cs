@@ -71,6 +71,15 @@ public class Builder : MonoBehaviour
 
         buildObject.Put();
 
+        // Saved with the world, and instantiated again from the build prefab (found by name) when the world loads
+        SaveableObject saveable = currentBuild.GetComponent<SaveableObject>();
+        if (saveable == null)
+        {
+            saveable = currentBuild.AddComponent<SaveableObject>();
+        }
+
+        saveable.SetRuntime(SaveManager.BuildPrefabKeyPrefix + build.name);
+
         currentBuild = null;
     }
 

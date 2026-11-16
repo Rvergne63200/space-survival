@@ -28,6 +28,12 @@ public class PlayerInventory : ItemStorage
         }
     }
 
+    // Restores the selected tool bar slot (save)
+    public void SetHandedIndex(int index)
+    {
+        HandedIndex = index;
+    }
+
     public ItemSlot<Item> HandedSlot
     {
         get
@@ -100,14 +106,19 @@ public class PlayerInventory : ItemStorage
         }
     }
 
+    // This component is on the PlayerManager, which persists in the main menu: no inventory without player
+    private bool HasPlayer => PlayerManager.Instance != null && PlayerManager.Instance.Player != null;
+
     private void OnInventoryPerformed(InputAction.CallbackContext ctx)
     {
+        if (!HasPlayer) return;
+
         IsOpen = !IsOpen;
     }
 
     private void OnDropPerformed(InputAction.CallbackContext ctx)
     {
-        if (IsOpen)
+        if (IsOpen && HasPlayer)
         {
             DropDraggingSlot();
         }
@@ -115,6 +126,8 @@ public class PlayerInventory : ItemStorage
 
     private void OnChangeHandedItemPerformed(InputAction.CallbackContext ctx)
     {
+        if (!HasPlayer) return;
+
         ChangeHandedItem(ctx.control);
     }
 

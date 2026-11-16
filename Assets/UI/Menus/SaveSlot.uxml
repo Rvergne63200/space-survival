@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- One line of the save list of the main menu. The names are used by MainMenuUI -->
+    <ui:VisualElement name="save-slot" class="save-slot">
+        <ui:VisualElement class="save-slot-text">
+            <ui:Label name="save-name" text="Nom de la partie" class="save-slot-name" />
+            <ui:Label name="save-info" text="Seed - date" class="save-slot-info" />
+        </ui:VisualElement>
+        <ui:Button name="save-load-button" text="Charger" class="menu-button-small" />
+        <ui:Button name="save-delete-button" text="Supprimer" class="menu-button-small" />
+    </ui:VisualElement>
+</ui:UXML>

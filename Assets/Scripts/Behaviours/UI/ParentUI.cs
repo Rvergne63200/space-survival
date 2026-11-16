@@ -60,9 +60,19 @@ public class ParentUI : MonoBehaviour
         inputActions.Actions.CloseInterfaces.performed -= OnCloseInterfacesPerformed;
     }
 
+    // Escape: closes the open interfaces (the pause menu is one of them), otherwise opens the pause menu in game
     private void OnCloseInterfacesPerformed(InputAction.CallbackContext ctx)
     {
-        InterfaceManager.GetInstance().CloseInterfaces();
+        InterfaceManager interfaceManager = InterfaceManager.GetInstance();
+
+        if (interfaceManager.HasOpenInterface)
+        {
+            interfaceManager.CloseInterfaces();
+        }
+        else if (PauseMenuUI.Instance != null && PlayerManager.Instance != null && PlayerManager.Instance.Player != null)
+        {
+            PauseMenuUI.Instance.Open();
+        }
     }
 
     public void OnUpdateDraggingItemSlot(ItemSlot<Item> slot)

@@ -4,22 +4,45 @@
 
 ### Scènes
 - `Bootstrap` : contient les objets persistants (managers).
-- `0_MainMenu` : menu principal, point d'entrée du joueur.
-- `0_Capsule` : ancienne capsule, plus utilisée (servira plus tard pour l'intérieur de la capsule).
-- `0_World` : monde extérieur, qui contient la nouvelle capsule.
+- `0_MainMenu` : menu principal, première scène chargée par le Bootstrapper (`MainMenuUI`).
+- `0_World` : le monde. Il contient les capsules (prefab `SpaceCapsule`), avec leur intérieur, et le `PlayerSpawnPoint`.
 - `1_TestScene` : scène de test.
 
-Flux prévu : lancement → Menu → Nouvelle partie → Capsule ⇄ Monde extérieur.
+Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune est un prefab posé dans le monde, avec son propre intérieur, et on voit l'extérieur depuis l'intérieur.
 
 ### Fonctionnement actuel
 - **Root** : singleton (flag static) marqué `DontDestroyOnLoad`. C'est la racine des objets persistants de la scène Bootstrap.
 - **SceneContext** : à placer dans chaque scène de jeu. Si aucun `Root` n'existe, il charge `Bootstrap` en additif, ce qui permet de lancer le jeu depuis n'importe quelle scène dans l'éditeur.
 - **Bootstrapper** : si seule la scène Bootstrap est chargée, il charge `firstScene` (en mode Single).
 - **SceneLoadingManager** : appelle `DynamicGI.UpdateEnvironment()` à chaque chargement de scène.
-- **PlayerManager** (singleton) : garde l'inventaire et les stats. À chaque `sceneLoaded`, il détruit le joueur puis le réinstancie depuis le prefab, à la position du manager lui-même. Il notifie ensuite l'UI et la caméra (`ev_spawnPlayer`, `ev_updatePlayerContext`).
+- **PlayerManager** (singleton) : garde l'inventaire et les stats. À chaque `sceneLoaded`, il cherche un `PlayerSpawnPoint` dans les scènes chargées.
+  - S'il en trouve un, il réinstancie le joueur à sa position sauvegardée (`SpawnedFromSave`), ou sinon sur le point de spawn. Il notifie ensuite l'UI et la caméra (`ev_spawnPlayer`, `ev_updatePlayerContext`).
+  - Sans point de spawn (menu), il n'y a pas de joueur (`DespawnPlayer`), et la caméra du joueur et le HUD du jeu sont masqués (`UIManager.SetHudVisible`).
 - **CameraManager** / **UIManager** (singletons) : instancient leur prefab une seule fois, dans leur Awake. UIManager branche les events du joueur (Pickuper, Searcher, Crafter) sur l'UI à chaque spawn.
-- **SceneLoader** : `LoadScene()` charge `sceneName` en mode Single. Le champ `position` n'est pas utilisé.
-- **TriggerSceneLoader** : appelle `LoadScene()` quand un objet tagué `Player` entre dans le trigger.
+- **SceneLoader** : `LoadScene()` sauvegarde le monde (`SaveManager.BeforeSceneChange`), puis charge `sceneName` en mode Single.
+
+### Menus (UI Toolkit, mise en page dans `Assets/UI/Menus`, modifiable dans le UI Builder)
+- Les scripts retrouvent les éléments par leur nom (`name` dans l'UXML). Un élément absent désactive seulement sa fonction, avec un avertissement dans la console. Style commun : `Menus.uss`.
+- **Menu principal** (`MainMenuUI`, scène `0_MainMenu`, `MainMenu.uxml`) : mode `PlayingMode.Menu`, avec un curseur libre et sans contrôle du joueur.
+  - **Nouvelle partie** : nom (pré-rempli « Partie N », doit être unique) et seed. La seed est pré-remplie au hasard, avec un bouton Aléatoire ; un texte non numérique est converti en nombre (`SaveManager.ParseSeed`).
+  - **Charger une partie** : liste des sauvegardes (`SaveSlot.uxml`), de la plus récente à la plus ancienne, avec le nom, la seed et la date. Chaque ligne a un bouton Charger et un bouton Supprimer (avec confirmation).
+  - **Quitter**.
+- **Menu pause** (`PauseMenuUI`, dans `Bootstrap`, `PauseMenu.uxml`) : Échap ferme les interfaces ouvertes ; s'il n'y en a aucune, il ouvre le menu pause (en jeu). Le menu pause est lui-même une interface, donc Échap le ferme. Pendant la pause, `timeScale` vaut 0. Boutons : Reprendre, Retour au menu principal (sauvegarde puis chargement du menu) et Quitter.
+
+### Sauvegarde (`SaveManager`, dans `Bootstrap`)
+- Un fichier JSON par partie dans `Application.persistentDataPath/Saves`, choisi dans le menu principal (`NewGame`, `LoadGame`, `DeleteSave`, `ListSaves`). Sauvegarde à la fermeture du jeu, avant un changement de scène et toutes les `autosaveInterval` secondes (120) dans le monde. Restauration au chargement du monde.
+  - Une nouvelle partie repart de l'inventaire et des stats de départ (capturés au lancement du jeu), même après une autre partie dans la même session.
+  - Monde lancé directement dans l'éditeur, sans passer par le menu : une sauvegarde « Partie éditeur » est créée.
+  - Menu contextuel du composant : « Refresh item list » et « Open saves folder ».
+- **Contenu** : la seed du monde, le joueur (position, rotation, vue de la caméra, stats, inventaire, barre d'outils, slot en main), les objets sauvegardables, les objets retirés et les aplanissements du terrain.
+- **SaveableObject** : un objet sauvegardé (transform et composants `ISaveableComponent`, y compris ceux de ses enfants qui n'ont pas leur propre SaveableObject). Trois sortes d'objets :
+  - **posé dans une scène** : id = `scène:chemin dans la hiérarchie` (voir R15) ;
+  - **généré** (`EnvironmentSpawner`) : id déterministe (`env_<x>_<z>_<index>`) ;
+  - **créé en jeu** (construction, objet jeté) : id unique et clé de prefab (`build:<nom>`, `item:<id>`). Le SaveManager le recrée au chargement.
+- Un objet posé ou généré qui est retiré en jeu (ramassé, détruit) est noté et n'est plus recréé. Les objets des chunks non visités gardent leur dernier état sauvegardé.
+- **Composants sauvegardés** : `ItemStorage` (contenu des coffres : chaque coffre a automatiquement un SaveableObject, chaque capsule garde donc son propre intérieur) et `Pickupable` (item, quantité). Les items sont retrouvés par leur `Id` dans la liste `items` du SaveManager.
+- **Terrain** : la seed sauvegardée remplace celle de la scène. Les aplanissements (`FlattenTerrainAt`) sont enregistrés et rejoués à la génération de chaque chunk concerné.
+- **Joueur restauré** : sa position est conservée (sur le sol d'une capsule, par exemple), et son Rigidbody reste cinématique jusqu'à la génération du chunk sous lui (`ChunkManager.HoldUntilGenerated`).
 
 ## 2. Déplacement joueur & caméra
 
@@ -131,7 +154,7 @@ Vue à la première personne uniquement.
   - Grille de chunks de `chunkSize` (64 m). Les chunks situés à moins de `generationDistance` (2) de celui du joueur sont chargés, soit une grille de 5×5.
   - Les chunks éloignés sont **désactivés** (jamais détruits) et réactivés au retour.
   - Les chunks chargés sont reliés à leurs voisins (`Terrain.SetNeighbors`, vérifié à chaque frame dans `LateUpdate`, auto-connexion Unity désactivée), ce qui évite les fissures de LOD vues de loin.
-  - Seed → offset Perlin global, ce qui donne un terrain continu et déterministe.
+  - Seed → offset Perlin global, ce qui donne un terrain continu et déterministe. La seed de la scène ne sert qu'aux nouvelles parties : une partie sauvegardée garde sa seed.
   - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer. Le joueur est fourni par `PlayerManager` (`ev_spawnPlayer`), et la référence est mise à jour à chaque respawn.
   - `FlattenTerrainAt(pos, rayon, hauteur)` aplanit tous les chunks concernés (utilisé par la construction, en cours de modification). Le plateau a une pente douce sur 1.3× le rayon, avec une tolérance verticale de 4 m. Seul le terrain au-dessus de « cible − tolérance » est modifié : les creux profonds ne sont pas remplis.
   - Gizmos de debug : chunks générés et chargés.

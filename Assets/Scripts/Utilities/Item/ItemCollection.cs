@@ -60,8 +60,51 @@ public class ItemCollection<T> where T : Item
         Slots = slots;
     }
 
+    public List<ItemSlotSaveData> CaptureSlots()
+    {
+        List<ItemSlotSaveData> saved = new List<ItemSlotSaveData>();
+
+        foreach (ItemSlot<T> slot in Slots)
+        {
+            bool empty = slot == null || slot.IsEmpty();
+
+            saved.Add(new ItemSlotSaveData
+            {
+                itemId = empty ? -1 : slot.Item.Data.Id,
+                quantity = empty ? 0 : slot.Quantity
+            });
+        }
+
+        return saved;
+    }
+
+    // Slot by slot: the items keep their position in the collection
+    public void RestoreSlots(List<ItemSlotSaveData> saved, Func<int, ItemData> getItem)
+    {
+        for (int i = 0; i < Slots.Count; i++)
+        {
+            if (Slots[i] == null)
+            {
+                Slots[i] = new ItemSlot<T>();
+            }
+
+            Slots[i].Clear();
+
+            if (saved == null || i >= saved.Count || saved[i].itemId < 0 || saved[i].quantity <= 0) continue;
+
+            ItemData data = getItem(saved[i].itemId);
+
+            if (data != null)
+            {
+                Slots[i].Add(Item.CreateFromData(data) as T, saved[i].quantity);
+            }
+        }
+
+        ev_Update.Invoke();
+    }
+
     public int Add(T item, int count)
-    {       
+    {
         if (item == null)
         {
             Debug.Log("Inutile d'ajouter un élément vide à la liste");

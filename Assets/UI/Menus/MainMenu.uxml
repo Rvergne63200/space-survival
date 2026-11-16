@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- The names are used by MainMenuUI: keep them when editing the layout -->
+    <ui:VisualElement name="root" class="menu-root">
+        <ui:VisualElement name="main-panel" class="menu-panel">
+            <ui:Label text="Space Survival" class="menu-title" />
+            <ui:Button name="new-game-button" text="Nouvelle partie" class="menu-button" />
+            <ui:Button name="load-game-button" text="Charger une partie" class="menu-button" />
+            <ui:Button name="quit-button" text="Quitter" class="menu-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="new-game-panel" class="menu-panel hidden">
+            <ui:Label text="Nouvelle partie" class="menu-title" />
+            <ui:TextField name="save-name-field" label="Nom" class="menu-field" />
+            <ui:VisualElement class="menu-row">
+                <ui:TextField name="seed-field" label="Seed" class="menu-grow" />
+                <ui:Button name="random-seed-button" text="Aléatoire" class="menu-button-small" />
+            </ui:VisualElement>
+            <ui:Label name="new-game-error" class="menu-error" />
+            <ui:Button name="create-game-button" text="Lancer la partie" class="menu-button" />
+            <ui:Button name="new-game-back-button" text="Retour" class="menu-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="load-panel" class="menu-panel hidden">
+            <ui:Label text="Charger une partie" class="menu-title" />
+            <ui:Label name="no-save-label" text="Aucune partie sauvegardée." class="menu-info" />
+            <ui:ScrollView name="save-list" class="menu-list" />
+            <ui:Button name="load-back-button" text="Retour" class="menu-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="confirm-panel" class="menu-panel hidden">
+            <ui:Label name="confirm-label" class="menu-info" />
+            <ui:VisualElement class="menu-row">
+                <ui:Button name="confirm-yes-button" text="Supprimer" class="menu-button-small menu-grow" />
+                <ui:Button name="confirm-no-button" text="Annuler" class="menu-button-small menu-grow" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

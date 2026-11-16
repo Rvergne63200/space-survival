@@ -28,6 +28,17 @@ public class CameraMovement : MonoBehaviour
     private Transform fovTarget;
     private PlayerMovement fovTargetMovement;
 
+    public float Pitch => verticalRotation;
+    public float Yaw => horizontalRotation;
+
+    // Restores the view direction (save)
+    public void SetRotation(float pitch, float yaw)
+    {
+        verticalRotation = Mathf.Clamp(pitch, -90f, 90f);
+        horizontalRotation = yaw % 360;
+        transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
+    }
+
     public void OnUpdateOptions()
     {
         locked = ModeManager.Instance.IsEnabled(OPTION_CAMERA_LOCKED);

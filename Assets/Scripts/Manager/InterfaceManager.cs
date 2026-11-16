@@ -47,6 +47,8 @@ public class InterfaceManager
 
 
     // Manage interfaces
+    public bool HasOpenInterface => interfaces.Count > 0;
+
     public void SetInterface(GameObject component, bool value)
     {
         bool interfaceIsOpenBefore = interfaces.Count > 0;
@@ -85,7 +87,12 @@ public class InterfaceManager
 
         foreach(GameObject component in interfacesArray)
         {
-            component.gameObject.SetActive(false);
+            // Destroyed with its scene (back to the main menu)
+            if (component != null)
+            {
+                component.gameObject.SetActive(false);
+            }
+
             SetInterface(component, false);
         }
     }

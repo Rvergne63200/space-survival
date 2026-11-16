@@ -25,8 +25,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B11** **[Mouvement]** Le nom du marker de saut utilisait `Time.fixedDeltaTime`, qui est constant, donc un nouveau saut remplaçait le marker du précédent. La clé utilise maintenant un compteur de sauts (`jumpCount`).
 - [x] **B12** **[Stats]** Le saut ajoutait un marker **positif** sur l'endurance, qui en régénérait au lieu d'en consommer. Le marker est maintenant négatif (`-jumpEnduranceCost * 4` pendant 0.25 s), ce qui consomme `jumpEnduranceCost` (5) par saut.
 - [x] **B13** **[Stats]** `Stat.Actualize` : quand un marker expirait, `RemoveMarker` puis `break` arrêtaient la boucle, et les markers suivants n'étaient pas appliqués pendant cette frame. Les clés expirées sont maintenant collectées (`expiredMarkers`) et supprimées après la boucle.
-- [ ] **B14** **[Bootstrap]** Le joueur spawne à la position du PlayerManager, et aussi dans le menu (à chaque `sceneLoaded`).
-- [ ] **B15** **[Bootstrap]** Build Settings : ajouter `0_MainMenu`, qui manque, et vérifier le `firstScene` du Bootstrapper.
+- [x] **B14** **[Bootstrap]** Le joueur spawnait à la position du PlayerManager, et aussi dans le menu. `PlayerManager` le fait maintenant apparaître sur le `PlayerSpawnPoint` de la scène (ajouté dans `0_World`) ou à sa position sauvegardée. Une scène sans point de spawn (le menu) n'a pas de joueur (`DespawnPlayer`).
+- [x] **B15** **[Bootstrap]** Le jeu démarre sur le menu principal (`firstScene` = `0_MainMenu`, ajouté aux Build Settings, `0_Capsule` retiré). Dans le menu, le curseur est libre (mode `PlayingMode.Menu`), et la caméra du joueur et le HUD du jeu sont masqués (`PlayerManager.DespawnPlayer`). L'ancien menu uGUI (bouton Play vers `0_PlayerLoader`, qui n'existe pas) est remplacé par `MainMenuUI` (UI Toolkit).
 - [x] **B16** **[Inventaire]** `DropDraggingSlot` jette maintenant l'objet devant le joueur (`PlayerManager.Instance.Player`), et non plus à la position du PlayerManager, qui porte le PlayerInventory.
 - [x] **B17** **[Inventaire]** `ItemSlot.Drop` ne plante plus si `Model` est null ou n'a pas de `Pickupable`. Le spawn est centralisé dans `Pickupable.Spawn`, qui vérifie le modèle, et le slot n'est vidé que si l'objet a bien été créé. Un Rigidbody déjà présent sur le modèle est réutilisé.
 - [x] **B18** **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0`. Un scroll sans composante verticale est maintenant ignoré, sinon le slot change de `Mathf.Sign(scroll.y)`.
@@ -54,8 +54,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 
 ## Feature
 
-- [ ] **F01** **[Bootstrap]** Système de sauvegarde : reprendre une partie sur la scène sauvegardée (capsule ou monde extérieur).
-- [ ] **F02** **[Bootstrap]** Réutiliser `0_Capsule` pour l'intérieur de la capsule.
+- [x] **F01** **[Bootstrap]** Système de sauvegarde (`SaveManager`, fichier JSON dans `Application.persistentDataPath`). Le monde et le joueur sont sauvegardés à la fermeture du jeu, avant un changement de scène (`SceneLoader`) et toutes les 120 s, puis restaurés au chargement du monde. Voir `CONTENT.md`.
+- [x] **F02** **[Bootstrap]** (Abandonné) Scène `0_Capsule` pour l'intérieur de la capsule. Les capsules sont des prefabs avec leur intérieur, posés dans le monde : on voit l'extérieur depuis l'intérieur, et chaque capsule a son propre intérieur. La scène et `TriggerSceneLoader` sont supprimés.
 - [ ] **F03** **[Mouvement]** Accroupissement.
 - [ ] **F04** **[Stats]** Ajouter les stats Faim, Soif et Oxygène, avec leurs modifiers associés.
 - [ ] **F05** **[Stats]** Gérer les conséquences d'une stat à 0 (mort du joueur, dégâts quand faim, soif ou oxygène sont à 0).
@@ -85,13 +85,15 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F25** **[Construction]** **Rotation** des pièces pendant le placement.
 - [ ] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
 - [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur.
-- [ ] **F28** **[Construction]** **Sauvegarde** des constructions posées et rechargement avec le monde (et les chunks).
+- [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde.
 - [ ] **F29** **[Construction]** Réduire la portée de placement (300 m actuellement).
 - [ ] **F30** **[Terrain]** **Biomes** : zones avec des matériaux, des textures et un relief différents.
-- [ ] **F31** **[Terrain]** **Structures** générées dans le monde (épaves, ruines…).
+- [ ] **F31** **[Terrain]** **Structures** générées dans le monde (épaves, ruines, capsules…). Les capsules générées doivent recevoir un id déterministe (`SaveableObject.SetGeneratedId`, comme `EnvironmentSpawner`), pour que leur intérieur soit sauvegardé.
 - [ ] **F32** **[Terrain]** **Ressources** générées (minerais, plantes, débris…), certaines réapparaissant avec le temps, d'autres non.
-- [ ] **F33** **[Terrain]** Sauvegarder les modifications du terrain (aplanissements) et ce qu'il y a sur les chunks (constructions, objets ramassés).
-- [ ] **F34** **[Interfaces]** Menu pause (nouveau mode ou nouvelle interface).
+- [x] **F33** **[Terrain]** Sauvegarde des modifications du terrain (aplanissements, rejoués à la génération des chunks) et de ce qu'il y a dans le monde : constructions, objets jetés, objets ramassés ou entamés, contenu des coffres.
+- [x] **F34** **[Interfaces]** Menu pause (`PauseMenuUI`, dans `Bootstrap`) : Échap ferme les interfaces ouvertes, ou ouvre le menu pause s'il n'y en a aucune (en jeu). Il propose Reprendre, Retour au menu principal (après sauvegarde) et Quitter, et met le jeu en pause (`timeScale` 0). Échap le ferme aussi.
+- [x] **F35** **[Interfaces]** Menu principal (`MainMenuUI`, UI Toolkit, mise en page modifiable dans le UI Builder : `Assets/UI/Menus`) : Nouvelle partie (nom et seed pré-remplie aléatoire, bouton Aléatoire, texte converti en nombre), Charger une partie (liste des sauvegardes avec nom, seed et date ; Charger, Supprimer avec confirmation), Quitter.
+- [x] **F36** **[Bootstrap]** Plusieurs sauvegardes : un fichier par partie dans `Application.persistentDataPath/Saves`. L'ancienne sauvegarde unique (`save.json`) est convertie en « Partie sauvegardée ». Une partie lancée directement depuis `0_World` dans l'éditeur crée une sauvegarde « Partie éditeur ».
 
 ## Optimisation
 
@@ -107,7 +109,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 
 - [ ] **R01** **[Bootstrap]** Refondre le chargement de scènes pour un code propre, maintenable et évolutif (rôles clairs pour Root, SceneContext, Bootstrapper et les managers).
 - [ ] **R02** **[Bootstrap]** Revoir ce qui persiste entre deux scènes et comment.
-- [ ] **R03** **[Bootstrap]** Spawn du joueur : utiliser un point de spawn propre à la scène ou à l'entrée empruntée (`SceneLoader.position` n'est pas utilisé).
+- [x] **R03** **[Bootstrap]** Spawn du joueur : point de spawn propre à la scène (`PlayerSpawnPoint`) ou position sauvegardée. Un système d'entrées entre scènes n'est plus nécessaire (les capsules sont dans le monde), et `SceneLoader.position` est supprimé.
 - [x] **R04** **[Global]** Gestion des abonnements aux events :
   - `ModeManager` et `InterfaceManager` sont des singletons C# statiques. Les MonoBehaviour (PlayerMovement, CameraMovement) s'y abonnent dans leur **constructeur** et ne se désabonnent jamais, donc les listeners d'objets détruits s'accumulent.
   - Les lambdas des inputs (PlayerMovement, CameraMovement, PlayerInventory, ParentUI) ne sont jamais désabonnées.
@@ -123,3 +125,4 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **R12** **[Construction]** Améliorer l'intégration des constructions dans l'environnement. L'aplanissement actuel n'est pas satisfaisant (creux non remplis, rendu). Solution à trouver.
 - [ ] **R13** **[Construction]** (À voir) Arrondi de hauteur par pas de 5 m (`PutHeight`) pour aligner les modules. À garder ou à remplacer par un vrai système de snapping entre points de connexion.
 - [ ] **R14** **[Construction]** Nettoyage : retirer le `Debug.DrawRay` de `Builder.Update`, et utiliser ou supprimer `ObjectPlacement`, qui n'est utilisé nulle part.
+- [ ] **R15** **[Global]** Sauvegarde : l'id d'un objet posé dans une scène est construit à partir de son chemin dans la hiérarchie (`scène:Nom[index]/Enfant[index]`). Renommer ou réordonner ces objets fait perdre leur état sauvegardé. À terme, utiliser un id unique assigné dans l'éditeur.

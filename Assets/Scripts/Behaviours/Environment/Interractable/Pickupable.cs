@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Pickupable : MonoBehaviour, IInterractable
+public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
 {
     public Item item;
     public int count;
@@ -8,6 +8,53 @@ public class Pickupable : MonoBehaviour, IInterractable
     public bool identified = false;
 
     [SerializeField] private Sprite icon;
+
+    [System.Serializable]
+    private class SaveState
+    {
+        public int itemId = -1;
+        public int count;
+        public bool identified;
+    }
+
+    public string SaveKey => "pickupable";
+
+    private void Awake()
+    {
+        // Every pickup is saved: picked up (removed) or partially picked up (count)
+        if (GetComponent<SaveableObject>() == null)
+        {
+            gameObject.AddComponent<SaveableObject>();
+        }
+    }
+
+    public string CaptureState()
+    {
+        return JsonUtility.ToJson(new SaveState
+        {
+            itemId = item?.Data != null ? item.Data.Id : -1,
+            count = count,
+            identified = identified
+        });
+    }
+
+    public void RestoreState(string json)
+    {
+        SaveState state = JsonUtility.FromJson<SaveState>(json);
+
+        if (state.itemId >= 0 && SaveManager.Instance != null)
+        {
+            ItemData data = SaveManager.Instance.GetItem(state.itemId);
+
+            if (data != null)
+            {
+                item = Item.CreateFromData(data);
+            }
+        }
+
+        count = state.count;
+        identified = state.identified;
+    }
 
     // Spawn the item model in front of the source, thrown forward. Returns null if the item has no valid model
     public static Pickupable Spawn(Item item, int count, Transform source)
@@ -26,6 +73,9 @@ public class Pickupable : MonoBehaviour, IInterractable
         pickupable.item = item;
         pickupable.count = count;
         pickupable.identified = true;
+
+        // Created during the game: the SaveManager instantiates it again from the item model when the world loads
+        instance.GetComponent<SaveableObject>().SetRuntime(SaveManager.ItemPrefabKeyPrefix + item.Data.Id);
 
         // Not "??": Unity's fake null from GetComponent is not seen as null by that operator
         if (!instance.TryGetComponent(out Rigidbody rb))

@@ -14,6 +14,7 @@ public class EnvironmentSpawner : MonoBehaviour
         int chunkZ = Mathf.RoundToInt(transform.position.z);
         int worldSeed = ChunkManager.Instance != null ? ChunkManager.Instance.Seed : 0;
         System.Random random = new System.Random(unchecked(worldSeed * 73856093 ^ chunkX * 19349663 ^ chunkZ * 83492791));
+        int index = 0;
 
         for (int x = 0; x < size.x; x++)
         {
@@ -25,10 +26,29 @@ public class EnvironmentSpawner : MonoBehaviour
                     continue;
                 }
 
+                // Drawn even for a skipped object, so that the next objects keep the same values
+                Quaternion rotation = RandomRotation(random);
+                float scale = Mathf.Lerp(1.20f, 1.80f, (float)random.NextDouble()) * 0.1f;
+
+                // Deterministic id: the same object gets the same id in every game
+                string id = "env_" + chunkX + "_" + chunkZ + "_" + index++;
+
+                // Picked up in the save
+                if (SaveManager.Instance != null && SaveManager.Instance.IsDestroyed(id))
+                {
+                    continue;
+                }
+
                 float height = terrainData.GetHeight(x, y);
 
-                GameObject spawned = Instantiate(prefab, new Vector3(transform.position.x + x, height + 0.2f, transform.position.z + y), RandomRotation(random), transform);
-                spawned.transform.localScale = Vector3.one * Mathf.Lerp(1.20f, 1.80f, (float)random.NextDouble()) * 0.1f;
+                GameObject spawned = Instantiate(prefab, new Vector3(transform.position.x + x, height + 0.2f, transform.position.z + y), rotation, transform);
+                spawned.transform.localScale = Vector3.one * scale;
+
+                SaveableObject saveable = spawned.GetComponent<SaveableObject>();
+                if (saveable != null)
+                {
+                    saveable.SetGeneratedId(id);
+                }
             }
         }
     }

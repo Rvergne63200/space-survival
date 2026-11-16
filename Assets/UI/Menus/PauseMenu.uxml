@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- The names are used by PauseMenuUI: keep them when editing the layout -->
+    <ui:VisualElement name="root" class="menu-root">
+        <ui:VisualElement name="pause-panel" class="menu-panel">
+            <ui:Label text="Pause" class="menu-title" />
+            <ui:Button name="resume-button" text="Reprendre" class="menu-button" />
+            <ui:Button name="main-menu-button" text="Retour au menu principal" class="menu-button" />
+            <ui:Button name="quit-button" text="Quitter le jeu" class="menu-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

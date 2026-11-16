@@ -9,12 +9,24 @@ public class ChunkManager : MonoBehaviour
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] int chunkSize = 64;
     [SerializeField] int generationDistance = 2;
+    // Seed of a new world: a saved world keeps the seed it was created with
     [SerializeField] int seed = 0;
-    public int Seed => seed;
+    int worldSeed;
+    public int Seed => worldSeed;
     [SerializeField] Transform[] toReplaceConfig = new Transform[0];
 
     Transform playerTransform;
     Vector2 perlinOffset;
+
+    // Terrain flattenings (constructions): saved, and applied again to the chunks when they are generated
+    readonly List<TerrainEditSaveData> terrainEdits = new List<TerrainEditSaveData>();
+    public IReadOnlyList<TerrainEditSaveData> TerrainEdits => terrainEdits;
+
+    // Chunks whose generation is finished
+    readonly HashSet<Vector2Int> readyChunks = new HashSet<Vector2Int>();
+
+    // Bodies kept kinematic until the chunk under them is generated (saved positions), with their previous isKinematic
+    readonly List<KeyValuePair<Rigidbody, bool>> heldBodies = new List<KeyValuePair<Rigidbody, bool>>();
 
     Dictionary<Vector2Int, GameObject> chunks = new Dictionary<Vector2Int, GameObject>();
     Dictionary<Vector2Int, Terrain> terrains = new Dictionary<Vector2Int, Terrain>();
@@ -38,7 +50,15 @@ public class ChunkManager : MonoBehaviour
     void Start()
     {
         // Setup objects
-        Random.InitState(seed);
+        SaveManager saveManager = SaveManager.Instance;
+        worldSeed = saveManager != null && saveManager.HasSave ? saveManager.WorldSeed : seed;
+
+        if (saveManager != null)
+        {
+            terrainEdits.AddRange(saveManager.SavedTerrainEdits);
+        }
+
+        Random.InitState(worldSeed);
 
         perlinOffset = new Vector2(Random.value * 999999, Random.value * 999999);
 
@@ -88,9 +108,68 @@ public class ChunkManager : MonoBehaviour
 
         playerTransform = player != null ? player.transform : null;
 
-        if (playerTransform != null)
+        if (playerTransform == null) return;
+
+        // A saved position is kept (it can be on a capsule floor, above the terrain): only wait for the terrain.
+        // Otherwise (spawn point), the player is placed on the terrain surface
+        if (PlayerManager.Instance != null && PlayerManager.Instance.SpawnedFromSave)
+        {
+            HoldUntilGenerated(playerTransform.GetComponent<Rigidbody>());
+        }
+        else
         {
             ToReplace.Add(playerTransform);
+        }
+    }
+
+    // Keeps the body kinematic until the chunk under it is generated, so that it does not fall through the terrain
+    public void HoldUntilGenerated(Rigidbody body)
+    {
+        if (body == null || readyChunks.Contains(GetChunkPositionFor(body.position))) return;
+
+        heldBodies.Add(new KeyValuePair<Rigidbody, bool>(body, body.isKinematic));
+        body.isKinematic = true;
+    }
+
+    private void OnChunkReady(Vector2Int coord)
+    {
+        readyChunks.Add(coord);
+
+        for (int i = heldBodies.Count - 1; i >= 0; i--)
+        {
+            Rigidbody body = heldBodies[i].Key;
+
+            if (body == null)
+            {
+                heldBodies.RemoveAt(i);
+                continue;
+            }
+
+            if (GetChunkPositionFor(body.position) == coord)
+            {
+                body.isKinematic = heldBodies[i].Value;
+                heldBodies.RemoveAt(i);
+            }
+        }
+    }
+
+    // Called by TerrainGenerator when the heights of a chunk are generated, before ev_OnTerminateGeneration
+    public void ApplyTerrainEdits(Terrain terrain)
+    {
+        Vector3 chunkPosition = terrain.transform.position;
+        Vector3 size = terrain.terrainData.size;
+
+        foreach (TerrainEditSaveData edit in terrainEdits)
+        {
+            // FlattenOnChunk modifies the terrain up to 1.3x the radius
+            float reach = edit.radius * 1.3f;
+            float closestX = Mathf.Clamp(edit.position.x, chunkPosition.x, chunkPosition.x + size.x);
+            float closestZ = Mathf.Clamp(edit.position.z, chunkPosition.z, chunkPosition.z + size.z);
+
+            if (new Vector2(edit.position.x - closestX, edit.position.z - closestZ).sqrMagnitude <= reach * reach)
+            {
+                FlattenOnChunk(terrain, edit.position, edit.radius, edit.height);
+            }
         }
     }
 
@@ -114,6 +193,8 @@ public class ChunkManager : MonoBehaviour
 
     public void FlattenTerrainAt(Vector3 worldPos, float radius, float targetHeight)
     {
+        terrainEdits.Add(new TerrainEditSaveData { position = worldPos, radius = radius, height = targetHeight });
+
         List<Terrain> terrains = GetChunksInRadius(worldPos, radius);
 
         foreach (Terrain terrain in terrains)
@@ -329,6 +410,8 @@ public class ChunkManager : MonoBehaviour
             }
         }
 
+        // After the objects to replace (listeners are called in order): a held body is released on the final terrain
+        chunkTerrainGenerator.ev_OnTerminateGeneration.AddListener(terrainData => OnChunkReady(coord));
 
         chunkTerrainGenerator.Initialize(coord, perlinOffset, chunkSize);
 
