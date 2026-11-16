@@ -229,7 +229,7 @@ public class ItemCollection<T> where T : Item
 
     private int RemoveFromSlot(int index, int count)
     {
-        if (index < 0 || index > MaxSize)
+        if (index < 0 || index >= MaxSize)
         {
             Debug.Log("Slot invalide");
             return count;

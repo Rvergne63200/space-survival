@@ -178,7 +178,11 @@ public class PlayerInventory : ItemStorage
     public void ChangeHandedItem(InputControl inputControl)
     {
         Vector2 scroll = (Vector2)inputControl.ReadValueAsObject();
-        HandedIndex -= (int)(scroll.y / Mathf.Abs(scroll.y));
+
+        // A horizontal scroll has y == 0 (Mathf.Sign(0) would return 1)
+        if (scroll.y == 0f) return;
+
+        HandedIndex -= (int)Mathf.Sign(scroll.y);
     }
 
 

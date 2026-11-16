@@ -29,8 +29,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **B15** **[Bootstrap]** Build Settings : ajouter `0_MainMenu`, qui manque, et vérifier le `firstScene` du Bootstrapper.
 - [x] **B16** **[Inventaire]** `DropDraggingSlot` jette maintenant l'objet devant le joueur (`PlayerManager.Instance.Player`), et non plus à la position du PlayerManager, qui porte le PlayerInventory.
 - [x] **B17** **[Inventaire]** `ItemSlot.Drop` ne plante plus si `Model` est null ou n'a pas de `Pickupable`. Le spawn est centralisé dans `Pickupable.Spawn`, qui vérifie le modèle, et le slot n'est vidé que si l'objet a bien été créé. Un Rigidbody déjà présent sur le modèle est réutilisé.
-- [ ] **B18** **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0` (`scroll.y / Mathf.Abs(scroll.y)`). Utiliser `Mathf.Sign`.
-- [ ] **B19** **[Inventaire]** `ItemCollection.RemoveFromSlot` : la borne `index > MaxSize` devrait être `>=`.
+- [x] **B18** **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0`. Un scroll sans composante verticale est maintenant ignoré, sinon le slot change de `Mathf.Sign(scroll.y)`.
+- [x] **B19** **[Inventaire]** `ItemCollection.RemoveFromSlot` : la borne est maintenant `index >= MaxSize`.
 - [x] **B20** **[Inventaire]** `HandedCursorUI` : la vitesse de SmoothDamp est maintenant conservée entre les frames, et le temps de lissage est réglable (`smoothTime`, 0.05 s au lieu de 0.007). Le calcul utilise le temps non mis à l'échelle, pour fonctionner aussi en pause. Pas de `GetChild` hors limites tant que les slots ne sont pas créés.
 - [ ] **B21** **[Interfaces]** (À vérifier dans un build) Le curseur reste visible après la fermeture d'une interface avec Échap. C'est probablement dû à l'éditeur Unity, qui libère le curseur sur Échap. Un réverrouillage à la frame suivante a été essayé sans succès en éditeur, puis abandonné.
 - [x] **B22** **[Interfaces]** L'objet tenu au curseur (`draggingSlot`) restait affiché après la fermeture de l'inventaire. Il est maintenant jeté au sol quand la dernière interface se ferme (fin du mode `Interface`, écoutée via `ModeManager.ev_OnUpdateOptions`).
