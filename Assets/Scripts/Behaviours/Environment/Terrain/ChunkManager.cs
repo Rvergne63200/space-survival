@@ -16,6 +16,7 @@ public class ChunkManager : MonoBehaviour
     Vector2 perlinOffset;
 
     Dictionary<Vector2Int, GameObject> chunks = new Dictionary<Vector2Int, GameObject>();
+    Dictionary<Vector2Int, Terrain> terrains = new Dictionary<Vector2Int, Terrain>();
 
     HashSet<Vector2Int> loadedChunks = new HashSet<Vector2Int>();
     HashSet<Vector2Int> generatedChunks = new HashSet<Vector2Int>();
@@ -287,8 +288,12 @@ public class ChunkManager : MonoBehaviour
 
         chunkTerrainGenerator.Initialize(coord, perlinOffset, chunkSize);
 
+        // Neighbors are managed in LateUpdate: Unity's auto connection must not override them
+        Terrain terrain = newChunk.GetComponent<Terrain>();
+        terrain.allowAutoConnect = false;
 
         chunks.Add(coord, newChunk);
+        terrains.Add(coord, terrain);
     }
 
     void UnloadChunk(Vector2Int coord)
@@ -298,6 +303,37 @@ public class ChunkManager : MonoBehaviour
         GameObject chunk = chunks[coord];
 
         chunk.SetActive(false);
+    }
+
+    // The neighbors let the terrain LODs match at the borders (no cracks between chunks seen from far away).
+    // They are checked every frame because Unity may reset them (terrain connectivity is rebuilt when a terrain is
+    // enabled or disabled): SetNeighbors is only called when they are wrong.
+    void LateUpdate()
+    {
+        foreach (Vector2Int coord in loadedChunks)
+        {
+            Terrain terrain = GetActiveTerrain(coord);
+
+            if (terrain == null) continue;
+
+            // Chunk coordinates are (x, z): "top" is +z
+            Terrain left = GetActiveTerrain(coord + Vector2Int.left);
+            Terrain top = GetActiveTerrain(coord + Vector2Int.up);
+            Terrain right = GetActiveTerrain(coord + Vector2Int.right);
+            Terrain bottom = GetActiveTerrain(coord + Vector2Int.down);
+
+            if (terrain.leftNeighbor != left || terrain.topNeighbor != top || terrain.rightNeighbor != right || terrain.bottomNeighbor != bottom)
+            {
+                terrain.SetNeighbors(left, top, right, bottom);
+            }
+        }
+    }
+
+    Terrain GetActiveTerrain(Vector2Int coord)
+    {
+        if (!terrains.TryGetValue(coord, out Terrain terrain) || !terrain.gameObject.activeSelf) return null;
+
+        return terrain;
     }
 
 

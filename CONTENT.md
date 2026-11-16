@@ -86,12 +86,12 @@ Vue à la première personne uniquement.
 
 ## 5. Interaction
 
-- **PlayerPointer** : à chaque frame, raycast de **10 m** depuis la caméra. Il met à jour `PlayerContext.PointedObject`, avec l'event `ev_updatePointedObject`.
+- **PlayerPointer** : à chaque frame, raycast de **10 m** depuis la caméra, qui ignore le joueur et les triggers. Il met à jour `PlayerContext.PointedObject` avec l'objet qui porte l'`IInterractable` (cherché dans les parents du collider touché), avec l'event `ev_updatePointedObject`.
 - **PlayerContext.Interractable** : `IInterractable` trouvé sur l'objet pointé.
 - **PlayerInterractor** : la touche Interagir appelle `Interract(player)` sur l'objet pointé.
 - **IInterractable** : `Interract(GameObject)`, `GetInfo()` (texte affiché) et `GetIcon()`. Implémentations :
   - **Pickupable** : `item` et `count`. Interagir l'ajoute à l'inventaire via `Pickuper`. L'objet est détruit si tout est ramassé, sinon le reste reste au sol. Si `identified` vaut `true`, le texte affiche « Nx Nom », sinon « Pickup ».
-  - **Searchable** : ouvre l'`ItemStorage` associé via `Searcher` dans l'UI de conteneur (`ItemStorageUI`). Interagir de nouveau le referme.
+  - **Searchable** : ouvre l'`ItemStorage` associé via `Searcher` dans l'UI de conteneur (`ItemStorageUI`). Interagir de nouveau avec le même conteneur le referme, et interagir avec un autre conteneur ouvre celui-ci à la place.
   - **CraftingStation** : voir la feature Crafting.
 - **Pickuper** : ajoute à l'inventaire et émet `ev_pickup(quantité ramassée, item)`.
 - **Searcher** : garde le conteneur ouvert et émet `ev_UpdateSearchStorage`. Le conteneur est fermé via `ClearCurrentSearchedStorage` quand l'UI se ferme.
@@ -130,6 +130,7 @@ Vue à la première personne uniquement.
 - **ChunkManager** (singleton, scène Monde) :
   - Grille de chunks de `chunkSize` (64 m). Les chunks situés à moins de `generationDistance` (2) de celui du joueur sont chargés, soit une grille de 5×5.
   - Les chunks éloignés sont **désactivés** (jamais détruits) et réactivés au retour.
+  - Les chunks chargés sont reliés à leurs voisins (`Terrain.SetNeighbors`, vérifié à chaque frame dans `LateUpdate`, auto-connexion Unity désactivée), ce qui évite les fissures de LOD vues de loin.
   - Seed → offset Perlin global, ce qui donne un terrain continu et déterministe.
   - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer.
   - `FlattenTerrainAt(pos, rayon, hauteur)` aplanit tous les chunks concernés (utilisé par la construction, en cours de modification). Le plateau a une pente douce sur 1.3× le rayon, avec une tolérance verticale de 4 m. Seul le terrain au-dessus de « cible − tolérance » est modifié : les creux profonds ne sont pas remplis.

@@ -11,13 +11,14 @@ public class Searcher : MonoBehaviour
 
     public void Search(ItemStorage itemStorage)
     {
-        if(currentSearchedStorage == null)
+        // Searching the open storage again closes it, searching another one opens it instead
+        if(currentSearchedStorage == itemStorage)
         {
-            currentSearchedStorage = itemStorage;
+            currentSearchedStorage = null;
         }
         else
         {
-            currentSearchedStorage = null;
+            currentSearchedStorage = itemStorage;
         }
         
         ev_UpdateSearchStorage.Invoke(currentSearchedStorage);
