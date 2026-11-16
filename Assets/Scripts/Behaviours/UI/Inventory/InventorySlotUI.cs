@@ -29,16 +29,14 @@ public abstract class InventorySlotUI<T> : ParentedUI where T : Item
 
     public void setSlot(ItemSlot<T> slot)
     {
-        if (this.slot != null && this.slot != slot)
+        // The slot UIs are reused on each collection update: only subscribe when the slot changes
+        if (this.slot != slot)
         {
-            this.slot.ev_update.RemoveListener(new UnityAction<ItemSlot<T>>(UpdateSlot));
-        }
+            this.slot?.ev_update.RemoveListener(new UnityAction<ItemSlot<T>>(UpdateSlot));
 
-        this.slot = slot;
+            this.slot = slot;
 
-        if (slot != null)
-        {
-            slot.ev_update.AddListener(new UnityAction<ItemSlot<T>>(UpdateSlot));
+            slot?.ev_update.AddListener(new UnityAction<ItemSlot<T>>(UpdateSlot));
         }
 
         UpdateSlot(slot);

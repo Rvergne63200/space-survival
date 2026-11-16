@@ -89,7 +89,9 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Terrain]** Les chunks ne sont jamais détruits, donc la mémoire augmente sans limite en explorant. **Stocker les chunks sur disque** (via le système de persistance) : détruire les chunks éloignés et les recharger depuis le disque au retour dans la zone, modifications comprises.
 - [ ] **[Terrain]** `Update` recalcule les chunks nécessaires à chaque frame : ne le faire qu'au changement de chunk du joueur.
 - [ ] **[Terrain]** Monde **infini** (à confirmer) : vérifier la précision des flottants loin de l'origine (floating origin).
-- [ ] **[Inventaire]** `ItemCollectionUI.UpdateItemCollectionUI` détruit et recrée tous les slots UI à chaque `ev_Update`. Réutiliser les slots existants.
+- [x] **[Inventaire]** `ItemCollectionUI.UpdateItemCollectionUI` réutilise les slots UI existants au lieu de tous les détruire et recréer à chaque `ev_Update`. Il n'en crée ou n'en supprime que pour suivre la taille de la collection.
+  - [x] `InventorySlotUI.setSlot` ne se réabonne à `ItemSlot.ev_update` que si le slot change (sinon, doublons de listeners à chaque mise à jour).
+  - [x] Un slot `null` garde son UI (affichée vide), donc l'index UI correspond toujours à l'index du slot. C'est ce qu'utilise `HandedCursorUI`.
 - [ ] **[Interaction]** `PlayerPointer`, `PlayerInterractor` et `Builder` font un `GetComponent<PlayerContext>()` à chaque accès : le mettre en cache.
 
 ## Refonte

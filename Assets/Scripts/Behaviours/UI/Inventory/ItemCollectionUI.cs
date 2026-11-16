@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
@@ -34,7 +35,7 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
 
     public int slotsByLine;
 
-    private GameObject[] contentSlots;
+    private readonly List<InventorySlotUI<T>> contentSlots = new List<InventorySlotUI<T>>();
 
     protected Action ac_OnClearInterface = () => { };
 
@@ -50,28 +51,41 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
         Inventory = Inventory;
     }
 
-    protected void UpdateItemCollectionUI<U>(ItemCollection<U> collection, ref GameObject[] slotsUI) where U : T
+    protected void UpdateItemCollectionUI<U>(ItemCollection<U> collection, List<InventorySlotUI<U>> slotsUI) where U : T
     {
-        slotPrefab.GetComponent<InventorySlotUI<U>>().parentUI = parentUI;
+        int size = collection.Slots.Count;
 
-        slotsUI = new GameObject[collection.Slots.Count];
-
-        for (int i = 0; i < transform.childCount; i++)
+        // First build: remove any child that is not a slot created by this UI
+        if (slotsUI.Count == 0)
         {
-            Destroy(transform.GetChild(i).gameObject);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
         }
 
-        for (int j = 0; j < collection.Slots.Count; j++)
+        // Remove the extra slots, detached first so that the child indices stay valid this frame
+        for (int i = slotsUI.Count - 1; i >= size; i--)
         {
-            if (collection.Slots[j] == null)
-            {
-                slotsUI[j] = null;
-                continue;
-            }
+            slotsUI[i].transform.SetParent(null, false);
+            Destroy(slotsUI[i].gameObject);
+            slotsUI.RemoveAt(i);
+        }
 
-            slotsUI[j] = Instantiate(slotPrefab, transform);
-            InventorySlotUI<U> slotUI = slotsUI[j].GetComponent<InventorySlotUI<U>>();
-            slotUI.setSlot(collection.Slots[j]);
+        if (slotsUI.Count < size)
+        {
+            slotPrefab.GetComponent<InventorySlotUI<U>>().parentUI = parentUI;
+
+            while (slotsUI.Count < size)
+            {
+                slotsUI.Add(Instantiate(slotPrefab, transform).GetComponent<InventorySlotUI<U>>());
+            }
+        }
+
+        // A null slot keeps its UI (displayed empty) so that the UI index always matches the slot index
+        for (int j = 0; j < size; j++)
+        {
+            slotsUI[j].setSlot(collection.Slots[j]);
         }
 
         ev_OnSlotsUpdated.Invoke();
@@ -101,7 +115,7 @@ public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
     {
         if(Inventory != null)
         {
-            UpdateItemCollectionUI(Inventory, ref contentSlots);
+            UpdateItemCollectionUI(Inventory, contentSlots);
             SetItemCollectionUISize(Inventory);
         }
     }
