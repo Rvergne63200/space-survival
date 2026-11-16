@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -29,4 +30,29 @@ public class ItemData : ScriptableObject
     [SerializeField]
     private GameObject _model;
     public GameObject Model { get => _model; protected set => _model = value; }
+
+    // Done when the item is in hand: primary use (left click) and secondary use (right click)
+    [SerializeReference, SubclassPicker]
+    private List<ItemAction> _primaryActions = new List<ItemAction>();
+    public List<ItemAction> PrimaryActions => _primaryActions;
+
+    [SerializeReference, SubclassPicker]
+    private List<ItemAction> _secondaryActions = new List<ItemAction>();
+    public List<ItemAction> SecondaryActions => _secondaryActions;
+
+    // Returns true when at least one action was done
+    public bool Use(bool primary, ItemUseContext context)
+    {
+        bool done = false;
+
+        foreach (ItemAction action in primary ? _primaryActions : _secondaryActions)
+        {
+            if (action != null && action.Execute(context))
+            {
+                done = true;
+            }
+        }
+
+        return done;
+    }
 }

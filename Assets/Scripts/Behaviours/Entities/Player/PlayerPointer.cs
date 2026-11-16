@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerPointer : MonoBehaviour
 {
+    // Interaction range, from the camera (meters)
+    public float range = 3f;
+
     private PlayerContext playerContext;
 
     private void Awake()
@@ -22,7 +25,7 @@ public class PlayerPointer : MonoBehaviour
         // Ignore the player itself and the triggers (scene loaders, zones...)
         int layerMask = ~(1 << gameObject.layer);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 10f, layerMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, range, layerMask, QueryTriggerInteraction.Ignore))
         {
             // The collider can be on a child of the interactable (hit.transform is the collider or its Rigidbody):
             // point at the object carrying the IInterractable when there is one

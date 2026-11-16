@@ -9,6 +9,28 @@ public class Searcher : MonoBehaviour
 
     public UnityEvent<ItemStorage> ev_UpdateSearchStorage;
 
+    // The searched storage is closed beyond this distance (meters), or when it is destroyed
+    public float maxDistance = 4.5f;
+
+    private void Update()
+    {
+        if (currentSearchedStorage == null)
+        {
+            // Destroyed while open (Unity null): close its interface
+            if (!ReferenceEquals(currentSearchedStorage, null))
+            {
+                ClearCurrentSearchedStorage();
+            }
+
+            return;
+        }
+
+        if (InteractionDistance.To(currentSearchedStorage, transform.position) > maxDistance)
+        {
+            ClearCurrentSearchedStorage();
+        }
+    }
+
     public void Search(ItemStorage itemStorage)
     {
         // Searching the open storage again closes it, searching another one opens it instead

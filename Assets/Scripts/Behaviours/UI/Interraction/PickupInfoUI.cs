@@ -17,6 +17,17 @@ public class PickupInfoUI : ParentedUI
         group = GetComponent<CanvasGroup>();
     }
 
+    // Shown again for its whole duration (grouped pickups, see PickupInfoGroupUI)
+    public void Restart()
+    {
+        countDown = durability;
+
+        if (group != null)
+        {
+            group.alpha = 1f;
+        }
+    }
+
     public void SetInfobulle(string text, Sprite sprite)
     {
         image.sprite = sprite;

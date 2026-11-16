@@ -170,6 +170,7 @@ public static class BuildUtility
         if (rest > 0 && PlayerManager.Instance.Player != null)
         {
             Pickupable.Spawn(Item.CreateFromData(data), rest, PlayerManager.Instance.Player.transform);
+            NotificationUI.Show("Inventaire plein : " + rest + " " + data.Name + " posé(s) au sol.", NotificationType.Warning);
         }
     }
 

@@ -52,6 +52,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B38** **[Inventaire]** Un clic droit dans une interface déclenchait aussi `Use2` (bouton droit), qui consommait l'item en main. `Use1` et `Use2` sont maintenant ignorés en mode `Interface` (option `PlayerInventory.OPTION_USE_DISABLED`).
 - [x] **B39** **[Terrain]** Textures décalées entre deux chunks : Unity positionne les textures depuis le coin de chaque terrain. Le prefab `Chunk` utilise maintenant le matériau `Materials/Terrain/TerrainWorldUV` (shader `Terrain/World UV Standard`, copie du shader de terrain Standard d'Unity) : les coordonnées de texture viennent de la position monde du pixel, donc les textures restent fixes dans le monde, quelle que soit la taille des calques ou la position des chunks. `TerrainGenerator` transmet la taille des chunks au shader (`_WorldUVTerrainSize`, global).
 - [x] **B40** **[Inventaire]** `InventorySlotUI.UpdateSlot` plantait (NullReferenceException) sur un slot dont l'item n'a pas de données (asset d'item introuvable ou pas encore importé), ce qui cassait toute l'initialisation de l'UI. Ces slots sont maintenant affichés vides (`ItemSlot.IsEmpty`).
+- [x] **B41** **[Inventaire]** Message "Objet introuvable" dans la console pendant un craft réussi : `PlayerInventory.Remove` cherchait d'abord dans l'inventaire, même quand l'item n'était que dans la barre d'outils. Il ne cherche plus que dans les collections qui contiennent l'item, et le message est retiré (absent d'une collection est un cas normal).
 
 ## Feature
 
@@ -67,25 +68,26 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **F08** **[Inventaire]** Shift-clic (`PlayerInventory.QuickTransfer`) : transfert du slot entier. Avec un conteneur fouillé : conteneur → barre d'outils (puis inventaire si elle est pleine), barre d'outils → conteneur, inventaire → conteneur. Sans conteneur : inventaire ↔ barre d'outils. Ce qui ne rentre pas reste dans le slot d'origine.
   - Le split ne retire du slot que ce que le curseur a réellement pris.
   - Les clics sont gérés par `ItemSlotUI.OnPointerClick` (`IPointerClickHandler`). L'appel `onClick` du Button a été retiré du prefab `InventorySlot`, mais le Button reste pour les couleurs de survol.
-- [ ] **F09** **[Inventaire]** Implémenter `Use1` (action principale) : outils, armes, validation d'une construction.
-- [ ] **F10** **[Inventaire]** (À voir) Revoir l'ordre de remplissage. Actuellement : inventaire d'abord, puis barre d'outils.
+- [x] **F09** **[Inventaire]** Base des items utilisables : chaque `ItemData` a des actions principales (`Use1`, clic gauche) et secondaires (`Use2`, clic droit), des `ItemAction` choisies dans l'inspecteur (`SubclassPicker`). Action fournie : `ApplyModifiersAction` (modifiers sur les stats, puis consomme l'item). Les `ConsummableData` restent consommés au clic droit s'ils n'ont pas d'action secondaire. Outils et armes à ajouter comme nouvelles `ItemAction`.
+- [x] **F10** **[Inventaire]** Ordre de remplissage : un slot qui contient déjà le même item est prioritaire (barre d'outils, puis inventaire), puis les slots vides de la barre d'outils, puis ceux de l'inventaire (`ItemCollection.AddToStacks` / `AddToEmptySlots`). Même logique pour le shift-clic depuis un conteneur.
 - [ ] **F11** **[Inventaire]** (À décider) Données propres à chaque exemplaire d'item (durabilité, charges…).
-- [ ] **F12** **[Interaction]** Réduire la portée d'interaction à **3 m** (10 m actuellement).
-- [ ] **F13** **[Interaction]** Fermer le conteneur automatiquement quand le joueur s'éloigne.
-- [ ] **F14** **[Interaction]** Afficher un retour « inventaire plein » quand le ramassage est partiel ou impossible.
-- [ ] **F15** **[Interaction]** `PickupInfoGroupUI` : regrouper les notifications successives d'un même item. La branche « - » n'est jamais utilisée.
+- [x] **F12** **[Interaction]** Portée d'interaction réduite à **3 m** (`PlayerPointer.range`).
+- [x] **F13** **[Interaction]** Le conteneur fouillé se ferme quand le joueur s'en éloigne de plus de `Searcher.maxDistance` (4,5 m, mesuré jusqu'à ses colliders) ou quand il est détruit.
+- [x] **F14** **[Interaction]** Message « Inventaire plein » (`NotificationUI`) quand un ramassage est partiel ou impossible, et quand un craft ou des ressources rendues ne rentrent pas (posés au sol).
+- [x] **F15** **[Interaction]** `PickupInfoGroupUI` : les ramassages d'un même item sont cumulés dans sa notification (« +8 Rock »), même si un autre item a été ramassé entre-temps, tant qu'ils se suivent à moins de `groupDuration` (10 s). Si la notification a déjà disparu, la nouvelle reprend le total. Branche « - » retirée.
 - [x] **F16** **[Interaction]** Contour blanc autour de l'objet interactable pointé (`InteractableOutline` + shader `Hidden/InteractableOutline`).
 - [ ] **F17** **[Interaction]** (À voir) Contour : masquer les parties cachées par un autre objet (test de profondeur dans le masque), ou ajouter une légère animation d'apparition.
-- [ ] **F18** **[Crafting]** Fermer l'UI de craft quand le joueur s'éloigne de la station.
-- [ ] **F19** **[Crafting]** UI : indiquer si une recette est réalisable (ingrédients possédés / requis, recette grisée sinon).
+- [x] **F18** **[Crafting]** L'UI de craft se ferme quand le joueur s'éloigne de la station de plus de `Crafter.maxDistance` (4,5 m) ou quand elle est détruite.
+- [x] **F19** **[Crafting]** UI : chaque ingrédient affiche possédé/requis (en rouge s'il manque), et la recette est grisée avec son bouton désactivé si elle n'est pas réalisable (rafraîchi toutes les 0,25 s).
 - [ ] **F20** **[Crafting]** UI : seul `Results[0]` est affiché. Gérer les recettes à plusieurs résultats.
-- [ ] **F21** **[Crafting]** Remplacer les `Debug.Log` d'échec par des retours visibles par le joueur.
+- [x] **F21** **[Crafting]** Les `Debug.Log` d'échec du `Crafter` sont remplacés par des messages au joueur (`NotificationUI`).
 - [ ] **F22** **[Construction]** **Catalogue de constructions** : bâtiments, machines, plantes (plantations), objets, meubles, coffres… Fait : une donnée par structure (`StructureData` : id, nom, icône, prefab, coût, remboursement, aplanissement, pente max), le catalogue `StructureCatalog` et la roue de construction (`BuildWheelUI`). Reste : catégories dans la roue (quand il y aura beaucoup de structures), et les autres structures.
 - [x] **F23** **[Construction]** **Coût en ressources** : la structure choisie dans la roue est posée comme un **plan** (`StructureBlueprint`) : un hologramme bleu que le joueur peut traverser. Interagir avec lui y dépose les ressources manquantes présentes dans l'inventaire (le texte affiche « Fer 12/20, Bois 4/30 »), et la structure devient réelle une fois tout apporté.
 - [x] **F24** **[Construction]** **Déconstruction** (« Détruire » dans la roue, puis clic sur la cible, surlignée en rouge). Une structure rend son `Refund` (n'importe quels items, défini par structure). Un plan inachevé rend tout ce qui lui a été apporté. Un item posé rend son `Refund` (par défaut l'item lui-même) et le contenu de ses conteneurs.
 - [x] **F25** **[Construction]** **Rotation** pendant le placement et le build : R maintenu (90°/s), Shift + R par pas de 45°.
 - [x] **F39** **[Construction]** **Placement** d'items (`PlaceableItemData`, avec un `placedPrefab`), distinct du build. Avec un item plaçable en main, un fantôme vert/rouge apparaît : clic gauche pour poser (l'item est retiré de l'inventaire), clic droit pour annuler (jusqu'au prochain changement d'item en main). Item de test : `8_Crate` (caisse de 20 slots), 2 dans la barre d'outils de départ.
 - [x] **F40** **[Construction]** Indicateur du mode de construction (bandeau en bas de l'écran, `BuildModeUI`) avec ses commandes. Échap quitte le placement, le build ou la destruction (avant d'ouvrir le menu pause), comme le clic droit.
+- [x] **F41** **[Inventaire]** Double-clic : rassemble au curseur les items du même type (inventaire, barre d'outils, conteneur ouvert), dans la limite d'une pile, en prenant d'abord les plus petites piles (`PlayerInventory.GatherToCursor`).
 - [ ] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
 - [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur.
 - [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde.

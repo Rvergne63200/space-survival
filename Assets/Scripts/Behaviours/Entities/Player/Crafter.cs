@@ -11,9 +11,31 @@ public class Crafter : MonoBehaviour
 
     private PlayerContext playerContext;
 
+    // The crafting interface is closed beyond this distance from the station (meters), or when it is destroyed
+    public float maxDistance = 4.5f;
+
     private void Awake()
     {
         playerContext = GetComponent<PlayerContext>();
+    }
+
+    private void Update()
+    {
+        if (station == null)
+        {
+            // Destroyed while open (Unity null): close its interface
+            if (!ReferenceEquals(station, null))
+            {
+                ClearStation();
+            }
+
+            return;
+        }
+
+        if (InteractionDistance.To(station, transform.position) > maxDistance)
+        {
+            ClearStation();
+        }
     }
 
     public void Check(CraftingStation station)
@@ -28,19 +50,19 @@ public class Crafter : MonoBehaviour
 
         if (station == null)
         {
-            Debug.LogError("Invalid crafting station");
+            NotificationUI.Show("Aucun poste de fabrication ouvert.", NotificationType.Warning);
             return;
         }
 
         if (!station.Recipes.Contains(recipe))
         {
-            Debug.LogError("Cannot craft this recipe in this station");
+            NotificationUI.Show("Cette recette ne se fabrique pas ici.", NotificationType.Warning);
             return;
         }
 
         if (!CheckHasItems(recipe))
         {
-            Debug.Log("Impossible de fabriquer cet objet. Ressources manquantes");
+            NotificationUI.Show("Ressources manquantes.", NotificationType.Warning);
             return;
         }
 
@@ -59,6 +81,7 @@ public class Crafter : MonoBehaviour
             if (rest > 0)
             {
                 Pickupable.Spawn(item, rest, transform);
+                NotificationUI.Show("Inventaire plein : " + result.Item.Name + " posé au sol.", NotificationType.Warning);
             }
         }
     }

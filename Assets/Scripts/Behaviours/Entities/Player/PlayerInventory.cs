@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -147,28 +148,33 @@ public class PlayerInventory : ItemStorage
     }
 
 
+    // A slot already holding the item has priority (tool bar, then inventory), then the empty slots (tool bar, then inventory)
     public override int Add(Item item, int count = 1)
     {
-        int rest = base.Add(item, count);
+        int rest = ToolBar.AddToStacks(item, count);
+        rest = Content.AddToStacks(item, rest);
+        rest = ToolBar.AddToEmptySlots(item, rest);
+        rest = Content.AddToEmptySlots(item, rest);
 
-        if (rest <= 0)
-        {
-            return rest;
-        }
-
-        return ToolBar.Add(item, rest);
+        return rest;
     }
 
+    // From the inventory, then from the tool bar for what is missing (only where the item is)
     public override int Remove(Item item, int count = 1)
     {
-        int rest = base.Remove(item, count);
+        int rest = count;
 
-        if (rest <= 0)
+        if (Content.Count(item) > 0)
         {
-            return 0;
+            rest = base.Remove(item, rest);
         }
 
-        return ToolBar.RemoveItem(item, rest);
+        if (rest > 0 && ToolBar.Count(item) > 0)
+        {
+            rest = ToolBar.RemoveItem(item, rest);
+        }
+
+        return Mathf.Max(0, rest);
     }
 
     public override int Count(ItemData item)
@@ -200,14 +206,16 @@ public class PlayerInventory : ItemStorage
     }
 
 
+    // Primary use of the item in hand (left click): its primary actions (ItemData)
     public void Use1()
     {
-
+        UseHandedItem(true);
     }
 
+    // Secondary use of the item in hand (right click): its secondary actions, or the consumption of a ConsummableData
     public void Use2()
     {
-        ItemSlot<Item> slot = HandedSlot;
+        if (UseHandedItem(false)) return;
 
         if (!HandedSlot.IsEmpty() && HandedSlot.Item.Data is ConsummableData)
         {
@@ -218,6 +226,59 @@ public class PlayerInventory : ItemStorage
         }
     }
 
+    private bool UseHandedItem(bool primary)
+    {
+        ItemSlot<Item> slot = HandedSlot;
+
+        if (slot.IsEmpty()) return false;
+
+        ItemUseContext context = new ItemUseContext
+        {
+            Manager = PlayerManager.Instance,
+            Player = PlayerManager.Instance != null ? PlayerManager.Instance.Player : null,
+            Slot = slot
+        };
+
+        return slot.Item.Data.Use(primary, context);
+    }
+
+
+    // Double click: the items of the same kind as the one held at the cursor are gathered into it, up to a full stack,
+    // from the inventory, the tool bar and the searched storage
+    public void GatherToCursor(ItemCollection<Item> storage)
+    {
+        if (draggingSlot.IsEmpty()) return;
+
+        ItemData data = draggingSlot.Item.Data;
+        List<ItemSlot<Item>> sameItemSlots = new List<ItemSlot<Item>>();
+
+        foreach (ItemCollection<Item> collection in new[] { Content, ToolBar, storage })
+        {
+            if (collection == null) continue;
+
+            foreach (ItemSlot<Item> slot in collection.Slots)
+            {
+                if (slot != null && !slot.IsEmpty() && slot.Item.Data.Id == data.Id)
+                {
+                    sameItemSlots.Add(slot);
+                }
+            }
+        }
+
+        // Smallest stacks first (stable sort: inventory, tool bar, then storage for the same size)
+        List<ItemSlot<Item>> ordered = new List<ItemSlot<Item>>(sameItemSlots);
+        ordered.Sort((a, b) => a.Quantity != b.Quantity ? a.Quantity.CompareTo(b.Quantity) : sameItemSlots.IndexOf(a).CompareTo(sameItemSlots.IndexOf(b)));
+
+        foreach (ItemSlot<Item> slot in ordered)
+        {
+            if (draggingSlot.IsFull()) return;
+
+            int taken = Mathf.Min(data.StackMax - draggingSlot.Quantity, slot.Quantity);
+
+            slot.Remove(taken);
+            draggingSlot.Add(draggingSlot.Item, taken);
+        }
+    }
 
     // Right click: with an item held, place one unit on the slot; with nothing held, take half of the slot
     public void SplitOrPlaceOne(ItemSlot<Item> slot)
@@ -261,19 +322,21 @@ public class PlayerInventory : ItemStorage
             return;
         }
 
-        ItemCollection<Item>[] targets;
+        // From the storage: same order as Add (stacks of the item first, then tool bar, then inventory)
+        bool fromStorage = storage != null && storage.Slots.Contains(slot);
+        ItemCollection<Item> target;
 
-        if (storage != null && storage.Slots.Contains(slot))
+        if (fromStorage)
         {
-            targets = new[] { ToolBar, Content };
+            target = null;
         }
         else if (ToolBar.Slots.Contains(slot))
         {
-            targets = new[] { storage ?? Content };
+            target = storage ?? Content;
         }
         else if (Content.Slots.Contains(slot))
         {
-            targets = new[] { storage ?? ToolBar };
+            target = storage ?? ToolBar;
         }
         else
         {
@@ -285,15 +348,7 @@ public class PlayerInventory : ItemStorage
 
         slot.Clear();
 
-        foreach (ItemCollection<Item> target in targets)
-        {
-            count = target.Add(item, count);
-
-            if (count <= 0)
-            {
-                break;
-            }
-        }
+        count = fromStorage ? Add(item, count) : target.Add(item, count);
 
         // What did not fit stays in the source slot
         if (count > 0)

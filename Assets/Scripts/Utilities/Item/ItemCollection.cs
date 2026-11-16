@@ -103,6 +103,56 @@ public class ItemCollection<T> where T : Item
         ev_Update.Invoke();
     }
 
+    // Only into the slots already holding this item (and not full). Returns what did not fit
+    public int AddToStacks(T item, int count)
+    {
+        if (item?.Data == null || count <= 0) return count;
+
+        int initialCount = count;
+
+        foreach (ItemSlot<T> slot in Slots)
+        {
+            if (count <= 0) break;
+
+            if (slot != null && !slot.IsEmpty() && slot.Item.Data.Id == item.Data.Id && !slot.IsFull())
+            {
+                count = slot.Add(item, count);
+            }
+        }
+
+        if (count != initialCount)
+        {
+            ev_Update.Invoke();
+        }
+
+        return count;
+    }
+
+    // Only into the empty slots. Returns what did not fit
+    public int AddToEmptySlots(T item, int count)
+    {
+        if (item?.Data == null || count <= 0) return count;
+
+        int initialCount = count;
+
+        foreach (ItemSlot<T> slot in Slots)
+        {
+            if (count <= 0) break;
+
+            if (slot != null && slot.IsEmpty())
+            {
+                count = slot.Add(item, count);
+            }
+        }
+
+        if (count != initialCount)
+        {
+            ev_Update.Invoke();
+        }
+
+        return count;
+    }
+
     public int Add(T item, int count)
     {
         if (item == null)
@@ -160,9 +210,9 @@ public class ItemCollection<T> where T : Item
 
         int index = GetLastIndex(item);
 
+        // Not in this collection: a normal case when removing from several collections (PlayerInventory)
         if (index < 0)
         {
-            Debug.Log("Objet introuvable");
             return count;
         }
 

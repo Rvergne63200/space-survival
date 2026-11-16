@@ -19,6 +19,13 @@ public class Pickuper : MonoBehaviour
 
         ev_pickup.Invoke(count - rest, item.Data);
 
+        if (rest > 0)
+        {
+            NotificationUI.Show(rest == count
+                ? "Inventaire plein."
+                : "Inventaire plein : " + rest + " " + item.Data.Name + " laissé(s) au sol.", NotificationType.Warning);
+        }
+
         return rest;
     }
 }

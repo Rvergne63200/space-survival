@@ -26,6 +26,12 @@ public class ItemSlotUI : InventorySlotUI<Item>, IPointerClickHandler
             {
                 inventory.QuickTransfer(slot, GetSearchedStorage());
             }
+            // Double click: the first click took the stack at the cursor, the second gathers the same items into it
+            // (instead of putting the stack back in the slot)
+            else if (eventData.clickCount >= 2 && !inventory.draggingSlot.IsEmpty())
+            {
+                inventory.GatherToCursor(GetSearchedStorage());
+            }
             else
             {
                 inventory.TryMerge(slot, Direction.Out);

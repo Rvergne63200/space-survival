@@ -52,6 +52,7 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
         if (Data == null || PlayerManager.Instance == null) return;
 
         PlayerInventory inventory = PlayerManager.Instance.Inventory;
+        int totalTaken = 0;
 
         for (int i = 0; i < Data.Cost.Count; i++)
         {
@@ -67,12 +68,18 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
             // Remove returns what could not be removed
             int notRemoved = inventory.Remove(Item.CreateFromData(item), taken);
             delivered[i] += taken - notRemoved;
+            totalTaken += taken - notRemoved;
         }
 
         if (IsComplete())
         {
             BuildUtility.InstantiateStructure(Data, transform.position, transform.rotation);
+            NotificationUI.Show(Data.Name + " construit.");
             Destroy(gameObject);
+        }
+        else if (totalTaken == 0)
+        {
+            NotificationUI.Show("Aucune des ressources manquantes dans l'inventaire.", NotificationType.Warning);
         }
     }
 

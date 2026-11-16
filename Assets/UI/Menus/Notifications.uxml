@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- Messages to the player (NotificationUI): added in "notifications". Does not catch the mouse -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="notifications-root">
+        <ui:VisualElement name="notifications" picking-mode="Ignore" class="notifications" />
+    </ui:VisualElement>
+</ui:UXML>

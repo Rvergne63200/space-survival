@@ -174,3 +174,30 @@
     font-size: 15px;
     -unity-text-align: middle-center;
 }
+
+/* Messages to the player, above the construction banner */
+.notifications-root {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 170px;
+}
+
+.notifications {
+    align-items: center;
+}
+
+.notification {
+    margin-top: 4px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background-color: rgba(20, 24, 36, 0.85);
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    -unity-text-align: middle-center;
+}
+
+.notification-warning {
+    color: rgb(255, 190, 90);
+    -unity-font-style: bold;
+}

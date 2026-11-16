@@ -29,6 +29,7 @@ Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune
   - **Quitter**.
 - **Menu pause** (`PauseMenuUI`, dans `Bootstrap`, `PauseMenu.uxml`) : Échap ferme les interfaces ouvertes ; s'il n'y en a aucune, il ouvre le menu pause (en jeu). Le menu pause est lui-même une interface, donc Échap le ferme. Pendant la pause, `timeScale` vaut 0. Boutons : Reprendre, Retour au menu principal (sauvegarde puis chargement du menu) et Quitter.
 - **Écran de mort** (`DeathScreenUI`, dans `Bootstrap`, `DeathScreen.uxml`) : filtre rouge (classe `death-root`) et deux boutons. « Réapparaître » est grisé avec un compte à rebours pendant `respawnDelay` secondes (25). « Menu principal » fait réapparaître le joueur, sauvegarde, puis charge le menu. Ce n'est pas une interface : Échap ne le ferme pas et n'ouvre pas le menu pause. Le curseur est libre (mode `Menu`).
+- **Messages au joueur** (`NotificationUI`, dans `Bootstrap`, `Notifications.uxml`, style `.notification` / `.notification-warning`) : messages courts en bas de l'écran, qui disparaissent en fondu après 2,5 s (« Inventaire plein », « Ressources manquantes »…). Un message identique remet son compteur à zéro au lieu de s'afficher deux fois. Il ne capte pas la souris. Usage : `NotificationUI.Show(texte, NotificationType.Warning)`.
 
 ### Sauvegarde (`SaveManager`, dans `Bootstrap`)
 - Un fichier JSON par partie dans `Application.persistentDataPath/Saves`, choisi dans le menu principal (`NewGame`, `LoadGame`, `DeleteSave`, `ListSaves`). Sauvegarde à la fermeture du jeu, avant un changement de scène et toutes les `autosaveInterval` secondes (120) dans le monde. Restauration au chargement du monde.
@@ -97,16 +98,17 @@ Vue à la première personne uniquement.
 
 ### PlayerInventory (sur le PlayerManager, donc persistant)
 - Inventaire de **32 slots** et barre d'outils de **6 slots**.
-- `Add` remplit l'inventaire d'abord, puis la barre d'outils. `Remove` retire de l'inventaire, puis de la barre d'outils.
+- `Add` : un slot qui contient déjà le même item est prioritaire (barre d'outils, puis inventaire), puis les slots vides de la barre d'outils, puis ceux de l'inventaire. `Remove` retire de l'inventaire, puis de la barre d'outils.
 - Touche Inventaire : ouvre ou ferme l'inventaire (`ev_UpdateIsOpen`).
 - Molette : change le slot en main (`HandedIndex`, avec bouclage).
-- `Use2` : consomme l'item en main si c'est un `ConsummableData`. `Use1` : vide. Les deux sont ignorés quand une interface est ouverte (`OPTION_USE_DISABLED`, mode `Interface`).
+- **Usage de l'item en main** : `Use1` (clic gauche) exécute ses actions principales et `Use2` (clic droit) ses actions secondaires (`ItemData.PrimaryActions` / `SecondaryActions`, des `ItemAction` comme `ApplyModifiersAction`). Sans action secondaire, un `ConsummableData` est consommé au clic droit. Les deux sont ignorés quand une interface est ouverte ou en mode construction (`OPTION_USE_DISABLED`).
 - Touche Drop (inventaire ouvert) : jette devant le joueur tout le contenu du slot tenu au curseur. Le slot du curseur est aussi jeté automatiquement quand la dernière interface se ferme.
 
 ### Interactions UI
 - Système par **clic**, sans vrai glisser-déposer. Les clics sont gérés par `ItemSlotUI.OnPointerClick`. Un clic gauche sur un slot (`TryMerge`) prend son contenu dans le `draggingSlot`, qui suit la souris (`UIFollowCursor`). Un nouveau clic le dépose.
   - Même item : fusion des stacks, le surplus reste au curseur.
   - Item différent : échange (Switch).
+- **Double-clic** (`GatherToCursor`) : le premier clic prend la pile au curseur, le second y rassemble les items du même type de l'inventaire, de la barre d'outils et du conteneur ouvert, jusqu'à une pile complète (`StackMax`). Les plus petites piles sont prises en premier.
 - **Clic droit** (`SplitOrPlaceOne`) : avec un slot en main, dépose une unité sur le slot visé (vide ou même item). Main vide : prend la moitié du slot visé (arrondie au supérieur).
 - **Shift + clic gauche** (`QuickTransfer`) : transfère tout le slot.
   - Avec un conteneur fouillé : conteneur → barre d'outils (puis inventaire), et barre d'outils ou inventaire → conteneur.
@@ -119,7 +121,7 @@ Vue à la première personne uniquement.
 
 ## 5. Interaction
 
-- **PlayerPointer** : à chaque frame, raycast de **10 m** depuis la caméra, qui ignore le joueur et les triggers. Il met à jour `PlayerContext.PointedObject` avec l'objet qui porte l'`IInterractable` (cherché dans les parents du collider touché), avec l'event `ev_updatePointedObject`.
+- **PlayerPointer** : à chaque frame, raycast de **3 m** (`range`) depuis la caméra, qui ignore le joueur et les triggers. Il met à jour `PlayerContext.PointedObject` avec l'objet qui porte l'`IInterractable` (cherché dans les parents du collider touché), avec l'event `ev_updatePointedObject`.
 - **PlayerContext.Interractable** : `IInterractable` trouvé sur l'objet pointé.
 - **PlayerInterractor** : la touche Interagir appelle `Interract(player)` sur l'objet pointé.
 - **IInterractable** : `Interract(GameObject)`, `GetInfo()` (texte affiché) et `GetIcon()`. Implémentations :
@@ -127,10 +129,10 @@ Vue à la première personne uniquement.
   - **Searchable** : ouvre l'`ItemStorage` associé via `Searcher` dans l'UI de conteneur (`ItemStorageUI`). Interagir de nouveau avec le même conteneur le referme, et interagir avec un autre conteneur ouvre celui-ci à la place.
   - **CraftingStation** : voir la feature Crafting.
 - **Pickuper** : ajoute à l'inventaire et émet `ev_pickup(quantité ramassée, item)`.
-- **Searcher** : garde le conteneur ouvert et émet `ev_UpdateSearchStorage`. Le conteneur est fermé via `ClearCurrentSearchedStorage` quand l'UI se ferme.
+- **Searcher** : garde le conteneur ouvert et émet `ev_UpdateSearchStorage`. Le conteneur est fermé via `ClearCurrentSearchedStorage` quand l'UI se ferme, quand le joueur s'en éloigne de plus de `maxDistance` (4,5 m, jusqu'à ses colliders) ou quand il est détruit.
 - **UI**
   - `PointedInterractorInformationUI` : affiche l'icône, le texte et la touche de l'objet pointé, avec un fondu. Le texte est mis à jour en continu (changement d'objet, ramassage partiel).
-  - `PickupInfoGroupUI` / `PickupInfoUI` : notification « +N Nom » avec icône, qui disparaît en fondu en 5 s.
+  - `PickupInfoGroupUI` / `PickupInfoUI` : notification « +N Nom » avec icône, qui disparaît en fondu en 5 s. Les ramassages d'un même item sont cumulés (« +8 Rock ») tant qu'ils se suivent à moins de `groupDuration` (10 s), même si sa notification a disparu entre-temps. Un ramassage partiel ou impossible affiche « Inventaire plein » (`NotificationUI`).
 - **Contour de l'objet pointé** (`InteractableOutline`, sur le prefab `PlayerCamera`) : un contour blanc en espace écran entoure l'objet interactable pointé.
   - Un `CommandBuffer` (`BeforeImageEffects`) dessine la silhouette des `MeshRenderer` et `SkinnedMeshRenderer` de l'objet, tous sous-meshes compris, dans une texture masque. Le shader `Hidden/InteractableOutline` (`Assets/Shaders`) trace ensuite le contour autour du masque.
   - Le buffer n'est reconstruit que quand l'objet pointé change. Réglages : `outlineColor` (blanc) et `outlineWidth` (3 px).
@@ -145,7 +147,7 @@ Vue à la première personne uniquement.
   - Ensuite, il retire les ingrédients de l'inventaire et ajoute les résultats. Ce qui ne rentre pas (inventaire plein) est jeté au sol devant le joueur. Le craft est instantané.
 - **UI**
   - `CraftingStationUI` génère un `RecipePanelUI` par recette de la station. À la fermeture de l'interface, la station du `Crafter` est libérée (`ClearStation`).
-  - `RecipePanelUI` affiche le premier résultat (icône et quantité) et les ingrédients. Le bouton appelle `OnCraft` → `Crafter.Craft`.
+  - `RecipePanelUI` affiche le premier résultat (icône et quantité) et les ingrédients, chacun avec possédé/requis (en rouge s'il manque). Une recette irréalisable est grisée et son bouton désactivé (rafraîchi toutes les 0,25 s). Le bouton appelle `OnCraft` → `Crafter.Craft`. Les échecs (ressources manquantes…) et un résultat posé au sol affichent un message (`NotificationUI`). L'UI se ferme quand le joueur s'éloigne de la station de plus de `Crafter.maxDistance` (4,5 m).
 
 ## 7. Construction
 
