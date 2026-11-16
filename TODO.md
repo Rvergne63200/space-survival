@@ -36,7 +36,7 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
 - [ ] **[Interaction]** `Searcher.Search` bascule ouvert/fermé. Interagir avec un autre conteneur pendant qu'un conteneur est ouvert le ferme au lieu d'ouvrir le nouveau.
 - [ ] **[Interaction]** Raycast du pointeur : pas de layer mask, et il touche aussi les triggers. `hit.transform` renvoie le Rigidbody parent ou le collider, donc un `IInterractable` posé sur un parent n'est pas toujours trouvé. Utiliser `GetComponentInParent`.
 - [ ] **[Interaction]** Flag `Pickupable.identified` : il n'est mis à `true` que pour les objets jetés. Les objets placés dans la scène affichent « Pickup » au lieu de leur nom. À clarifier ou supprimer.
-- [ ] **[Crafting]** `CheckHasItems` ne compte que `inventory.Content`, pas la barre d'outils, alors que `Remove` retire des deux. On ne peut pas crafter si une partie des ingrédients est dans la barre d'outils.
+- [x] **[Crafting]** `CheckHasItems` compte maintenant les ingrédients de l'inventaire **et** de la barre d'outils, via `ItemStorage.Count`, surchargé par `PlayerInventory` comme `Add` et `Remove`.
 - [ ] **[Crafting]** Si l'inventaire est plein, les résultats du craft qui ne rentrent pas sont perdus (le `rest` est ignoré). Les jeter au sol, ou bloquer le craft s'il n'y a pas assez de place.
 - [ ] **[Crafting]** `Crafter.ClearStation()` n'est jamais appelé : la station reste « active » après la fermeture de l'UI. La brancher sur la fermeture de l'interface, comme pour le Searcher.
 - [ ] **[Construction]** `BuildVerifier` : le compteur de triggers reste bloqué (invalide) si un collider en contact est détruit ou désactivé, car `OnTriggerExit` n'est pas appelé. Il compte aussi n'importe quel collider ou trigger, sans filtre de layer.

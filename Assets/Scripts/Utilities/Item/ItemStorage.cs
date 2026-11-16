@@ -20,4 +20,9 @@ public class ItemStorage : MonoBehaviour
     {
         return Content.RemoveItem(item, count);
     }
+
+    public virtual int Count(ItemData item)
+    {
+        return Content.Count(item);
+    }
 }

@@ -129,6 +129,11 @@ public class PlayerInventory : ItemStorage
         return ToolBar.RemoveItem(item, rest);
     }
 
+    public override int Count(ItemData item)
+    {
+        return base.Count(item) + ToolBar.Count(item);
+    }
+
 
     public void DropDraggingSlot()
     {

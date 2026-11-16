@@ -103,7 +103,7 @@ Vue à la première personne uniquement.
 - **RecipeData** (ScriptableObject `Crafting/Recipe`) : listes d'`Ingredients` et de `Results`. Chaque entrée est un `ItemBlock` (ItemData + quantité).
 - **CraftingStation** (`IInterractable`) : contient la liste des recettes disponibles. Interagir avec elle appelle `Crafter.Check(station)`, qui ouvre l'UI.
 - **Crafter** (sur le joueur) :
-  - `Craft(recipe)` vérifie que la station est valide, que la recette lui appartient et que les ingrédients sont présents (`CheckHasItems`, qui additionne les ingrédients en double).
+  - `Craft(recipe)` vérifie que la station est valide, que la recette lui appartient et que les ingrédients sont présents (`CheckHasItems`, qui additionne les ingrédients en double et compte l'inventaire et la barre d'outils).
   - Ensuite, il retire les ingrédients de l'inventaire et ajoute les résultats. Le craft est instantané.
 - **UI**
   - `CraftingStationUI` génère un `RecipePanelUI` par recette de la station.

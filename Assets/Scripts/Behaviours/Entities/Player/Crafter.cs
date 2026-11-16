@@ -69,10 +69,10 @@ public class Crafter : MonoBehaviour
             }
         }
 
-        // Check inventory quantities
+        // Check inventory quantities (content and tool bar, like Remove)
         foreach (KeyValuePair<ItemData, int> recipeQuantity in recipeIngredients)
         {
-            if (recipeQuantity.Value > inventory.Content.Count(recipeQuantity.Key))
+            if (recipeQuantity.Value > inventory.Count(recipeQuantity.Key))
             {
                 return false;
             }
