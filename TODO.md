@@ -11,6 +11,8 @@ Chaque tâche est préfixée par la feature concernée (voir `CONTENT.md`).
   - [x] Téléportations manuelles (dépénétration et `KeepDistanceWithObstacles`) supprimées. La composante de vitesse dirigée vers un mur ou une pente raide est retirée à partir des contacts.
   - [x] Contrôle en l'air limité (`airControl`) et conservation de l'élan sans input.
   - [x] Délai entre deux sauts (`jumpCooldown`), qui empêche le double saut juste après une impulsion.
+- [x] **[Mouvement]** Le joueur glisse sur les pentes douces (effet du matériau sans friction). Au sol, la partie de la gravité parallèle à la pente est annulée. La vitesse est contrôlée dans le plan de la pente : arrêt complet sans input, et vitesse pleine en montée comme en descente. Pendant `jumpCooldown` après un saut, le joueur est traité comme en l'air pour ne pas freiner le saut.
+- [ ] **[Mouvement]** (À tester) En haut d'une montée, la vitesse le long de la pente peut faire décoller légèrement le joueur. Si c'est gênant, ajouter un « ground snapping ».
 - [x] **[Mouvement]** Saccades : interpolation du Rigidbody activée dans `Player.prefab`.
 - [x] **[Mouvement]** Suivi de la caméra (`CameraMovement`) déplacé dans `LateUpdate`. La rotation reste dans `Update` pour que les raycasts (`PlayerPointer`, `Builder`) visent avec l'orientation courante. La caméra suit aussi le joueur quand elle est verrouillée (interfaces ouvertes).
 - [x] **[Mouvement]** Réglage des valeurs pour un déplacement plus dynamique, sur le modèle des FPS courants : marche 4.5 m/s, sprint 7 m/s, accélération 50 m/s², contrôle en l'air 30 %, saut de 1.1 m, gravité du joueur ×2 (~0.67 s en l'air).

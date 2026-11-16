@@ -208,26 +208,45 @@ public class PlayerMovement : MonoBehaviour
             rigidbody.MoveRotation(Quaternion.LookRotation(cameraForward));
         }
 
-        ApplyHorizontalVelocity(targetVelocity);
+        // Right after a jump the ground is still detected: treat the player as airborne so the jump is not damped
+        bool grounded = TryGetGround(out Vector3 groundNormal) && jumpCountdown <= 0f;
+
+        ApplyMoveVelocity(targetVelocity, grounded, groundNormal);
 
         rigidbody.AddForce(Physics.gravity * (gravityMultiplier - 1f), ForceMode.Acceleration);
+
+        // The collider is frictionless: cancel the part of gravity pulling along the slope, or the player slides down
+        if (grounded)
+        {
+            rigidbody.AddForce(-Vector3.ProjectOnPlane(Physics.gravity * gravityMultiplier, groundNormal), ForceMode.Acceleration);
+        }
 
         // Contacts are collected again by the next physics step
         wallNormals.Clear();
     }
 
-    private void ApplyHorizontalVelocity(Vector3 targetVelocity)
+    private void ApplyMoveVelocity(Vector3 targetVelocity, bool grounded, Vector3 groundNormal)
     {
-        bool grounded = IsGrounded();
-
         // In the air, keep the momentum when there is no input
         if (!grounded && targetVelocity == Vector3.zero) return;
 
         float maxVelocityChange = acceleration * (grounded ? 1f : airControl) * Time.fixedDeltaTime;
 
         Vector3 currentVelocity = rigidbody.linearVelocity;
-        Vector3 horizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
-        Vector3 velocityChange = Vector3.MoveTowards(horizontalVelocity, targetVelocity, maxVelocityChange) - horizontalVelocity;
+        Vector3 planeVelocity;
+
+        if (grounded)
+        {
+            // On the ground, move along the slope at full speed, and stop completely when there is no input
+            planeVelocity = Vector3.ProjectOnPlane(currentVelocity, groundNormal);
+            targetVelocity = Vector3.ProjectOnPlane(targetVelocity, groundNormal).normalized * targetVelocity.magnitude;
+        }
+        else
+        {
+            planeVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+        }
+
+        Vector3 velocityChange = Vector3.MoveTowards(planeVelocity, targetVelocity, maxVelocityChange) - planeVelocity;
 
         rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
     }
@@ -292,8 +311,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public bool IsGrounded()
+    public bool IsGrounded() => TryGetGround(out _);
+
+    private bool TryGetGround(out Vector3 groundNormal)
     {
+        groundNormal = Vector3.up;
+
         Vector3 scale = transform.lossyScale;
         float radius = playerCollider.radius * Mathf.Max(scale.x, scale.z) * 0.95f;
         float halfHeight = Mathf.Max(playerCollider.height * 0.5f * scale.y, radius);
@@ -308,6 +331,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // A steep surface (wall, side of a dome) is not ground
-        return hit.normal.y >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad);
+        if (hit.normal.y < Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad))
+        {
+            return false;
+        }
+
+        groundNormal = hit.normal;
+        return true;
     }
 }
