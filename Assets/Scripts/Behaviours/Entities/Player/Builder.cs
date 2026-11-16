@@ -7,7 +7,7 @@ public class Builder : MonoBehaviour
     public GameObject build;
     private GameObject currentBuild;
 
-    private PlayerContext playerContext => GetComponent<PlayerContext>();
+    private PlayerContext playerContext;
 
     private Transform Source
     {
@@ -20,6 +20,7 @@ public class Builder : MonoBehaviour
     void Awake()
     {
         inputActions = new PlayerInputActions();
+        playerContext = GetComponent<PlayerContext>();
     }
 
     private void OnEnable()

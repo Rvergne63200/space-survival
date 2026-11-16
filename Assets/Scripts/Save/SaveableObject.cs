@@ -33,6 +33,14 @@ public class SaveableObject : MonoBehaviour
         waitingForManager.Clear();
     }
 
+    public bool IsRegistered => registered;
+
+    // Unloaded with its container (destroyed chunk): it still exists in the world, it must not be noted as removed
+    public void MarkUnloaded()
+    {
+        registered = false;
+    }
+
     // Must be called right after Instantiate, before Start
     public void SetGeneratedId(string id)
     {

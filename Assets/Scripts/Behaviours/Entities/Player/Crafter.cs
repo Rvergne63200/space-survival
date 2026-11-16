@@ -9,6 +9,13 @@ public class Crafter : MonoBehaviour
 
     public UnityEvent<CraftingStation> ev_UpdateCraftingStation;
 
+    private PlayerContext playerContext;
+
+    private void Awake()
+    {
+        playerContext = GetComponent<PlayerContext>();
+    }
+
     public void Check(CraftingStation station)
     {
         this.station = station;
@@ -17,7 +24,7 @@ public class Crafter : MonoBehaviour
     
     public void Craft(RecipeData recipe)
     {
-        PlayerInventory inventory = GetComponent<PlayerContext>().PlayerManager.Inventory;
+        PlayerInventory inventory = playerContext.PlayerManager.Inventory;
 
         if (station == null)
         {
@@ -58,7 +65,7 @@ public class Crafter : MonoBehaviour
 
     public bool CheckHasItems(RecipeData recipe)
     {
-        PlayerInventory inventory = GetComponent<PlayerContext>().PlayerManager.Inventory;
+        PlayerInventory inventory = playerContext.PlayerManager.Inventory;
 
         // Stack item data count
         Dictionary<ItemData, int> recipeIngredients = new Dictionary<ItemData, int>();

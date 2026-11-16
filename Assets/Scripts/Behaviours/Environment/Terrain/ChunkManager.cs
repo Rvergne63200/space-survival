@@ -9,6 +9,9 @@ public class ChunkManager : MonoBehaviour
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] int chunkSize = 64;
     [SerializeField] int generationDistance = 2;
+    // Deactivated chunks farther than generationDistance + destroyMargin are destroyed (see DestroyFarChunks)
+    [SerializeField] int destroyMargin = 2;
+    Vector2Int? lastPlayerChunk;
     // Seed of a new world: a saved world keeps the seed it was created with
     [SerializeField] int seed = 0;
     int worldSeed;
@@ -177,10 +180,77 @@ public class ChunkManager : MonoBehaviour
     {
         if (playerTransform == null) return;
 
+        Vector2Int playerChunk = GetChunkPositionFor(playerTransform.position);
+
+        // The needed chunks only change when the player enters another chunk
+        if (lastPlayerChunk == playerChunk) return;
+
+        lastPlayerChunk = playerChunk;
+
         HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
         LoadNeededChunks(neededChunks);
         UnloadNotNeededChunks(neededChunks);
+        DestroyFarChunks(playerChunk);
+    }
+
+    // Chunks beyond generationDistance + destroyMargin are destroyed to free the memory (the closer ones are only
+    // deactivated, so that going back and forth near a border does not generate them again). A destroyed chunk is
+    // generated again identically when the player comes back: the terrain comes from the seed, the terrain edits are
+    // replayed and its saveable objects keep their state in the SaveManager
+    void DestroyFarChunks(Vector2Int playerChunk)
+    {
+        int maxDistance = generationDistance + Mathf.Max(0, destroyMargin);
+        List<Vector2Int> farChunks = new List<Vector2Int>();
+
+        foreach (Vector2Int coord in chunks.Keys)
+        {
+            if (Mathf.Max(Mathf.Abs(coord.x - playerChunk.x), Mathf.Abs(coord.y - playerChunk.y)) > maxDistance)
+            {
+                farChunks.Add(coord);
+            }
+        }
+
+        foreach (Vector2Int coord in farChunks)
+        {
+            DestroyChunk(coord);
+        }
+    }
+
+    void DestroyChunk(Vector2Int coord)
+    {
+        GameObject chunk = chunks[coord];
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.UnloadObjects(chunk);
+        }
+
+        // The TerrainData is a copy made by TerrainGenerator.Initialize: it is not destroyed with the GameObject
+        if (terrains.TryGetValue(coord, out Terrain terrain) && terrain != null)
+        {
+            Destroy(terrain.terrainData);
+        }
+
+        Destroy(chunk);
+
+        chunks.Remove(coord);
+        terrains.Remove(coord);
+        readyChunks.Remove(coord);
+        generatedChunks.Remove(coord);
+
+        // The objects outside the chunk hierarchy (dropped items...) stay loaded: keep them from falling while the
+        // terrain under them is missing
+        if (SaveManager.Instance != null)
+        {
+            foreach (SaveableObject saveable in SaveManager.Instance.LiveObjects)
+            {
+                if (saveable != null && GetChunkPositionFor(saveable.transform.position) == coord && saveable.TryGetComponent(out Rigidbody body))
+                {
+                    HoldUntilGenerated(body);
+                }
+            }
+        }
     }
 
     public Vector2Int GetChunkPositionFor(Vector3 position)

@@ -2,7 +2,12 @@ using UnityEngine;
 
 public class PlayerPointer : MonoBehaviour
 {
-    private PlayerContext playerContext => GetComponent<PlayerContext>();
+    private PlayerContext playerContext;
+
+    private void Awake()
+    {
+        playerContext = GetComponent<PlayerContext>();
+    }
 
     private Transform Source
     {

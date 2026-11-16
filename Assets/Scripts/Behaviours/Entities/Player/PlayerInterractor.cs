@@ -4,11 +4,12 @@ using UnityEngine.InputSystem;
 public class PlayerInterractor : MonoBehaviour
 {
     private PlayerInputActions inputActions;
-    private PlayerContext playerContext => GetComponent<PlayerContext>();
+    private PlayerContext playerContext;
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
+        playerContext = GetComponent<PlayerContext>();
     }
 
     private void OnEnable()

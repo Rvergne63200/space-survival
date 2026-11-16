@@ -288,6 +288,8 @@ public class SaveManager : MonoBehaviour
         return true;
     }
 
+    public IEnumerable<SaveableObject> LiveObjects => liveObjects.Values;
+
     public bool IsDestroyed(string id)
     {
         return destroyedObjects.Contains(id);
@@ -334,6 +336,24 @@ public class SaveManager : MonoBehaviour
         if (!saveable.IsRuntime)
         {
             destroyedObjects.Add(saveable.Id);
+        }
+    }
+
+    // Before destroying a part of the world that will be created again later (far chunk): keeps the state of its
+    // saveable objects, which are recreated with it, instead of noting them as removed
+    public void UnloadObjects(GameObject root)
+    {
+        foreach (SaveableObject saveable in root.GetComponentsInChildren<SaveableObject>(true))
+        {
+            if (!saveable.IsRegistered) continue;
+
+            if (liveObjects.TryGetValue(saveable.Id, out SaveableObject live) && live == saveable)
+            {
+                savedObjects[saveable.Id] = saveable.Capture();
+                liveObjects.Remove(saveable.Id);
+            }
+
+            saveable.MarkUnloaded();
         }
     }
 
