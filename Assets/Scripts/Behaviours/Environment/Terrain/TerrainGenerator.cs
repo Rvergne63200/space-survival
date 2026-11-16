@@ -25,6 +25,9 @@ public class TerrainGenerator : MonoBehaviour
         terrain.terrainData = Instantiate(terrain.terrainData);
         terrain.GetComponent<TerrainCollider>().terrainData = terrain.terrainData;
 
+        // Used by the "Terrain/World UV Standard" shader to position the textures from the world position
+        Shader.SetGlobalVector("_WorldUVTerrainSize", new Vector4(size, size, 0f, 0f));
+
         this.size = size;
         this.perlinOffset = new Vector2(
             position.x * size,

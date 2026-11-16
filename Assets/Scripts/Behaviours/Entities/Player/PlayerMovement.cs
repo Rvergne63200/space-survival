@@ -49,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 
     private float jumpCountdown = 0f;
 
+    // Makes each jump marker key unique, so a new jump does not replace the marker of the previous one
+    private int jumpCount = 0;
+
     public float maxSlopeAngle = 45f;
     public float groundCheckDistance = 0.1f;
 
@@ -306,7 +309,8 @@ public class PlayerMovement : MonoBehaviour
             Vector3 velocity = rigidbody.linearVelocity;
             velocity.y = Mathf.Sqrt(2f * gravity * jumpHeight);
             rigidbody.linearVelocity = velocity;
-            endurance.AddMarker("player_jump_" + Time.fixedDeltaTime.ToString(), jumpEnduranceCost * 4f, 0.25f);
+            // Negative marker: consumes jumpEnduranceCost over 0.25 s
+            endurance.AddMarker("player_jump_" + jumpCount++, -jumpEnduranceCost * 4f, 0.25f);
             jumpCountdown = jumpCooldown;
         }
     }

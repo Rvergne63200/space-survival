@@ -54,19 +54,45 @@ public class PointedInterractorInformationUI : ParentedUI
         var oldPointed = pointed;
         pointed = parentUI.UIManager.PlayerContext.Interractable;
 
-        if (oldPointed != null && pointed == null)
+        if (pointed == null)
         {
-            FadeOut();
+            if (oldPointed != null)
+            {
+                FadeOut();
+            }
+
             return;
         }
 
-        if (oldPointed == null && pointed != null)
+        // Also when going directly from an interactable to another one
+        RefreshInfo();
+
+        if (oldPointed == null)
         {
-            text.text = pointed.GetInfo() + " [" + input.ToUpper() + "]";
-            icon.sprite = pointed.GetIcon();
             FadeIn();
-            return;
         }
+    }
+
+    private void Update()
+    {
+        // The info can change while pointing at the same object (partial pickup): keep it up to date.
+        // A fully picked up object is destroyed until the pointer finds the next one
+        if (pointed != null && !(pointed is Object pointedObject && pointedObject == null))
+        {
+            RefreshInfo();
+        }
+    }
+
+    private void RefreshInfo()
+    {
+        string info = pointed.GetInfo() + " [" + input.ToUpper() + "]";
+
+        if (text.text != info)
+        {
+            text.text = info;
+        }
+
+        icon.sprite = pointed.GetIcon();
     }
 
     public void FadeIn()

@@ -32,7 +32,7 @@ Vue à la première personne uniquement.
 - **Marche** (`baseSpeed`, 4.5 m/s) et **sprint** (`sprintSpeed`, 7 m/s), avec une accélération de 50 m/s². Le sprint consomme de l'endurance et s'arrête quand elle est vide.
 - **Gravité renforcée** pour le joueur seulement (`gravityMultiplier`, ×2), pour un saut moins flottant.
 - **En l'air** : contrôle réduit (`airControl`, 30 %), et l'élan est conservé sans input.
-- **Saut** : vitesse verticale calculée pour atteindre `jumpHeight` (1.1 m, ~0.67 s en l'air). Possible si le joueur est au sol, s'il a assez d'endurance et après un délai (`jumpCooldown`). Il pose un marker sur l'endurance.
+- **Saut** : vitesse verticale calculée pour atteindre `jumpHeight` (1.1 m, ~0.67 s en l'air). Possible si le joueur est au sol, s'il a assez d'endurance et après un délai (`jumpCooldown`). Il consomme `jumpEnduranceCost` (5) d'endurance, via un marker négatif réparti sur 0.25 s.
 - **Sol** (`IsGrounded` / `TryGetGround`, qui renvoie aussi la normale du sol) : SphereCast sous la capsule (tolérance `groundCheckDistance`), qui ignore les triggers et le layer du joueur. Une surface plus pentue que `maxSlopeAngle` (45°) ne compte pas comme du sol.
 - **Murs et pentes raides** : les normales de contact raides sont collectées (`OnCollisionEnter` et `OnCollisionStay`). La composante de la vitesse visée dirigée vers ces surfaces est retirée, donc le joueur glisse le long sans grimper.
 - Le joueur s'oriente selon le forward de la caméra quand il bouge (`MoveRotation`).
@@ -96,7 +96,7 @@ Vue à la première personne uniquement.
 - **Pickuper** : ajoute à l'inventaire et émet `ev_pickup(quantité ramassée, item)`.
 - **Searcher** : garde le conteneur ouvert et émet `ev_UpdateSearchStorage`. Le conteneur est fermé via `ClearCurrentSearchedStorage` quand l'UI se ferme.
 - **UI**
-  - `PointedInterractorInformationUI` : affiche l'icône, le texte et la touche de l'objet pointé, avec un fondu.
+  - `PointedInterractorInformationUI` : affiche l'icône, le texte et la touche de l'objet pointé, avec un fondu. Le texte est mis à jour en continu (changement d'objet, ramassage partiel).
   - `PickupInfoGroupUI` / `PickupInfoUI` : notification « +N Nom » avec icône, qui disparaît en fondu en 5 s.
 - **Contour de l'objet pointé** (`InteractableOutline`, sur le prefab `PlayerCamera`) : un contour blanc en espace écran entoure l'objet interactable pointé.
   - Un `CommandBuffer` (`BeforeImageEffects`) dessine la silhouette des `MeshRenderer` et `SkinnedMeshRenderer` de l'objet, tous sous-meshes compris, dans une texture masque. Le shader `Hidden/InteractableOutline` (`Assets/Shaders`) trace ensuite le contour autour du masque.
@@ -134,7 +134,7 @@ Vue à la première personne uniquement.
   - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer.
   - `FlattenTerrainAt(pos, rayon, hauteur)` aplanit tous les chunks concernés (utilisé par la construction, en cours de modification). Le plateau a une pente douce sur 1.3× le rayon, avec une tolérance verticale de 4 m. Seul le terrain au-dessus de « cible − tolérance » est modifié : les creux profonds ne sont pas remplis.
   - Gizmos de debug : chunks générés et chargés.
-- **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`, puis calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin.
+- **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks. Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin.
 - **EnvironmentSpawner** (sur le prefab `Chunk`) : pour chaque m² du chunk, a 0.1 % de chances de faire apparaître `prefab`, avec une rotation et une taille aléatoires.
 
 ## 9. Modes de jeu & interfaces

@@ -151,7 +151,7 @@ MonoBehaviour:
   chunkPrefab: {fileID: 1353772504049239300, guid: 063e045574bbc784a8bb5e92c4abd529, type: 3}
   chunkSize: 64
   generationDistance: 5
-  seed: 15512115
+  seed: 55555
   toReplaceConfig:
   - {fileID: 4657979389139924249}
 --- !u!4 &564563550

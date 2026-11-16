@@ -11,6 +11,7 @@ public class Stat
     public UnityEvent<float> ev_updateRecuperation;
 
     private Dictionary<string, StatMarker> recuperationMarkers;
+    private readonly List<string> expiredMarkers = new List<string>();
 
     public float baseRegeneration;
 
@@ -40,12 +41,15 @@ public class Stat
     {
         float recuperation = baseRegeneration;
 
+        expiredMarkers.Clear();
+
         foreach(KeyValuePair<string, StatMarker> pair in recuperationMarkers)
         {
+            // The dictionary cannot be modified while iterating: expired markers are removed after the loop
             if(pair.Value.Duration <= 0)
             {
-                RemoveMarker(pair.Key);
-                break;
+                expiredMarkers.Add(pair.Key);
+                continue;
             }
 
             if(pair.Value.Duration < speed)
@@ -58,6 +62,11 @@ public class Stat
                 recuperation += pair.Value.Modifier;
                 pair.Value.Actualize(speed);
             }
+        }
+
+        foreach(string key in expiredMarkers)
+        {
+            RemoveMarker(key);
         }
 
         Value += recuperation * speed;
