@@ -15,8 +15,8 @@ public class ItemStorage : MonoBehaviour, ISaveableComponent
 
     public string SaveKey => "itemStorage";
 
-    // Not called for PlayerInventory (it has its own Awake): the player inventory is saved with the player
-    private void Awake()
+    // Not called by PlayerInventory (its override does not call it): the player inventory is saved with the player
+    protected virtual void Awake()
     {
         Content = Content;
 

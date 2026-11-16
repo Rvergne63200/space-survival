@@ -159,6 +159,7 @@ Transform:
   - {fileID: 1240813254}
   - {fileID: 2045110002}
   - {fileID: 2045120002}
+  - {fileID: 2045130002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &437489375
@@ -292,6 +293,48 @@ MonoBehaviour:
       baseRegeneration: 1
       _value: 100
       _maxValue: 100
+  - _key: 2
+    _value:
+      ev_updateValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateMaxValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateRecuperation:
+        m_PersistentCalls:
+          m_Calls: []
+      baseRegeneration: -0.041666668
+      _value: 100
+      _maxValue: 100
+  - _key: 3
+    _value:
+      ev_updateValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateMaxValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateRecuperation:
+        m_PersistentCalls:
+          m_Calls: []
+      baseRegeneration: -0.06666667
+      _value: 100
+      _maxValue: 100
+  - _key: 4
+    _value:
+      ev_updateValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateMaxValue:
+        m_PersistentCalls:
+          m_Calls: []
+      ev_updateRecuperation:
+        m_PersistentCalls:
+          m_Calls: []
+      baseRegeneration: 0
+      _value: 100
+      _maxValue: 100
 --- !u!114 &734431897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,14 +380,14 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 218c815841e14cb0945cdbada52ced1d, type: 2}
+      _quantity: 5
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 12c2c75939174132ba08faf9237b0e6a, type: 2}
+      _quantity: 5
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
@@ -588,6 +631,7 @@ MonoBehaviour:
   prefab: {fileID: 8774627701926431398, guid: 0b69f9f6c6b0f1443b76d40c763d9d9c, type: 3}
   inventory: {fileID: 734431897}
   stats: {fileID: 734431896}
+  deathBagPrefab: {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}
   ev_updatePlayerContext:
     m_PersistentCalls:
       m_Calls: []
@@ -734,8 +778,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 90c0cee54ac70494f9a6dcb0b5c909c0, type: 2}
   - {fileID: 11400000, guid: 86781ecd2669c6b4396cb86d899a26c6, type: 2}
   - {fileID: 11400000, guid: 3c599f0131199d54a8bedb90e3e42ec2, type: 2}
+  - {fileID: 11400000, guid: 218c815841e14cb0945cdbada52ced1d, type: 2}
+  - {fileID: 11400000, guid: 12c2c75939174132ba08faf9237b0e6a, type: 2}
   buildPrefabs:
   - {fileID: 7986256412080422617, guid: dc12d42d1ee0bb847abe518f82e73f78, type: 3}
+  runtimePrefabs:
+  - {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}
 --- !u!1 &2045120001
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +879,109 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 6c2ec0a25fe94004b6399f90ef8c1b93, type: 3}
   m_SortingOrder: 10
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!1 &2045130001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2045130002}
+  - component: {fileID: 2045130003}
+  m_Layer: 0
+  m_Name: DeathScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2045130002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045130001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2045130005}
+  m_Father: {fileID: 437489374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2045130003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045130001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac4f09bf8554c2a9879da661b5db80d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 2045130004}
+  respawnDelay: 25
+  mainMenuScene: 0_MainMenu
+--- !u!1 &2045130004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2045130005}
+  - component: {fileID: 2045130006}
+  m_Layer: 5
+  m_Name: DeathScreenPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2045130005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045130004}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2045130002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2045130006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045130004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 824ad105d14b41e4ea0d59e7865e137c, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 00a0497c67b24fdea5df105f211802ec, type: 3}
+  m_SortingOrder: 20
   m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920

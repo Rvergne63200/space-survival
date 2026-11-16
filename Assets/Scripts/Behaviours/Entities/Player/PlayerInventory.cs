@@ -60,7 +60,8 @@ public class PlayerInventory : ItemStorage
         }
     }
 
-    private void Awake()
+    // Does not call ItemStorage.Awake: the player inventory is not a saveable object of the world (saved with the player)
+    protected override void Awake()
     {
         inputActions = new PlayerInputActions();
         ToolBar = ToolBar;

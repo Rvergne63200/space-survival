@@ -122,6 +122,14 @@ public class ChunkManager : MonoBehaviour
         else
         {
             ToReplace.Add(playerTransform);
+
+            // Respawn (after death) on a chunk already generated: ToReplace only applies when a chunk is generated
+            Vector2Int coord = GetChunkPositionFor(playerTransform.position);
+
+            if (readyChunks.Contains(coord) && terrains.TryGetValue(coord, out Terrain terrain) && terrain != null)
+            {
+                ReplaceObject(terrain.terrainData, terrain.transform.position, playerTransform);
+            }
         }
     }
 

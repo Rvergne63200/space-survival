@@ -21,8 +21,12 @@ public class SaveManager : MonoBehaviour
     // Prefabs the player can build, found by name for the built objects
     [SerializeField] private List<GameObject> buildPrefabs = new List<GameObject>();
 
+    // Other prefabs instantiated during the game (death bag...), found by name
+    [SerializeField] private List<GameObject> runtimePrefabs = new List<GameObject>();
+
     public const string ItemPrefabKeyPrefix = "item:";
     public const string BuildPrefabKeyPrefix = "build:";
+    public const string RuntimePrefabKeyPrefix = "prefab:";
 
     private const string EditorSaveName = "Partie éditeur";
 
@@ -515,14 +519,24 @@ public class SaveManager : MonoBehaviour
 
         if (data.prefabKey.StartsWith(BuildPrefabKeyPrefix))
         {
-            string prefabName = data.prefabKey.Substring(BuildPrefabKeyPrefix.Length);
+            return FindPrefab(buildPrefabs, data.prefabKey.Substring(BuildPrefabKeyPrefix.Length));
+        }
 
-            foreach (GameObject prefab in buildPrefabs)
+        if (data.prefabKey.StartsWith(RuntimePrefabKeyPrefix))
+        {
+            return FindPrefab(runtimePrefabs, data.prefabKey.Substring(RuntimePrefabKeyPrefix.Length));
+        }
+
+        return null;
+    }
+
+    private static GameObject FindPrefab(List<GameObject> prefabs, string prefabName)
+    {
+        foreach (GameObject prefab in prefabs)
+        {
+            if (prefab != null && prefab.name == prefabName)
             {
-                if (prefab != null && prefab.name == prefabName)
-                {
-                    return prefab;
-                }
+                return prefab;
             }
         }
 

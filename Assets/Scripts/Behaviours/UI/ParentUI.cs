@@ -65,6 +65,9 @@ public class ParentUI : MonoBehaviour
     {
         InterfaceManager interfaceManager = InterfaceManager.GetInstance();
 
+        // The death screen cannot be closed with Escape
+        if (DeathScreenUI.Instance != null && DeathScreenUI.Instance.IsOpen) return;
+
         if (interfaceManager.HasOpenInterface)
         {
             interfaceManager.CloseInterfaces();

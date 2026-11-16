@@ -44,7 +44,8 @@ public abstract class InventorySlotUI<T> : ParentedUI where T : Item
 
     public void UpdateSlot(ItemSlot<T> slot)
     {     
-        if(slot == null || slot.Item == null || slot.Quantity <= 0)
+        // IsEmpty also covers an item whose data is missing (asset not found): displayed as empty instead of failing
+        if(slot == null || slot.IsEmpty())
         {
             sprite.sprite = transparent;
             count.gameObject.SetActive(false);

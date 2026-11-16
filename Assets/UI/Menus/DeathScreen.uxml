@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- The names are used by DeathScreenUI: keep them when editing the layout -->
+    <ui:VisualElement name="root" class="death-root">
+        <ui:VisualElement name="death-panel" class="menu-panel">
+            <ui:Label text="Vous êtes mort" class="menu-title" />
+            <ui:Button name="respawn-button" text="Réapparaître" class="menu-button" />
+            <ui:Button name="main-menu-button" text="Menu principal" class="menu-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
