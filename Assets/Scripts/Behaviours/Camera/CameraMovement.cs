@@ -5,7 +5,7 @@ public class CameraMovement : MonoBehaviour
 {
     public static string OPTION_CAMERA_LOCKED = "camera_movement_locked";
 
-    public float sensibility = 0.2f;
+    public float sensibility = 0.15f;
     public Vector3 offset;
     private Transform Target
     {
@@ -86,9 +86,17 @@ public class CameraMovement : MonoBehaviour
         horizontalRotation += input.x;
         horizontalRotation = horizontalRotation % 360;
 
+        // Rotation stays in Update so that the raycasts done in Update (PlayerPointer, Builder) use the current aim
         transform.localRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0);
+    }
 
-        transform.position = Target.position + offset;
+    void LateUpdate()
+    {
+        Transform target = Target;
+        if (target == null) return;
+
+        // Follow after every Update so the camera uses the final (interpolated) player position of the frame
+        transform.position = target.position + offset;
     }
 
     private void UpdateFov()
