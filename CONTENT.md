@@ -82,7 +82,7 @@ Vue à la première personne uniquement.
 - Pas de séparation de stack, de clic droit ni de shift-clic.
 - **ItemCollectionUI** génère la grille de slots à partir de la collection (`slotsByLine`) et la redimensionne. Les slots UI sont réutilisés à chaque mise à jour : il n'en crée ou n'en supprime que si la taille change. `PlayerInventoryContentUI`, `PlayerToolBarUI` et `ItemStorageUI` (conteneur fouillé) en dérivent.
 - **InventorySlotUI** : affiche le sprite et la quantité (quantité masquée si `StackMax == 1`).
-- **HandedCursorUI** : le curseur se déplace vers le slot en main dans la barre d'outils.
+- **HandedCursorUI** : le curseur glisse vers le slot en main dans la barre d'outils (SmoothDamp, `smoothTime` 0.05 s).
 
 ## 5. Interaction
 

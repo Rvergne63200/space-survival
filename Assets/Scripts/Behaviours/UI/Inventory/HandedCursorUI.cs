@@ -10,6 +10,10 @@ public class HandedCursorUI : ParentedUI
     public Transform slot;
     public int index;
 
+    // Time to reach the selected slot, in seconds
+    public float smoothTime = 0.05f;
+    private Vector3 velocity = Vector3.zero;
+
     private UnityEvent<int> ev_UpdateHandedIndex;
 
     private void Start()
@@ -31,13 +35,15 @@ public class HandedCursorUI : ParentedUI
 
     private void Update()
     {
+        // The tool bar slots may not be created yet
+        if (index < 0 || index >= toolBar.transform.childCount)
+        {
+            return;
+        }
+
         slot = toolBar.transform.GetChild(index);
 
-        Vector3 vel = Vector3.zero;
-
-        if (slot != null)
-        {
-            transform.position = Vector3.SmoothDamp(transform.position, slot.position, ref vel, 0.007f);
-        }
+        // The velocity must persist between frames, otherwise SmoothDamp does not smooth anything
+        transform.position = Vector3.SmoothDamp(transform.position, slot.position, ref velocity, smoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
     }
 }
