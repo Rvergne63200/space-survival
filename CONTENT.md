@@ -58,7 +58,7 @@ Vue à la première personne uniquement.
 ### Données
 - **ItemData** (ScriptableObject `Item/Item`) : `Id` (int saisi à la main), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classe `ConsummableData` (voir feature 3).
 - **Item** : simple wrapper autour d'un ItemData (`Item.CreateFromData`). Pas encore de données d'instance (durabilité, etc.).
-- **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` instancie le `Model` devant la source, avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion.
+- **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` passe par `Pickupable.Spawn`, qui instancie le `Model` devant la source avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion. Le slot n'est vidé que si le spawn réussit (modèle valide avec un `Pickupable`).
 - **ItemCollection** : liste de slots de taille fixe (`MaxSize`). `Add` complète d'abord les stacks non pleins puis remplit les slots vides, et renvoie le surplus. `RemoveItem` retire en partant du dernier slot. `Count` compte la quantité totale d'un item. Event `ev_Update`.
 - **ItemStorage** (MonoBehaviour) : encapsule une ItemCollection. Sert de base au PlayerInventory et aux conteneurs.
 
@@ -67,13 +67,18 @@ Vue à la première personne uniquement.
 - `Add` remplit l'inventaire d'abord, puis la barre d'outils. `Remove` retire de l'inventaire, puis de la barre d'outils.
 - Touche Inventaire : ouvre ou ferme l'inventaire (`ev_UpdateIsOpen`).
 - Molette : change le slot en main (`HandedIndex`, avec bouclage).
-- `Use2` : consomme l'item en main si c'est un `ConsummableData`. `Use1` : vide.
-- Touche Drop (inventaire ouvert) : jette tout le contenu du slot tenu au curseur.
+- `Use2` : consomme l'item en main si c'est un `ConsummableData`. `Use1` : vide. Les deux sont ignorés quand une interface est ouverte (`OPTION_USE_DISABLED`, mode `Interface`).
+- Touche Drop (inventaire ouvert) : jette devant le joueur tout le contenu du slot tenu au curseur. Le slot du curseur est aussi jeté automatiquement quand la dernière interface se ferme.
 
 ### Interactions UI
-- Système par **clic**, sans vrai glisser-déposer. Un clic sur un slot (`ItemSlotUI.OnPlayerClick` → `TryMerge`) prend son contenu dans le `draggingSlot`, qui suit la souris (`UIFollowCursor`). Un nouveau clic le dépose.
+- Système par **clic**, sans vrai glisser-déposer. Les clics sont gérés par `ItemSlotUI.OnPointerClick`. Un clic gauche sur un slot (`TryMerge`) prend son contenu dans le `draggingSlot`, qui suit la souris (`UIFollowCursor`). Un nouveau clic le dépose.
   - Même item : fusion des stacks, le surplus reste au curseur.
   - Item différent : échange (Switch).
+- **Clic droit** (`SplitOrPlaceOne`) : avec un slot en main, dépose une unité sur le slot visé (vide ou même item). Main vide : prend la moitié du slot visé (arrondie au supérieur).
+- **Shift + clic gauche** (`QuickTransfer`) : transfère tout le slot.
+  - Avec un conteneur fouillé : conteneur → barre d'outils (puis inventaire), et barre d'outils ou inventaire → conteneur.
+  - Sans conteneur : inventaire ↔ barre d'outils.
+  - Ce qui ne rentre pas reste dans le slot d'origine.
 - Pas de séparation de stack, de clic droit ni de shift-clic.
 - **ItemCollectionUI** génère la grille de slots à partir de la collection (`slotsByLine`) et la redimensionne. Les slots UI sont réutilisés à chaque mise à jour : il n'en crée ou n'en supprime que si la taille change. `PlayerInventoryContentUI`, `PlayerToolBarUI` et `ItemStorageUI` (conteneur fouillé) en dérivent.
 - **InventorySlotUI** : affiche le sprite et la quantité (quantité masquée si `StackMax == 1`).
@@ -104,7 +109,7 @@ Vue à la première personne uniquement.
 - **CraftingStation** (`IInterractable`) : contient la liste des recettes disponibles. Interagir avec elle appelle `Crafter.Check(station)`, qui ouvre l'UI.
 - **Crafter** (sur le joueur) :
   - `Craft(recipe)` vérifie que la station est valide, que la recette lui appartient et que les ingrédients sont présents (`CheckHasItems`, qui additionne les ingrédients en double et compte l'inventaire et la barre d'outils).
-  - Ensuite, il retire les ingrédients de l'inventaire et ajoute les résultats. Le craft est instantané.
+  - Ensuite, il retire les ingrédients de l'inventaire et ajoute les résultats. Ce qui ne rentre pas (inventaire plein) est jeté au sol devant le joueur. Le craft est instantané.
 - **UI**
   - `CraftingStationUI` génère un `RecipePanelUI` par recette de la station.
   - `RecipePanelUI` affiche le premier résultat (icône et quantité) et les ingrédients. Le bouton appelle `OnCraft` → `Crafter.Craft`.

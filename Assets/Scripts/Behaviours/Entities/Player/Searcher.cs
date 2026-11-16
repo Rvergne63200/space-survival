@@ -5,6 +5,7 @@ using System;
 public class Searcher : MonoBehaviour
 {
     private ItemStorage currentSearchedStorage = null;
+    public ItemStorage CurrentSearchedStorage => currentSearchedStorage;
 
     public UnityEvent<ItemStorage> ev_UpdateSearchStorage;
 

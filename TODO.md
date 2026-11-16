@@ -27,19 +27,19 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **B13** **[Stats]** `Stat.Actualize` : quand un marker expire, `RemoveMarker` puis `break` arrêtent la boucle. Les markers suivants ne sont pas appliqués pendant cette frame. Collecter les clés expirées et les supprimer après la boucle.
 - [ ] **B14** **[Bootstrap]** Le joueur spawne à la position du PlayerManager, et aussi dans le menu (à chaque `sceneLoaded`).
 - [ ] **B15** **[Bootstrap]** Build Settings : ajouter `0_MainMenu`, qui manque, et vérifier le `firstScene` du Bootstrapper.
-- [ ] **B16** **[Inventaire]** `DropDraggingSlot` appelle `Drop(..., gameObject)` avec le GameObject du PlayerInventory, qui est sur le PlayerManager. L'objet tombe donc à la position du manager, pas devant le joueur. Utiliser la position et la direction du joueur ou de la caméra.
-- [ ] **B17** **[Inventaire]** `ItemSlot.Drop` : crash si `Model` est null ou n'a pas de `Pickupable`. Ajouter des vérifications.
+- [x] **B16** **[Inventaire]** `DropDraggingSlot` jette maintenant l'objet devant le joueur (`PlayerManager.Instance.Player`), et non plus à la position du PlayerManager, qui porte le PlayerInventory.
+- [x] **B17** **[Inventaire]** `ItemSlot.Drop` ne plante plus si `Model` est null ou n'a pas de `Pickupable`. Le spawn est centralisé dans `Pickupable.Spawn`, qui vérifie le modèle, et le slot n'est vidé que si l'objet a bien été créé. Un Rigidbody déjà présent sur le modèle est réutilisé.
 - [ ] **B18** **[Inventaire]** `ChangeHandedItem` : division par zéro si `scroll.y == 0` (`scroll.y / Mathf.Abs(scroll.y)`). Utiliser `Mathf.Sign`.
 - [ ] **B19** **[Inventaire]** `ItemCollection.RemoveFromSlot` : la borne `index > MaxSize` devrait être `>=`.
 - [ ] **B20** **[Inventaire]** `HandedCursorUI` : la vitesse de SmoothDamp est réinitialisée à chaque frame et le smoothTime vaut 0.007, donc le lissage est inefficace.
 - [ ] **B21** **[Interfaces]** (À vérifier dans un build) Le curseur reste visible après la fermeture d'une interface avec Échap. C'est probablement dû à l'éditeur Unity, qui libère le curseur sur Échap. Un réverrouillage à la frame suivante a été essayé sans succès en éditeur, puis abandonné.
-- [ ] **B22** **[Interfaces]** À vérifier : l'objet tenu au curseur (`draggingSlot`) à la fermeture de l'inventaire. Il n'est pas remis dans l'inventaire.
+- [x] **B22** **[Interfaces]** L'objet tenu au curseur (`draggingSlot`) restait affiché après la fermeture de l'inventaire. Il est maintenant jeté au sol quand la dernière interface se ferme (fin du mode `Interface`, écoutée via `ModeManager.ev_OnUpdateOptions`).
 - [ ] **B23** **[Interaction]** `PointedInterractorInformationUI` ne se met à jour qu'en passant de « rien » à « un objet » (ou l'inverse). Quand on passe directement d'un interactable à un autre, l'ancien texte reste. Le texte n'est pas non plus rafraîchi après un ramassage partiel.
 - [ ] **B24** **[Interaction]** `Searcher.Search` bascule ouvert/fermé. Interagir avec un autre conteneur pendant qu'un conteneur est ouvert le ferme au lieu d'ouvrir le nouveau.
 - [ ] **B25** **[Interaction]** Raycast du pointeur : pas de layer mask, et il touche aussi les triggers. `hit.transform` renvoie le Rigidbody parent ou le collider, donc un `IInterractable` posé sur un parent n'est pas toujours trouvé. Utiliser `GetComponentInParent`.
 - [ ] **B26** **[Interaction]** Flag `Pickupable.identified` : il n'est mis à `true` que pour les objets jetés. Les objets placés dans la scène affichent « Pickup » au lieu de leur nom. À clarifier ou supprimer.
 - [x] **B27** **[Crafting]** `CheckHasItems` compte maintenant les ingrédients de l'inventaire **et** de la barre d'outils, via `ItemStorage.Count`, surchargé par `PlayerInventory` comme `Add` et `Remove`.
-- [ ] **B28** **[Crafting]** Si l'inventaire est plein, les résultats du craft qui ne rentrent pas sont perdus (le `rest` est ignoré). Les jeter au sol, ou bloquer le craft s'il n'y a pas assez de place.
+- [x] **B28** **[Crafting]** Les résultats du craft qui ne rentrent pas dans l'inventaire plein sont jetés au sol devant le joueur (`Pickupable.Spawn`), au lieu d'être perdus.
 - [ ] **B29** **[Crafting]** `Crafter.ClearStation()` n'est jamais appelé : la station reste « active » après la fermeture de l'UI. La brancher sur la fermeture de l'interface, comme pour le Searcher.
 - [ ] **B30** **[Construction]** `BuildVerifier` : le compteur de triggers reste bloqué (invalide) si un collider en contact est détruit ou désactivé, car `OnTriggerExit` n'est pas appelé. Il compte aussi n'importe quel collider ou trigger, sans filtre de layer.
 - [ ] **B31** **[Construction]** Conflit sur `Use1` entre `Builder` (valider la pose) et `PlayerInventory.Use1` (outils et armes). Utiliser le mode `PlayingMode.Build`, qui existe mais n'est pas utilisé.
@@ -48,6 +48,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **B34** **[Terrain]** `EnvironmentSpawner` utilise le `Random` global : le spawn n'est pas déterministe (il dépend de l'ordre de chargement). Utiliser un `System.Random` seedé par les coordonnées du chunk. `Random.Range(1.80f, 1.20f)` a aussi ses bornes inversées.
 - [ ] **B35** **[Terrain]** `ChunkManager` récupère le joueur par `FindGameObjectWithTag` dans `Start` : la référence est perdue si le joueur est réinstancié. Passer par `PlayerManager.ev_spawnPlayer`.
 - [ ] **B36** **[Terrain]** Coutures de LOD entre chunks : appeler `Terrain.SetNeighbors` entre chunks voisins.
+- [x] **B37** **[Inventaire]** Slots vides « bloqués » : la sérialisation Unity crée un `Item` avec un `Data` null dans les slots vides (`draggingSlot`, slots des collections), et `ItemSlot.Add` refusait alors tout item. `IsEmpty` tient maintenant compte du `Data` null, et `Add` et `IsFull` s'appuient dessus. C'est ce qui bloquait le dépôt au clic droit et faisait perdre la moitié au split.
+- [x] **B38** **[Inventaire]** Un clic droit dans une interface déclenchait aussi `Use2` (bouton droit), qui consommait l'item en main. `Use1` et `Use2` sont maintenant ignorés en mode `Interface` (option `PlayerInventory.OPTION_USE_DISABLED`).
 
 ## Feature
 
@@ -57,8 +59,10 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F04** **[Stats]** Ajouter les stats Faim, Soif et Oxygène, avec leurs modifiers associés.
 - [ ] **F05** **[Stats]** Gérer les conséquences d'une stat à 0 (mort du joueur, dégâts quand faim, soif ou oxygène sont à 0).
 - [ ] **F06** **[Inventaire]** Vrai glisser-déposer (drag & drop) entre les slots.
-- [ ] **F07** **[Inventaire]** Séparer un stack (clic droit : prendre la moitié ou une seule unité).
-- [ ] **F08** **[Inventaire]** Transfert rapide en shift-clic entre l'inventaire, la barre d'outils et un conteneur.
+- [x] **F07** **[Inventaire]** Clic droit (`PlayerInventory.SplitOrPlaceOne`) : avec un slot en main, dépose une unité sur le slot visé (vide ou même item). Main vide : prend la moitié du slot visé (arrondie au supérieur).
+- [x] **F08** **[Inventaire]** Shift-clic (`PlayerInventory.QuickTransfer`) : transfert du slot entier. Avec un conteneur fouillé : conteneur → barre d'outils (puis inventaire si elle est pleine), barre d'outils → conteneur, inventaire → conteneur. Sans conteneur : inventaire ↔ barre d'outils. Ce qui ne rentre pas reste dans le slot d'origine.
+  - Le split ne retire du slot que ce que le curseur a réellement pris.
+  - Les clics sont gérés par `ItemSlotUI.OnPointerClick` (`IPointerClickHandler`). L'appel `onClick` du Button a été retiré du prefab `InventorySlot`, mais le Button reste pour les couleurs de survol.
 - [ ] **F09** **[Inventaire]** Implémenter `Use1` (action principale) : outils, armes, validation d'une construction.
 - [ ] **F10** **[Inventaire]** (À voir) Revoir l'ordre de remplissage. Actuellement : inventaire d'abord, puis barre d'outils.
 - [ ] **F11** **[Inventaire]** (À décider) Données propres à chaque exemplaire d'item (durabilité, charges…).

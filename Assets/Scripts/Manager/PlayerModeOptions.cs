@@ -8,6 +8,7 @@ public static class PlayerModeOptions
             PlayingMode.Interface, new HashSet<string>
             {
                 PlayerMovement.OPTION_DISABLED,
+                PlayerInventory.OPTION_USE_DISABLED,
                 InterfaceManager.OPTION_CURSOR_VISIBLE,
                 CameraMovement.OPTION_CAMERA_LOCKED
             }

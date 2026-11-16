@@ -43,11 +43,16 @@ public class Crafter : MonoBehaviour
             inventory.Remove(Item.CreateFromData(ingredient.Item), ingredient.Quantity);
         }
 
-        // Add crafted item in the inventory
+        // Add crafted item in the inventory, and drop on the ground what does not fit
         foreach (RecipeData.ItemBlock result in recipe.Results)
         {
-            int rest = inventory.Add(Item.CreateFromData(result.Item), result.Quantity);
-            // TODO : Penser à gérer le cas ou il n'y a plus de places dans l'inventaire
+            Item item = Item.CreateFromData(result.Item);
+            int rest = inventory.Add(item, result.Quantity);
+
+            if (rest > 0)
+            {
+                Pickupable.Spawn(item, rest, transform);
+            }
         }
     }
 

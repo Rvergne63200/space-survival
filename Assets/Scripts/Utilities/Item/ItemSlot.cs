@@ -56,9 +56,11 @@ public class ItemSlot<T> where T : Item
             return 0;
         }
 
-        if(Item == null)
+        // Not only "Item == null": Unity serialization creates an Item with null Data in empty slots
+        if(IsEmpty())
         {
             Item = item;
+            Quantity = 0;
         }
 
         if(Item?.Data?.Id != item?.Data?.Id)
@@ -83,7 +85,7 @@ public class ItemSlot<T> where T : Item
 
     public bool IsFull()
     {
-        if(Item == null)
+        if(IsEmpty())
         {
             return false;
         }
@@ -93,7 +95,7 @@ public class ItemSlot<T> where T : Item
 
     public bool IsEmpty()
     {
-        return Item == null || Quantity <= 0;
+        return Item == null || Item.Data == null || Quantity <= 0;
     }
 
     public void Switch(ItemSlot<T> slot)
@@ -119,19 +121,11 @@ public class ItemSlot<T> where T : Item
         }
 
         int quantityToDrop = Mathf.Clamp(count, 0, Quantity);
-        GameObject objectToInstantiate = Item.Data.Model;
-        Item itemToDrop = Item;
 
-        Remove(quantityToDrop);
-        GameObject instance = GameObject.Instantiate(objectToInstantiate, source.transform.position + source.transform.forward * 1f, source.transform.rotation, null);
-        Pickupable pickupable = instance.GetComponent<Pickupable>();
-
-        pickupable.item = itemToDrop;
-        pickupable.count = quantityToDrop;
-        pickupable.identified = true;
-
-        Rigidbody rb = instance.AddComponent<Rigidbody>();
-        rb.useGravity = true;
-        rb.AddForce(source.transform.forward * 50f);
+        // Only remove the items once they actually exist in the world
+        if (Pickupable.Spawn(Item, quantityToDrop, source.transform) != null)
+        {
+            Remove(quantityToDrop);
+        }
     }
 }
