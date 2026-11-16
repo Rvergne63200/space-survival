@@ -111,7 +111,7 @@ Vue à la première personne uniquement.
   - `Craft(recipe)` vérifie que la station est valide, que la recette lui appartient et que les ingrédients sont présents (`CheckHasItems`, qui additionne les ingrédients en double et compte l'inventaire et la barre d'outils).
   - Ensuite, il retire les ingrédients de l'inventaire et ajoute les résultats. Ce qui ne rentre pas (inventaire plein) est jeté au sol devant le joueur. Le craft est instantané.
 - **UI**
-  - `CraftingStationUI` génère un `RecipePanelUI` par recette de la station.
+  - `CraftingStationUI` génère un `RecipePanelUI` par recette de la station. À la fermeture de l'interface, la station du `Crafter` est libérée (`ClearStation`).
   - `RecipePanelUI` affiche le premier résultat (icône et quantité) et les ingrédients. Le bouton appelle `OnCraft` → `Crafter.Craft`.
 
 ## 7. Construction
@@ -132,11 +132,11 @@ Vue à la première personne uniquement.
   - Les chunks éloignés sont **désactivés** (jamais détruits) et réactivés au retour.
   - Les chunks chargés sont reliés à leurs voisins (`Terrain.SetNeighbors`, vérifié à chaque frame dans `LateUpdate`, auto-connexion Unity désactivée), ce qui évite les fissures de LOD vues de loin.
   - Seed → offset Perlin global, ce qui donne un terrain continu et déterministe.
-  - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer.
+  - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer. Le joueur est fourni par `PlayerManager` (`ev_spawnPlayer`), et la référence est mise à jour à chaque respawn.
   - `FlattenTerrainAt(pos, rayon, hauteur)` aplanit tous les chunks concernés (utilisé par la construction, en cours de modification). Le plateau a une pente douce sur 1.3× le rayon, avec une tolérance verticale de 4 m. Seul le terrain au-dessus de « cible − tolérance » est modifié : les creux profonds ne sont pas remplis.
   - Gizmos de debug : chunks générés et chargés.
 - **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks. Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin.
-- **EnvironmentSpawner** (sur le prefab `Chunk`) : pour chaque m² du chunk, a 0.1 % de chances de faire apparaître `prefab`, avec une rotation et une taille aléatoires.
+- **EnvironmentSpawner** (sur le prefab `Chunk`) : appelé une fois les hauteurs générées (`ev_OnTerminateGeneration`). Pour chaque m² du chunk, il a 0.1 % de chances de faire apparaître `prefab`, avec une rotation et une taille aléatoires. Le tirage est seedé par la seed du monde et la position du chunk : un chunk a toujours les mêmes objets.
 
 ## 9. Modes de jeu & interfaces
 

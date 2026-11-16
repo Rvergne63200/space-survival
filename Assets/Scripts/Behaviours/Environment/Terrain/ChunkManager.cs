@@ -10,6 +10,7 @@ public class ChunkManager : MonoBehaviour
     [SerializeField] int chunkSize = 64;
     [SerializeField] int generationDistance = 2;
     [SerializeField] int seed = 0;
+    public int Seed => seed;
     [SerializeField] Transform[] toReplaceConfig = new Transform[0];
 
     Transform playerTransform;
@@ -40,20 +41,63 @@ public class ChunkManager : MonoBehaviour
         Random.InitState(seed);
 
         perlinOffset = new Vector2(Random.value * 999999, Random.value * 999999);
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
-        ToReplace.Add(playerTransform);
         foreach (Transform t in toReplaceConfig)
         {
             ToReplace.Add(t);
         }
 
+        // The player is spawned by the PlayerManager on scene load (before Start), and may be spawned again later
+        if (PlayerManager.Instance != null)
+        {
+            PlayerManager.Instance.ev_spawnPlayer.AddListener(OnSpawnPlayer);
+
+            if (PlayerManager.Instance.Player != null)
+            {
+                OnSpawnPlayer(PlayerManager.Instance.Player);
+            }
+        }
+        else
+        {
+            // Scene played without the Bootstrap: the player is placed in the scene
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            OnSpawnPlayer(player);
+        }
+
         // Load chunks around player
-        LoadNeededChunks(new HashSet<Vector2Int>());
+        if (playerTransform != null)
+        {
+            LoadNeededChunks(new HashSet<Vector2Int>());
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (PlayerManager.Instance != null)
+        {
+            PlayerManager.Instance.ev_spawnPlayer.RemoveListener(OnSpawnPlayer);
+        }
+    }
+
+    private void OnSpawnPlayer(GameObject player)
+    {
+        if (playerTransform != null)
+        {
+            ToReplace.Remove(playerTransform);
+        }
+
+        playerTransform = player != null ? player.transform : null;
+
+        if (playerTransform != null)
+        {
+            ToReplace.Add(playerTransform);
+        }
     }
 
     void Update()
     {
+        if (playerTransform == null) return;
+
         HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
 
         LoadNeededChunks(neededChunks);

@@ -34,11 +34,26 @@ public class CraftingStationUI : MonoBehaviour
         }
         else
         {
-            gameObject.SetActive(false);
+            // Already inactive when called from OnDisable (interface closed)
+            if (gameObject.activeSelf)
+            {
+                gameObject.SetActive(false);
+            }
+
             Clear();
         }
 
         InterfaceManager.GetInstance().SetInterface(gameObject, display);
+    }
+
+    // The interface can be closed without the crafter (Escape, InterfaceManager.CloseInterfaces):
+    // release the station, like the Searcher does for the searched storage
+    private void OnDisable()
+    {
+        if (crafter != null)
+        {
+            crafter.ClearStation();
+        }
     }
 
     private void Clear()
