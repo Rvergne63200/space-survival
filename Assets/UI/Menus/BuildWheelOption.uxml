@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- One option of the build wheel. The names are used by BuildWheelUI. Size: see .wheel-option (Menus.uss) -->
+    <ui:Button name="option-button" class="wheel-option">
+        <ui:VisualElement name="option-icon" class="wheel-option-icon" />
+        <ui:Label name="option-label" text="Option" class="wheel-option-label" />
+    </ui:Button>
+</ui:UXML>

@@ -327,7 +327,8 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 origin = transform.TransformPoint(playerCollider.center);
         float distance = halfHeight - radius + groundCheckDistance;
-        int layerMask = ~(1 << gameObject.layer);
+        // The player walks through the structure plans (Blueprint layer): they are not ground
+        int layerMask = ~((1 << gameObject.layer) | LayerMask.GetMask("Blueprint"));
 
         if (!Physics.SphereCast(origin, radius, Vector3.down, out RaycastHit hit, distance, layerMask, QueryTriggerInteraction.Ignore))
         {

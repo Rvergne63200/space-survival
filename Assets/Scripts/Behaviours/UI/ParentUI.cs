@@ -65,12 +65,24 @@ public class ParentUI : MonoBehaviour
     {
         InterfaceManager interfaceManager = InterfaceManager.GetInstance();
 
-        // The death screen cannot be closed with Escape
+        // The death screen cannot be closed with Escape, the build wheel closes when its key is released
         if (DeathScreenUI.Instance != null && DeathScreenUI.Instance.IsOpen) return;
+        if (BuildWheelUI.Instance != null && BuildWheelUI.Instance.IsOpen) return;
 
         if (interfaceManager.HasOpenInterface)
         {
             interfaceManager.CloseInterfaces();
+            return;
+        }
+
+        // Placement, build or destruction mode: back to the normal mode before the pause menu
+        Builder builder = PlayerManager.Instance != null && PlayerManager.Instance.Player != null
+            ? PlayerManager.Instance.Player.GetComponent<Builder>()
+            : null;
+
+        if (builder != null && builder.IsActive)
+        {
+            builder.Cancel();
         }
         else if (PauseMenuUI.Instance != null && PlayerManager.Instance != null && PlayerManager.Instance.Player != null)
         {

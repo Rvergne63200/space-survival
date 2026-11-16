@@ -15,9 +15,17 @@ public class ItemStorage : MonoBehaviour, ISaveableComponent
 
     public string SaveKey => "itemStorage";
 
+    // Number of slots created at Awake when the content has none (prefab without slots: crate, death bag...)
+    [SerializeField] protected int size = 0;
+
     // Not called by PlayerInventory (its override does not call it): the player inventory is saved with the player
     protected virtual void Awake()
     {
+        if (size > 0 && (_content == null || _content.Slots == null || _content.Slots.Count == 0))
+        {
+            _content = new ItemCollection<Item>(size);
+        }
+
         Content = Content;
 
         // Every storage of the world (chests...) keeps its content in the save

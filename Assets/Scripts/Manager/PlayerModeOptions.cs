@@ -14,6 +14,13 @@ public static class PlayerModeOptions
             }
         },
         {
+            // Placement, build or destruction (Builder): the clicks are used by the construction, not by the item in hand
+            PlayingMode.Build, new HashSet<string>
+            {
+                PlayerInventory.OPTION_USE_DISABLED
+            }
+        },
+        {
             // Main menu: free cursor, no player control
             PlayingMode.Menu, new HashSet<string>
             {

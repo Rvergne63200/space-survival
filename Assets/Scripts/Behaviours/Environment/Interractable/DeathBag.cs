@@ -5,19 +5,12 @@ using UnityEngine.Events;
 // destroyed once empty. Created in game: saved as a runtime object (SaveManager.runtimePrefabs)
 public class DeathBag : ItemStorage
 {
-    [SerializeField] private int size = 40;
-
     private UnityAction<ItemSlot<Item>> onSlotUpdated;
     private bool checkEmpty;
 
+    // The content is created by ItemStorage.Awake (size, in the prefab)
     protected override void Awake()
     {
-        // The content is created here: the prefab has no slots
-        if (_content == null || _content.Slots == null || _content.Slots.Count == 0)
-        {
-            _content = new ItemCollection<Item>(size);
-        }
-
         base.Awake();
 
         // Taking an item (click, shift click...) changes the slots directly, without the collection event

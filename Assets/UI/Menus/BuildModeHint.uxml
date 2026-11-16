@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- Banner of the construction modes (BuildModeUI). Does not catch the mouse (picking-mode Ignore) -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="build-mode-root">
+        <ui:Label name="build-mode-label" picking-mode="Ignore" text="Mode construction" class="build-mode-label" />
+    </ui:VisualElement>
+</ui:UXML>

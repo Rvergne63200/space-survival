@@ -102,3 +102,75 @@
     justify-content: center;
     background-color: rgba(140, 0, 0, 0.45);
 }
+
+/* Build wheel. The options are placed by BuildWheelUI (radius), centered on their 100 x 100 px size */
+.wheel-root {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.wheel {
+    width: 440px;
+    height: 440px;
+    border-radius: 220px;
+    background-color: rgba(20, 24, 36, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.wheel-info {
+    width: 200px;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.wheel-option {
+    width: 100px;
+    height: 100px;
+    margin: 0;
+    padding: 6px;
+    border-radius: 50px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(40, 46, 64, 0.95);
+    align-items: center;
+    justify-content: center;
+}
+
+.wheel-option:hover {
+    border-color: rgb(255, 255, 255);
+    background-color: rgba(70, 110, 170, 0.95);
+}
+
+.wheel-option-icon {
+    width: 44px;
+    height: 44px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.wheel-option-label {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+/* Banner of the construction modes, at the bottom of the screen */
+.build-mode-root {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 120px;
+}
+
+.build-mode-label {
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: rgba(20, 24, 36, 0.8);
+    color: rgb(255, 255, 255);
+    font-size: 15px;
+    -unity-text-align: middle-center;
+}

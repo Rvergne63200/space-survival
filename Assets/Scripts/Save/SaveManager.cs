@@ -18,14 +18,16 @@ public class SaveManager : MonoBehaviour
     // Every item of the game, to find them by id (inventory, chests, pickups). See "Refresh item list" in the component menu
     [SerializeField] private List<ItemData> items = new List<ItemData>();
 
-    // Prefabs the player can build, found by name for the built objects
-    [SerializeField] private List<GameObject> buildPrefabs = new List<GameObject>();
+    // Structures (finished and plans), found by id
+    [SerializeField] private StructureCatalog structureCatalog;
 
     // Other prefabs instantiated during the game (death bag...), found by name
     [SerializeField] private List<GameObject> runtimePrefabs = new List<GameObject>();
 
     public const string ItemPrefabKeyPrefix = "item:";
     public const string BuildPrefabKeyPrefix = "build:";
+    public const string BlueprintPrefabKeyPrefix = "blueprint:";
+    public const string PlacedPrefabKeyPrefix = "placed:";
     public const string RuntimePrefabKeyPrefix = "prefab:";
 
     private const string EditorSaveName = "Partie éditeur";
@@ -469,32 +471,28 @@ public class SaveManager : MonoBehaviour
 
     private void InstantiateRuntimeObject(ObjectSaveData data)
     {
-        GameObject prefab = GetRuntimePrefab(data);
+        // The saved state (components) is applied when the object registers, at Start
+        GameObject instance = InstantiateConstruction(data);
 
-        if (prefab == null)
+        if (instance == null)
         {
-            Debug.LogWarning("Save: cannot recreate \"" + data.id + "\", unknown prefab key \"" + data.prefabKey + "\".");
-            return;
-        }
+            GameObject prefab = GetRuntimePrefab(data);
 
-        GameObject instance = Instantiate(prefab, data.position, data.rotation);
-
-        SaveableObject saveable = instance.GetComponent<SaveableObject>();
-        if (saveable == null)
-        {
-            saveable = instance.AddComponent<SaveableObject>();
-        }
-
-        // The saved state (components) is applied when it registers, at Start
-        saveable.SetRuntime(data.prefabKey, data.id);
-
-        if (data.prefabKey.StartsWith(BuildPrefabKeyPrefix))
-        {
-            BuildObject buildObject = instance.GetComponent<BuildObject>();
-            if (buildObject != null)
+            if (prefab == null)
             {
-                buildObject.Put();
+                Debug.LogWarning("Save: cannot recreate \"" + data.id + "\", unknown prefab key \"" + data.prefabKey + "\".");
+                return;
             }
+
+            instance = Instantiate(prefab, data.position, data.rotation);
+
+            SaveableObject saveable = instance.GetComponent<SaveableObject>();
+            if (saveable == null)
+            {
+                saveable = instance.AddComponent<SaveableObject>();
+            }
+
+            saveable.SetRuntime(data.prefabKey, data.id);
         }
 
         // Do not fall through the terrain while its chunk is generated
@@ -503,6 +501,41 @@ public class SaveManager : MonoBehaviour
         {
             ChunkManager.Instance.HoldUntilGenerated(body);
         }
+    }
+
+    // Structures, plans and placed objects (BuildUtility). Null for the other keys
+    private GameObject InstantiateConstruction(ObjectSaveData data)
+    {
+        string key = data.prefabKey;
+
+        if (key.StartsWith(BuildPrefabKeyPrefix) || key.StartsWith(BlueprintPrefabKeyPrefix))
+        {
+            bool blueprint = key.StartsWith(BlueprintPrefabKeyPrefix);
+            string structureId = key.Substring(blueprint ? BlueprintPrefabKeyPrefix.Length : BuildPrefabKeyPrefix.Length);
+            StructureData structure = structureCatalog != null ? structureCatalog.Get(structureId) : null;
+
+            if (structure == null || structure.Prefab == null)
+            {
+                Debug.LogWarning("Save: unknown structure \"" + structureId + "\". Add it to the structure catalog.");
+                return null;
+            }
+
+            return blueprint
+                ? BuildUtility.CreateBlueprint(structure, data.position, data.rotation, data.id)
+                : BuildUtility.InstantiateStructure(structure, data.position, data.rotation, data.id);
+        }
+
+        if (key.StartsWith(PlacedPrefabKeyPrefix) && int.TryParse(key.Substring(PlacedPrefabKeyPrefix.Length), out int itemId))
+        {
+            if (GetItem(itemId) is PlaceableItemData placeable && placeable.PlacedPrefab != null)
+            {
+                return BuildUtility.InstantiatePlaced(placeable, data.position, data.rotation, data.id);
+            }
+
+            Debug.LogWarning("Save: item " + itemId + " is not a placeable item with a placed prefab.");
+        }
+
+        return null;
     }
 
     private GameObject GetRuntimePrefab(ObjectSaveData data)
@@ -515,11 +548,6 @@ public class SaveManager : MonoBehaviour
             }
 
             return null;
-        }
-
-        if (data.prefabKey.StartsWith(BuildPrefabKeyPrefix))
-        {
-            return FindPrefab(buildPrefabs, data.prefabKey.Substring(BuildPrefabKeyPrefix.Length));
         }
 
         if (data.prefabKey.StartsWith(RuntimePrefabKeyPrefix))

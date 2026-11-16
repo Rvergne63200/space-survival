@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Menus.uss" />
+    <!-- The names are used by BuildWheelUI: the options (BuildWheelOption.uxml) are added in "wheel", in a circle -->
+    <ui:VisualElement name="root" class="wheel-root">
+        <ui:VisualElement name="wheel" class="wheel">
+            <ui:Label name="wheel-info" class="wheel-info" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

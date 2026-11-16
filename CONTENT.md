@@ -149,14 +149,26 @@ Vue à la première personne uniquement.
 
 ## 7. Construction
 
-- **Builder** (sur le joueur), avec un seul prefab constructible (`build`, actuellement `BaseDom`) :
-  - La touche Build fait apparaître un fantôme là où vise la caméra (raycast de 300 m sur le layer `Terrain`). Un nouvel appui l'annule.
-  - Le fantôme suit le terrain. Sa hauteur est arrondie à un pas de **5 m**, plus **3 m** de décalage (`PutHeight`, en cours de modification). X et Z ne sont pas alignés sur une grille.
-  - `Use1` valide la pose si le `BuildVerifier` l'autorise. Le terrain est alors **aplani** sous la construction (`ChunkManager.FlattenTerrainAt`, rayon basé sur le scale, hauteur = position + 0.2) puis `BuildObject.Put()` est appelé.
-- **BuildVerifier** : la pose est valide s'il n'y a **aucun trigger en contact** (compteur Enter/Exit) **et** si le terrain est assez plat. La planéité est mesurée par un raycast 5×5 sur l'emprise, avec un écart de hauteur ≤ 2 m. Elle est recalculée quand le fantôme bouge de plus de 0.5 m. Event `ev_updateValidity`.
-- **BuildObject** : `Put()` détruit le verifier, active les colliders des `childs` et émet `ev_put`.
-- **BuildObjectTexture** : applique un matériau valide ou invalide sur le fantôme selon la validité, puis remet les matériaux d'origine à la pose.
-- `ObjectPlacement` (gameObject, position 2D, hauteur) : classe utilitaire, non utilisée pour l'instant.
+Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rouge (invalide) :
+- **Placement** : un item plaçable de l'inventaire (une caisse, par exemple) est posé tel quel.
+- **Build** : une structure choisie dans la roue est posée sous forme de **plan**, auquel on apporte ensuite les ressources de son coût.
+
+- **Roue de construction** (`BuildWheelUI`, dans `Bootstrap`, `BuildWheel.uxml` et `BuildWheelOption.uxml`, style dans `Menus.uss`) : on maintient la touche Build (B) pour l'afficher, avec le curseur libre (mode `Menu`). Un clic sur une option la choisit et ferme la roue ; relâcher B la ferme aussi.
+  - Options : « Détruire », puis les structures du `StructureCatalog`. Elles sont disposées en cercle (`radius`), et le centre affiche le nom et le coût de l'option survolée.
+- **Builder** (sur le joueur). Pendant le placement, le build ou la destruction, le mode `PlayingMode.Build` désactive l'usage de l'item en main (clics). Tout est masqué pendant qu'une interface est ouverte.
+  - **Fantôme** : copie visuelle du prefab (meshes seulement, sans script ni collider : `BuildUtility.CreateVisual`), posée là où vise la caméra, à **8 m** maximum (`range`). Pour une structure, la portée s'ajoute au rayon de son emprise, et son centre reste à au moins « rayon + 1 m » du joueur, qui ne peut donc pas se trouver dedans.
+  - **Commandes** : R le fait tourner (90°/s), Shift + R par pas de 45°. Clic gauche : poser. Clic droit ou Échap : annuler (Échap quitte d'abord le mode, puis ouvre le menu pause).
+  - **Bandeau d'indication** (`BuildModeUI`, dans `Bootstrap`, `BuildModeHint.uxml`) : en bas de l'écran, le mode en cours (Placement, Construction ou Destruction, avec le nom de l'objet) et ses commandes. Il ne capte pas la souris.
+  - **Validité** : surface d'appui assez horizontale, aucun objet dans la boîte englobante (le terrain excepté, avec une boîte réduite de 10 % pour ne pas compter le sol). Pour une structure, s'y ajoute un écart de hauteur du terrain sous les 4 coins ≤ `MaxSlope`.
+  - **Placement** : démarre tout seul quand l'item en main est un `PlaceableItemData`. La pose instancie son `placedPrefab` (`PlacedObject`) et retire un item du slot en main. Après un clic droit, le fantôme ne revient qu'au prochain changement d'item en main.
+  - **Build** : la pose aplanit le terrain sous la structure (si `FlattenTerrain`), puis crée son plan.
+  - **Destruction** : la structure, le plan ou l'objet posé visé est surligné en rouge, et un clic gauche le détruit. Clic droit pour quitter le mode.
+- **StructureData** (ScriptableObject, Construction/Structure) : id (sauvegardes), nom, icône, prefab, coût (`Cost`), ressources rendues à la destruction (`Refund`, n'importe quels items), aplanissement, pente max. **StructureCatalog** : la liste des structures (roue et sauvegarde). Structure actuelle : `BaseDom`, dôme de 8 m de diamètre, base de 8,8 m (20 fer, 30 bois ; rend 10 fer).
+- **StructureBlueprint** (plan) : **hologramme bleu** (shader `Custom/Hologram` : lueur additive, bords lumineux, lignes de balayage animées, léger scintillement ; matériau `Resources/Materials/Blueprint`). Il a un collider pour être visé, sur le layer `Blueprint`, qui n'entre pas en collision avec le joueur : on le traverse (matrice de collision, et `Physics.IgnoreLayerCollision` par sécurité). La détection du sol du joueur l'ignore aussi. Pour interagir avec le plan, il faut le viser depuis l'extérieur. Interagir dépose tout ce qui manque et qu'on a dans l'inventaire. Le texte affiche l'avancement (« Dôme (plan) : Iron 12/20, WoodLog 4/30 »). Une fois tout apporté, il devient la structure réelle (`BuiltStructure`). Détruit, il rend ce qui lui a été apporté.
+- **PlaceableItemData** (ItemData, Item/Placeable) : `placedPrefab` et `Refund`, rendu à la destruction (vide : l'item lui-même). Le contenu des conteneurs d'un objet détruit va aussi dans l'inventaire. Item actuel : `8_Crate` (caisse de 20 slots).
+- **Inventaire de départ** (test) : 60 fer et 90 bois de plus (de quoi construire 3 dômes), et 2 caisses dans la barre d'outils.
+- **Sauvegarde** : les structures (`build:<id>`), les plans (`blueprint:<id>`, avec les ressources apportées) et les objets posés (`placed:<itemId>`, avec le contenu de leurs conteneurs) sont des objets « runtime », recréés par `BuildUtility` au chargement.
+- Ancien système, encore présent sur le prefab `BaseDom` : `BuildObject` (`Put()` active les colliders, appelé à l'instanciation de la structure), `BuildVerifier` et `BuildObjectTexture` (retirés de l'instance, voir R14). `ObjectPlacement` n'est pas utilisé.
 
 ## 8. Terrain procédural
 
