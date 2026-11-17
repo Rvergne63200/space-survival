@@ -98,8 +98,101 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **F46** **[Inventaire]** **Lampe torche** (`Flashlight`) : au clic gauche en main, allume ou éteint un spot devant la caméra (`FlashlightAction`). Elle s'éteint quand elle quitte la main. Les actions des outils ont maintenant trois modes (`ItemActionMode`) : `Press` (un clic = une utilisation, ex. arme), `Toggle` (`ToggleItemAction`, activer / désactiver) et `Hold` (`HoldItemAction`, tant que le bouton est maintenu, ex. pioche).
 - [ ] **F47** **[Construction]** **Relais radio** (`Radio Relay`) : effet à définir (le prefab posé `RadioRelais` existe).
 - [ ] **F48** **[Crafting]** **Crafter** : recettes de sa `CraftingStation` (le prefab posé `Crafter` existe).
+- [ ] **F49** **[Énergie]** **Génération d'énergie** : panneaux solaires, éoliennes, générateur à charbon (consomme du `Coal` et de l'oxygène, voir F51), etc.
+- [ ] **F50** **[Énergie]** **Réseau électrique** : batteries, et câbles posés à la main. Unité : le **watt** (production et consommation en W).
+  - **Pose des câbles et des tuyaux** (F51) : un lien automatique entre deux objets, qui peut passer par plusieurs points intermédiaires. Le tracé est arrondi entre deux points, pour l'esthétique.
+  - **Réseaux** :
+    - Tout ce qui est relié forme un réseau : par câble, dans un même bâtiment, ou dans des bâtiments reliés (F26). Un bâtiment alimenté alimente tout ce qu'il contient, sans câble.
+    - Calcul par paliers dans un gestionnaire persistant, et sauvegardé.
+  - **Les générateurs et les batteries ne relient pas les réseaux** : un générateur ou une batterie relié de deux côtés appartient à deux réseaux, sans les fusionner.
+    - Exemple : `G1 - A1 - G2 - A2` donne deux réseaux, {G1, A1, G2} et {G2, A2}. A1 profite de G1 et de G2, A2 ne profite que de G2.
+    - Un générateur ou une batterie posé dans un bâtiment fait partie du réseau du bâtiment. S'il est aussi relié par câble à une machine dehors, il est dans deux réseaux. Le joueur pourra peut-être l'exclure du réseau du bâtiment (à voir).
+  - **Générateurs** :
+    - Ils tournent toujours à fond, dans la limite de l'oxygène reçu pour ceux qui en ont besoin (F52).
+    - Un générateur ne donne à chaque réseau que ce dont il a besoin, batteries comprises. Le reste est perdu, rejeté sous forme de chaleur (surchauffe de certains générateurs peut-être plus tard).
+  - **Répartition d'un générateur partagé** :
+    1. Les générateurs reliés à un seul réseau servent d'abord leur réseau.
+    2. Les générateurs partagés couvrent ensuite ce qui manque, au prorata des manques de chaque réseau.
+    3. Si un réseau disjoncte, sa part revient aux autres réseaux du générateur.
+  - **Batteries** :
+    - Elles absorbent les surplus et fournissent ce qui manque. Une batterie partagée fait passer de l'énergie d'un réseau à l'autre sans les relier.
+    - Exemple : `G1 - A1 - B1 - A2 - G2`. G1 ne fournit que A1 + la charge de B1. G2 ne fournit que A2 + ce que B1 peut encore recevoir. Si G1 ou G2 ne produit pas assez, B1 fournit ce qui manque.
+    - **Pas de débit maximum** de charge ou de décharge. Plus tard, peut-être certaines batteries avec un débit, à côté de batteries à débit infini.
+  - **Manque d'énergie** : si la production et les batteries ne suffisent pas, le réseau **disjoncte** et tout ce qu'il alimente s'arrête. Il se **réarme automatiquement** (après quelques secondes) quand la production et les batteries couvrent la demande de tout ce qui est allumé.
+  - **Contrôle des bâtiments** : on peut couper l'alimentation d'un bâtiment et programmer ses heures d'alimentation (F54). Ces réglages sont ceux du tableau de distribution intégré au bâtiment (F56). Un bâtiment coupé arrête ses machines, qui ne consomment plus, mais le courant le traverse toujours vers ce qui est relié derrière lui.
+- [ ] **F51** **[Oxygène]** **Système d'oxygène** (modèle détaillé de F27) :
+  - **Unités** :
+    - L'oxygène se compte en **litres**. Les débits (production, consommation, régulateurs) sont en **L/s**.
+    - Le volume d'un bâtiment se mesure en **m³**, converti en litres pour calculer la **concentration** (% d'O2 dans l'air).
+    - Dehors, la concentration est nulle (peut-être 1 à 2 % plus tard).
+  - **Respiration** : sous un seuil de concentration, le joueur ne peut plus respirer et sa barre d'oxygène baisse. Plus la concentration est basse, plus la barre baisse vite.
+  - **Réseaux** :
+    - Tout ce qui est relié par des tuyaux forme **un réseau**, qui partage son oxygène sans notion de sens de circulation.
+    - Calcul par paliers dans un gestionnaire persistant, comme pour l'électricité, et sauvegardé.
+  - **Appareil sans tuyau** :
+    - Il puise dans l'air autour de lui et y rejette son oxygène : dans le bâtiment s'il est à l'intérieur, sinon dehors, où l'oxygène est perdu.
+    - Avec un tuyau en entrée, il puise dans le tuyau. Avec un tuyau en sortie, il envoie son oxygène dans le tuyau.
+  - **Bâtiments** :
+    - Un bâtiment, ou un ensemble de bâtiments reliés (F26), a un volume et une quantité d'O2.
+    - Chaque bâtiment a une **valve unidirectionnelle intégrée** qui vise **toujours 21 %** (non configurable). Il reçoit l'oxygène du réseau jusqu'à 21 %, mais ne lui en rend jamais. Seul un récolteur posé dedans peut en sortir de l'oxygène.
+    - **Plafond** : au-delà de 21 % (plantes, machines sans tuyau), le surplus s'échappe. Un récolteur peut le récupérer avant : l'échappement est le dernier recours.
+  - **Tuyau qui entre dans un bâtiment** :
+    - **Sortie libre** : l'oxygène se diffuse dans le bâtiment, qui fait alors partie du réseau.
+    - **Sortie reliée** à un autre tuyau : le tuyau traverse le mur et le bâtiment n'est pas dans le réseau. Exemple : un générateur d'O2 dehors dédié à un générateur à charbon dedans.
+  - **Éléments** :
+    - **Générateur d'O2** : il produit X L/s. Il ralentit, voire s'arrête, quand le réseau ne peut plus rien recevoir.
+    - **Réservoir** : il stocke l'oxygène du réseau et le rend selon les besoins, comme une batterie.
+    - **Régulateur** :
+      - Vanne à **sens unique** avec un **débit maximum** configurable (0 = fermée). Il sépare deux sous-réseaux.
+      - Il sert à limiter le débit vers une machine, à fermer l'accès à un réservoir ou à favoriser un réservoir. Exemple : `BAT1 <- REGUL <- GEN -> REGUL -> BAT2`.
+    - **Récolteur** :
+      - Il aspire l'oxygène de l'air autour de lui, avec un **débit configurable**, et l'envoie dans son tuyau. Exemple : dans un bâtiment, devant un générateur à charbon dont on veut limiter la consommation.
+      - Il consomme d'autant plus d'électricité que le débit est élevé et que la concentration de l'air est basse.
+      - Il peut être posé dehors (inutile s'il n'y a pas d'O2).
+  - **Répartition dans un réseau** :
+    1. Les consommateurs (machines, bâtiments sous 21 %) sont servis en premier.
+    2. Le surplus va aux réservoirs, qui complètent en cas de manque.
+    - Quand il n'y en a pas assez pour tout le monde : **parts égales plafonnées par les débits max**, la part qu'un consommateur ne peut pas prendre allant aux autres. Avec des plafonds de 3 et 10 L/s : 5 L/s produits donnent 2,5 et 2,5 ; 9 L/s donnent 3 et 6.
+    - Ce système peut être biaisé volontairement, par exemple avec un récolteur dans un bâtiment relié à un réservoir.
+  - **Sas** : ouvrir une porte qui donne dehors fait perdre de l'O2, il faut donc un sas. Pas de bâtiments endommagés pour l'instant.
+- [ ] **F52** **[Oxygène]** **Machines consommatrices d'oxygène** : certaines machines ne fonctionnent qu'avec de l'oxygène, comme le générateur à charbon ou le rechargeur de bouteilles d'oxygène (`Oxygen Tank`, voir F45). Elles tournent **au prorata** de l'oxygène reçu : à 50 % de leur besoin, elles donnent 50 % de leur puissance. Sous un éventuel seuil minimal, elles s'arrêtent.
+- [ ] **F53** **[Plantations]** **Système de plantation** :
+  - On plante des **graines** (nouveaux items) dans des **bacs de plantation**. La plante pousse par étapes, puis se récolte.
+  - **Besoins** : oxygène, lumière et eau (arrosage avec `Water` ou `Ice`). Les besoins dépendent de la plante.
+  - **Lumière** : celle du soleil (bac dehors ou sous une verrière), ou des éclairages artificiels alimentés en électricité (F50).
+  - **Rejet d'oxygène** : les plantes rejettent de l'O2 dans la pièce (F51), en quantité qui dépend de la plante.
+- [ ] **F54** **[Monde]** **Cycle jour / nuit et météo** :
+  - **Cycle** : le soleil tourne, l'heure du jeu est sauvegardée et la durée d'une journée est réglable : **25 minutes** pour commencer (15 de jour, 10 de nuit), à ajuster si nécessaire. Le cycle sert aux panneaux solaires (F49), à la lumière du soleil pour les plantes (F53) et aux horaires d'alimentation (F50).
+  - **Météo** : vent variable pour les éoliennes, tempêtes de poussière qui réduisent le solaire, etc.
+- [ ] **F55** **[Interfaces]** **Informations des réseaux** (énergie, F50, et oxygène, F51) :
+  - **Interface du bâtiment** (en interagissant avec lui ou avec un panneau de contrôle, F57) : production, consommation, charge des batteries, O2 de la pièce, alimentation on/off et horaires.
+  - **HUD** : le taux d'O2 de la pièce où se trouve le joueur.
+  - **En visant une machine** : son état (en marche ou arrêtée, et pourquoi).
+- [ ] **F56** **[Énergie]** **Tableau de distribution** (`Distribution Panel`) : il crée un sous-réseau et permet de le gérer.
+  - **Fonctionnement** :
+    - Il a une **entrée** (l'énergie qui arrive) et une **sortie**. Tout ce qui est relié après sa sortie forme son sous-réseau.
+    - Il transmet au sous-réseau toute l'énergie qu'il reçoit. Vu de l'amont, le sous-réseau entier est **un seul consommateur**.
+    - **Sens unique** : un générateur ou une batterie du sous-réseau ne renvoie jamais d'énergie vers l'amont.
+  - **Coupure** : couper le tableau arrête tout ce qui est derrière lui.
+  - **Tableau intégré aux bâtiments** : chaque bâtiment a un tableau de distribution intégré. Sa coupure et ses horaires (F50) sont ceux de ce tableau.
+  - **Protection** :
+    - **Limite de puissance** (W max) : si le sous-réseau demande plus, seul le tableau saute, l'amont continue de tourner.
+    - **Délestage automatique** : il coupe son sous-réseau quand l'amont manque d'énergie, ou quand la charge des batteries de l'amont passe sous X %. Il réarme quand ça remonte. On protège ainsi l'essentiel en sacrifiant le secondaire.
+    - **Priorité** : en cas de manque, les tableaux de priorité faible coupent en premier.
+    - Sans délestage ni priorité configurés, un manque d'énergie fait disjoncter tout le réseau, sous-réseaux compris (F50).
+  - **Automatisation** :
+    - **Horaires** : alimentation par plages horaires (F54).
+    - **Démarrage différé** : après une coupure, il attend X secondes avant de réarmer, pour échelonner les redémarrages.
+    - Les conditions (personne dans le bâtiment, jour ou nuit…) ne sont pas prévues pour l'instant.
+  - **Affichage** : consommation instantanée du sous-réseau, énergie consommée au total, état (en marche, coupé, sauté, et pourquoi).
+- [ ] **F57** **[Énergie]** **Panneau de contrôle** (plaçable) : il pilote à distance les tableaux de distribution (F56) et affiche les informations des réseaux (F55).
+- [x] **F58** **[Énergie]** **Première version du réseau électrique** (une partie de F50, sans les bâtiments ni les horaires) :
+  - Composants `EnergyConsumer` (W), `EnergyGenerator` (W) et `EnergyStorage` (capacité et stock en Wh, débits entrant et sortant en W). Chaque valeur peut être infinie (`EnergyValue`, case « ∞ » dans l'Inspector).
+  - `EnergyNetworkManager` : réseaux reliés par câbles, générateurs et batteries qui ne relient pas les réseaux, répartition des générateurs partagés, disjonction et réarmement automatique.
+  - **Câble électrique** (`Electric Cable`, `CablePlacer`) : pose par clics successifs, tracé arrondi, 1 câble par mètre. Il est détruit avec la roue de construction et rendu.
+  - **Objets de test** (plaçables) : `Infinite Generator`, `Test Machine` (rouge quand elle est alimentée, blanche sinon) et `Test Battery`. Leur état s'affiche en les visant.
 - [ ] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
-- [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur.
+- [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur. Modèle détaillé : voir F51.
 - [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde.
 - [x] **F29** **[Construction]** Portée de placement, de build et de destruction réduite à 8 m (`Builder.range`, au lieu de 300 m). Pour une structure, la portée s'ajoute au rayon de son emprise, et son centre reste à au moins « rayon + 1 m » du joueur : sinon, le joueur serait toujours à l'intérieur d'un grand dôme (fantôme invalide).
 - [ ] **F30** **[Terrain]** **Biomes** : zones avec des matériaux, des textures et un relief différents.

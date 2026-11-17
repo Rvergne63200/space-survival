@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 // - build wheel: hold the Build key (B) and click an option (Destroy or a structure), releasing the key closes it
 // - placement: while a placeable item is in hand, a ghost shows where it will be placed
 // - build: the structure chosen in the wheel is shown as a ghost, then placed as a plan (StructureBlueprint)
-// - destruction: the pointed structure, plan or placed object is highlighted, a click destroys it
+// - destruction: the pointed structure, plan, placed object or electric cable is highlighted, a click destroys it
 // With a ghost: R rotates (Shift + R: 45° steps), left click places, right click cancels
 public class Builder : MonoBehaviour
 {
@@ -491,10 +491,38 @@ public class Builder : MonoBehaviour
             else if (placed != null) target = placed;
         }
 
+        // The cables only have triggers (not in the way of the player): aimed separately, when closer than the hit
+        float maxCableDistance = target != null ? hit.distance : range;
+        ElectricCable cable = FindAimedCable(maxCableDistance, layerMask);
+
+        if (cable != null)
+        {
+            target = cable;
+        }
+
         if (target != destroyTarget)
         {
             SetDestroyTarget(target);
         }
+    }
+
+    private ElectricCable FindAimedCable(float maxDistance, int layerMask)
+    {
+        ElectricCable closest = null;
+        float closestDistance = maxDistance;
+
+        foreach (RaycastHit cableHit in Physics.RaycastAll(Source.position, Source.forward, maxDistance, layerMask, QueryTriggerInteraction.Collide))
+        {
+            ElectricCable cable = cableHit.collider.GetComponentInParent<ElectricCable>();
+
+            if (cable != null && cableHit.distance <= closestDistance)
+            {
+                closest = cable;
+                closestDistance = cableHit.distance;
+            }
+        }
+
+        return closest;
     }
 
     // The target is shown with the invalid (red) material
@@ -547,6 +575,9 @@ public class Builder : MonoBehaviour
                 break;
             case PlacedObject placed:
                 placed.Deconstruct();
+                break;
+            case ElectricCable cable:
+                cable.Deconstruct();
                 break;
         }
     }

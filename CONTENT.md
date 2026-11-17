@@ -100,7 +100,7 @@ Vue à la première personne uniquement.
 
 ### Données
 - **ItemData** (ScriptableObject `Item/Item`) : `Id` (int saisi à la main), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classe `ConsummableData` (voir feature 3).
-- **Objets** (`ScriptableObjects/Items`, ids 0 à 24) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank`, `Jetpack` et `Flashlight` sans effet pour l'instant (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
+- **Objets** (`ScriptableObjects/Items`, ids 0 à 28 ; 25 à 28 : câble et objets de test électriques, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
 - **Item** : simple wrapper autour d'un ItemData (`Item.CreateFromData`). Pas encore de données d'instance (durabilité, etc.).
 - **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` passe par `Pickupable.Spawn`, qui instancie le `Model` devant la source avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion. Le slot n'est vidé que si le spawn réussit (modèle valide avec un `Pickupable`).
 - **ItemCollection** : liste de slots de taille fixe (`MaxSize`). `Add` complète d'abord les stacks non pleins puis remplit les slots vides, et renvoie le surplus. `RemoveItem` retire en partant du dernier slot. `Count` compte la quantité totale d'un item. Event `ev_Update`.
@@ -215,3 +215,41 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - `CloseInterfaces()`, appelé par la touche CloseInterfaces depuis `ParentUI`, ferme tout.
 - **ParentUI** : racine de l'UI instanciée par UIManager. Elle référence les sous-UI (notifications de ramassage, conteneur, craft) et affiche le slot tenu au curseur.
 - **ParentedUI** : classe de base des éléments d'UI. Elle reçoit `OnUpdateManager` et `OnUpdatePlayerContext` quand le manager ou le joueur change.
+
+## 10. Énergie (`Assets/Scripts/Behaviours/Energy`)
+
+- **EnergyValue** : une puissance (W) ou une énergie (Wh) qui peut être infinie (`float.PositiveInfinity`). Dans l'Inspector, c'est une valeur suivie d'une case « ∞ ».
+- **EnergyDevice** (base) : un appareil du réseau, relié par des câbles. Les câbles s'accrochent à `connector`, ou à défaut à l'enfant `Connector`, ou au haut de l'objet. Détruit avec son objet, il détruit et rend ses câbles.
+  - **EnergyConsumer** : consommation en W. Il est alimenté (`IsPowered`, `ev_OnPoweredChanged`) quand son réseau n'est pas disjoncté. Les consommateurs **relient** les réseaux.
+  - **EnergyGenerator** : production en W. Il tourne toujours à fond. `Output` est ce qu'il a réellement donné.
+  - **EnergyStorage** : capacité, stock (sauvegardé) et débits entrant et sortant.
+  - Générateurs et batteries **ne relient pas** les réseaux : reliés des deux côtés, ils appartiennent aux deux.
+- **EnergyNetworkManager** (créé au premier appareil, persistant) : il reconstruit les réseaux quand un appareil ou un câble change, et les calcule toutes les 0,2 s.
+  - **Réseaux** : un réseau est un groupe de consommateurs reliés par câbles, avec les générateurs et les batteries reliés à eux. Deux générateurs ou batteries reliés directement forment un réseau sans consommateur.
+  - **Ordre de calcul** :
+    1. Les générateurs reliés à un seul réseau donnent d'abord ce qu'il demande.
+    2. Les générateurs partagés couvrent ensuite ce qui manque, au prorata du manque de chaque réseau.
+    3. Leur surplus charge les batteries de leurs réseaux, réseaux disjonctés compris : parts égales, dans la limite du débit entrant et de la place.
+    4. Les batteries donnent ensuite ce qui manque encore, y compris ce qu'elles viennent de recevoir, dans la limite du débit sortant.
+    5. Le reste de la production est perdu.
+  - **Disjonction** : un réseau qui manque encore d'énergie disjoncte, et ses consommateurs s'arrêtent. Le calcul est refait sans lui : sa part des générateurs partagés revient aux autres réseaux.
+  - **Réarmement** : le réseau se réarme après `rearmDelay` (3 s) dès que ses générateurs et ses batteries peuvent couvrir sa demande.
+- **ElectricCable** : objet « runtime » sauvegardé (`cable:<id de l'item>`), avec les ids de ses deux appareils, ses points de passage et le nombre de câbles utilisés.
+  - **Tracé** : une courbe de Catmull-Rom qui pend légèrement entre deux points (`LineRenderer`).
+  - **Ciblage** : des colliders triggers le long du câble, visés par le mode destruction (`Builder`). Ils ne gênent pas le joueur.
+  - **Destruction** : il rend ses câbles au joueur.
+- **CablePlacer** (sur le joueur), actif avec un `CableItemData` en main (`Item/Cable` : mètres par item, largeur, matériau) :
+  - **Clic gauche** : sur un appareil, il commence le câble. Ailleurs, il ajoute un point de passage. Sur un 2e appareil, il termine le câble.
+  - **Clic droit** : il retire le dernier point, ou annule le câble.
+  - **Aperçu** : vert si le câble peut être terminé sur l'appareil visé, rouge s'il manque des câbles. Le bandeau indique le nombre de câbles nécessaires et possédés.
+  - Deux appareils ne peuvent être reliés qu'une fois.
+- **EnergyDeviceInfo** (interactable) : en visant l'objet, affiche l'état de ses appareils.
+  - Consommateur : alimenté, réseau disjoncté ou non raccordé, avec sa consommation.
+  - Générateur : donné / production.
+  - Batterie : stock / capacité et flux.
+- **Objets de test** (`Prefabs/Environment/Energy`, matériau `Materials/EnergyTest`) :
+  - `26_InfiniteGenerator` : générateur, 1000 W par défaut.
+  - `27_TestMachine` : consommateur de 100 W, avec `TestMachine`. Elle est rouge quand elle est alimentée, blanche sinon.
+  - `28_TestBattery` : batterie de 1000 Wh, avec des débits de 500 W.
+  - `25_ElectricCable` : le câble, 1 par mètre.
+  - Inventaire de départ : 99 câbles et 2 générateurs dans la barre d'outils, 3 machines et 2 batteries dans l'inventaire.

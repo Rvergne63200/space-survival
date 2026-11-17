@@ -29,6 +29,7 @@ public class SaveManager : MonoBehaviour
     public const string BlueprintPrefabKeyPrefix = "blueprint:";
     public const string PlacedPrefabKeyPrefix = "placed:";
     public const string RuntimePrefabKeyPrefix = "prefab:";
+    public const string CablePrefabKeyPrefix = "cable:";
 
     private const string EditorSaveName = "Partie éditeur";
 
@@ -296,6 +297,15 @@ public class SaveManager : MonoBehaviour
 
     public IEnumerable<SaveableObject> LiveObjects => liveObjects.Values;
 
+    // Null if no object with this id is loaded
+    public SaveableObject GetLiveObject(string id)
+    {
+        return !string.IsNullOrEmpty(id) && liveObjects.TryGetValue(id, out SaveableObject saveable) ? saveable : null;
+    }
+
+    // The scene is being unloaded or the game quits: the destroyed objects are not removed from the world
+    public bool IsUnloading => changingScene || quitting;
+
     public bool IsDestroyed(string id)
     {
         return destroyedObjects.Contains(id);
@@ -503,7 +513,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    // Structures, plans and placed objects (BuildUtility). Null for the other keys
+    // Structures, plans, placed objects (BuildUtility) and electric cables. Null for the other keys
     private GameObject InstantiateConstruction(ObjectSaveData data)
     {
         string key = data.prefabKey;
@@ -533,6 +543,11 @@ public class SaveManager : MonoBehaviour
             }
 
             Debug.LogWarning("Save: item " + itemId + " is not a placeable item with a placed prefab.");
+        }
+
+        if (key.StartsWith(CablePrefabKeyPrefix) && int.TryParse(key.Substring(CablePrefabKeyPrefix.Length), out int cableItemId))
+        {
+            return ElectricCable.CreateEmpty(GetItem(cableItemId) as CableItemData, data.id).gameObject;
         }
 
         return null;

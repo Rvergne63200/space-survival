@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 3570617525106556862}
   - component: {fileID: 3139602510462086486}
   - component: {fileID: 8804041250841832548}
+  - component: {fileID: 6120000000000000001}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -292,3 +293,19 @@ MonoBehaviour:
   ev_UpdateSearchStorage:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6120000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8774627701926431398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd5e2311c0a4e888b842cc241c448b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 8
+  validColor: {r: 0.3, g: 1, b: 0.4, a: 1}
+  neutralColor: {r: 1, g: 1, b: 1, a: 1}
+  invalidColor: {r: 1, g: 0.3, b: 0.3, a: 1}
