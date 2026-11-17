@@ -16,8 +16,10 @@ MonoBehaviour:
   _stackMax: 20
   _name: Ration
   _description: Food ration (hunger +40)
-  _sprite: {fileID: 21300000, guid: b416145d20baa364598d07e1740ae2fb, type: 3}
+  _sprite: {fileID: -2016036612, guid: e2f0944e4f98f4145aeb9b9ca8bf427c, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _primaryActions: []
+  _secondaryActions: []
   modifiers:
   - rid: 7413000000000000001
   references:

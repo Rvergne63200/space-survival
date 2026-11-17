@@ -5,13 +5,6 @@ public class CraftingStation : MonoBehaviour, IInterractable
     [SerializeField] private RecipeData[] _recipes;
     public RecipeData[] Recipes { get => _recipes; }
 
-    [SerializeField] private Sprite icon;
-
-    public Sprite GetIcon()
-    {
-        return icon;
-    }
-
     public string GetInfo()
     {
         return "Craft an item";

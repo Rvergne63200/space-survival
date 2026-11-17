@@ -32,12 +32,25 @@ public class HeldItemUI : ParentedUI
         {
             if (heldItem == null && document != null && document.rootVisualElement != null)
             {
-                // Drawn over the interfaces: must never catch the clicks meant for their slots
-                document.rootVisualElement.pickingMode = PickingMode.Ignore;
                 heldItem = document.rootVisualElement.Q("held-item");
+                IgnorePicking(heldItem);
             }
 
             return heldItem;
+        }
+    }
+
+    // Drawn over the interfaces under the mouse: must never catch the clicks meant for their slots.
+    // Not only the UXML attributes: the element, its children and every parent up to the panel
+    private static void IgnorePicking(VisualElement element)
+    {
+        if (element == null) return;
+
+        element.Query<VisualElement>().ForEach(child => child.pickingMode = PickingMode.Ignore);
+
+        for (VisualElement parent = element.parent; parent != null && parent != element.panel?.visualTree; parent = parent.parent)
+        {
+            parent.pickingMode = PickingMode.Ignore;
         }
     }
 
@@ -55,6 +68,8 @@ public class HeldItemUI : ParentedUI
 
         if (!empty)
         {
+            // Again when shown: the document may have been attached to the panel since the first access
+            IgnorePicking(element);
             ItemSlotUI.Display(slot, element.Q("slot-icon"), element.Q<Label>("slot-count"));
             Follow(element);
         }

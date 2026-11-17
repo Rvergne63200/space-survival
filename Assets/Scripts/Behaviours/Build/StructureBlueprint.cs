@@ -41,11 +41,6 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
         return info.ToString();
     }
 
-    public Sprite GetIcon()
-    {
-        return Data != null ? Data.Icon : null;
-    }
-
     // Brings everything that is missing and in the inventory
     public void Interract(GameObject interractor)
     {

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
+  m_Name: 21_RadioRelay
+  m_EditorClassIdentifier: 
+  _id: 21
+  _stackMax: 5
+  _name: Radio Relay
+  _description: Antenna that relays radio signals over long distances.
+  _sprite: {fileID: 1619589461, guid: 4cdeafb422b4c2546a57ce2aefb8b4f3, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _primaryActions: []
+  _secondaryActions: []
+  _placedPrefab: {fileID: 4102000000000000001, guid: 0528c41da9f17c040ba5d169c19a8107, type: 3}
+  _refund: []
+  references:
+    version: 2
+    RefIds: []

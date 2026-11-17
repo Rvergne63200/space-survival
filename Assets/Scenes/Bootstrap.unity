@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -338,6 +335,8 @@ MonoBehaviour:
       baseRegeneration: 0
       _value: 100
       _maxValue: 100
+  vitalStats: 020000000300000004000000
+  emptyVitalDamage: 1
 --- !u!114 &734431897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,32 +406,32 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: be308f5f71f04106a9151cb9eb34c8b8, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: a65339de25e94b329b773f77db2998dd, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: d4c5fa127ac5429fbdd25ae757e6ee06, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: e3f0ee3ac6494edcac1d1262c968270e, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 0aefd8b7764d454bb64292dd8d85719c, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
@@ -443,56 +442,56 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: fefad56d6d9543188fa633b80c907b94, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 96dd18ac4a094a62a71c2d219df360ce, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 8d00630378bf4357a3be08f94e35137f, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 0f55ee4eebe345e3af0c9c81b58b83c6, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 28f105fe1cc844d7892fc1f273367204, type: 2}
+      _quantity: 50
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 789ef0ec4eae4751aa8d2b8265eec183, type: 2}
+      _quantity: 5
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 84f6918257274cc28ec535076bf785b0, type: 2}
+      _quantity: 1
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: c2efeac2f69f43d2903d97750556764a, type: 2}
+      _quantity: 1
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: e52a2433aa2b448c9d709fbe13a5af56, type: 2}
+      _quantity: 1
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
@@ -548,6 +547,7 @@ MonoBehaviour:
         _data: {fileID: 0}
       _quantity: 0
     _maxSize: 32
+  size: 0
   ev_UpdateIsOpen:
     m_PersistentCalls:
       m_Calls: []
@@ -576,14 +576,14 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: d1f8986979ce4b35bbea295ea13ac916, type: 2}
+      _quantity: 5
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 9fca373206b640c2beca39c8ffa44932, type: 2}
+      _quantity: 5
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
@@ -636,6 +636,9 @@ MonoBehaviour:
   stats: {fileID: 734431896}
   deathBagPrefab: {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}
   ev_updatePlayerContext:
+    m_PersistentCalls:
+      m_Calls: []
+  ev_spawnPlayer:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &1240813253
@@ -784,6 +787,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 218c815841e14cb0945cdbada52ced1d, type: 2}
   - {fileID: 11400000, guid: 12c2c75939174132ba08faf9237b0e6a, type: 2}
   - {fileID: 11400000, guid: 88c2ef47426e413f8feb0a0ecd1d1223, type: 2}
+  - {fileID: 11400000, guid: be308f5f71f04106a9151cb9eb34c8b8, type: 2}
+  - {fileID: 11400000, guid: a65339de25e94b329b773f77db2998dd, type: 2}
+  - {fileID: 11400000, guid: d4c5fa127ac5429fbdd25ae757e6ee06, type: 2}
+  - {fileID: 11400000, guid: e3f0ee3ac6494edcac1d1262c968270e, type: 2}
+  - {fileID: 11400000, guid: 0aefd8b7764d454bb64292dd8d85719c, type: 2}
+  - {fileID: 11400000, guid: fefad56d6d9543188fa633b80c907b94, type: 2}
+  - {fileID: 11400000, guid: 96dd18ac4a094a62a71c2d219df360ce, type: 2}
+  - {fileID: 11400000, guid: 8d00630378bf4357a3be08f94e35137f, type: 2}
+  - {fileID: 11400000, guid: 84f6918257274cc28ec535076bf785b0, type: 2}
+  - {fileID: 11400000, guid: c2efeac2f69f43d2903d97750556764a, type: 2}
+  - {fileID: 11400000, guid: 0f55ee4eebe345e3af0c9c81b58b83c6, type: 2}
+  - {fileID: 11400000, guid: 28f105fe1cc844d7892fc1f273367204, type: 2}
+  - {fileID: 11400000, guid: d1f8986979ce4b35bbea295ea13ac916, type: 2}
+  - {fileID: 11400000, guid: e52a2433aa2b448c9d709fbe13a5af56, type: 2}
+  - {fileID: 11400000, guid: 789ef0ec4eae4751aa8d2b8265eec183, type: 2}
+  - {fileID: 11400000, guid: 9fca373206b640c2beca39c8ffa44932, type: 2}
   structureCatalog: {fileID: 11400000, guid: 4d4be868b39c4f598490ac65ced4af44, type: 2}
   runtimePrefabs:
   - {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}

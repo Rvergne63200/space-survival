@@ -295,7 +295,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Searchable
   storage: {fileID: 8738041972255987984}
-  icon: {fileID: 21300000, guid: c8a189b6e39df104289c82fbc75001ab, type: 3}
 --- !u!1 &5733105502309356050
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,7 +626,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Searchable
   storage: {fileID: 2044665352162175621}
-  icon: {fileID: 21300000, guid: c8a189b6e39df104289c82fbc75001ab, type: 3}
 --- !u!1 &7198036169627012817
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,7 +753,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Searchable
   storage: {fileID: 1307893975791635753}
-  icon: {fileID: 21300000, guid: c8a189b6e39df104289c82fbc75001ab, type: 3}
 --- !u!114 &1307893975791635753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,7 +1048,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CraftingStation
   _recipes:
   - {fileID: 11400000, guid: f971ac64272d46f459464abe68d755e9, type: 2}
-  icon: {fileID: 21300000, guid: c8a189b6e39df104289c82fbc75001ab, type: 3}
 --- !u!1001 &8236177622851433020
 PrefabInstance:
   m_ObjectHideFlags: 0

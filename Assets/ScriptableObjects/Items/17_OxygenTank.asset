@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a384c6ee44a940c4981d7972563515d3, type: 3}
+  m_Name: 17_OxygenTank
+  m_EditorClassIdentifier: 
+  _id: 17
+  _stackMax: 1
+  _name: Oxygen Tank
+  _description: Pressurized oxygen reserve for breathing outside.
+  _sprite: {fileID: -1070465426, guid: edb82fce4d005514eb02790a74e671e6, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _primaryActions: []
+  _secondaryActions: []
+  references:
+    version: 2
+    RefIds: []

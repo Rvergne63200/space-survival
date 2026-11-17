@@ -7,8 +7,6 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
 
     public bool identified = false;
 
-    [SerializeField] private Sprite icon;
-
     [System.Serializable]
     private class SaveState
     {
@@ -92,11 +90,6 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
     public string GetInfo()
     {
         return identified ? count + "x " + item?.Data.Name : "Pickup";
-    }
-
-    public Sprite GetIcon()
-    {
-        return icon;
     }
 
     public void Interract(GameObject interractor)
