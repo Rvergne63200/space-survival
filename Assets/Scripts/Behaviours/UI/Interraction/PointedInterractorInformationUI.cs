@@ -1,41 +1,33 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
+// Information of the interactable pointed by the player, in the HUD (element "pointed-label" of Hud.uxml):
+// its text and key, above the crosshair, which fade in and out
 public class PointedInterractorInformationUI : ParentedUI
 {
-    [SerializeField] private TextMeshProUGUI text;
-    [SerializeField] private Image icon;
+    [SerializeField] private UIDocument document;
 
-    private CanvasGroup canvasGroup;
     public string input;
-
-    private Coroutine fadeCoroutine;
     public float fadeDuration = 0.5f;
+
+    private Label text;
+
+    private float alpha;
+    private float targetAlpha;
 
     private UnityEvent<Transform> ev_updatePointedObject;
 
     private IInterractable pointed = null;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-        canvasGroup = GetComponent<CanvasGroup>();
-
-        if (pointed != null) { 
-            canvasGroup.alpha = 1f; 
-            gameObject.SetActive(true); 
-        } else { 
-            canvasGroup.alpha = 0f; 
-            gameObject.SetActive(false); 
-        }
+        ApplyAlpha();
     }
 
     public override void OnUpdatePlayerContext(PlayerContext context)
     {
-        if(context == null)
+        if (context == null)
         {
             return;
         }
@@ -49,6 +41,22 @@ public class PointedInterractorInformationUI : ParentedUI
         ev_updatePointedObject.AddListener(UpdatePointedObject);
     }
 
+    protected override void OnDestroy()
+    {
+        ev_updatePointedObject?.RemoveListener(UpdatePointedObject);
+        base.OnDestroy();
+    }
+
+    private bool FindElements()
+    {
+        if (text == null && document != null && document.rootVisualElement != null)
+        {
+            text = document.rootVisualElement.Q<Label>("pointed-label");
+        }
+
+        return text != null;
+    }
+
     public void UpdatePointedObject(Transform pointedObject)
     {
         var oldPointed = pointed;
@@ -58,7 +66,7 @@ public class PointedInterractorInformationUI : ParentedUI
         {
             if (oldPointed != null)
             {
-                FadeOut();
+                targetAlpha = 0f;
             }
 
             return;
@@ -66,11 +74,7 @@ public class PointedInterractorInformationUI : ParentedUI
 
         // Also when going directly from an interactable to another one
         RefreshInfo();
-
-        if (oldPointed == null)
-        {
-            FadeIn();
-        }
+        targetAlpha = 1f;
     }
 
     private void Update()
@@ -81,69 +85,32 @@ public class PointedInterractorInformationUI : ParentedUI
         {
             RefreshInfo();
         }
+
+        if (alpha != targetAlpha)
+        {
+            float step = fadeDuration > 0f ? Time.deltaTime / fadeDuration : 1f;
+            alpha = Mathf.MoveTowards(alpha, targetAlpha, step);
+            ApplyAlpha();
+        }
+    }
+
+    private void ApplyAlpha()
+    {
+        if (!FindElements()) return;
+
+        text.style.opacity = alpha;
+        text.style.display = alpha > 0f ? DisplayStyle.Flex : DisplayStyle.None;
     }
 
     private void RefreshInfo()
     {
+        if (!FindElements()) return;
+
         string info = pointed.GetInfo() + " [" + input.ToUpper() + "]";
 
         if (text.text != info)
         {
             text.text = info;
-        }
-
-        icon.sprite = pointed.GetIcon();
-    }
-
-    public void FadeIn()
-    {
-        if (!gameObject.activeSelf)
-        {
-            gameObject.SetActive(true);
-        }
-
-        if (fadeCoroutine != null)
-        {
-            StopCoroutine(fadeCoroutine);
-        }
-
-        fadeCoroutine = StartCoroutine(Fade(1f));
-    }
-
-    public void FadeOut() { 
-        if (!gameObject.activeSelf) { 
-            gameObject.SetActive(true); 
-        } 
-        
-        if (fadeCoroutine != null) { 
-            StopCoroutine(fadeCoroutine); 
-        } 
-        
-        fadeCoroutine = StartCoroutine(Fade(0f)); 
-    }
-
-    private IEnumerator Fade(float target)
-    {
-        float start = canvasGroup.alpha;
-        float time = 0f;
-
-        while (time < fadeDuration)
-        {
-            time += Time.deltaTime;
-            float t = time / fadeDuration;
-            canvasGroup.alpha = Mathf.Lerp(start, target, t);
-            yield return null;
-        }
-
-        canvasGroup.alpha = target;
-
-        if(target == 0f)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            gameObject.SetActive(true);
         }
     }
 }

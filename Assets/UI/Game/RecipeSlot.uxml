@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- One recipe of the list of the crafting station (RecipeSlotUI): icon and quantity of its result. Click: shows its detail -->
+    <ui:Button name="recipe-slot" class="recipe-slot">
+        <ui:VisualElement name="recipe-slot-icon" picking-mode="Ignore" class="recipe-slot-icon" />
+        <ui:Label name="recipe-slot-count" text="1" picking-mode="Ignore" class="recipe-slot-count" />
+    </ui:Button>
+</ui:UXML>

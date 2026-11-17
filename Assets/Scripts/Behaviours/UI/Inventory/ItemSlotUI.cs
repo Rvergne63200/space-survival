@@ -1,12 +1,86 @@
-using UnityEngine.EventSystems;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
-// Clicks are handled here rather than by the Button's onClick, which only reports the left button
-public class ItemSlotUI : InventorySlotUI<Item>, IPointerClickHandler
+// One item slot of an interface (element "slot" of ItemSlot.uxml): shows the item of an ItemSlot and handles the clicks.
+// Left click: take / put back / swap with the item held at the cursor, Shift + left click: quick transfer,
+// double click: gather the same items at the cursor, right click: take half / place one
+public class ItemSlotUI
 {
-    public void OnPointerClick(PointerEventData eventData)
+    public VisualElement Element { get; }
+
+    private readonly ParentUI parentUI;
+    private readonly VisualElement icon;
+    private readonly Label count;
+
+    private ItemSlot<Item> slot;
+
+    public ItemSlotUI(VisualElement element, ParentUI parentUI)
     {
-        PlayerInventory inventory = parentUI?.UIManager?.PlayerInventory;
+        Element = element;
+        this.parentUI = parentUI;
+
+        icon = element.Q("slot-icon");
+        count = element.Q<Label>("slot-count");
+
+        element.RegisterCallback<PointerDownEvent>(OnPointerDown);
+    }
+
+    public void SetSlot(ItemSlot<Item> slot)
+    {
+        // The slot UIs are reused on each collection update: only subscribe when the slot changes
+        if (this.slot != slot)
+        {
+            this.slot?.ev_update.RemoveListener(UpdateSlot);
+
+            this.slot = slot;
+
+            slot?.ev_update.AddListener(UpdateSlot);
+        }
+
+        UpdateSlot(slot);
+    }
+
+    // The ItemSlot outlives this UI (it belongs to a persistent ItemCollection)
+    public void Unbind()
+    {
+        slot?.ev_update.RemoveListener(UpdateSlot);
+        slot = null;
+    }
+
+    private void UpdateSlot(ItemSlot<Item> slot)
+    {
+        Display(slot, icon, count);
+    }
+
+    // Also used for the item held at the cursor (HeldItemUI)
+    public static void Display(ItemSlot<Item> slot, VisualElement icon, Label count)
+    {
+        // IsEmpty also covers an item whose data is missing (asset not found): displayed as empty instead of failing
+        if (slot == null || slot.IsEmpty())
+        {
+            if (icon != null) icon.style.backgroundImage = StyleKeyword.None;
+            if (count != null) count.style.display = DisplayStyle.None;
+            return;
+        }
+
+        Sprite sprite = slot.Item.Data.Sprite;
+
+        if (icon != null)
+        {
+            icon.style.backgroundImage = sprite != null ? new StyleBackground(sprite) : new StyleBackground(StyleKeyword.None);
+        }
+
+        if (count != null)
+        {
+            count.text = slot.Quantity.ToString();
+            count.style.display = slot.Item.Data.StackMax > 1 ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+    }
+
+    private void OnPointerDown(PointerDownEvent evt)
+    {
+        PlayerInventory inventory = parentUI != null && parentUI.UIManager != null ? parentUI.UIManager.PlayerInventory : null;
 
         if (inventory == null)
         {
@@ -15,12 +89,13 @@ public class ItemSlotUI : InventorySlotUI<Item>, IPointerClickHandler
 
         if (slot == null)
         {
-            setSlot(new ItemSlot<Item>());
+            SetSlot(new ItemSlot<Item>());
         }
 
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (evt.button == 0)
         {
-            bool shift = Keyboard.current != null && Keyboard.current.shiftKey.isPressed;
+            // The modifiers of the event are not always filled with the Input System: the keyboard is also read
+            bool shift = evt.shiftKey || (Keyboard.current != null && Keyboard.current.shiftKey.isPressed);
 
             if (shift)
             {
@@ -28,7 +103,7 @@ public class ItemSlotUI : InventorySlotUI<Item>, IPointerClickHandler
             }
             // Double click: the first click took the stack at the cursor, the second gathers the same items into it
             // (instead of putting the stack back in the slot)
-            else if (eventData.clickCount >= 2 && !inventory.draggingSlot.IsEmpty())
+            else if (evt.clickCount >= 2 && !inventory.draggingSlot.IsEmpty())
             {
                 inventory.GatherToCursor(GetSearchedStorage());
             }
@@ -36,10 +111,13 @@ public class ItemSlotUI : InventorySlotUI<Item>, IPointerClickHandler
             {
                 inventory.TryMerge(slot, Direction.Out);
             }
+
+            evt.StopPropagation();
         }
-        else if (eventData.button == PointerEventData.InputButton.Right)
+        else if (evt.button == 1)
         {
             inventory.SplitOrPlaceOne(slot);
+            evt.StopPropagation();
         }
     }
 

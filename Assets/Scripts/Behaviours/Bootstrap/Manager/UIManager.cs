@@ -57,15 +57,12 @@ public class UIManager : MonoBehaviour
         playerManager.ev_spawnPlayer.AddListener(OnSpawnPlayer);
     }
 
-    // Hidden without player (main menu). Only the canvases are disabled: the UI scripts keep running
+    // Hidden without player (main menu). Only the elements are hidden: the UI scripts keep running
     public void SetHudVisible(bool visible)
     {
         if (currentUI == null) return;
 
-        foreach (Canvas canvas in currentUI.GetComponentsInChildren<Canvas>(true))
-        {
-            canvas.enabled = visible;
-        }
+        currentUI.GetComponent<ParentUI>().SetHudVisible(visible);
     }
 
     public void OnSpawnPlayer(GameObject player)

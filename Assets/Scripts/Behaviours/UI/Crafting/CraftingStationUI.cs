@@ -1,75 +1,357 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
+// Crafting station used by the player (CraftingStation.uxml): list of its recipes (one RecipeSlot.uxml each) and
+// detail of the selected one: name, description, ingredients (owned / required), quantity to craft and craft button.
+// "Craftable only" hides the recipes that cannot be crafted. The panel (GameObject holding the UIDocument) is
+// registered as an interface while it is open, and opens the player inventory with it
 public class CraftingStationUI : MonoBehaviour
 {
-    [SerializeField] GameObject recipePanelPrefab;
+    [SerializeField] private GameObject panel;
+    [SerializeField] private VisualTreeAsset recipeTemplate;
+    [SerializeField] private VisualTreeAsset ingredientTemplate;
+
+    // The inventory can change without event (slot transfers): the counts are refreshed periodically
+    [SerializeField] private float refreshInterval = 0.25f;
 
     private Crafter crafter;
+    private bool open;
+    private float refreshTimer;
+
+    // Kept between two openings
+    private bool craftableOnly;
+
+    private readonly List<RecipeSlotUI> recipeSlots = new List<RecipeSlotUI>();
+    private RecipeSlotUI selected;
+    private int quantity = 1;
+
+    private VisualElement boundPanel;
+    private ScrollView recipesList;
+    private Label emptyLabel;
+    private VisualElement detail;
+    private VisualElement detailIcon;
+    private Label detailName;
+    private Label detailCount;
+    private Label detailDescription;
+    private VisualElement detailIngredients;
+    private Label quantityLabel;
+    private Button minusButton;
+    private Button plusButton;
+    private Button maxButton;
+    private Button craftButton;
+    private readonly List<Label> ingredientCounts = new List<Label>();
+
+    private void Awake()
+    {
+        if (panel != null)
+        {
+            panel.SetActive(false);
+        }
+    }
 
     public void SetCrafter(Crafter crafter)
     {
         this.crafter = crafter;
-
-        foreach(var recipePanelUI in transform.GetComponentsInChildren<RecipePanelUI>())
-        {
-            recipePanelUI.SetCrafter(crafter);
-        }
+        Refresh();
     }
 
     public void SetCraftingStation(CraftingStation craftingStation)
     {
-        bool display = craftingStation != null;
-
-
-        if(display)
+        if (craftingStation == null || panel == null)
         {
-            Clear();
+            Close();
+            return;
+        }
+
+        // The UIDocument builds its elements when it is enabled
+        panel.SetActive(true);
+        InterfaceManager.GetInstance().SetInterface(panel, true);
+        open = true;
+
+        BindElements(panel.GetComponent<UIDocument>().rootVisualElement);
+
+        recipeSlots.Clear();
+        selected = null;
+        quantity = 1;
+
+        if (recipesList != null && recipeTemplate != null)
+        {
+            recipesList.Clear();
 
             foreach (RecipeData recipe in craftingStation.Recipes)
             {
-                AddRecipeUI(recipe);
-            }
+                if (recipe == null) continue;
 
-            gameObject.SetActive(true);
+                VisualElement element = recipeTemplate.Instantiate().Q("recipe-slot");
+                recipesList.Add(element);
+
+                recipeSlots.Add(new RecipeSlotUI(element, recipe, Select));
+            }
         }
-        else
+
+        if (PlayerManager.Instance != null)
         {
-            // Already inactive when called from OnDisable (interface closed)
-            if (gameObject.activeSelf)
+            PlayerManager.Instance.Inventory.OpenWith(this);
+        }
+
+        Refresh();
+    }
+
+    // Once per UIDocument tree: its elements are built again each time the panel is enabled
+    private void BindElements(VisualElement root)
+    {
+        VisualElement panelElement = root.Q("panel");
+
+        if (panelElement == null || panelElement == boundPanel) return;
+
+        boundPanel = panelElement;
+
+        recipesList = root.Q<ScrollView>("recipes");
+        emptyLabel = root.Q<Label>("empty-label");
+        detail = root.Q("detail");
+        detailIcon = root.Q("detail-icon");
+        detailName = root.Q<Label>("detail-name");
+        detailCount = root.Q<Label>("detail-count");
+        detailDescription = root.Q<Label>("detail-description");
+        detailIngredients = root.Q("detail-ingredients");
+        quantityLabel = root.Q<Label>("quantity-label");
+        minusButton = root.Q<Button>("quantity-minus");
+        plusButton = root.Q<Button>("quantity-plus");
+        maxButton = root.Q<Button>("quantity-max");
+        craftButton = root.Q<Button>("craft-button");
+
+        if (minusButton != null) minusButton.clicked += () => SetQuantity(quantity - 1);
+        if (plusButton != null) plusButton.clicked += () => SetQuantity(quantity + 1);
+        if (maxButton != null) maxButton.clicked += () => SetQuantity(MaxCraftable());
+        if (craftButton != null) craftButton.clicked += OnCraft;
+
+        Toggle filter = root.Q<Toggle>("craftable-only");
+
+        if (filter != null)
+        {
+            filter.SetValueWithoutNotify(craftableOnly);
+            filter.RegisterValueChangedCallback(evt =>
             {
-                gameObject.SetActive(false);
+                craftableOnly = evt.newValue;
+                Refresh();
+            });
+        }
+    }
+
+    private void Close()
+    {
+        bool wasOpen = open;
+
+        recipeSlots.Clear();
+        selected = null;
+        open = false;
+
+        if (wasOpen && PlayerManager.Instance != null)
+        {
+            PlayerManager.Instance.Inventory.CloseWith(this);
+        }
+
+        if (panel == null) return;
+
+        if (panel.activeSelf)
+        {
+            panel.SetActive(false);
+        }
+
+        InterfaceManager.GetInstance().SetInterface(panel, false);
+    }
+
+    private void Select(RecipeSlotUI slot)
+    {
+        if (selected == slot) return;
+
+        selected = slot;
+        quantity = 1;
+
+        BuildIngredients();
+        Refresh();
+    }
+
+    private void BuildIngredients()
+    {
+        ingredientCounts.Clear();
+
+        if (detailIngredients == null) return;
+
+        detailIngredients.Clear();
+
+        if (selected == null || ingredientTemplate == null) return;
+
+        foreach (RecipeData.ItemBlock ingredient in selected.Recipe.Ingredients)
+        {
+            VisualElement element = ingredientTemplate.Instantiate().Q("ingredient");
+            detailIngredients.Add(element);
+
+            VisualElement icon = element.Q("ingredient-icon");
+
+            if (icon != null && ingredient.Item != null && ingredient.Item.Sprite != null)
+            {
+                icon.style.backgroundImage = new StyleBackground(ingredient.Item.Sprite);
             }
 
-            Clear();
-        }
+            Label name = element.Q<Label>("ingredient-name");
 
-        InterfaceManager.GetInstance().SetInterface(gameObject, display);
+            if (name != null)
+            {
+                name.text = ingredient.Item != null ? ingredient.Item.Name : "?";
+            }
+
+            ingredientCounts.Add(element.Q<Label>("ingredient-count"));
+        }
     }
 
-    // The interface can be closed without the crafter (Escape, InterfaceManager.CloseInterfaces):
-    // release the station, like the Searcher does for the searched storage
-    private void OnDisable()
+    private int MaxCraftable()
     {
-        if (crafter != null)
+        return crafter != null && selected != null ? crafter.MaxCraftable(selected.Recipe) : 0;
+    }
+
+    private void SetQuantity(int value)
+    {
+        quantity = Mathf.Clamp(value, 1, Mathf.Max(1, MaxCraftable()));
+        Refresh();
+    }
+
+    private void Refresh()
+    {
+        if (!open) return;
+
+        // The selected recipe stays visible, unless the filter hides it: the first visible one is selected instead
+        bool hasVisible = false;
+        RecipeSlotUI firstVisible = null;
+
+        foreach (RecipeSlotUI slot in recipeSlots)
         {
-            crafter.ClearStation();
-        }
-    }
+            bool available = crafter != null && crafter.CheckHasItems(slot.Recipe);
+            bool visible = !craftableOnly || available;
 
-    private void Clear()
-    {
-        for (int i = 0; i < transform.childCount; i++)
+            slot.SetState(available, slot == selected, visible);
+
+            if (visible)
+            {
+                hasVisible = true;
+                firstVisible ??= slot;
+            }
+        }
+
+        if (selected == null || (craftableOnly && (crafter == null || !crafter.CheckHasItems(selected.Recipe))))
         {
-            Destroy(transform.GetChild(i).gameObject);
+            if (firstVisible != selected)
+            {
+                // Refreshed again by Select
+                if (firstVisible != null)
+                {
+                    Select(firstVisible);
+                    return;
+                }
+
+                selected = null;
+                BuildIngredients();
+            }
         }
+
+        emptyLabel?.EnableInClassList("hidden", hasVisible);
+        RefreshDetail();
     }
 
-    private void AddRecipeUI(RecipeData data)
+    private void RefreshDetail()
     {
-        GameObject recipePanel = Instantiate(recipePanelPrefab, transform);
-        RecipePanelUI recipePanelUI = recipePanel.GetComponent<RecipePanelUI>();
+        if (detail == null) return;
 
-        recipePanelUI.SetRecipe(data);
-        recipePanelUI.SetCrafter(crafter);
+        detail.style.visibility = selected != null ? Visibility.Visible : Visibility.Hidden;
+
+        if (selected == null) return;
+
+        RecipeData recipe = selected.Recipe;
+        ItemData result = recipe.Results.Length > 0 ? recipe.Results[0].Item : null;
+        int resultQuantity = recipe.Results.Length > 0 ? recipe.Results[0].Quantity : 0;
+
+        int max = MaxCraftable();
+        quantity = Mathf.Clamp(quantity, 1, Mathf.Max(1, max));
+
+        if (detailIcon != null)
+        {
+            detailIcon.style.backgroundImage = result != null && result.Sprite != null ? new StyleBackground(result.Sprite) : new StyleBackground(StyleKeyword.None);
+        }
+
+        if (detailName != null) detailName.text = result != null ? result.Name : "?";
+        if (detailCount != null) detailCount.text = "x" + (resultQuantity * quantity);
+
+        if (detailDescription != null)
+        {
+            string description = result != null ? result.Description : "";
+            detailDescription.text = description;
+            detailDescription.style.display = string.IsNullOrEmpty(description) ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
+        PlayerInventory inventory = PlayerManager.Instance != null ? PlayerManager.Instance.Inventory : null;
+
+        for (int i = 0; i < recipe.Ingredients.Length && i < ingredientCounts.Count; i++)
+        {
+            Label count = ingredientCounts[i];
+
+            if (count == null || inventory == null) continue;
+
+            RecipeData.ItemBlock ingredient = recipe.Ingredients[i];
+            int owned = Mathf.Max(0, inventory.Count(ingredient.Item));
+            int required = ingredient.Quantity * quantity;
+
+            count.text = owned + "/" + required;
+            count.EnableInClassList("recipe-missing", owned < required);
+        }
+
+        if (quantityLabel != null) quantityLabel.text = quantity.ToString();
+
+        minusButton?.SetEnabled(quantity > 1);
+        plusButton?.SetEnabled(quantity < max);
+        maxButton?.SetEnabled(max > 1 && quantity < max);
+        craftButton?.SetEnabled(max >= quantity && max > 0);
+    }
+
+    private void OnCraft()
+    {
+        if (crafter == null || selected == null) return;
+
+        for (int i = 0; i < quantity; i++)
+        {
+            if (!crafter.CheckHasItems(selected.Recipe)) break;
+
+            crafter.Craft(selected.Recipe);
+        }
+
+        quantity = 1;
+        Refresh();
+    }
+
+    private void Update()
+    {
+        if (!open) return;
+
+        // Closed by InterfaceManager.CloseInterfaces (Escape, death): release the station,
+        // like the Searcher does for the searched storage
+        if (!panel.activeSelf)
+        {
+            Close();
+
+            if (crafter != null)
+            {
+                crafter.ClearStation();
+            }
+
+            return;
+        }
+
+        refreshTimer -= Time.unscaledDeltaTime;
+
+        if (refreshTimer <= 0f)
+        {
+            refreshTimer = refreshInterval;
+            Refresh();
+        }
     }
 }

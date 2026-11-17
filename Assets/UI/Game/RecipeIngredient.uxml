@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- One ingredient of the selected recipe (CraftingStationUI): icon, name and owned / required count -->
+    <ui:VisualElement name="ingredient" class="recipe-ingredient">
+        <ui:VisualElement name="ingredient-icon" class="recipe-ingredient-icon" />
+        <ui:Label name="ingredient-name" text="Ingrédient" class="recipe-ingredient-name" />
+        <ui:Label name="ingredient-count" text="0/1" class="recipe-ingredient-count" />
+    </ui:VisualElement>
+</ui:UXML>

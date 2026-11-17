@@ -1,0 +1,38 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- Crafting station (CraftingStationUI): list of the recipes (one RecipeSlot.uxml each, added in "recipes")
+         and detail of the selected one (ingredients: RecipeIngredient.uxml, added in "detail-ingredients") -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
+        <ui:VisualElement name="panel" class="game-panel panel-right crafting-panel">
+            <ui:VisualElement name="header" class="crafting-header">
+                <ui:Label name="title" text="Fabrication" class="panel-title crafting-title" />
+                <ui:Toggle name="craftable-only" label="Fabricables uniquement" class="crafting-filter" />
+            </ui:VisualElement>
+            <ui:VisualElement name="body" class="crafting-body">
+                <ui:VisualElement name="list" class="recipe-list">
+                    <ui:ScrollView name="recipes" class="recipe-list-scroll" />
+                    <ui:Label name="empty-label" text="Aucune recette fabricable" class="recipe-empty hidden" />
+                </ui:VisualElement>
+                <ui:VisualElement name="detail" class="recipe-detail">
+                    <ui:VisualElement name="detail-header" class="detail-header">
+                        <ui:VisualElement name="detail-icon" class="detail-icon" />
+                        <ui:VisualElement class="detail-header-text">
+                            <ui:Label name="detail-name" text="Objet" class="detail-name" />
+                            <ui:Label name="detail-count" text="x1" class="detail-count" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Label name="detail-description" text="Description" class="detail-description" />
+                    <ui:Label text="Ingrédients" class="detail-section" />
+                    <ui:VisualElement name="detail-ingredients" class="detail-ingredients" />
+                    <ui:VisualElement name="detail-actions" class="detail-actions">
+                        <ui:Button name="quantity-minus" text="-" class="quantity-button" />
+                        <ui:Label name="quantity-label" text="1" class="quantity-label" />
+                        <ui:Button name="quantity-plus" text="+" class="quantity-button" />
+                        <ui:Button name="quantity-max" text="Max" class="quantity-button quantity-max" />
+                        <ui:Button name="craft-button" text="Fabriquer" class="craft-button" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

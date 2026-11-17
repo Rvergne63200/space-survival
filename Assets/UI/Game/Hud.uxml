@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- HUD, always shown in game. The names are used by PlayerStatsUI, PlayerToolBarUI, HandedCursorUI,
+         PointedInterractorInformationUI and PickupInfoGroupUI. Only the tool bar slots catch the mouse -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
+        <ui:VisualElement name="crosshair" picking-mode="Ignore" class="crosshair" />
+        <ui:Label name="pointed-label" text="Info [F]" picking-mode="Ignore" class="pointed-label" />
+        <ui:VisualElement name="stats" picking-mode="Ignore" class="stats" />
+        <ui:VisualElement name="pickups" picking-mode="Ignore" class="pickups" />
+        <ui:VisualElement name="toolbar" picking-mode="Ignore" class="toolbar">
+            <ui:VisualElement name="toolbar-slots" picking-mode="Ignore" class="toolbar-slots" />
+            <ui:VisualElement name="handed-cursor" picking-mode="Ignore" class="handed-cursor" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -88,6 +88,12 @@ public class Crafter : MonoBehaviour
 
     public bool CheckHasItems(RecipeData recipe)
     {
+        return MaxCraftable(recipe) >= 1;
+    }
+
+    // Number of times the recipe can be crafted with the inventory (content and tool bar, like Remove)
+    public int MaxCraftable(RecipeData recipe)
+    {
         PlayerInventory inventory = playerContext.PlayerManager.Inventory;
 
         // Stack item data count
@@ -104,16 +110,17 @@ public class Crafter : MonoBehaviour
             }
         }
 
-        // Check inventory quantities (content and tool bar, like Remove)
+        int max = int.MaxValue;
+
         foreach (KeyValuePair<ItemData, int> recipeQuantity in recipeIngredients)
         {
-            if (recipeQuantity.Value > inventory.Count(recipeQuantity.Key))
-            {
-                return false;
-            }
+            if (recipeQuantity.Value <= 0) continue;
+
+            max = Mathf.Min(max, Mathf.Max(0, inventory.Count(recipeQuantity.Key)) / recipeQuantity.Value);
         }
 
-        return true;
+        // A recipe without ingredient: no limit, one at a time
+        return max == int.MaxValue ? 1 : max;
     }
 
     public void ClearStation()

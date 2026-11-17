@@ -1,17 +1,18 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
-using TMPro;
+using UnityEngine.UIElements;
 
-public class PlayerToolBarUI : ItemCollectionUI<Item>
+// Tool bar of the player, in the HUD (element "toolbar-slots" of Hud.uxml), always shown in game
+public class PlayerToolBarUI : ItemCollectionUI
 {
+    [SerializeField] private UIDocument document;
+
     public override void OnUpdateManager(UIManager manager)
     {
-        if (manager == null)
+        if (manager == null || document == null)
         {
             return;
         }
 
-        this.Inventory = manager?.PlayerInventory?.ToolBar;
+        Bind(manager.PlayerInventory.ToolBar, document.rootVisualElement.Q("toolbar-slots"));
     }
 }

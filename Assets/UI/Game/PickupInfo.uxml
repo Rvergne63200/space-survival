@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- One picked up item notification (PickupInfoGroupUI) -->
+    <ui:VisualElement name="pickup" picking-mode="Ignore" class="pickup-info">
+        <ui:Label name="pickup-label" text="+1 Item" picking-mode="Ignore" class="pickup-label" />
+        <ui:VisualElement name="pickup-icon" picking-mode="Ignore" class="pickup-icon" />
+    </ui:VisualElement>
+</ui:UXML>

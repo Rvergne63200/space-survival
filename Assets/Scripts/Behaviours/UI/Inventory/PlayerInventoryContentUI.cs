@@ -1,33 +1,44 @@
 using System;
-using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerInventoryContentUI : ItemCollectionUI<Item>
+// Inventory of the player (Inventory.uxml), opened and closed with the Inventory key (PlayerInventory.IsOpen)
+public class PlayerInventoryContentUI : ItemCollectionUI
 {
     private UnityEvent<bool, Action> ev_UpdateIsOpen;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        gameObject.SetActive(false);
-    }
+    private PlayerInventory inventory;
 
     public override void OnUpdateManager(UIManager manager)
-    {   
-        if(manager == null)
+    {
+        if (manager == null)
         {
             return;
         }
 
         ev_UpdateIsOpen?.RemoveListener(SetVisible);
 
-        PlayerInventory inventory = manager.PlayerInventory;
+        inventory = manager.PlayerInventory;
 
         ev_UpdateIsOpen = inventory.ev_UpdateIsOpen;
         ev_UpdateIsOpen.AddListener(SetVisible);
+    }
 
-        DisplayInventory(inventory.IsOpen);
+    protected override void OnDestroy()
+    {
+        ev_UpdateIsOpen?.RemoveListener(SetVisible);
+        base.OnDestroy();
+    }
 
-        this.Inventory = inventory.Content;
+    private void SetVisible(bool visible, Action hideInterfaceAction)
+    {
+        ac_OnClearInterface = hideInterfaceAction;
+
+        if (visible)
+        {
+            OpenPanel(inventory.Content);
+        }
+        else
+        {
+            ClosePanel();
+        }
     }
 }

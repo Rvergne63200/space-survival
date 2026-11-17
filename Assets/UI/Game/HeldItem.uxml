@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- Item held at the cursor (HeldItemUI), drawn over the interfaces. Does not catch the mouse -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
+        <ui:VisualElement name="held-item" picking-mode="Ignore" class="held-item hidden">
+            <ui:VisualElement name="slot-icon" picking-mode="Ignore" class="item-slot-icon" />
+            <ui:Label name="slot-count" picking-mode="Ignore" class="item-slot-count" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

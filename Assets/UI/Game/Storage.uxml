@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- Searched storage (ItemStorageUI): the slots are added in "slots" -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
+        <ui:VisualElement name="panel" class="game-panel panel-right">
+            <ui:Label name="title" text="Conteneur" class="panel-title" />
+            <ui:VisualElement name="slots" class="item-grid" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

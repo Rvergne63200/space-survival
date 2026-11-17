@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- One stat bar (StatBarUI): icon and color set by PlayerStatsUI -->
+    <ui:VisualElement name="stat" picking-mode="Ignore" class="stat-bar">
+        <ui:VisualElement name="stat-icon" picking-mode="Ignore" class="stat-icon" />
+        <ui:VisualElement name="stat-track" picking-mode="Ignore" class="stat-track">
+            <ui:VisualElement name="stat-fill" picking-mode="Ignore" class="stat-fill" />
+            <ui:Label name="stat-text" text="0/0" picking-mode="Ignore" class="stat-text" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

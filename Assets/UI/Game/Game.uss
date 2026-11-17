@@ -1,0 +1,449 @@
+/* Style of the game interfaces: HUD, inventory, storage, crafting station, item held at the cursor */
+
+/* Full screen container that does not catch the mouse (the elements inside it do) */
+.game-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ---------- HUD ---------- */
+
+.crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 3px;
+    translate: -50% -50%;
+    background-color: rgb(255, 255, 255);
+}
+
+/* Information of the pointed interactable, above the crosshair */
+.pointed-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: -55px;
+    color: rgb(255, 255, 255);
+    font-size: 15px;
+    -unity-text-align: middle-center;
+}
+
+/* Stat bars, bottom left. The first stat is at the bottom */
+.stats {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    width: 300px;
+    flex-direction: column-reverse;
+}
+
+.stat-bar {
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+    margin-top: 12px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.stat-track {
+    flex-grow: 1;
+    height: 14px;
+    margin-left: 4px;
+    background-color: rgba(140, 140, 140, 0.39);
+}
+
+/* Width set by StatBarUI (value / max), color by PlayerStatsUI */
+.stat-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.stat-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    -unity-text-align: middle-center;
+    padding: 0;
+    margin: 0;
+}
+
+/* Picked up items, bottom right. The newest at the bottom */
+.pickups {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    width: 300px;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.pickup-info {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    height: 50px;
+}
+
+.pickup-icon {
+    width: 50px;
+    height: 50px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.pickup-label {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    -unity-text-align: middle-right;
+    margin-right: 5px;
+}
+
+/* Tool bar, bottom center. The handed cursor is moved over the selected slot by HandedCursorUI */
+.toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    align-items: center;
+}
+
+.toolbar-slots {
+    flex-direction: row;
+}
+
+.handed-cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 75px;
+    height: 75px;
+    background-image: resource("UI/IconCursor_1");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+/* ---------- Item slots (ItemSlot.uxml) ---------- */
+
+.item-slot {
+    width: 75px;
+    height: 75px;
+    margin: 2.5px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.31);
+}
+
+.item-slot:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.item-slot-icon {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.item-slot-count {
+    position: absolute;
+    right: 4px;
+    bottom: 2px;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    -unity-font-style: bold;
+    -unity-text-align: lower-right;
+    padding: 0;
+    margin: 0;
+}
+
+/* ---------- Panels (inventory, storage, crafting station) ---------- */
+
+.game-panel {
+    position: absolute;
+    top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: rgba(20, 24, 36, 0.85);
+}
+
+.panel-left {
+    left: 10px;
+}
+
+.panel-right {
+    right: 10px;
+}
+
+.panel-title {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+}
+
+/* 8 slots of 80 px (75 + margins) per line */
+.item-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 640px;
+}
+
+/* ---------- Crafting station (CraftingStation.uxml, RecipeSlot.uxml, RecipeIngredient.uxml) ---------- */
+
+.crafting-panel {
+    width: 620px;
+    max-height: 85%;
+}
+
+.crafting-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.crafting-title {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+.crafting-filter {
+    margin: 0;
+}
+
+.crafting-filter Label {
+    color: rgb(220, 220, 220);
+    font-size: 13px;
+    min-width: 0;
+    margin-right: 6px;
+}
+
+.crafting-body {
+    flex-direction: row;
+    flex-shrink: 1;
+    min-height: 320px;
+}
+
+/* 4 recipes of 62 px (56 + margins) per line */
+.recipe-list {
+    width: 260px;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.recipe-list-scroll {
+    flex-grow: 1;
+}
+
+.recipe-list-scroll .unity-scroll-view__content-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.recipe-empty {
+    color: rgb(170, 170, 170);
+    font-size: 13px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-top: 20px;
+}
+
+.recipe-slot {
+    width: 56px;
+    height: 56px;
+    margin: 3px;
+    padding: 0;
+    border-width: 2px;
+    border-radius: 4px;
+    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 97, 175, 0.39);
+}
+
+.recipe-slot:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.recipe-slot-selected {
+    border-color: rgb(255, 255, 255);
+    background-color: rgba(40, 140, 220, 0.6);
+}
+
+/* Not enough resources (CraftingStationUI) */
+.recipe-unavailable {
+    opacity: 0.45;
+}
+
+.recipe-slot-icon {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.recipe-slot-count {
+    position: absolute;
+    right: 3px;
+    bottom: 1px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    -unity-font-style: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.recipe-detail {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.detail-header {
+    flex-direction: row;
+    align-items: center;
+}
+
+.detail-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.31);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.detail-header-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 10px;
+}
+
+.detail-name {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+
+.detail-count {
+    color: rgb(190, 190, 190);
+    font-size: 14px;
+}
+
+.detail-description {
+    color: rgb(200, 200, 200);
+    font-size: 13px;
+    white-space: normal;
+    margin-top: 8px;
+}
+
+.detail-section {
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+.detail-ingredients {
+    flex-grow: 1;
+}
+
+.recipe-ingredient {
+    flex-direction: row;
+    align-items: center;
+    height: 34px;
+    padding: 0 6px;
+    margin-bottom: 3px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.recipe-ingredient-icon {
+    width: 28px;
+    height: 28px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.recipe-ingredient-name {
+    flex-grow: 1;
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    margin-left: 6px;
+}
+
+.recipe-ingredient-count {
+    color: rgb(140, 220, 140);
+    font-size: 13px;
+    -unity-font-style: bold;
+    padding: 0;
+    margin: 0;
+}
+
+/* Owned less than required */
+.recipe-missing {
+    color: rgb(255, 102, 102);
+}
+
+.detail-actions {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-button {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    margin: 0 2px;
+    padding: 0;
+}
+
+.quantity-max {
+    width: 44px;
+    font-size: 12px;
+}
+
+.quantity-label {
+    width: 36px;
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.craft-button {
+    flex-grow: 1;
+    height: 36px;
+    margin: 0 0 0 8px;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+/* ---------- Item held at the cursor (HeldItem.uxml) ---------- */
+
+.held-item {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    translate: -50% -50%;
+}

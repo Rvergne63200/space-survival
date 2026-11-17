@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
+// Root of the game interfaces (UI prefab, spawned by the UIManager): HUD, inventory, storage, crafting station and
+// item held at the cursor, each one a UIDocument (layouts in Assets/UI/Game, editable in the UI Builder).
+// Also handles Escape: closes the open interfaces, otherwise cancels the construction mode or opens the pause menu
 public class ParentUI : MonoBehaviour
 {
     private PlayerInputActions inputActions;
@@ -17,7 +21,8 @@ public class ParentUI : MonoBehaviour
         } 
     }
 
-    public GameObject dragginSlotUI;
+    // Hidden without player (main menu): the HUD and the item held at the cursor
+    [SerializeField] private UIDocument[] hudDocuments;
 
     public UnityEvent<UIManager> ev_updateManager = new();
 
@@ -41,11 +46,6 @@ public class ParentUI : MonoBehaviour
     {
         InterfaceManager.GetInstance();
         inputActions = new PlayerInputActions();
-    }
-
-    private void Start()
-    {
-        UIManager?.PlayerInventory.draggingSlot.ev_update.AddListener(OnUpdateDraggingItemSlot);
     }
 
     private void OnEnable()
@@ -90,17 +90,14 @@ public class ParentUI : MonoBehaviour
         }
     }
 
-    public void OnUpdateDraggingItemSlot(ItemSlot<Item> slot)
+    public void SetHudVisible(bool visible)
     {
-        if(slot.Item == null || slot.Quantity <= 0)
+        foreach (UIDocument document in hudDocuments)
         {
-            dragginSlotUI.SetActive(false);
-        }
-        else
-        {
-            ItemSlotUI slotUI = dragginSlotUI.GetComponent<ItemSlotUI>();
-            slotUI.UpdateSlot(slot);
-            dragginSlotUI.SetActive(true);
+            if (document != null && document.rootVisualElement != null)
+            {
+                document.rootVisualElement.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
     }
 }

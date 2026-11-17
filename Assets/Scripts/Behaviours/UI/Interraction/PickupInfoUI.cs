@@ -1,48 +1,60 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using UnityEngine.UIElements;
 
-public class PickupInfoUI : ParentedUI
+// One picked up item notification (element "pickup" of PickupInfo.uxml), created by PickupInfoGroupUI.
+// Fades out during its duration, then is removed
+public class PickupInfoUI
 {
-    public float durability = 5f;
-    public Image image;
-    public TextMeshProUGUI text;
+    private readonly VisualElement element;
+    private readonly VisualElement icon;
+    private readonly Label label;
+    private readonly float durability;
 
-    private CanvasGroup group;
-    private float countDown = 0f;
+    private float countDown;
 
-    public void Start()
+    public PickupInfoUI(VisualElement element, float durability)
     {
-        countDown = durability;
-        group = GetComponent<CanvasGroup>();
+        this.element = element;
+        this.durability = durability;
+
+        icon = element.Q("pickup-icon");
+        label = element.Q<Label>("pickup-label");
+
+        Restart();
     }
 
     // Shown again for its whole duration (grouped pickups, see PickupInfoGroupUI)
     public void Restart()
     {
         countDown = durability;
-
-        if (group != null)
-        {
-            group.alpha = 1f;
-        }
+        element.style.opacity = 1f;
     }
 
     public void SetInfobulle(string text, Sprite sprite)
     {
-        image.sprite = sprite;
-        this.text.text = text;
+        if (label != null)
+        {
+            label.text = text;
+        }
+
+        if (icon != null)
+        {
+            icon.style.backgroundImage = sprite != null ? new StyleBackground(sprite) : new StyleBackground(StyleKeyword.None);
+        }
     }
 
-    public void Update()
+    // Returns false once removed
+    public bool Tick(float deltaTime)
     {
-        countDown -= Time.deltaTime;
+        countDown -= deltaTime;
 
-        group.alpha = countDown / durability;
-
-        if(countDown <= 0f)
+        if (countDown <= 0f)
         {
-            Destroy(gameObject);
+            element.RemoveFromHierarchy();
+            return false;
         }
+
+        element.style.opacity = countDown / durability;
+        return true;
     }
 }

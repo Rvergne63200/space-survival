@@ -1,147 +1,156 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
-public abstract class ItemCollectionUI<T> : ParentedUI where T : Item
+// Shows an ItemCollection: one ItemSlot.uxml per slot, added in a container of a UIDocument.
+// The interfaces that open and close (inventory, storage) have a panel: the GameObject holding their UIDocument,
+// registered in the InterfaceManager while it is open
+public abstract class ItemCollectionUI : ParentedUI
 {
-    public UnityEvent ev_OnSlotsUpdated;
+    [SerializeField] protected VisualTreeAsset slotTemplate;
+    [SerializeField] protected GameObject panel;
 
+    public UnityEvent ev_OnSlotsUpdated = new UnityEvent();
 
-    private ItemCollection<T> _inventory;
-    protected ItemCollection<T> Inventory
-    {
-        get { return _inventory; } 
-        set { 
-            if(_inventory != null)
-            {
-                _inventory.ev_Update.RemoveListener(UpdateUI);
-            }
+    private ItemCollection<Item> collection;
+    private VisualElement container;
+    private readonly List<ItemSlotUI> slotsUI = new List<ItemSlotUI>();
+    private bool panelOpen;
 
-            _inventory = value;
-
-            if (value != null)
-            {
-                _inventory.ev_Update.AddListener(UpdateUI);
-            }
-
-            UpdateUI();
-        }
-    }
-
-
-    public GameObject slotPrefab;
-
-    public int slotsByLine;
-
-    private readonly List<InventorySlotUI<T>> contentSlots = new List<InventorySlotUI<T>>();
-
+    // Called when the panel is closed by the InterfaceManager (Escape, death): the owner of the interface releases it
     protected Action ac_OnClearInterface = () => { };
 
+    public IReadOnlyList<ItemSlotUI> SlotsUI => slotsUI;
 
     protected override void Awake()
     {
-        base.Awake();
-        ev_OnSlotsUpdated = new UnityEvent();
-    }
-
-    public void Start()
-    {
-        Inventory = Inventory;
-    }
-
-    protected void UpdateItemCollectionUI<U>(ItemCollection<U> collection, List<InventorySlotUI<U>> slotsUI) where U : T
-    {
-        int size = collection.Slots.Count;
-
-        // First build: remove any child that is not a slot created by this UI
-        if (slotsUI.Count == 0)
+        if (panel != null)
         {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Destroy(transform.GetChild(i).gameObject);
-            }
+            panel.SetActive(false);
         }
 
-        // Remove the extra slots, detached first so that the child indices stay valid this frame
+        base.Awake();
+    }
+
+    protected override void OnDestroy()
+    {
+        Unbind();
+        base.OnDestroy();
+    }
+
+    protected void Bind(ItemCollection<Item> collection, VisualElement container)
+    {
+        Unbind();
+
+        if (collection == null || container == null)
+        {
+            return;
+        }
+
+        this.collection = collection;
+        this.container = container;
+
+        container.Clear();
+        collection.ev_Update.AddListener(UpdateUI);
+
+        UpdateUI();
+    }
+
+    protected void Unbind()
+    {
+        if (collection != null)
+        {
+            collection.ev_Update.RemoveListener(UpdateUI);
+        }
+
+        foreach (ItemSlotUI slotUI in slotsUI)
+        {
+            slotUI.Unbind();
+        }
+
+        slotsUI.Clear();
+        container?.Clear();
+
+        collection = null;
+        container = null;
+    }
+
+    public void UpdateUI()
+    {
+        if (collection == null || container == null || slotTemplate == null)
+        {
+            return;
+        }
+
+        int size = collection.Slots.Count;
+
         for (int i = slotsUI.Count - 1; i >= size; i--)
         {
-            slotsUI[i].transform.SetParent(null, false);
-            Destroy(slotsUI[i].gameObject);
+            slotsUI[i].Unbind();
+            slotsUI[i].Element.RemoveFromHierarchy();
             slotsUI.RemoveAt(i);
         }
 
-        if (slotsUI.Count < size)
+        while (slotsUI.Count < size)
         {
-            slotPrefab.GetComponent<InventorySlotUI<U>>().parentUI = parentUI;
-
-            while (slotsUI.Count < size)
-            {
-                slotsUI.Add(Instantiate(slotPrefab, transform).GetComponent<InventorySlotUI<U>>());
-            }
+            // Only the slot element is kept: its style comes from the document (Game.uss)
+            VisualElement element = slotTemplate.Instantiate().Q("slot");
+            container.Add(element);
+            slotsUI.Add(new ItemSlotUI(element, parentUI));
         }
 
         // A null slot keeps its UI (displayed empty) so that the UI index always matches the slot index
         for (int j = 0; j < size; j++)
         {
-            slotsUI[j].setSlot(collection.Slots[j]);
+            slotsUI[j].SetSlot(collection.Slots[j]);
         }
 
         ev_OnSlotsUpdated.Invoke();
     }
 
-    protected void SetItemCollectionUISize<U>(ItemCollection<U> collection) where U : T
+    protected void OpenPanel(ItemCollection<Item> collection)
     {
-        float width = 0;
-        float height = 0;
-
-        int size = collection.Slots.Count;
-
-        GridLayoutGroup grid = GetComponent<GridLayoutGroup>();
-
-        int slotsByLine = this.slotsByLine > size ? size : this.slotsByLine;
-
-        width = (grid.cellSize.x + grid.spacing.x) * slotsByLine - grid.spacing.x + grid.padding.right + grid.padding.left;
-
-        int lineCount = Mathf.CeilToInt((float)size / (float)slotsByLine);
-        height = (grid.cellSize.y + grid.spacing.y) * lineCount - grid.spacing.y + grid.padding.top + grid.padding.bottom;
-
-        GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-        GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-    }
-
-    public void UpdateUI()
-    {
-        if(Inventory != null)
+        if (panel == null || collection == null)
         {
-            UpdateItemCollectionUI(Inventory, contentSlots);
-            SetItemCollectionUISize(Inventory);
+            ClosePanel();
+            return;
         }
+
+        // The UIDocument builds its elements when it is enabled
+        panel.SetActive(true);
+        InterfaceManager.GetInstance().SetInterface(panel, true);
+        panelOpen = true;
+
+        Bind(collection, panel.GetComponent<UIDocument>().rootVisualElement.Q("slots"));
     }
 
-    protected void DisplayInventory(bool display)
+    protected void ClosePanel()
     {
-        InterfaceManager.GetInstance().SetInterface(gameObject, display);
-        gameObject.SetActive(display);
+        Unbind();
+        panelOpen = false;
+
+        if (panel == null)
+        {
+            return;
+        }
+
+        if (panel.activeSelf)
+        {
+            panel.SetActive(false);
+        }
+
+        InterfaceManager.GetInstance().SetInterface(panel, false);
     }
 
-    private void OnDisable()
+    protected virtual void Update()
     {
-        ac_OnClearInterface();
-    }
-
-    public void SetInventory(ItemCollection<T> inventory, Action clearInterfaceAction)
-    {
-        this.Inventory = inventory;
-        DisplayInventory(inventory != null);
-        ac_OnClearInterface = clearInterfaceAction;
-        UpdateUI();
-    }
-
-    public void SetVisible(bool visible, Action hideInterfaceAction)
-    {
-        DisplayInventory(visible);
-        ac_OnClearInterface = hideInterfaceAction;
+        // Also closed by InterfaceManager.CloseInterfaces (Escape, death)
+        if (panelOpen && (panel == null || !panel.activeSelf))
+        {
+            ClosePanel();
+            ac_OnClearInterface();
+        }
     }
 }

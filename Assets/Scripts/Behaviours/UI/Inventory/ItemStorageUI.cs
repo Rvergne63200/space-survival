@@ -1,12 +1,23 @@
 using System;
 
-public class ItemStorageUI : ItemCollectionUI<Item>
+// Storage searched by the player (Storage.uxml): chest, death bag... (Searcher.ev_UpdateSearchStorage, see UIManager).
+// Opens the player inventory with it
+public class ItemStorageUI : ItemCollectionUI
 {
-    public void SetItemStorage(ItemStorage inventory)
+    public void SetItemStorage(ItemStorage storage)
     {
-        this.Inventory = inventory?.Content;
-        DisplayInventory(inventory?.Content != null);
-        UpdateUI();
+        PlayerInventory inventory = parentUI != null && parentUI.UIManager != null ? parentUI.UIManager.PlayerInventory : null;
+
+        if (storage != null && storage.Content != null)
+        {
+            OpenPanel(storage.Content);
+            if (inventory != null) inventory.OpenWith(this);
+        }
+        else
+        {
+            ClosePanel();
+            if (inventory != null) inventory.CloseWith(this);
+        }
     }
 
     public void SetInterfaceClearAction(Action clearInterfaceAction)

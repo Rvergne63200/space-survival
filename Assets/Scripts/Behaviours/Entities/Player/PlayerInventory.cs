@@ -57,7 +57,41 @@ public class PlayerInventory : ItemStorage
 
         private set { 
             _isOpen = value;
+
+            if (!value)
+            {
+                openers.Clear();
+                openedByPlayer = false;
+            }
+
             ev_UpdateIsOpen.Invoke(_isOpen, () => { IsOpen = false; });
+        }
+    }
+
+    // Interfaces that opened the inventory with them (storage, crafting station): it closes with the last of them,
+    // unless the player opened it with the Inventory key
+    private readonly HashSet<object> openers = new HashSet<object>();
+    private bool openedByPlayer;
+
+    public void OpenWith(object opener)
+    {
+        if (!HasPlayer) return;
+
+        openers.Add(opener);
+
+        if (!IsOpen)
+        {
+            IsOpen = true;
+        }
+    }
+
+    public void CloseWith(object opener)
+    {
+        if (!openers.Remove(opener)) return;
+
+        if (openers.Count == 0 && IsOpen && !openedByPlayer)
+        {
+            IsOpen = false;
         }
     }
 
@@ -116,6 +150,7 @@ public class PlayerInventory : ItemStorage
         if (!HasPlayer) return;
 
         IsOpen = !IsOpen;
+        openedByPlayer = IsOpen;
     }
 
     private void OnDropPerformed(InputAction.CallbackContext ctx)

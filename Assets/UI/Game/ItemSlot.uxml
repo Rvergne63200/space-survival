@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Game.uss" />
+    <!-- One item slot (ItemSlotUI): inventory, tool bar, storage. Only "slot" catches the clicks -->
+    <ui:VisualElement name="slot" class="item-slot">
+        <ui:VisualElement name="slot-icon" picking-mode="Ignore" class="item-slot-icon" />
+        <ui:Label name="slot-count" picking-mode="Ignore" class="item-slot-count" />
+    </ui:VisualElement>
+</ui:UXML>
