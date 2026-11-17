@@ -15,6 +15,11 @@ public class ItemSlotUI
 
     private ItemSlot<Item> slot;
 
+    // Double click: two left clicks on the same slot UI within this delay (seconds)
+    private const float DoubleClickDelay = 0.35f;
+    private static ItemSlotUI lastClickedSlot;
+    private static float lastClickTime;
+
     public ItemSlotUI(VisualElement element, ParentUI parentUI)
     {
         Element = element;
@@ -94,6 +99,8 @@ public class ItemSlotUI
 
         if (evt.button == 0)
         {
+            bool doubleClick = IsDoubleClick();
+
             // The modifiers of the event are not always filled with the Input System: the keyboard is also read
             bool shift = evt.shiftKey || (Keyboard.current != null && Keyboard.current.shiftKey.isPressed);
 
@@ -103,7 +110,7 @@ public class ItemSlotUI
             }
             // Double click: the first click took the stack at the cursor, the second gathers the same items into it
             // (instead of putting the stack back in the slot)
-            else if (evt.clickCount >= 2 && !inventory.draggingSlot.IsEmpty())
+            else if (doubleClick && !inventory.draggingSlot.IsEmpty())
             {
                 inventory.GatherToCursor(GetSearchedStorage());
             }
@@ -119,6 +126,20 @@ public class ItemSlotUI
             inventory.SplitOrPlaceOne(slot);
             evt.StopPropagation();
         }
+    }
+
+    // Not evt.clickCount: through the EventSystem it counts the clicks on the whole panel, whatever the slot,
+    // so taking an item and putting it in another slot quickly was seen as a double click (the item stayed at the cursor)
+    private bool IsDoubleClick()
+    {
+        float now = Time.unscaledTime;
+        bool doubleClick = lastClickedSlot == this && now - lastClickTime <= DoubleClickDelay;
+
+        // A third click starts a new sequence
+        lastClickedSlot = doubleClick ? null : this;
+        lastClickTime = now;
+
+        return doubleClick;
     }
 
     // Content of the storage currently searched by the player, if any
