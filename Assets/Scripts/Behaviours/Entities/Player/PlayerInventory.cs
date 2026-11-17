@@ -113,6 +113,8 @@ public class PlayerInventory : ItemStorage
         inputActions.Actions.ChangeHandedItem.performed += OnChangeHandedItemPerformed;
         inputActions.Actions.Use1.performed += OnUse1Performed;
         inputActions.Actions.Use2.performed += OnUse2Performed;
+        inputActions.Actions.Use1.canceled += OnUse1Canceled;
+        inputActions.Actions.Use2.canceled += OnUse2Canceled;
 
         inputActions.Actions.Enable();
     }
@@ -128,6 +130,11 @@ public class PlayerInventory : ItemStorage
         inputActions.Actions.ChangeHandedItem.performed -= OnChangeHandedItemPerformed;
         inputActions.Actions.Use1.performed -= OnUse1Performed;
         inputActions.Actions.Use2.performed -= OnUse2Performed;
+        inputActions.Actions.Use1.canceled -= OnUse1Canceled;
+        inputActions.Actions.Use2.canceled -= OnUse2Canceled;
+
+        StopHolds(null);
+        Unequip();
     }
 
     // When the last interface closes, the item held at the cursor is dropped instead of staying displayed
@@ -180,6 +187,16 @@ public class PlayerInventory : ItemStorage
         if (ModeManager.Instance.IsEnabled(OPTION_USE_DISABLED)) return;
 
         Use2();
+    }
+
+    private void OnUse1Canceled(InputAction.CallbackContext ctx)
+    {
+        StopHolds(true);
+    }
+
+    private void OnUse2Canceled(InputAction.CallbackContext ctx)
+    {
+        StopHolds(false);
     }
 
 
@@ -267,14 +284,117 @@ public class PlayerInventory : ItemStorage
 
         if (slot.IsEmpty()) return false;
 
-        ItemUseContext context = new ItemUseContext
+        // The item in hand may have changed since the last frame
+        UpdateEquipped();
+
+        ItemUseContext context = CreateUseContext(slot);
+        List<HoldItemAction> startedHolds = new List<HoldItemAction>();
+
+        bool done = slot.Item.Data.Use(primary, context, startedHolds);
+
+        foreach (HoldItemAction action in startedHolds)
+        {
+            holds.Add(new HeldAction { Action = action, Primary = primary, Context = context, StartTime = Time.time });
+        }
+
+        return done;
+    }
+
+    private ItemUseContext CreateUseContext(ItemSlot<Item> slot)
+    {
+        Camera view = CameraManager.Instance != null && CameraManager.Instance.Camera != null
+            ? CameraManager.Instance.Camera.GetComponentInChildren<Camera>()
+            : null;
+
+        return new ItemUseContext
         {
             Manager = PlayerManager.Instance,
             Player = PlayerManager.Instance != null ? PlayerManager.Instance.Player : null,
-            Slot = slot
+            Slot = slot,
+            View = view != null ? view.transform : null
         };
+    }
 
-        return slot.Item.Data.Use(primary, context);
+    // ---------- Item in hand: toggles and holds ----------
+
+    private class HeldAction
+    {
+        public HoldItemAction Action;
+        public bool Primary;
+        public ItemUseContext Context;
+        public float StartTime;
+    }
+
+    // Hold actions running while their button is held
+    private readonly List<HeldAction> holds = new List<HeldAction>();
+
+    // Data of the item in hand the last time it was checked, with the context of its use (for OnUnequip)
+    private ItemData equippedData;
+    private ItemUseContext equippedContext;
+
+    private void Update()
+    {
+        UpdateEquipped();
+
+        if (holds.Count == 0) return;
+
+        // An interface opened, or the construction mode started, while the button was held
+        if (ModeManager.Instance.IsEnabled(OPTION_USE_DISABLED))
+        {
+            StopHolds(null);
+            return;
+        }
+
+        for (int i = holds.Count - 1; i >= 0; i--)
+        {
+            HeldAction held = holds[i];
+
+            if (!held.Action.Hold(held.Context, Time.time - held.StartTime))
+            {
+                holds.RemoveAt(i);
+                held.Action.End(held.Context, true);
+            }
+        }
+    }
+
+    // When the item in hand changes (other slot, slot emptied or filled, player gone), the previous one is unequipped
+    private void UpdateEquipped()
+    {
+        ItemSlot<Item> slot = HandedSlot;
+        ItemData data = HasPlayer && slot != null && !slot.IsEmpty() ? slot.Item.Data : null;
+
+        if (data == equippedData) return;
+
+        StopHolds(null);
+        Unequip();
+
+        equippedData = data;
+        equippedContext = data != null ? CreateUseContext(slot) : null;
+    }
+
+    private void Unequip()
+    {
+        if (equippedData != null)
+        {
+            equippedData.Unequip(equippedContext ?? CreateUseContext(HandedSlot));
+        }
+
+        equippedData = null;
+        equippedContext = null;
+    }
+
+    // primary: the holds of this button only, null: all of them
+    private void StopHolds(bool? primary)
+    {
+        for (int i = holds.Count - 1; i >= 0; i--)
+        {
+            HeldAction held = holds[i];
+
+            if (primary.HasValue && held.Primary != primary.Value) continue;
+
+            holds.RemoveAt(i);
+            held.Action.End(held.Context, false);
+        }
     }
 
 

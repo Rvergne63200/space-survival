@@ -18,8 +18,16 @@ MonoBehaviour:
   _description: Portable lamp to light up the dark.
   _sprite: {fileID: -957748823, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
+  _primaryActions:
+  - rid: 7413000000000000101
   _secondaryActions: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7413000000000000101
+      type: {class: FlashlightAction, ns: , asm: Assembly-CSharp}
+      data:
+        color: {r: 1, g: 0.95, b: 0.85, a: 1}
+        intensity: 1.5
+        range: 30
+        spotAngle: 60

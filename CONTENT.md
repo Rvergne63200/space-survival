@@ -112,6 +112,14 @@ Vue à la première personne uniquement.
 - Touche Inventaire : ouvre ou ferme l'inventaire (`ev_UpdateIsOpen`).
 - Molette : change le slot en main (`HandedIndex`, avec bouclage).
 - **Usage de l'item en main** : `Use1` (clic gauche) exécute ses actions principales et `Use2` (clic droit) ses actions secondaires (`ItemData.PrimaryActions` / `SecondaryActions`, des `ItemAction` comme `ApplyModifiersAction`). Sans action secondaire, un `ConsummableData` est consommé au clic droit. Les deux sont ignorés quand une interface est ouverte ou en mode construction (`OPTION_USE_DISABLED`).
+  - **Modes des actions** (`ItemAction.Mode`) : les outils s'utilisent au clic gauche.
+    - `Press` (`ItemAction`) : `Execute` une fois par clic (arme qui tire, consommable).
+    - `Toggle` (`ToggleItemAction`) : chaque clic alterne allumé / éteint (`SetOn`). L'action s'éteint quand l'item quitte la main.
+    - `Hold` (`HoldItemAction`) : `Execute` démarre, `Hold(context, heldTime)` est appelé à chaque frame jusqu'à ce qu'il renvoie false, puis `End(context, completed)`. Le relâchement du bouton, l'ouverture d'une interface ou le changement d'item arrêtent l'action (`completed` = false).
+  - **Item en main** : `PlayerInventory` vérifie à chaque frame si l'item en main change (autre slot, slot vidé, joueur absent). Il appelle alors `OnUnequip` sur les actions de l'ancien item (`ItemData.Unequip`).
+  - `ItemUseContext.View` : le transform de la caméra du joueur.
+  - L'état d'une action (allumée, maintenue) est porté par l'asset ItemData : il est partagé par tous les items de ce type.
+- **Lampe torche** (`22_Flashlight`, `FlashlightAction`) : un spot (couleur, intensité 1,5, portée 30 m, angle 60°, ombres douces) créé comme enfant de la caméra au premier allumage.
 - Touche Drop (inventaire ouvert) : jette devant le joueur tout le contenu du slot tenu au curseur. Le slot du curseur est aussi jeté automatiquement quand la dernière interface se ferme.
 
 ### Interactions UI

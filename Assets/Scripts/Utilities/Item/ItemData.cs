@@ -40,8 +40,8 @@ public class ItemData : ScriptableObject
     private List<ItemAction> _secondaryActions = new List<ItemAction>();
     public List<ItemAction> SecondaryActions => _secondaryActions;
 
-    // Returns true when at least one action was done
-    public bool Use(bool primary, ItemUseContext context)
+    // Returns true when at least one action was done. The hold actions that started are added to startedHolds
+    public bool Use(bool primary, ItemUseContext context, List<HoldItemAction> startedHolds = null)
     {
         bool done = false;
 
@@ -50,9 +50,28 @@ public class ItemData : ScriptableObject
             if (action != null && action.Execute(context))
             {
                 done = true;
+
+                if (action is HoldItemAction hold)
+                {
+                    startedHolds?.Add(hold);
+                }
             }
         }
 
         return done;
+    }
+
+    // The item leaves the hand: every action stops what it does
+    public void Unequip(ItemUseContext context)
+    {
+        foreach (ItemAction action in _primaryActions)
+        {
+            action?.OnUnequip(context);
+        }
+
+        foreach (ItemAction action in _secondaryActions)
+        {
+            action?.OnUnequip(context);
+        }
     }
 }
