@@ -8,6 +8,7 @@ public class DistributionPanelInput : EnergyConsumer
 
     public override DistributionPanel Panel => panel != null ? panel : (panel = GetComponentInParent<DistributionPanel>());
     public override string PortId => "input";
+    public override bool CanSwitch => false;
     public override float Consumption => Panel != null ? Panel.InputDemand : 0f;
     public override string DisplayName => base.DisplayName + " (entrée)";
 

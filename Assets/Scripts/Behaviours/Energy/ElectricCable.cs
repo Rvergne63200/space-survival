@@ -123,6 +123,18 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
         return line;
     }
 
+    public EnergyDevice Start => start;
+    public EnergyDevice End => end;
+
+    // Ends and intermediate points (map of the control panel)
+    public List<Vector3> ControlPoints()
+    {
+        List<Vector3> controlPoints = new List<Vector3> { start != null ? start.ConnectionPoint : startPosition };
+        controlPoints.AddRange(points);
+        controlPoints.Add(end != null ? end.ConnectionPoint : endPosition);
+        return controlPoints;
+    }
+
     public EnergyDevice Other(EnergyDevice device)
     {
         if (device == start) return end;
@@ -196,11 +208,7 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
             line = CreateLine(gameObject, data);
         }
 
-        List<Vector3> controlPoints = new List<Vector3> { start != null ? start.ConnectionPoint : startPosition };
-        controlPoints.AddRange(points);
-        controlPoints.Add(end != null ? end.ConnectionPoint : endPosition);
-
-        List<Vector3> curve = BuildCurve(controlPoints);
+        List<Vector3> curve = BuildCurve(ControlPoints());
         line.positionCount = curve.Count;
         line.SetPositions(curve.ToArray());
 

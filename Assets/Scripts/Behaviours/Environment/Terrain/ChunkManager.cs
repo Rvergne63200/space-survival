@@ -261,6 +261,19 @@ public class ChunkManager : MonoBehaviour
         }
     }
 
+    // Height the terrain is generated with at a world position (m), loaded or not. The flattenings are not included
+    public float GeneratedHeightAt(float x, float z)
+    {
+        if (generatorTemplate == null && chunkPrefab != null)
+        {
+            generatorTemplate = chunkPrefab.GetComponent<TerrainGenerator>();
+        }
+
+        return generatorTemplate != null ? generatorTemplate.HeightAt(perlinOffset.x + x, perlinOffset.y + z) : 0f;
+    }
+
+    TerrainGenerator generatorTemplate;
+
     public Vector2Int GetChunkPositionFor(Vector3 position)
     {
         return new Vector2Int(

@@ -4,8 +4,12 @@ using UnityEngine;
 // Something of the electrical network (EnergyNetworkManager): consumer, generator or storage, linked by electric cables.
 // The consumers link the networks: everything linked to them is in their network. The generators and the storages do
 // not: linked on two sides, they belong to two networks without merging them
-public abstract class EnergyDevice : MonoBehaviour
+public abstract class EnergyDevice : MonoBehaviour, ISaveableComponent
 {
+    // Off: it stops (a consumer no longer consumes, a generator no longer produces, a storage neither charges nor
+    // discharges), but the cables still pass through it: a consumer off still links the networks. Saved
+    [SerializeField] private bool switchedOn = true;
+
     // Where the cables are attached. Empty: the child named "Connector", or else the top of the object
     [SerializeField] private Transform connector;
 
@@ -13,6 +17,37 @@ public abstract class EnergyDevice : MonoBehaviour
     public IReadOnlyList<ElectricCable> Cables => cables;
 
     public abstract bool LinksNetworks { get; }
+
+    // Its own setting (kept while a distribution panel holds it off)
+    public bool SwitchedOn => switchedOn;
+
+    // In the circuit of a switched off distribution panel, directly or through the panels under it (set by the
+    // EnergyNetworkManager): off whatever its own setting, which cannot be changed meanwhile
+    public bool ForcedOff { get; private set; }
+
+    // Actually running: its own setting AND every panel above it
+    public bool IsOn => switchedOn && !ForcedOff;
+
+    // The ports of a distribution panel follow the switch of their panel
+    public virtual bool CanSwitch => true;
+
+    public void SetSwitchedOn(bool on)
+    {
+        if (CanSwitch && !ForcedOff) switchedOn = on;
+    }
+
+    public void SetForcedOff(bool forced)
+    {
+        ForcedOff = forced;
+    }
+
+    // Text of the state for the pointer and the control panel: "" when running
+    protected string OffText(bool feminine)
+    {
+        if (ForcedOff) return feminine ? "éteinte par le tableau, " : "éteint par le tableau, ";
+        if (!switchedOn) return feminine ? "éteinte, " : "éteint, ";
+        return "";
+    }
 
     // Several devices on the same saved object (input and output of a distribution panel): saved with the cables to
     // find the right one again. Null for a single device
@@ -132,4 +167,35 @@ public abstract class EnergyDevice : MonoBehaviour
 
     // Text at the pointer (EnergyDeviceInfo)
     public abstract string GetInfo();
+
+    // ---------- Save ----------
+
+    [System.Serializable]
+    private class DeviceState
+    {
+        public bool switchedOn = true;
+    }
+
+    public virtual string SaveKey => "energyDevice" + PortId;
+
+    public virtual string CaptureState()
+    {
+        return JsonUtility.ToJson(new DeviceState { switchedOn = switchedOn });
+    }
+
+    public virtual void RestoreState(string json)
+    {
+        DeviceState state = JsonUtility.FromJson<DeviceState>(json);
+
+        if (state != null)
+        {
+            switchedOn = state.switchedOn;
+        }
+    }
+
+    // For the storage, saved with its own state
+    protected void RestoreSwitchedOn(bool on)
+    {
+        switchedOn = on;
+    }
 }

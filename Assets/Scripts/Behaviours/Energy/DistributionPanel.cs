@@ -5,7 +5,8 @@ using UnityEngine;
 // input (DistributionPanelInput) receives from the upstream network. One way only: nothing goes back upstream.
 // Seen from upstream, the whole circuit is a single consumer asking what the circuit lacks once its own generators
 // have given (EnergyNetworkManager). Settings, in its interface (DistributionPanelUI, interaction key):
-// - switch: cuts everything behind it
+// - on/off: off, it feeds nothing and switches off everything behind it (their own setting is kept)
+// - power limit at 0: cuts the circuit (the former "cut" switch)
 // - power limit: if the circuit asks more, only the panel trips (fuse), it is rearmed once the demand is under the limit
 // - load shedding: cut when the upstream network lacks power (lowest priority first, rearmed once upstream could give
 //   it again), or when the upstream batteries are under a threshold (rearmed 5 % above it)
@@ -32,7 +33,13 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     public DistributionPanelInput Input => input != null ? input : (input = GetComponentInChildren<DistributionPanelInput>());
     public DistributionPanelOutput Output => output != null ? output : (output = GetComponentInChildren<DistributionPanelOutput>());
 
+    // Its own on/off setting. Off, it feeds nothing and everything in its circuit is off (EnergyNetworkManager), their own
+    // setting being kept for when it is switched on again
     public bool SwitchedOn => switchedOn;
+
+    // Held off by a panel above it (its input is in the circuit of a switched off panel): its setting cannot be changed
+    public bool ForcedOff => Input != null && Input.ForcedOff;
+    public bool IsOn => switchedOn && !ForcedOff;
     public EnergyValue PowerLimit => powerLimit;
     public SheddingMode Shedding => shedding;
     public float BatteryThreshold => batteryThreshold;
@@ -69,7 +76,10 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
 
     // ---------- Settings (DistributionPanelUI) ----------
 
-    public void SetSwitchedOn(bool on) => switchedOn = on;
+    public void SetSwitchedOn(bool on)
+    {
+        if (!ForcedOff) switchedOn = on;
+    }
     public void SetPowerLimit(float watts, bool infinite) => powerLimit = new EnergyValue(Mathf.Max(0f, watts), infinite);
     public void SetShedding(SheddingMode mode) => shedding = mode;
     public void SetBatteryThreshold(float percent) => batteryThreshold = Mathf.Clamp(percent, 0f, 100f);
@@ -82,7 +92,7 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     // loop: the output feeds the network of the input
     public void BeginUpdate(float deltaTime, float batteryRatio, bool loop)
     {
-        if (!switchedOn)
+        if (!IsOn)
         {
             State = PanelState.Off;
             return;
@@ -195,7 +205,7 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
             switch (State)
             {
                 case PanelState.On: return "en marche";
-                case PanelState.Off: return "coupé";
+                case PanelState.Off: return ForcedOff ? "éteint par le tableau du dessus" : "éteint";
                 case PanelState.NoInput: return "pas d'alimentation en entrée";
                 case PanelState.Fused: return "sauté (demande au-dessus de la limite)";
                 case PanelState.Shed: return shedByBattery ? "délesté (batteries en amont trop basses)" : "délesté (manque d'énergie en amont)";

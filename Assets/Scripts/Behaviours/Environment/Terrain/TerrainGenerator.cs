@@ -67,28 +67,32 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int y = 0; y <= size; y++)
             {
-                float worldX = perlinOffset.x + x;
-                float worldY = perlinOffset.y + y;
-
-                float xCoord = worldX / perlinX;
-                float yCoord = worldY / perlinY;
-
-                float baseHeigth = height;
-                float localVariation = Mathf.PerlinNoise(xCoord * 0.01f, yCoord * 0.01f) * perlinScale;
-                float globalVariation = Mathf.PerlinNoise(xCoord * 0.005f, yCoord * 0.005f) * 3 * perlinScale;
-
-                float hollowVariation = Mathf.PerlinNoise(xCoord * 0.001f, yCoord * 0.001f);
-                hollowVariation = Mathf.Clamp(hollowVariation - 0.7f, 0f, 1f);
-                hollowVariation *= 35 * perlinScale;
-
-                float mountainsVariation = Mathf.PerlinNoise((xCoord + 1024/perlinX) * 0.001f, (yCoord + 1024/perlinY) * 0.001f);
-                mountainsVariation = Mathf.Clamp(mountainsVariation - 0.5f, 0f, 1f);
-                mountainsVariation *= 40 * Mathf.Exp(mountainsVariation) * perlinScale;
-
-                heights[y, x] = (baseHeigth + localVariation + globalVariation + mountainsVariation - hollowVariation) / maxHeight; 
+                heights[y, x] = HeightAt(perlinOffset.x + x, perlinOffset.y + y) / maxHeight;
             }
         }
 
         return heights;
+    }
+
+    // Generated height (m) at a point of the noise: the world position plus the offset of the world (ChunkManager).
+    // Also used by ChunkManager.GeneratedHeightAt for the areas that are not loaded
+    public float HeightAt(float worldX, float worldY)
+    {
+        float xCoord = worldX / perlinX;
+        float yCoord = worldY / perlinY;
+
+        float baseHeigth = height;
+        float localVariation = Mathf.PerlinNoise(xCoord * 0.01f, yCoord * 0.01f) * perlinScale;
+        float globalVariation = Mathf.PerlinNoise(xCoord * 0.005f, yCoord * 0.005f) * 3 * perlinScale;
+
+        float hollowVariation = Mathf.PerlinNoise(xCoord * 0.001f, yCoord * 0.001f);
+        hollowVariation = Mathf.Clamp(hollowVariation - 0.7f, 0f, 1f);
+        hollowVariation *= 35 * perlinScale;
+
+        float mountainsVariation = Mathf.PerlinNoise((xCoord + 1024/perlinX) * 0.001f, (yCoord + 1024/perlinY) * 0.001f);
+        mountainsVariation = Mathf.Clamp(mountainsVariation - 0.5f, 0f, 1f);
+        mountainsVariation *= 40 * Mathf.Exp(mountainsVariation) * perlinScale;
+
+        return baseHeigth + localVariation + globalVariation + mountainsVariation - hollowVariation;
     }
 }

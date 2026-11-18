@@ -1,27 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Template name="DistributionPanelSettings" src="DistributionPanelSettings.uxml" />
     <Style src="Game.uss" />
     <!-- Distribution panel (DistributionPanelUI): state of the circuit and settings. The names are used by the script -->
     <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
         <ui:VisualElement name="panel" class="game-panel distribution-panel">
             <ui:Label name="title" text="Tableau de distribution" class="panel-title" />
-            <ui:Label name="state-label" text="État" class="distribution-state" />
-            <ui:Label name="power-label" text="Puissance" class="distribution-info" />
-            <ui:Label name="energy-label" text="Énergie" class="distribution-info" />
-            <ui:Button name="switch-button" text="Couper" class="distribution-switch" />
-
-            <ui:Label text="Protection" class="detail-section" />
-            <ui:VisualElement class="distribution-row">
-                <ui:FloatField name="limit-field" label="Limite de puissance (W)" class="distribution-field" />
-                <ui:Toggle name="limit-infinite" label="Illimitée" class="distribution-toggle" />
-            </ui:VisualElement>
-            <ui:DropdownField name="shedding-field" label="Délestage" class="distribution-field" />
-            <ui:Slider name="threshold-field" label="Seuil des batteries (%)" low-value="0" high-value="100" show-input-field="true" class="distribution-field" />
-            <ui:IntegerField name="priority-field" label="Priorité" class="distribution-field" />
-            <ui:Label text="En cas de manque, les tableaux de priorité la plus faible coupent en premier." class="distribution-hint" />
-
-            <ui:Label text="Démarrage" class="detail-section" />
-            <ui:FloatField name="delay-field" label="Démarrage différé (s)" class="distribution-field" />
-
+            <ui:Instance template="DistributionPanelSettings" />
             <ui:Button name="close-button" text="Fermer" class="distribution-close" />
         </ui:VisualElement>
     </ui:VisualElement>

@@ -18,6 +18,11 @@ MonoBehaviour:
   _description: Thrusters strapped to the back, to fly over short distances.
   _sprite: {fileID: 1116498703, guid: edb82fce4d005514eb02790a74e671e6, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _gauge:
+    type: 2
+    capacity: 50
+    consumptionPerSecond: 2000
+    consumptionPerUse: 0
   _primaryActions: []
   _secondaryActions: []
   references:

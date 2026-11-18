@@ -59,7 +59,8 @@ public class ItemSlot<T> where T : Item
         // Not only "Item == null": Unity serialization creates an Item with null Data in empty slots
         if(IsEmpty())
         {
-            Item = item;
+            // The bar of an item is its own: a copy per slot, the value moves with it (switch, drag)
+            Item = item.HasGauge ? (T)item.Copy() : item;
             Quantity = 0;
         }
 
@@ -81,6 +82,12 @@ public class ItemSlot<T> where T : Item
 
         ev_update.Invoke(this);
         return 0;
+    }
+
+    // The item changed without being added or removed (value of its bar)
+    public void NotifyChanged()
+    {
+        ev_update.Invoke(this);
     }
 
     public bool IsFull()

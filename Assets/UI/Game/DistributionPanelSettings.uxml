@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <!-- State and settings of a distribution panel (DistributionPanelSettingsView), in DistributionPanel.uxml and
+         ControlPanel.uxml. The names are used by the script -->
+    <ui:VisualElement name="distribution-settings" class="distribution-settings">
+        <ui:Label name="state-label" text="État" class="distribution-state" />
+        <ui:Label name="power-label" text="Puissance" class="distribution-info" />
+        <ui:Label name="energy-label" text="Énergie" class="distribution-info" />
+        <ui:Button name="switch-button" text="Éteindre" class="distribution-switch" />
+        <ui:Label text="Éteint, il ne transmet plus rien et éteint tout son circuit. Pour seulement couper le circuit, mettez la limite de puissance à 0 W." class="distribution-hint" />
+
+        <ui:Label text="Protection" class="detail-section" />
+        <ui:VisualElement class="distribution-row">
+            <ui:FloatField name="limit-field" label="Limite de puissance (W)" class="distribution-field" />
+            <ui:Toggle name="limit-infinite" label="Illimitée" class="distribution-toggle" />
+        </ui:VisualElement>
+        <ui:DropdownField name="shedding-field" label="Délestage" class="distribution-field" />
+        <ui:Slider name="threshold-field" label="Seuil des batteries (%)" low-value="0" high-value="100" show-input-field="true" class="distribution-field" />
+        <ui:IntegerField name="priority-field" label="Priorité" class="distribution-field" />
+        <ui:Label text="En cas de manque, les tableaux de priorité la plus faible coupent en premier." class="distribution-hint" />
+
+        <ui:Label text="Démarrage" class="detail-section" />
+        <ui:FloatField name="delay-field" label="Démarrage différé (s)" class="distribution-field" />
+    </ui:VisualElement>
+</ui:UXML>

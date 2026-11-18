@@ -60,6 +60,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B46** **[Énergie]** La recharge des batteries derrière un tableau de distribution (la part facultative, B45) n'était servie que par le surplus d'un générateur du réseau d'entrée. Un tableau alimenté par une batterie (G1 → B1 → PD2) ne recevait donc que la part obligatoire. Une batterie donne maintenant aussi, après les manques, de quoi recharger les batteries derrière les tableaux de ses réseaux, dans la limite de son débit sortant, stock compris. Ce n'est pas le cas pour un tableau dont le circuit contient cette même batterie.
 - [x] **B47** **[Énergie]** Vu de l'amont, la recharge derrière un tableau de distribution était servie à parts égales avec les batteries amont. Elle est maintenant servie comme la consommation d'une machine : le tableau demande ce qu'il faut pour ses machines et ses batteries, dans la limite de sa puissance max, et il passe **avant** la recharge des batteries amont. Seule la part des machines fait disjoncter si elle n'est pas couverte.
 - [x] **B48** **[Énergie]** Tableaux imbriqués (PD2 sous PD1) : pendant le calcul de la demande des circuits, la place de recharge de PD2 n'était pas plafonnée par sa puissance max. PD1 pouvait demander en amont plus de recharge que PD2 ne pouvait en faire passer, et la différence était perdue. Vu du circuit de PD1, PD2 compte maintenant ses machines en demande (part obligatoire) et sa recharge en recharge, plafonnée par sa puissance max.
+- [x] **B49** **[Interfaces]** La minimap ne tournait pas avec la vue, puis se recalait d'un coup : la caméra du joueur n'a pas le tag `MainCamera`, donc `Camera.main` ne la trouvait pas, et la minimap suivait le corps du joueur, qui ne pivote que quand il se déplace. `MinimapUI` lit maintenant l'orientation de la caméra qui porte `CameraMovement`.
 
 ## Feature
 
@@ -189,7 +190,37 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
     - **Démarrage différé** : après une coupure, il attend X secondes avant de réarmer, pour échelonner les redémarrages.
     - Les conditions (personne dans le bâtiment, jour ou nuit…) ne sont pas prévues pour l'instant.
   - **Affichage** : consommation instantanée du sous-réseau, énergie consommée au total, état (en marche, coupé, sauté, et pourquoi).
-- [ ] **F57** **[Énergie]** **Panneau de contrôle** (plaçable) : il pilote à distance les tableaux de distribution (F56) et affiche les informations des réseaux (F55).
+- [x] **F57** **[Énergie]** **Panneau de contrôle** (plaçable) : il pilote à distance les tableaux de distribution (F56) et affiche les informations des réseaux (F55).
+  - **Branchement** : il se relie par câble à un réseau et consomme un peu d'énergie. Il ne fonctionne que s'il est alimenté.
+  - **Portée** : tous les appareils atteignables depuis son réseau, sous-tableaux compris.
+  - **Cartographie** : une carte stylisée, à l'aspect futuriste, qui ne reprend pas les couleurs réelles du terrain.
+    - Elle montre la topographie du terrain, les bâtiments, et une icône par élément du réseau à sa position.
+    - Les câbles sont tracés en lignes lumineuses, colorées selon l'état du réseau (alimenté ou disjoncté).
+    - Un indicateur montre le panneau de contrôle en cours d'utilisation.
+  - **Gestion** : un clic sur un élément affiche ses informations (état, puissance, charge) et un bouton on/off (F61). Pour un tableau de distribution, tous ses réglages sont disponibles, comme dans son interface.
+  - Fait : prefab `ControlPanel` (20 W, item `30_ControlPanel`), `ControlPanelUI` et `NetworkMapElement` (relief calculé depuis la seed, zoom à la molette, déplacement en glissant). La partie « Interface du bâtiment » de F55 attend les bâtiments dans le réseau (F50).
+- [x] **F60** **[Interfaces]** **Minimap** :
+  - Ronde, en haut à droite du HUD, elle tourne avec le joueur.
+  - **Rendu** : une caméra vue de dessus qui ne rend que le terrain et les bâtiments, sans les objets placés, le décor ni les entités.
+  - Le joueur n'est pas rendu : une petite flèche le remplace.
+  - Zoom fixe (rayon réglable dans l'Inspector), toujours affichée.
+  - Fait : `MinimapUI` sur le HUD, layer `Building` donné aux structures terminées. Sous un dôme, la minimap montre son toit (vue de dessus).
+- [x] **F61** **[Énergie]** **On / off de chaque appareil** (machine, générateur, batterie) :
+  - Un appareil sur off s'arrête : une machine ne consomme plus, un générateur ne produit plus, une batterie ne charge ni ne décharge.
+  - Le câble passe toujours : une machine sur off relie toujours les réseaux.
+  - Les tableaux de distribution ont déjà leur coupure (F59).
+  - En jeu : touche d'interaction sur l'appareil (`EnergyDeviceInfo`), ou bouton dans le panneau de contrôle (F57).
+- [x] **F62** **[Énergie]** **On / off des tableaux de distribution**, à la place du bouton « Couper » (couper revient à mettre la limite de puissance à 0 W) :
+  - Éteint, un tableau ne transmet plus rien et éteint tout son sous-réseau, circuits des tableaux imbriqués compris.
+  - Chaque appareil garde son propre réglage : au rallumage du tableau, il retrouve son état (une batterie éteinte avant reste éteinte).
+  - Un appareil dans plusieurs sous-réseaux ne marche que si tous leurs tableaux sont allumés (ET logique).
+  - Tant que le tableau est éteint, le on/off des appareils de son sous-réseau est bloqué (« éteint par le tableau »).
+- [x] **F63** **[Inventaire]** **Barre de charge ou d'usure** des outils et équipements (`ItemGauge`) :
+  - **Rechargeable** (lampe torche, jetpack) : barre bleue, capacité en Wh, consommation en W pendant l'activité et/ou en Wh par utilisation. Neuf : vide. À 0 : inutilisable jusqu'à la recharge.
+  - **Usure** (une future pioche, par exemple) : barre verte, puis orange sous 50 %, puis rouge sous 20 %. Capacité en unités, usure en unités/s et/ou par utilisation. Neuf : plein. À 0 : détruit.
+  - Ces objets ne s'empilent pas, chacun garde sa valeur (sauvegardée). Infobulle au survol des slots : nom, description et valeur.
+  - **Station de recharge** (item 31) : branchée au réseau, 1 slot, elle recharge l'objet déposé à 100 W, et ne consomme que pendant la charge.
+  - Valeurs : lampe 10 Wh et 5 W, jetpack 50 Wh et 2000 W (sa consommation attend le vol, F45).
 - [x] **F58** **[Énergie]** **Première version du réseau électrique** (une partie de F50, sans les bâtiments ni les horaires) :
   - Composants `EnergyConsumer` (W), `EnergyGenerator` (W) et `EnergyStorage` (capacité et stock en Wh, débits entrant et sortant en W). Chaque valeur peut être infinie (`EnergyValue`, case « ∞ » dans l'Inspector).
   - `EnergyNetworkManager` : réseaux reliés par câbles, générateurs et batteries qui ne relient pas les réseaux, répartition des générateurs partagés, disjonction et réarmement automatique.

@@ -9,6 +9,7 @@ public class DistributionPanelOutput : EnergyGenerator
 
     public override DistributionPanel Panel => panel != null ? panel : (panel = GetComponentInParent<DistributionPanel>());
     public override string PortId => "output";
+    public override bool CanSwitch => false;
     public override float Generation => Panel != null ? Panel.OutputSupply : 0f;
     public override string DisplayName => base.DisplayName + " (sortie)";
 

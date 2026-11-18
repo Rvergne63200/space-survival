@@ -3,7 +3,7 @@ using UnityEngine;
 
 // Stores energy (Wh): it takes the surplus of the generators of its networks and gives what they lack, within its
 // input and output rates (W). Linked on two sides, it passes energy from a network to the other without linking them
-public class EnergyStorage : EnergyDevice, ISaveableComponent
+public class EnergyStorage : EnergyDevice
 {
     [SerializeField] private EnergyValue capacity = new EnergyValue(1000f);
     [SerializeField] private EnergyValue inputRate = new EnergyValue(500f);
@@ -26,7 +26,7 @@ public class EnergyStorage : EnergyDevice, ISaveableComponent
     // Power it can take or give during an update of "hours" hours
     public float MaxCharge(float hours)
     {
-        if (stored.infinite) return 0f;
+        if (stored.infinite || !IsOn) return 0f;
 
         float room = Capacity - Stored;
         return Mathf.Min(InputRate, float.IsPositiveInfinity(room) ? room : room / hours);
@@ -34,6 +34,8 @@ public class EnergyStorage : EnergyDevice, ISaveableComponent
 
     public float MaxDischarge(float hours)
     {
+        if (!IsOn) return 0f;
+
         return Mathf.Min(OutputRate, stored.infinite ? float.PositiveInfinity : Stored / hours);
     }
 
@@ -60,7 +62,7 @@ public class EnergyStorage : EnergyDevice, ISaveableComponent
 
         string storedText = stored.infinite ? "∞" : EnergyValue.Format(Stored, "").Trim();
 
-        return DisplayName + " : " + storedText + " / " + EnergyValue.Format(Capacity, "Wh") + flowText;
+        return DisplayName + " : " + OffText(true) + storedText + " / " + EnergyValue.Format(Capacity, "Wh") + flowText;
     }
 
     // ---------- Save ----------
@@ -69,22 +71,24 @@ public class EnergyStorage : EnergyDevice, ISaveableComponent
     private class State
     {
         public float stored;
+        public bool switchedOn = true;
     }
 
-    public string SaveKey => "energyStorage";
+    public override string SaveKey => "energyStorage";
 
-    public string CaptureState()
+    public override string CaptureState()
     {
-        return JsonUtility.ToJson(new State { stored = stored.value });
+        return JsonUtility.ToJson(new State { stored = stored.value, switchedOn = SwitchedOn });
     }
 
-    public void RestoreState(string json)
+    public override void RestoreState(string json)
     {
         State state = JsonUtility.FromJson<State>(json);
 
         if (state != null)
         {
             stored.value = state.stored;
+            RestoreSwitchedOn(state.switchedOn);
         }
     }
 }

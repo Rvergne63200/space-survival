@@ -16,7 +16,7 @@ using UnityEngine;
 // Created on first use, persists between the scenes
 public class EnergyNetworkManager : MonoBehaviour
 {
-    public enum NetworkState { NotLinked, Powered, Tripped }
+    public enum NetworkState { NotLinked, Powered, Tripped, SwitchedOff }
 
     private static EnergyNetworkManager instance;
     public static bool HasInstance => instance != null;
@@ -263,6 +263,7 @@ public class EnergyNetworkManager : MonoBehaviour
         float hours = deltaTime / 3600f;
 
         CollectPanels();
+        UpdateForcedOff();
 
         // 1. Demand of the circuits
         ignoreTrips = true;
@@ -405,6 +406,49 @@ public class EnergyNetworkManager : MonoBehaviour
         }
     }
 
+    // Everything in the circuit of a switched off panel is off, through the panels under it too (their input is in the
+    // circuit). A device in several circuits is off as soon as one of their panels is (AND). Not the outputs of other
+    // panels feeding the same networks: their production follows their own panel
+    private readonly HashSet<EnergyDevice> forcedOff = new HashSet<EnergyDevice>();
+
+    private void UpdateForcedOff()
+    {
+        forcedOff.Clear();
+        Queue<EnergyDevice> queue = new Queue<EnergyDevice>();
+
+        foreach (DistributionPanel panel in panels)
+        {
+            if (!panel.SwitchedOn) queue.Enqueue(panel.Output);
+        }
+
+        while (queue.Count > 0)
+        {
+            EnergyDevice device = queue.Dequeue();
+
+            foreach (ElectricCable cable in device.Cables)
+            {
+                EnergyDevice other = cable != null ? cable.Other(device) : null;
+
+                if (other == null || other is DistributionPanelOutput || !forcedOff.Add(other)) continue;
+
+                if (other is EnergyConsumer)
+                {
+                    queue.Enqueue(other);
+                }
+
+                if (other is DistributionPanelInput input && input.Panel != null && input.Panel.Output != null)
+                {
+                    queue.Enqueue(input.Panel.Output);
+                }
+            }
+        }
+
+        foreach (EnergyDevice device in devices)
+        {
+            device.SetForcedOff(forcedOff.Contains(device));
+        }
+    }
+
     private Network InputNetwork(DistributionPanel panel)
     {
         return panel.Input != null && panel.Input.Cables.Count > 0 && consumerNetworks.TryGetValue(panel.Input, out Network network) ? network : null;
@@ -475,7 +519,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
             foreach (EnergyConsumer consumer in network.consumers)
             {
-                if (consumer != null) network.demand += consumer.Consumption;
+                if (consumer != null) network.demand += consumer.Demand;
             }
 
             network.lack = network.tripped && !ignoreTrips ? 0f : network.demand;
@@ -483,7 +527,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
         foreach (KeyValuePair<EnergyGenerator, List<Network>> entry in generatorNetworks)
         {
-            generatorLeft[entry.Key] = entry.Key != null ? entry.Key.Generation : 0f;
+            generatorLeft[entry.Key] = entry.Key != null ? entry.Key.Production : 0f;
         }
 
         // Generators linked to a single powered network, then the shared ones: what is still missing, in proportion to
@@ -778,7 +822,11 @@ public class EnergyNetworkManager : MonoBehaviour
             {
                 if (consumer == null) continue;
 
-                if (consumer.Cables.Count == 0)
+                if (!consumer.IsOn)
+                {
+                    consumer.SetState(NetworkState.SwitchedOff);
+                }
+                else if (consumer.Cables.Count == 0)
                 {
                     consumer.SetState(NetworkState.NotLinked);
                 }

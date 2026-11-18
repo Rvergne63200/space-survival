@@ -4,5 +4,8 @@
     <ui:VisualElement name="slot" class="item-slot">
         <ui:VisualElement name="slot-icon" picking-mode="Ignore" class="item-slot-icon" />
         <ui:Label name="slot-count" picking-mode="Ignore" class="item-slot-count" />
+        <ui:VisualElement name="slot-gauge" picking-mode="Ignore" class="item-slot-gauge">
+            <ui:VisualElement name="slot-gauge-fill" picking-mode="Ignore" class="item-slot-gauge-fill" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

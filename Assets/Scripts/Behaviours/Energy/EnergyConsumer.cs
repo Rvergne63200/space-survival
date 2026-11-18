@@ -8,6 +8,9 @@ public class EnergyConsumer : EnergyDevice
     [SerializeField] private EnergyValue consumption = new EnergyValue(100f);
     public virtual float Consumption => consumption.Value;
 
+    // What it asks its network: nothing when it is off
+    public float Demand => IsOn ? Consumption : 0f;
+
     public override bool LinksNetworks => true;
 
     public bool IsPowered { get; private set; }
@@ -40,6 +43,7 @@ public class EnergyConsumer : EnergyDevice
     {
         string state = State switch
         {
+            EnergyNetworkManager.NetworkState.SwitchedOff => ForcedOff ? "éteinte par le tableau" : "éteinte",
             EnergyNetworkManager.NetworkState.Powered => "alimentée",
             EnergyNetworkManager.NetworkState.Tripped => "réseau disjoncté",
             _ => "non raccordée",

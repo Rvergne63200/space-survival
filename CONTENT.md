@@ -32,11 +32,16 @@ Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune
 - **Messages au joueur** (`NotificationUI`, dans `Bootstrap`, `Notifications.uxml`, style `.notification` / `.notification-warning`) : messages courts en bas de l'écran, qui disparaissent en fondu après 2,5 s (« Inventaire plein », « Ressources manquantes »…). Un message identique remet son compteur à zéro au lieu de s'afficher deux fois. Il ne capte pas la souris. Usage : `NotificationUI.Show(texte, NotificationType.Warning)`.
 ### Interfaces du jeu (UI Toolkit, mise en page dans `Assets/UI/Game`, modifiable dans le UI Builder)
 - Prefab `Prefabs/UI/UI` (instancié par le `UIManager`, racine `ParentUI`). Chaque interface est un UIDocument (PanelSettings commun, style `Game.uss`) :
-  - **HUD** (`Hud.uxml`, ordre 0) : réticule, texte de l'objet pointé, barres de stats, ramassages, barre d'outils et cadre du slot en main. Seuls les slots de la barre d'outils captent la souris.
+  - **HUD** (`Hud.uxml`, ordre 0) : réticule, texte de l'objet pointé, barres de stats, ramassages, barre d'outils et cadre du slot en main. La **minimap** est en haut à droite (voir plus bas). Seuls les slots de la barre d'outils captent la souris.
   - **Inventaire** (`Inventory.uxml`), **Conteneur** (`Storage.uxml`) et **Fabrication** (`CraftingStation.uxml`), ordre 2 : chacun est un GameObject `Panel` activé à l'ouverture et enregistré comme interface (`InterfaceManager`). Fermé par Échap ou à la mort, il prévient son propriétaire (inventaire fermé, `Searcher.ClearCurrentSearchedStorage`, `Crafter.ClearStation`).
   - **Item au curseur** (`HeldItem.uxml`, ordre 4) : au-dessus des interfaces, ne capte pas la souris.
 - Modèles instanciés par le code : `ItemSlot.uxml`, `StatBar.uxml`, `PickupInfo.uxml`, `RecipeSlot.uxml`, `RecipeIngredient.uxml`. Les scripts retrouvent les éléments par leur nom.
 - Sans joueur (menu principal), le HUD et l'item au curseur sont masqués (`ParentUI.SetHudVisible`).
+- **Minimap** (`MinimapUI`, sur le GameObject HUD, éléments `minimap` de `Hud.uxml`, dossier `Scripts/Behaviours/UI/Map`) :
+  - Ronde, en haut à droite. Elle tourne avec la vue : ce qui est devant le joueur est en haut, et un « N » rouge suit le bord pour indiquer le nord.
+  - **Rendu** : une caméra orthographique, 300 m au-dessus du joueur (`height`), rend dans une texture (`resolution`) les seuls layers `Terrain` et `Building`. Les objets posés, le décor, les entités et le joueur n'y apparaissent donc pas.
+  - Une flèche jaune au centre remplace le joueur. Le rayon affiché (`radius`, 60 m) est fixe et réglable dans l'Inspector.
+  - Elle est masquée sans joueur ou à la mort.
 
 
 ### Sauvegarde (`SaveManager`, dans `Bootstrap`)
@@ -100,8 +105,15 @@ Vue à la première personne uniquement.
 
 ### Données
 - **ItemData** (ScriptableObject `Item/Item`) : `Id` (int saisi à la main), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classe `ConsummableData` (voir feature 3).
-- **Objets** (`ScriptableObjects/Items`, ids 0 à 29 ; 25 à 29 : câble, objets de test électriques et tableau de distribution, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
-- **Item** : simple wrapper autour d'un ItemData (`Item.CreateFromData`). Pas encore de données d'instance (durabilité, etc.).
+- **Objets** (`ScriptableObjects/Items`, ids 0 à 31 ; 25 à 31 : câble, objets de test électriques, tableau de distribution, panneau de contrôle et station de recharge, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
+- **Item** : un ItemData (`Item.CreateFromData`) et la valeur de sa barre (`Gauge`), propre à chaque objet.
+- **Barre de charge ou d'usure** (`ItemData.Gauge`, `ItemGauge`) des outils et équipements :
+  - **Charge** (`Energy`, rechargeable) : en Wh, consommation en W pendant que l'objet est actif, et/ou en Wh par utilisation. L'objet neuf est vide. À 0, il est inutilisable (ses actions s'éteignent, « déchargé ») jusqu'à sa recharge (station de recharge, section 10).
+  - **Usure** (`Wear`) : en unités, usure par seconde d'activité et/ou par utilisation. L'objet neuf est plein. À 0, il est détruit (« cassé »).
+  - **Actif** : une action `Toggle` allumée ou une action `Hold` en cours (`PlayerInventory.UpdateGauge`). Une utilisation est un clic dont l'action a été faite.
+  - Un objet avec une barre ne s'empile pas (`StackMax` vaut 1) : chaque slot en garde une copie (`Item.Copy` dans `ItemSlot.Add`), et la valeur suit l'objet quand il change de slot ou est jeté. Elle est sauvegardée avec les slots (`ItemSlotSaveData.gauge`) et les objets au sol (`Pickupable`).
+  - **Affichage** : une barre en bas du slot, bleue pour une charge, verte puis orange (sous 50 %) puis rouge (sous 20 %) pour une usure.
+  - Objets actuels : `22_Flashlight` (10 Wh, 5 W allumée, soit 2 h) et `18_Jetpack` (50 Wh, 2000 W en vol ; le vol n'existe pas encore, F45).
 - **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` passe par `Pickupable.Spawn`, qui instancie le `Model` devant la source avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion. Le slot n'est vidé que si le spawn réussit (modèle valide avec un `Pickupable`).
 - **ItemCollection** : liste de slots de taille fixe (`MaxSize`). `Add` complète d'abord les stacks non pleins puis remplit les slots vides, et renvoie le surplus. `RemoveItem` retire en partant du dernier slot. `Count` compte la quantité totale d'un item. Event `ev_Update`.
 - **ItemStorage** (MonoBehaviour) : encapsule une ItemCollection. Sert de base au PlayerInventory et aux conteneurs.
@@ -126,6 +138,7 @@ Vue à la première personne uniquement.
 - Système par **clic**, sans vrai glisser-déposer. Les clics sont gérés par `ItemSlotUI` (`PointerDownEvent` sur l'élément `slot`). Un clic gauche sur un slot (`TryMerge`) prend son contenu dans le `draggingSlot`, qui suit la souris (`HeldItemUI`). Un nouveau clic le dépose.
   - Même item : fusion des stacks, le surplus reste au curseur.
   - Item différent : échange (Switch).
+- **Infobulle** (`ItemTooltip`) : au survol d'un slot, le nom, la description et la valeur de la barre de l'objet (« Charge : 3,2 / 10 Wh », mise à jour en direct). Un élément par UIDocument, créé au premier survol.
 - **Double-clic** (`GatherToCursor`) : deux clics gauches sur le même slot à moins de 0,35 s, détectés par `ItemSlotUI` et non par `clickCount`, qui compte les clics de tout le panel. Le premier clic prend la pile au curseur, le second y rassemble les items du même type de l'inventaire, de la barre d'outils et du conteneur ouvert, jusqu'à une pile complète (`StackMax`). Les plus petites piles sont prises en premier.
 - **Clic droit** (`SplitOrPlaceOne`) : avec un slot en main, dépose une unité sur le slot visé (vide ou même item). Main vide : prend la moitié du slot visé (arrondie au supérieur).
 - **Shift + clic gauche** (`QuickTransfer`) : transfère tout le slot.
@@ -186,6 +199,7 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - **Build** : la pose aplanit le terrain sous la structure (si `FlattenTerrain`), puis crée son plan.
   - **Destruction** : la structure, le plan ou l'objet posé visé est surligné en rouge, et un clic gauche le détruit. Clic droit pour quitter le mode.
 - **StructureData** (ScriptableObject, Construction/Structure) : id (sauvegardes), nom, icône, prefab, coût (`Cost`), ressources rendues à la destruction (`Refund`, n'importe quels items), aplanissement, pente max. **StructureCatalog** : la liste des structures (roue et sauvegarde). Structure actuelle : `BaseDom`, dôme de 8 m de diamètre, base de 8,8 m (20 fer, 30 bois ; rend 10 fer).
+- **Layer `Building`** : à l'instanciation d'une structure terminée (`BuildUtility.InstantiateStructure`), ses parties sur le layer `Default` passent sur `Building`, rendu par la minimap. Les requêtes physiques ne filtrent pas ce layer : rien ne change pour les collisions et la visée.
 - **StructureBlueprint** (plan) : **hologramme bleu** (shader `Custom/Hologram` : lueur additive, bords lumineux, lignes de balayage animées, léger scintillement ; matériau `Resources/Materials/Blueprint`). Il a un collider pour être visé, sur le layer `Blueprint`, qui n'entre pas en collision avec le joueur : on le traverse (matrice de collision, et `Physics.IgnoreLayerCollision` par sécurité). La détection du sol du joueur l'ignore aussi. Pour interagir avec le plan, il faut le viser depuis l'extérieur. Interagir dépose tout ce qui manque et qu'on a dans l'inventaire. Le texte affiche l'avancement (« Dôme (plan) : Iron 12/20, WoodLog 4/30 »). Une fois tout apporté, il devient la structure réelle (`BuiltStructure`). Détruit, il rend ce qui lui a été apporté.
 - **PlaceableItemData** (ItemData, Item/Placeable) : `placedPrefab` et `Refund`, rendu à la destruction (vide : l'item lui-même). Le contenu des conteneurs d'un objet détruit va aussi dans l'inventaire. Item actuel : `8_Crate` (caisse de 20 slots).
 - **Inventaire de départ** (test) : 60 fer et 90 bois de plus (de quoi construire 3 dômes), et 2 caisses dans la barre d'outils, ainsi que 5 `Radio Relay` et 5 `Crafter`. L'inventaire contient aussi 50 de chaque nouvelle ressource, 5 `First Aid Kit`, un `Oxygen Tank`, un `Jetpack` et une `Flashlight`.
@@ -202,7 +216,7 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - `ToReplace` : le joueur et les transforms configurés sont replacés sur la surface quand leur chunk a fini de se générer. Le joueur est fourni par `PlayerManager` (`ev_spawnPlayer`), et la référence est mise à jour à chaque respawn.
   - `FlattenTerrainAt(pos, rayon, hauteur)` aplanit tous les chunks concernés (utilisé par la construction, en cours de modification). Le plateau a une pente douce sur 1.3× le rayon, avec une tolérance verticale de 4 m. Seul le terrain au-dessus de « cible − tolérance » est modifié : les creux profonds ne sont pas remplis.
   - Gizmos de debug : chunks générés et chargés.
-- **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks. Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin.
+- **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks. Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin. `HeightAt` donne la hauteur générée en un point du bruit, et `ChunkManager.GeneratedHeightAt(x, z)` en une position du monde, chargée ou non (sans les aplanissements). La carte du panneau de contrôle s'en sert pour le relief.
 - **EnvironmentSpawner** (sur le prefab `Chunk`) : appelé une fois les hauteurs générées (`ev_OnTerminateGeneration`). Pour chaque m² du chunk, il a 0.1 % de chances de faire apparaître `prefab`, avec une rotation et une taille aléatoires. Le tirage est seedé par la seed du monde et la position du chunk : un chunk a toujours les mêmes objets.
 
 ## 9. Modes de jeu & interfaces
@@ -224,6 +238,8 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - **EnergyGenerator** : production en W. Il tourne toujours à fond. `Output` est ce qu'il a réellement donné.
   - **EnergyStorage** : capacité, stock (sauvegardé) et débits entrant et sortant.
   - Générateurs et batteries **ne relient pas** les réseaux : reliés des deux côtés, ils appartiennent aux deux.
+  - **On / off** (`SwitchedOn`, `SetSwitchedOn`, sauvegardé) : éteint, un consommateur ne consomme plus (état « éteinte »), un générateur ne produit plus, une batterie ne charge ni ne décharge. Le câble passe toujours : un consommateur éteint relie toujours les réseaux. Les ports d'un tableau de distribution ne s'éteignent pas (`CanSwitch`), le tableau a sa propre coupure.
+    - **Tableau éteint** : tout son sous-réseau, circuits des tableaux imbriqués compris, est éteint de force (`ForcedOff`, recalculé à chaque mise à jour par `EnergyNetworkManager.UpdateForcedOff`). Un appareil ne marche que si son réglage est sur on **et** si aucun tableau au-dessus de lui n'est éteint (`IsOn`). Son réglage est gardé : au rallumage du tableau, il retrouve son état. Tant qu'il est éteint de force, son on/off est bloqué (« éteint par le tableau »). Les sorties d'autres tableaux qui alimentent le même circuit ne sont pas éteintes.
 - **EnergyNetworkManager** (créé au premier appareil, persistant) : il reconstruit les réseaux quand un appareil ou un câble change, et les calcule toutes les 0,2 s.
   - **Réseaux** : un réseau est un groupe de consommateurs reliés par câbles, avec les générateurs et les batteries reliés à eux. Deux générateurs ou batteries reliés directement forment un réseau sans consommateur.
   - **Ordre de calcul** :
@@ -243,32 +259,49 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - **Clic droit** : il retire le dernier point, ou annule le câble.
   - **Aperçu** : vert si le câble peut être terminé sur l'appareil visé, rouge s'il manque des câbles. Le bandeau indique le nombre de câbles nécessaires et possédés.
   - Deux appareils ne peuvent être reliés qu'une fois.
-- **EnergyDeviceInfo** (interactable) : en visant l'objet, affiche l'état de ses appareils.
-  - Consommateur : alimenté, réseau disjoncté ou non raccordé, avec sa consommation.
-  - Générateur : donné / production.
-  - Batterie : stock / capacité et flux.
+- **EnergyDeviceInfo** (interactable) : en visant l'objet, affiche l'état de ses appareils. La touche d'interaction les allume ou les éteint.
+  - Consommateur : alimenté, réseau disjoncté, non raccordé ou éteinte, avec sa consommation.
+  - Générateur : donné / production (« éteint » s'il l'est).
+  - Batterie : stock / capacité et flux (« éteinte » si elle l'est).
 - **Tableau de distribution** (`DistributionPanel`, sur la racine du prefab `Prefabs/Environment/Energy/DistributionPanel`) :
   - **Ports** : deux ports enfants. `DistributionPanelInput` (`EnergyConsumer`, cube vert) est un consommateur du réseau amont. `DistributionPanelOutput` (`EnergyGenerator`, cube orange) est un générateur de son circuit.
   - **Branchement** : un câble se branche sur le port le plus proche du point visé (`EnergyDevice.FromHit`). Les câbles sauvegardent le port (`PortId`). L'entrée et la sortie d'un même tableau ne peuvent pas être reliées.
   - **Sens unique** : rien ne remonte vers l'amont. La sortie est servie **après** les générateurs du circuit, et son surplus charge les batteries du circuit après le leur.
   - **Calcul** (`EnergyNetworkManager.Simulate`) :
     1. **Demande** : les sorties donnent sans limite, et ce qu'elles donnent est la demande du circuit (`Request`). Ce qu'elles donnent aux consommateurs est **obligatoire** (`Request`), ce qu'elles donnent aux batteries est **facultatif** (`ChargeRequest`). Pour un tableau sous un autre, la demande de ses machines compte dans la demande du tableau du dessus, et sa recharge (plafonnée par sa puissance max) dans la recharge du tableau du dessus. Le calcul est répété pour les tableaux imbriqués. Les réseaux disjonctés comptent aussi, pour pouvoir se réarmer.
-    2. **Décisions** du tableau (`BeginUpdate`) : coupure, fusible (demande au-dessus de la limite), délestage sur batteries amont (sous le seuil, réarmé 5 % au-dessus), démarrage différé.
+    2. **Décisions** du tableau (`BeginUpdate`) : on/off, fusible (demande au-dessus de la limite), délestage sur batteries amont (sous le seuil, réarmé 5 % au-dessus), démarrage différé.
     3. **Distribution** : l'entrée demande la part obligatoire à l'amont. La part facultative (la recharge, dans la limite de puissance) est servie comme une consommation, avant la recharge des batteries amont, mais ne fait pas disjoncter si elle n'est pas couverte entièrement. Elle est aussi servie par les batteries du réseau d'entrée, une fois leurs manques couverts (dans la limite de leur débit sortant, stock compris). La sortie donne au circuit la part obligatoire plus ce qui a été reçu pour la recharge. Un réseau en manque déleste d'abord ses tableaux réglés sur « manque d'énergie » (priorité la plus faible en premier), puis disjoncte. Un tableau dont le réseau d'entrée disjoncte ne donne plus rien.
     4. **Après la distribution** (`EndUpdate`) :
        - un tableau délesté ou sans alimentation repart quand l'amont pourrait de nouveau le servir ;
        - pour un tableau délesté, après 3 s ;
        - puis il attend son démarrage différé.
-  - **États** : en marche, coupé, démarrage, pas d'alimentation en entrée, sauté, délesté, boucle (la sortie alimente le réseau de sa propre entrée).
+  - **États** : en marche, éteint (ou éteint par le tableau du dessus), démarrage, pas d'alimentation en entrée, sauté, délesté, boucle (la sortie alimente le réseau de sa propre entrée).
   - **Sauvegarde** : les réglages et l'énergie transmise au total.
   - **Limite** : le délestage ne se réarme que sur les sources du réseau d'entrée lui-même. Un tableau délesté dans un circuit déjà alimenté par un autre tableau ne compte pas sur ce que l'amont de ce dernier pourrait donner en plus.
 - **DistributionPanelUI** (`UI.prefab`, `DistributionPanel.uxml`, style dans `Game.uss`) : ouverte en interagissant avec le tableau. C'est une interface, fermée par Échap.
+  - L'état et les réglages sont dans `DistributionPanelSettings.uxml` (`DistributionPanelSettingsView`), repris par le panneau de contrôle.
   - **Affichage** : état, demande du circuit (ses consommateurs seulement), puissance transmise, puissance réellement envoyée en recharge des batteries du circuit (`ChargeSupplied`), énergie transmise. Le texte au pointeur affiche aussi la part en recharge.
-  - **Réglages** : bouton Couper / Rétablir, limite de puissance (ou illimitée), délestage (aucun, manque d'énergie en amont, batteries en amont sous le seuil), seuil des batteries, priorité, démarrage différé.
+  - **Réglages** : bouton Éteindre / Allumer (voir « Tableau éteint » plus haut ; bloqué si un tableau au-dessus est éteint), limite de puissance (à 0 W, elle coupe le circuit) (ou illimitée), délestage (aucun, manque d'énergie en amont, batteries en amont sous le seuil), seuil des batteries, priorité, démarrage différé.
+- **Panneau de contrôle** (`ControlPanel` et un `EnergyConsumer` de 20 W, sur le prefab `Prefabs/Environment/Energy/ControlPanel`) :
+  - Il se branche par câble sur un réseau. Il ne s'ouvre (touche d'interaction) que s'il est alimenté, et se ferme s'il ne l'est plus. Éteint depuis sa propre carte, il se rallume en interagissant avec lui.
+  - **Portée** (`CollectNetwork`) : les appareils de son réseau, et par les tableaux de distribution de ce réseau, ceux de leurs circuits. Pas l'amont : un tableau dont le circuit contient le panneau est affiché, mais pas ce qui l'alimente.
+  - **ControlPanelUI** (`UI.prefab`, `ControlPanel.uxml`) : une interface, fermée par Échap. À gauche la carte, à droite l'appareil sélectionné. Bouton « Recentrer ».
+  - **Carte** (`NetworkMapElement`), nord en haut :
+    - Relief stylisé : teinte selon la hauteur, ombrage des pentes et courbes de niveau tous les 4 m (une sur 5 plus marquée), calculés depuis la seed (`ChunkManager.GeneratedHeightAt`) pour la zone affichée. Une grille par-dessus.
+    - Bâtiments (`BuiltStructure`) : le contour de leur emprise.
+    - Câbles : lignes lumineuses, cyan si leur réseau est alimenté, rouges s'il est disjoncté, grises sinon.
+    - Icônes : rond pour une machine, triangle pour un générateur, barre pour une batterie (la partie sombre est la place libre), losange pour un tableau, carré pour un panneau de contrôle. Le panneau utilisé est entouré d'un anneau qui pulse. Couleur selon l'état (gris : éteint ou non alimenté, rouge : disjoncté ou tableau coupé par une protection).
+    - Molette : zoom autour du curseur. Glisser : déplacer. Survol : nom de l'appareil. Clic : sélection.
+  - **Sélection** : pour une machine, un générateur ou une batterie, ses informations et un bouton Allumer / Éteindre. Pour un tableau, tous ses réglages, comme dans son interface.
+- **Station de recharge** (`ChargingStation`, un `EnergyConsumer`, et un `ItemStorage` d'un slot, prefab `Prefabs/Environment/Energy/ChargingStation`, item `31_ChargingStation`) :
+  - Interagir avec elle ouvre son slot, comme un conteneur. Le texte au pointeur indique la charge de l'objet déposé.
+  - Alimentée, elle recharge l'objet rechargeable déposé avec `chargePower` (100 W). Elle ne demande cette puissance à son réseau que tant que l'objet n'est pas plein, et rien sinon.
 - **Objets de test** (`Prefabs/Environment/Energy`, matériau `Materials/EnergyTest`) :
   - `26_InfiniteGenerator` : générateur, 1000 W par défaut.
   - `27_TestMachine` : consommateur de 100 W, avec `TestMachine`. Elle est rouge quand elle est alimentée, blanche sinon.
   - `28_TestBattery` : batterie de 1000 Wh, avec des débits de 500 W.
   - `29_DistributionPanel` : le tableau de distribution.
+  - `30_ControlPanel` : le panneau de contrôle.
+  - `31_ChargingStation` : la station de recharge.
   - `25_ElectricCable` : le câble, 1 par mètre.
-  - Inventaire de départ : 99 câbles et 2 générateurs dans la barre d'outils, 3 machines, 2 batteries et 3 tableaux de distribution dans l'inventaire.
+  - Inventaire de départ : 99 câbles et 2 générateurs dans la barre d'outils, 3 machines, 2 batteries, 3 tableaux de distribution, 2 panneaux de contrôle et 2 stations de recharge dans l'inventaire.

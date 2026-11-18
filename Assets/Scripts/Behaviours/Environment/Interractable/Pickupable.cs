@@ -13,6 +13,8 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
         public int itemId = -1;
         public int count;
         public bool identified;
+        public bool hasGauge;
+        public float gauge;
     }
 
     public string SaveKey => "pickupable";
@@ -32,7 +34,9 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
         {
             itemId = item?.Data != null ? item.Data.Id : -1,
             count = count,
-            identified = identified
+            identified = identified,
+            hasGauge = item != null && item.HasGauge,
+            gauge = item != null && item.HasGauge ? item.Gauge : 0f
         });
     }
 
@@ -47,6 +51,11 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
             if (data != null)
             {
                 item = Item.CreateFromData(data);
+
+                if (state.hasGauge)
+                {
+                    item.SetGauge(state.gauge);
+                }
             }
         }
 

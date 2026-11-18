@@ -287,6 +287,14 @@ public class PlayerInventory : ItemStorage
         // The item in hand may have changed since the last frame
         UpdateEquipped();
 
+        // Discharged: unusable until recharged (a worn item is already destroyed). Only when it has an action:
+        // the secondary use may still consume a ConsummableData
+        if (slot.Item.IsGaugeEmpty && (primary ? slot.Item.Data.PrimaryActions : slot.Item.Data.SecondaryActions).Count > 0)
+        {
+            NotificationUI.Show(slot.Item.Data.Name + " est déchargé.", NotificationType.Warning);
+            return true;
+        }
+
         ItemUseContext context = CreateUseContext(slot);
         List<HoldItemAction> startedHolds = new List<HoldItemAction>();
 
@@ -295,6 +303,11 @@ public class PlayerInventory : ItemStorage
         foreach (HoldItemAction action in startedHolds)
         {
             holds.Add(new HeldAction { Action = action, Primary = primary, Context = context, StartTime = Time.time });
+        }
+
+        if (done && slot.Item != null && slot.Item.HasGauge)
+        {
+            ConsumeGauge(slot, slot.Item.Data.Gauge.consumptionPerUse);
         }
 
         return done;
@@ -330,11 +343,13 @@ public class PlayerInventory : ItemStorage
 
     // Data of the item in hand the last time it was checked, with the context of its use (for OnUnequip)
     private ItemData equippedData;
+    private Item equippedItem;
     private ItemUseContext equippedContext;
 
     private void Update()
     {
         UpdateEquipped();
+        UpdateGauge();
 
         if (holds.Count == 0) return;
 
@@ -357,18 +372,77 @@ public class PlayerInventory : ItemStorage
         }
     }
 
+    // ---------- Bar of the item in hand (ItemGauge) ----------
+
+    // While the item in hand is active (a toggle action on, a hold running), its bar goes down
+    private void UpdateGauge()
+    {
+        ItemSlot<Item> slot = HandedSlot;
+
+        if (equippedData == null || slot == null || slot.IsEmpty() || !slot.Item.HasGauge) return;
+
+        ItemGauge gauge = slot.Item.Data.Gauge;
+
+        if (gauge.consumptionPerSecond <= 0f || !IsActive(slot.Item.Data)) return;
+
+        ConsumeGauge(slot, gauge.PerSecond * Time.deltaTime);
+    }
+
+    private bool IsActive(ItemData data)
+    {
+        if (holds.Count > 0) return true;
+
+        foreach (List<ItemAction> actions in new[] { data.PrimaryActions, data.SecondaryActions })
+        {
+            foreach (ItemAction action in actions)
+            {
+                if (action is ToggleItemAction toggle && toggle.IsOn) return true;
+            }
+        }
+
+        return false;
+    }
+
+    // At 0: a rechargeable item stops (its actions are switched off), a worn item is destroyed
+    private void ConsumeGauge(ItemSlot<Item> slot, float amount)
+    {
+        if (amount <= 0f) return;
+
+        Item item = slot.Item;
+        item.ConsumeGauge(amount);
+        slot.NotifyChanged();
+
+        if (!item.IsGaugeEmpty) return;
+
+        StopHolds(null);
+
+        if (item.Data.Gauge.Rechargeable)
+        {
+            item.Data.Unequip(equippedContext != null ? equippedContext : CreateUseContext(slot));
+            NotificationUI.Show(item.Data.Name + " est déchargé.", NotificationType.Warning);
+        }
+        else
+        {
+            NotificationUI.Show(item.Data.Name + " s'est cassé.", NotificationType.Warning);
+            slot.Remove(1);
+        }
+    }
+
     // When the item in hand changes (other slot, slot emptied or filled, player gone), the previous one is unequipped
     private void UpdateEquipped()
     {
         ItemSlot<Item> slot = HandedSlot;
         ItemData data = HasPlayer && slot != null && !slot.IsEmpty() ? slot.Item.Data : null;
+        Item item = data != null ? slot.Item : null;
 
-        if (data == equippedData) return;
+        // Also another item of the same kind (two flashlights: each has its own charge)
+        if (data == equippedData && item == equippedItem) return;
 
         StopHolds(null);
         Unequip();
 
         equippedData = data;
+        equippedItem = item;
         equippedContext = data != null ? CreateUseContext(slot) : null;
     }
 
@@ -380,6 +454,7 @@ public class PlayerInventory : ItemStorage
         }
 
         equippedData = null;
+        equippedItem = null;
         equippedContext = null;
     }
 

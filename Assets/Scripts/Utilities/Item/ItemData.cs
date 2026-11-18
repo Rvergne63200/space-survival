@@ -13,7 +13,8 @@ public class ItemData : ScriptableObject
 
     [SerializeField]
     private int _stackMax = 99;
-    public int StackMax { get => _stackMax; protected set => _stackMax = value; }
+    // An item with a bar (charge or wear) does not stack: each one keeps its own value
+    public int StackMax { get => HasGauge ? 1 : _stackMax; protected set => _stackMax = value; }
 
     [SerializeField]
     private string _name;
@@ -30,6 +31,12 @@ public class ItemData : ScriptableObject
     [SerializeField]
     private GameObject _model;
     public GameObject Model { get => _model; protected set => _model = value; }
+
+    // Charge (rechargeable) or wear bar of a tool or an equipment, shown in the slots (ItemGauge)
+    [SerializeField]
+    private ItemGauge _gauge = new ItemGauge();
+    public ItemGauge Gauge => _gauge;
+    public bool HasGauge => _gauge != null && _gauge.Enabled;
 
     // Done when the item is in hand: primary use (left click) and secondary use (right click)
     [SerializeReference, SubclassPicker]

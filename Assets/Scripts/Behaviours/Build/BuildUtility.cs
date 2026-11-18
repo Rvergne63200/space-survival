@@ -99,6 +99,20 @@ public static class BuildUtility
             Object.Destroy(verifier);
         }
 
+        // Building layer: rendered by the minimap (MinimapUI). The parts on another layer than Default keep it
+        int buildingLayer = LayerMask.NameToLayer("Building");
+
+        if (buildingLayer >= 0)
+        {
+            foreach (Transform part in instance.GetComponentsInChildren<Transform>(true))
+            {
+                if (part.gameObject.layer == 0)
+                {
+                    part.gameObject.layer = buildingLayer;
+                }
+            }
+        }
+
         instance.AddComponent<BuiltStructure>().Initialize(data);
         SetRuntime(instance, SaveManager.BuildPrefabKeyPrefix + data.Id, id);
 

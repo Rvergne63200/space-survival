@@ -12,6 +12,8 @@ public class ItemSlotUI
     private readonly ParentUI parentUI;
     private readonly VisualElement icon;
     private readonly Label count;
+    private readonly VisualElement gauge;
+    private bool hovered;
 
     private ItemSlot<Item> slot;
 
@@ -27,8 +29,22 @@ public class ItemSlotUI
 
         icon = element.Q("slot-icon");
         count = element.Q<Label>("slot-count");
+        gauge = element.Q("slot-gauge");
 
         element.RegisterCallback<PointerDownEvent>(OnPointerDown);
+
+        // Information of the item while the mouse is over the slot
+        element.RegisterCallback<PointerEnterEvent>(evt =>
+        {
+            hovered = true;
+            UpdateTooltip();
+        });
+        element.RegisterCallback<PointerLeaveEvent>(evt =>
+        {
+            hovered = false;
+            ItemTooltip.Hide(Element);
+        });
+        element.RegisterCallback<DetachFromPanelEvent>(evt => hovered = false);
     }
 
     public void SetSlot(ItemSlot<Item> slot)
@@ -55,19 +71,36 @@ public class ItemSlotUI
 
     private void UpdateSlot(ItemSlot<Item> slot)
     {
-        Display(slot, icon, count);
+        Display(slot, icon, count, gauge);
+
+        // Live value of the bar (charging, discharging) while hovered
+        if (hovered) UpdateTooltip();
+    }
+
+    private void UpdateTooltip()
+    {
+        if (slot == null || slot.IsEmpty())
+        {
+            ItemTooltip.Hide(Element);
+            return;
+        }
+
+        ItemTooltip.Show(Element, slot.Item);
     }
 
     // Also used for the item held at the cursor (HeldItemUI)
-    public static void Display(ItemSlot<Item> slot, VisualElement icon, Label count)
+    public static void Display(ItemSlot<Item> slot, VisualElement icon, Label count, VisualElement gauge = null)
     {
         // IsEmpty also covers an item whose data is missing (asset not found): displayed as empty instead of failing
         if (slot == null || slot.IsEmpty())
         {
             if (icon != null) icon.style.backgroundImage = StyleKeyword.None;
             if (count != null) count.style.display = DisplayStyle.None;
+            if (gauge != null) gauge.style.display = DisplayStyle.None;
             return;
         }
+
+        DisplayGauge(slot.Item, gauge);
 
         Sprite sprite = slot.Item.Data.Sprite;
 
@@ -80,6 +113,37 @@ public class ItemSlotUI
         {
             count.text = slot.Quantity.ToString();
             count.style.display = slot.Item.Data.StackMax > 1 ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+    }
+
+    // Bar at the bottom of the slot (element "slot-gauge", its child "slot-gauge-fill"): blue for a charge, green then
+    // orange (50 %) then red (20 %) for a wear
+    private static readonly Color ChargeColor = new Color(0.25f, 0.6f, 1f);
+    private static readonly Color WearGoodColor = new Color(0.3f, 0.85f, 0.4f);
+    private static readonly Color WearMediumColor = new Color(1f, 0.62f, 0.15f);
+    private static readonly Color WearBadColor = new Color(0.95f, 0.25f, 0.25f);
+
+    private static void DisplayGauge(Item item, VisualElement gauge)
+    {
+        if (gauge == null) return;
+
+        if (item == null || !item.HasGauge)
+        {
+            gauge.style.display = DisplayStyle.None;
+            return;
+        }
+
+        float ratio = Mathf.Clamp01(item.GaugeRatio);
+        Color color = item.Data.Gauge.Rechargeable ? ChargeColor : ratio > 0.5f ? WearGoodColor : ratio > 0.2f ? WearMediumColor : WearBadColor;
+
+        gauge.style.display = DisplayStyle.Flex;
+
+        VisualElement fill = gauge.Q("slot-gauge-fill");
+
+        if (fill != null)
+        {
+            fill.style.width = Length.Percent(ratio * 100f);
+            fill.style.backgroundColor = color;
         }
     }
 

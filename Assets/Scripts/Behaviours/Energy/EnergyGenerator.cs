@@ -7,6 +7,9 @@ public class EnergyGenerator : EnergyDevice
     [SerializeField] private EnergyValue generation = new EnergyValue(1000f);
     public virtual float Generation => generation.Value;
 
+    // What it can give: nothing when it is off
+    public float Production => IsOn ? Generation : 0f;
+
     public override bool LinksNetworks => false;
 
     // Power actually given to the networks during the last update (EnergyNetworkManager)
@@ -14,6 +17,6 @@ public class EnergyGenerator : EnergyDevice
 
     public override string GetInfo()
     {
-        return DisplayName + " : " + EnergyValue.Format(Output, "W") + " / " + EnergyValue.Format(Generation, "W");
+        return DisplayName + " : " + OffText(false) + EnergyValue.Format(Output, "W") + " / " + EnergyValue.Format(Generation, "W");
     }
 }

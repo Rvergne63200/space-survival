@@ -71,7 +71,9 @@ public class ItemCollection<T> where T : Item
             saved.Add(new ItemSlotSaveData
             {
                 itemId = empty ? -1 : slot.Item.Data.Id,
-                quantity = empty ? 0 : slot.Quantity
+                quantity = empty ? 0 : slot.Quantity,
+                hasGauge = !empty && slot.Item.HasGauge,
+                gauge = !empty && slot.Item.HasGauge ? slot.Item.Gauge : 0f
             });
         }
 
@@ -97,6 +99,11 @@ public class ItemCollection<T> where T : Item
             if (data != null)
             {
                 Slots[i].Add(Item.CreateFromData(data) as T, saved[i].quantity);
+
+                if (saved[i].hasGauge && !Slots[i].IsEmpty())
+                {
+                    Slots[i].Item.SetGauge(saved[i].gauge);
+                }
             }
         }
 

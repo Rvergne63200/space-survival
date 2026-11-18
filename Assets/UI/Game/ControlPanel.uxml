@@ -1,0 +1,42 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Template name="DistributionPanelSettings" src="DistributionPanelSettings.uxml" />
+    <Style src="Game.uss" />
+    <!-- Control panel (ControlPanelUI): map of its network (NetworkMapElement, added into "map") and the selected
+         device. The names are used by the script -->
+    <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
+        <ui:VisualElement name="panel" class="game-panel control-panel">
+            <ui:VisualElement class="control-header">
+                <ui:Label name="title" text="Panneau de contrôle" class="panel-title control-title" />
+                <ui:Button name="fit-button" text="Recentrer" class="control-button" />
+                <ui:Button name="close-button" text="Fermer" class="control-button" />
+            </ui:VisualElement>
+            <ui:VisualElement class="control-body">
+                <ui:VisualElement class="control-map-column">
+                    <ui:VisualElement name="map" class="control-map" />
+                    <ui:VisualElement class="control-legend">
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-consumer" /><ui:Label text="Machine" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-generator" /><ui:Label text="Générateur" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-storage" /><ui:Label text="Batterie" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-panel" /><ui:Label text="Tableau" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-control" /><ui:Label text="Panneau de contrôle" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-tripped" /><ui:Label text="Disjoncté" class="control-legend-item" /></ui:VisualElement>
+                        <ui:VisualElement class="legend-entry"><ui:VisualElement class="legend-swatch legend-off" /><ui:Label text="Éteint / non alimenté" class="control-legend-item" /></ui:VisualElement>
+                        <ui:Label text="Molette : zoom · Glisser : déplacer" class="control-legend-item control-legend-hint" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:ScrollView class="control-detail">
+                    <ui:Label name="detail-empty" text="Cliquez sur un élément du réseau pour voir ses informations." class="control-empty" />
+                    <ui:VisualElement name="device-detail" class="hidden">
+                        <ui:Label name="device-name" text="Appareil" class="detail-name" />
+                        <ui:Label name="device-info" text="" class="control-info" />
+                        <ui:Button name="device-switch" text="Éteindre" class="distribution-switch" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="panel-detail" class="hidden">
+                        <ui:Label name="panel-name" text="Tableau de distribution" class="detail-name" />
+                        <ui:Instance template="DistributionPanelSettings" />
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

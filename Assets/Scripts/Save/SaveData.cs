@@ -63,6 +63,9 @@ public class ItemSlotSaveData
     // -1: empty slot
     public int itemId = -1;
     public int quantity;
+    // Value of the bar of the item (Item.Gauge), when it has one
+    public bool hasGauge;
+    public float gauge;
 }
 
 [Serializable]
