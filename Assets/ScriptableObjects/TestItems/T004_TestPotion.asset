@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4c8b0b7af44f7a4e8267003e13d26d1, type: 3}
-  m_Name: 9994_TestPotion
+  m_Name: T004_TestPotion
   m_EditorClassIdentifier: 
-  _id: 9994
+  _id: T004
   _stackMax: 15
   _name: Test Potion
   _description: Potion to test consummables

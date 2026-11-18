@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
-  m_Name: 30_ControlPanel
+  m_Name: T003_TestBattery
   m_EditorClassIdentifier: 
-  _id: 30
-  _stackMax: 5
-  _name: Control Panel
-  _description: Linked to a network, it shows a map of the network and manages its devices from afar.
+  _id: T003
+  _stackMax: 10
+  _name: Test Battery
+  _description: Test battery, stores the surplus of its networks.
   _sprite: {fileID: 0}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
   _primaryActions: []
   _secondaryActions: []
-  _placedPrefab: {fileID: 4206000000000000001, guid: 0ab46080f8524d03af4aab6fd6aa89a3, type: 3}
+  _placedPrefab: {fileID: 4203000000000000001, guid: ac035266c946467aa9591392a7220878, type: 3}
   _refund: []
   references:
     version: 2

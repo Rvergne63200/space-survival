@@ -48,7 +48,7 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
         ElectricCable cable = cableObject.AddComponent<ElectricCable>();
         cable.data = data;
 
-        cableObject.AddComponent<SaveableObject>().SetRuntime(SaveManager.CablePrefabKeyPrefix + (data != null ? data.Id : 0), id);
+        cableObject.AddComponent<SaveableObject>().SetRuntime(SaveManager.CablePrefabKeyPrefix + data?.Id, id);
 
         return cable;
     }

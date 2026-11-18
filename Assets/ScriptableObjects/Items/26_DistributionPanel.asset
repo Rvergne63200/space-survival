@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
-  m_Name: 29_DistributionPanel
+  m_Name: 26_DistributionPanel
   m_EditorClassIdentifier: 
-  _id: 29
+  _id: 26
   _stackMax: 10
   _name: Distribution Panel
   _description: Creates a circuit after its output and manages it (switch, power limit, load shedding).

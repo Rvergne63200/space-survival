@@ -70,7 +70,7 @@ public class ItemCollection<T> where T : Item
 
             saved.Add(new ItemSlotSaveData
             {
-                itemId = empty ? -1 : slot.Item.Data.Id,
+                itemId = empty ? null : slot.Item.Data.Id,
                 quantity = empty ? 0 : slot.Quantity,
                 hasGauge = !empty && slot.Item.HasGauge,
                 gauge = !empty && slot.Item.HasGauge ? slot.Item.Gauge : 0f
@@ -81,7 +81,7 @@ public class ItemCollection<T> where T : Item
     }
 
     // Slot by slot: the items keep their position in the collection
-    public void RestoreSlots(List<ItemSlotSaveData> saved, Func<int, ItemData> getItem)
+    public void RestoreSlots(List<ItemSlotSaveData> saved, Func<string, ItemData> getItem)
     {
         for (int i = 0; i < Slots.Count; i++)
         {
@@ -92,7 +92,7 @@ public class ItemCollection<T> where T : Item
 
             Slots[i].Clear();
 
-            if (saved == null || i >= saved.Count || saved[i].itemId < 0 || saved[i].quantity <= 0) continue;
+            if (saved == null || i >= saved.Count || string.IsNullOrEmpty(saved[i].itemId) || saved[i].quantity <= 0) continue;
 
             ItemData data = getItem(saved[i].itemId);
 

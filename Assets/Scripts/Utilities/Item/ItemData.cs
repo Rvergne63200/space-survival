@@ -8,8 +8,8 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     [SerializeField]
-    private int _id;
-    public int Id { get => _id; protected set => _id = value; }
+    private string _id;
+    public string Id { get => _id; protected set => _id = value; }
 
     [SerializeField]
     private int _stackMax = 99;

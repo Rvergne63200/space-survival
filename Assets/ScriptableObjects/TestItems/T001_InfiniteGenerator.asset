@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
-  m_Name: 26_InfiniteGenerator
+  m_Name: T001_InfiniteGenerator
   m_EditorClassIdentifier: 
-  _id: 26
+  _id: T001
   _stackMax: 10
   _name: Infinite Generator
   _description: Test generator, produces power without any condition.

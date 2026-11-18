@@ -10,7 +10,7 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
     [System.Serializable]
     private class SaveState
     {
-        public int itemId = -1;
+        public string itemId;
         public int count;
         public bool identified;
         public bool hasGauge;
@@ -32,7 +32,7 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
     {
         return JsonUtility.ToJson(new SaveState
         {
-            itemId = item?.Data != null ? item.Data.Id : -1,
+            itemId = item?.Data?.Id,
             count = count,
             identified = identified,
             hasGauge = item != null && item.HasGauge,
@@ -44,7 +44,7 @@ public class Pickupable : MonoBehaviour, IInterractable, ISaveableComponent
     {
         SaveState state = JsonUtility.FromJson<SaveState>(json);
 
-        if (state.itemId >= 0 && SaveManager.Instance != null)
+        if (!string.IsNullOrEmpty(state.itemId) && SaveManager.Instance != null)
         {
             ItemData data = SaveManager.Instance.GetItem(state.itemId);
 

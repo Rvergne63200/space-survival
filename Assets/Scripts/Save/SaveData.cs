@@ -6,7 +6,10 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public int version = 1;
+    // Saves of an older version are ignored (2: item ids became text, and the items were renumbered)
+    public const int CurrentVersion = 2;
+
+    public int version = CurrentVersion;
 
     // Shown in the main menu
     public string saveName;
@@ -60,8 +63,8 @@ public class StatSaveData
 [Serializable]
 public class ItemSlotSaveData
 {
-    // -1: empty slot
-    public int itemId = -1;
+    // Empty: empty slot
+    public string itemId;
     public int quantity;
     // Value of the bar of the item (Item.Gauge), when it has one
     public bool hasGauge;

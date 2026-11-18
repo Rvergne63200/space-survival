@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
-  m_Name: 27_TestMachine
+  m_Name: T002_TestMachine
   m_EditorClassIdentifier: 
-  _id: 27
+  _id: T002
   _stackMax: 10
   _name: Test Machine
   _description: Test consumer, red when powered and white otherwise.

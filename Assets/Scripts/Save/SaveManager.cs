@@ -38,7 +38,7 @@ public class SaveManager : MonoBehaviour
     private readonly Dictionary<string, ObjectSaveData> savedObjects = new Dictionary<string, ObjectSaveData>();
     private readonly HashSet<string> destroyedObjects = new HashSet<string>();
     private readonly Dictionary<string, SaveableObject> liveObjects = new Dictionary<string, SaveableObject>();
-    private readonly Dictionary<int, ItemData> itemsById = new Dictionary<int, ItemData>();
+    private readonly Dictionary<string, ItemData> itemsById = new Dictionary<string, ItemData>();
 
     // Inventory and stats of a new game (the PlayerManager persists between the games of a session)
     private PlayerSaveData defaultPlayer;
@@ -71,7 +71,17 @@ public class SaveManager : MonoBehaviour
 
         foreach (ItemData item in items)
         {
-            if (item != null)
+            if (item == null) continue;
+
+            if (string.IsNullOrEmpty(item.Id))
+            {
+                Debug.LogWarning("Save: the item " + item.name + " has no id.", item);
+            }
+            else if (itemsById.TryGetValue(item.Id, out ItemData other) && other != item)
+            {
+                Debug.LogWarning("Save: " + other.name + " and " + item.name + " have the same id \"" + item.Id + "\". Only the first one is used.", item);
+            }
+            else
             {
                 itemsById[item.Id] = item;
             }
@@ -272,14 +282,14 @@ public class SaveManager : MonoBehaviour
 
     // ---------- Saveable objects ----------
 
-    public ItemData GetItem(int id)
+    public ItemData GetItem(string id)
     {
-        if (itemsById.TryGetValue(id, out ItemData item))
+        if (!string.IsNullOrEmpty(id) && itemsById.TryGetValue(id, out ItemData item))
         {
             return item;
         }
 
-        Debug.LogWarning("Save: unknown item id " + id + ". Add it to the SaveManager item list (Refresh item list).");
+        Debug.LogWarning("Save: unknown item id \"" + id + "\". Add it to the SaveManager item list (Refresh item list).");
         return null;
     }
 
@@ -535,19 +545,21 @@ public class SaveManager : MonoBehaviour
                 : BuildUtility.InstantiateStructure(structure, data.position, data.rotation, data.id);
         }
 
-        if (key.StartsWith(PlacedPrefabKeyPrefix) && int.TryParse(key.Substring(PlacedPrefabKeyPrefix.Length), out int itemId))
+        if (key.StartsWith(PlacedPrefabKeyPrefix))
         {
+            string itemId = key.Substring(PlacedPrefabKeyPrefix.Length);
+
             if (GetItem(itemId) is PlaceableItemData placeable && placeable.PlacedPrefab != null)
             {
                 return BuildUtility.InstantiatePlaced(placeable, data.position, data.rotation, data.id);
             }
 
-            Debug.LogWarning("Save: item " + itemId + " is not a placeable item with a placed prefab.");
+            Debug.LogWarning("Save: item \"" + itemId + "\" is not a placeable item with a placed prefab.");
         }
 
-        if (key.StartsWith(CablePrefabKeyPrefix) && int.TryParse(key.Substring(CablePrefabKeyPrefix.Length), out int cableItemId))
+        if (key.StartsWith(CablePrefabKeyPrefix))
         {
-            return ElectricCable.CreateEmpty(GetItem(cableItemId) as CableItemData, data.id).gameObject;
+            return ElectricCable.CreateEmpty(GetItem(key.Substring(CablePrefabKeyPrefix.Length)) as CableItemData, data.id).gameObject;
         }
 
         return null;
@@ -557,12 +569,7 @@ public class SaveManager : MonoBehaviour
     {
         if (data.prefabKey.StartsWith(ItemPrefabKeyPrefix))
         {
-            if (int.TryParse(data.prefabKey.Substring(ItemPrefabKeyPrefix.Length), out int itemId))
-            {
-                return GetItem(itemId)?.Model;
-            }
-
-            return null;
+            return GetItem(data.prefabKey.Substring(ItemPrefabKeyPrefix.Length))?.Model;
         }
 
         if (data.prefabKey.StartsWith(RuntimePrefabKeyPrefix))
@@ -623,7 +630,15 @@ public class SaveManager : MonoBehaviour
 
         try
         {
-            return JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+            SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+
+            if (data != null && data.version < SaveData.CurrentVersion)
+            {
+                Debug.LogWarning("Save: " + path + " is an old save (version " + data.version + ", current " + SaveData.CurrentVersion + "). It is ignored.");
+                return null;
+            }
+
+            return data;
         }
         catch (Exception exception)
         {
