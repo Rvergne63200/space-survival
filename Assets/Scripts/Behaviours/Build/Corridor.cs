@@ -83,17 +83,6 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         return false;
     }
 
-    // At least one finished corridor arrives at this building
-    public static bool HasBuiltCorridor(BuiltStructure structure)
-    {
-        foreach (Corridor corridor in all)
-        {
-            if (corridor.IsBuilt && corridor.Links(structure)) return true;
-        }
-
-        return false;
-    }
-
     // The buildings linked to this one by finished corridors, directly or through others (itself included)
     public static HashSet<BuiltStructure> Group(BuiltStructure structure)
     {

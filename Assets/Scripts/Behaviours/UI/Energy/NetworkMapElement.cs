@@ -105,7 +105,7 @@ public class NetworkMapElement : VisualElement
         {
             if (device == null) continue;
             // The panel built into a building has no icon: the building itself is selected
-            if (device.Panel is BuildingPowerPanel || device.Panel is BuildingOutlet) continue;
+            if (device.Panel != null && device.Panel.Building != null) continue;
             if (device.Panel != null && !panels.Add(device.Panel)) continue;
 
             shown.Add(device);
@@ -313,7 +313,7 @@ public class NetworkMapElement : VisualElement
     private void DrawBuilding(Painter2D painter, int index)
     {
         Vector2[] building = buildings[index];
-        bool highlighted = index == hoveredBuilding || (selected != null && selected.Panel is BuildingPowerPanel panel && OwnerOf(index) == panel.GetComponentInParent<BuiltStructure>());
+        bool highlighted = index == hoveredBuilding || (selected != null && selected.Panel != null && selected.Panel.Building != null && OwnerOf(index) == selected.Panel.Building.Structure);
 
         if (!highlighted)
         {
@@ -349,7 +349,7 @@ public class NetworkMapElement : VisualElement
 
         foreach (EnergyDevice device in devices)
         {
-            if (device != null && device.Panel is BuildingPowerPanel && device.GetComponentInParent<BuiltStructure>() == structure) return device;
+            if (device != null && device.Panel is BuildingPowerPanel building && building.Structure == structure) return device;
         }
 
         return null;

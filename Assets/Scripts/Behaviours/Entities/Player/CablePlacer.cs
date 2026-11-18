@@ -188,13 +188,12 @@ public class CablePlacer : MonoBehaviour
     private static bool SamePanel(EnergyDevice a, EnergyDevice b)
     {
         if (a.Panel == null || b.Panel == null) return false;
-        if (a.Panel == b.Panel) return true;
 
-        BuiltStructure building = a.Panel.GetComponentInParent<BuiltStructure>();
-        return building != null && building == b.Panel.GetComponentInParent<BuiltStructure>();
+        return a.Panel == b.Panel || (a.Panel.Building != null && a.Panel.Building == b.Panel.Building);
     }
 
-    // The inputs of two buildings cannot be cabled together: a building feeds another one from its output
+    // The inputs of two buildings cannot be cabled together: a building feeds another one from its output socket, or
+    // through a corridor
     private static bool TwoBuildingInputs(EnergyDevice a, EnergyDevice b)
     {
         return a is DistributionPanelInput && a.Panel is BuildingPowerPanel && b is DistributionPanelInput && b.Panel is BuildingPowerPanel;

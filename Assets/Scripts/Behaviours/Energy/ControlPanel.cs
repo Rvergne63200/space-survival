@@ -2,16 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Control panel: linked by cable to a network, it consumes a little power (its EnergyConsumer) and, while powered,
-// opens a map of the network (ControlPanelUI, interaction key) to see and manage its devices from afar. It reaches:
-// - its own network, and through the distribution panels of that network, their circuits (downstream, everything)
-// - not upstream of a distribution panel: a panel whose circuit holds the control panel is shown, not what feeds it
-// - in a building: also the whole network feeding the building ("upstream" network), with the circuits of its panels
-//   (other buildings through corridors included), but not further up: a panel feeding that network is shown (and what
-//   else it feeds there), not what is behind its input; a building feeding it, or fed by it without being linked by
-//   corridor to the building of the control panel, is shown (with its cable), not its content.
-//   Examples: PD1 ---> G1 ---> Bât1, panel in Bât1: G1, PD1 and what else PD1 feeds are seen, not what feeds PD1.
-//   G1 ---> Bât1 ---> Bât2, panel in Bât2: Bât1 is seen, not its content nor G1. G1 ---- Bât1 ==== Bât2, panel in
-//   Bât1: G1, Bât1 and Bât2 (with its content) are seen
+// opens a map of the network (ControlPanelUI, interaction key) to see and manage its devices from afar. What it sees:
+// 1. its network, and everything downstream: behind the input of every panel it meets, buildings included
+// 2. never what is behind the input of a panel feeding what it sees (upstream)
+// 3. in a building, its network is that of its corridor group, with the network feeding the group
+// 4. on that feeding network, the other buildings are seen from outside (outline, cable), not their inside
+// Examples: PD1 ---> G1 ---> B1, panel in B1: G1, PD1 and what else PD1 feeds, not what feeds PD1 (3, 2).
+// G1 ---> B1 ---> B2, panel in B2: B1 from outside, not G1 (4, 2). G1 ---- B1 ==== B2 ---> B3, panel in B1: G1, B1,
+// B2 and B3 with their content (3, 1). PD1 ---> B1 and PD1 ---> B5, panel in B1: B5 from outside (4)
 [RequireComponent(typeof(EnergyConsumer))]
 public class ControlPanel : MonoBehaviour, IInterractable
 {
@@ -20,66 +18,69 @@ public class ControlPanel : MonoBehaviour, IInterractable
     public EnergyConsumer Consumer => consumer != null ? consumer : (consumer = GetComponent<EnergyConsumer>());
     public bool IsPowered => Consumer.IsPowered;
 
-    // Devices and cables reached from the network of the control panel (itself included)
+    // Devices and cables seen from the control panel (itself included)
     public void CollectNetwork(List<EnergyDevice> devices, List<ElectricCable> cables)
     {
         devices.Clear();
         cables.Clear();
 
+        HashSet<EnergyDevice> listed = new HashSet<EnergyDevice>();
         HashSet<EnergyDevice> visited = new HashSet<EnergyDevice>();
         HashSet<ElectricCable> seenCables = new HashSet<ElectricCable>();
-        // Outputs reached through their input: their circuit is downstream, it is followed
+        // Outputs reached through their input: their circuit is downstream (rule 1)
         HashSet<EnergyDevice> opened = new HashSet<EnergyDevice>();
-        // Buildings linked by corridors to the building of the control panel (their content is shown)
+        // Corridor group of the building of the control panel (rule 3)
         HashSet<BuiltStructure> group = new HashSet<BuiltStructure>();
-        // upstream: in the network feeding the building of the control panel
-        Queue<(EnergyDevice device, bool upstream)> queue = new Queue<(EnergyDevice, bool)>();
+        // feeding: on the network feeding the group (rule 4)
+        Queue<(EnergyDevice device, bool feeding)> queue = new Queue<(EnergyDevice, bool)>();
 
-        void Visit(EnergyDevice device, bool upstream)
+        void Show(EnergyDevice device)
         {
-            if (device == null || !visited.Add(device)) return;
+            if (device != null && listed.Add(device)) devices.Add(device);
+        }
 
-            devices.Add(device);
-            queue.Enqueue((device, upstream));
+        void Visit(EnergyDevice device, bool feeding)
+        {
+            Show(device);
+
+            if (device != null && visited.Add(device)) queue.Enqueue((device, feeding));
+        }
+
+        // Rule 4: the inside of a building outside the group, met on the feeding network, is not entered
+        bool Closed(DistributionPanel panel, bool feeding)
+        {
+            return feeding && panel is BuildingPowerPanel building && !group.Contains(building.Structure);
         }
 
         Visit(Consumer, false);
 
         while (queue.Count > 0)
         {
-            (EnergyDevice device, bool upstream) = queue.Dequeue();
+            (EnergyDevice device, bool feeding) = queue.Dequeue();
+            DistributionPanel panel = device.Panel;
 
-            // In the upstream network: the output of a panel feeding it is in the same network, its cables are followed
-            // (what else it feeds), but not what is behind its input. The output socket of a building: the building is
-            // shown (its panel, to select it on the map), not its content
-            if (upstream && device is DistributionPanelOutput && !opened.Contains(device))
+            // A port of a building: the building is shown (its panel, selected on the map)
+            if (panel != null && panel.Building != null) Show(panel.Building.Input);
+
+            // Rule 1: the input of a panel opens its circuit, which is downstream
+            if (device is DistributionPanelInput && panel != null && panel.Output != null && !Closed(panel, feeding))
             {
-                if (device.Panel is BuildingOutlet outlet && outlet.Building != null && outlet.Building.Input != null && visited.Add(outlet.Building.Input))
+                opened.Add(panel.Output);
+                Visit(panel.Output, false);
+            }
+
+            // The output of a panel met from its circuit: same network, its cables are followed, never what is behind its
+            // input (rule 2)
+            if (device is DistributionPanelOutput && !opened.Contains(device))
+            {
+                if (Closed(panel, feeding)) continue;
+
+                // Rule 3: the building of the control panel
+                if (!feeding && panel is BuildingPowerPanel building)
                 {
-                    devices.Add(outlet.Building.Input);
+                    group.UnionWith(Corridor.Group(building.Structure));
+                    Visit(building.Input, true);
                 }
-
-                // The inside of another building (reached otherwise than through its input) is not shown
-                if (device.Panel is BuildingPowerPanel) continue;
-            }
-
-            // The input of a panel opens its circuit. In the upstream network, the input of a building opens it only if
-            // the building is linked by corridors to the building of the control panel: another building fed by the same
-            // network is shown (with its cable), not its content
-            if (device is DistributionPanelInput input && input.Panel != null && input.Panel.Output != null
-                && !(upstream && input.Panel is BuildingPowerPanel && !group.Contains(input.Panel.GetComponentInParent<BuiltStructure>())))
-            {
-                // Its circuit is downstream (a building of the group, a panel fed by the network...): everything behind
-                // it is shown, buildings behind its output socket included
-                opened.Add(input.Panel.Output);
-                Visit(input.Panel.Output, false);
-            }
-
-            // The building holding the control panel: the network feeding it is seen too, with its corridor group
-            if (!upstream && device is DistributionPanelOutput output && output.Panel is BuildingPowerPanel building && !opened.Contains(output))
-            {
-                group.UnionWith(Corridor.Group(building.GetComponentInParent<BuiltStructure>()));
-                Visit(building.Input, true);
             }
 
             foreach (ElectricCable cable in device.Cables)
@@ -93,7 +94,7 @@ public class ControlPanel : MonoBehaviour, IInterractable
             // Cables, the inside of the buildings and the corridors (without cable)
             foreach (EnergyDevice other in EnergyNetworkManager.Instance.Links(device))
             {
-                Visit(other, upstream);
+                Visit(other, feeding);
             }
         }
     }

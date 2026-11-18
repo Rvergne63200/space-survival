@@ -50,6 +50,10 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     // All its demand is optional (BuildingOutlet): served only by the upstream surplus, a lack never trips upstream
     public virtual bool OptionalDemand => false;
 
+    // The building it is built into (BuildingPowerPanel: itself, BuildingOutlet: its building), null for a placed
+    // distribution panel. A built-in panel is never switched off by a panel above it, and has no icon on the map
+    public virtual BuildingPowerPanel Building => null;
+
     // Its own on/off setting. Off, it feeds nothing and everything in its circuit is off (EnergyNetworkManager), their own
     // setting being kept for when it is switched on again
     public bool SwitchedOn => switchedOn;

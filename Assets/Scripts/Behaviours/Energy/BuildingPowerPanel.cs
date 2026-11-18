@@ -1,23 +1,26 @@
 using UnityEngine;
 
 // Distribution panel built into a building, on the power socket of its prefab (interaction: the same interface as a
-// distribution panel, DistributionPanelUI, and the same settings). Ports:
+// distribution panel, DistributionPanelUI, and the same settings). Its circuit is the inside of the building. Ports:
 // - input (DistributionPanelInput, green): cabled from outside, it feeds the building
-// - output (DistributionPanelOutput, hidden, port "interior"): feeds without cable everything placed inside the building
-//   (BuildingInterior, linked by the EnergyNetworkManager). Switched off, the building switches off what it holds
+// - output (DistributionPanelOutput, hidden, port "interior"): linked without cable to everything placed inside the
+//   building (BuildingInterior, EnergyNetworkManager)
 // - output socket (BuildingOutlet, orange): what is cabled after the building, fed with the surplus only
-// The inputs of two buildings cannot be cabled together (CablePlacer): buildings are also linked by corridors (F26)
+// Corridors link the inputs of two buildings (Corridor)
 public class BuildingPowerPanel : DistributionPanel
 {
     [SerializeField] private BuildingInterior interior;
 
     public BuildingInterior Interior => interior;
 
-    // Output socket (orange port): what is cabled after the building, fed with the surplus only
+    public override BuildingPowerPanel Building => this;
+
+    public BuiltStructure Structure => GetComponentInParent<BuiltStructure>();
+
+    // Output socket (orange port)
     public BuildingOutlet Outlet => GetComponentInChildren<BuildingOutlet>();
 
-    // The two ports that can be cabled: the input (green) and the output socket (orange). The output of this panel
-    // feeds the inside without cable
+    // The two ports that can be cabled: the input (green) and the output socket (orange)
     public override EnergyDevice ClosestPort(Vector3 point)
     {
         EnergyDevice outlet = Outlet != null ? Outlet.Output : null;
@@ -28,21 +31,10 @@ public class BuildingPowerPanel : DistributionPanel
         return Vector3.Distance(point, Input.ConnectionPoint) <= Vector3.Distance(point, outlet.ConnectionPoint) ? (EnergyDevice)Input : outlet;
     }
 
-    // Linked to another building by a finished corridor (its input is then linked to the input of the other building)
-    public bool HasCorridor => Corridor.HasBuiltCorridor(GetComponentInParent<BuiltStructure>());
-
     // The devices of the building itself (its ports) are not "inside" it
     public bool IsPartOfBuilding(EnergyDevice device)
     {
-        return device != null && device.transform.IsChildOf(BuildingRoot);
-    }
-
-    private Transform BuildingRoot
-    {
-        get
-        {
-            BuiltStructure structure = GetComponentInParent<BuiltStructure>();
-            return structure != null ? structure.transform : transform.root;
-        }
+        Transform root = Structure != null ? Structure.transform : transform.root;
+        return device != null && device.transform.IsChildOf(root);
     }
 }
