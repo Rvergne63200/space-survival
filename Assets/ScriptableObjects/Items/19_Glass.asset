@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Transparent sheet made by melting sand.
   _sprite: {fileID: -2122197645, guid: 5e671917852d3894b8d171226d762a94, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   references:
     version: 2
     RefIds: []

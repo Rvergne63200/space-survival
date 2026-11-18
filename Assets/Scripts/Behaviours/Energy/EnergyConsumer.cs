@@ -11,8 +11,6 @@ public class EnergyConsumer : EnergyDevice
     // What it asks its network: nothing when it is off
     public float Demand => IsOn ? Consumption : 0f;
 
-    public override bool LinksNetworks => true;
-
     public bool IsPowered { get; private set; }
 
     // Why it is not powered (text at the pointer)

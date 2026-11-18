@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Block of frozen water. Can be melted into drinkable water.
   _sprite: {fileID: -1079588349, guid: 0df1b58634f071c4dae8853fb36d534d, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   references:
     version: 2
     RefIds: []

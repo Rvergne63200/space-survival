@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Storage crate to place (20 slots)
   _sprite: {fileID: -2079119485, guid: 4cdeafb422b4c2546a57ce2aefb8b4f3, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4102000000000000001, guid: 14722dd0fbe54e18989ac597b4705baf, type: 3}
   _refund: []
   references:

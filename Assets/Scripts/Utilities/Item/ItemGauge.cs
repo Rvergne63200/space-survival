@@ -1,40 +1,54 @@
 using System;
 using UnityEngine;
 
-public enum ItemGaugeType
+// What the bar of an item measures. It only changes what the player sees and how the item is refilled
+public enum ItemGaugeUnit
 {
-    // No bar
-    None,
-    // Wear (pickaxe...): starts full, the item is destroyed at 0. Units
+    // Wear units (pickaxe...): starts full, cannot be refilled, the item is destroyed at 0
     Wear,
-    // Charge (flashlight, jetpack...): starts empty, recharged at a charging station, unusable at 0. Wh
-    Energy
+    // Wh (flashlight, jetpack...): starts empty, recharged at a charging station, unusable at 0
+    Energy,
+    // Litres of oxygen (oxygen tank...): starts empty, refilled by an oxygen refill device (to come), unusable at 0
+    Oxygen
 }
 
-// Bar of a tool or an equipment (ItemData), its value is kept by each item (Item.Gauge). Such items do not stack.
-// It goes down while the item is active (toggle on, hold: consumptionPerSecond, in W for a charge, units/s for a wear)
-// and on each use (click: consumptionPerUse, in Wh or units)
+// Bar of a usable item (UsableItemData), its value is kept by each item (Item.Gauge). Such items do not stack.
+// How it goes down depends on the item (ToolData: continuous or per use)
 [Serializable]
 public class ItemGauge
 {
-    public ItemGaugeType type = ItemGaugeType.None;
+    // Unchecked: the item has no bar (no unit, no wear), whatever its consumption
+    public bool enabled;
 
-    // Wh for a charge, units for a wear
+    public ItemGaugeUnit unit = ItemGaugeUnit.Wear;
+
+    // In the unit of the bar (Wh, L or wear units)
     public float capacity = 100f;
 
-    public float consumptionPerSecond;
-    public float consumptionPerUse;
+    public bool Rechargeable => unit != ItemGaugeUnit.Wear;
 
-    public bool Enabled => type != ItemGaugeType.None && capacity > 0f;
-    public bool Rechargeable => type == ItemGaugeType.Energy;
+    // Shown before the value (tooltip)
+    public string Label => unit == ItemGaugeUnit.Energy ? "Charge" : unit == ItemGaugeUnit.Oxygen ? "Oxygène" : "Usure";
 
-    // Gauge lost per second of activity: a charge is in Wh, its consumption in W
-    public float PerSecond => type == ItemGaugeType.Energy ? consumptionPerSecond / 3600f : consumptionPerSecond;
+    // Shown after the name of the item when the bar is at 0 (a worn item is destroyed instead)
+    public string EmptyText => unit == ItemGaugeUnit.Oxygen ? "est vide" : "est déchargé";
+
+    // Gauge lost per second for a continuous consumption: W for a charge (the bar is in Wh), L/s or units/s otherwise
+    public float PerSecond(float consumption)
+    {
+        return unit == ItemGaugeUnit.Energy ? consumption / 3600f : consumption;
+    }
 
     public string Format(float value)
     {
-        return type == ItemGaugeType.Energy
-            ? EnergyValue.Format(value, "").Trim() + " / " + EnergyValue.Format(capacity, "Wh")
-            : Mathf.CeilToInt(value) + " / " + Mathf.CeilToInt(capacity);
+        switch (unit)
+        {
+            case ItemGaugeUnit.Energy:
+                return EnergyValue.Format(value, "").Trim() + " / " + EnergyValue.Format(capacity, "Wh");
+            case ItemGaugeUnit.Oxygen:
+                return value.ToString("0.#") + " / " + capacity.ToString("0.#") + " L";
+            default:
+                return Mathf.CeilToInt(value) + " / " + Mathf.CeilToInt(capacity);
+        }
     }
 }

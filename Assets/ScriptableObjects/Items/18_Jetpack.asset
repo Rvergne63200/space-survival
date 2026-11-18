@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a384c6ee44a940c4981d7972563515d3, type: 3}
+  m_Script: {fileID: 11500000, guid: 8db07c855f754e00928259c5b7f9b95f, type: 3}
   m_Name: 18_Jetpack
   m_EditorClassIdentifier: 
   _id: 18
@@ -19,12 +19,10 @@ MonoBehaviour:
   _sprite: {fileID: 1116498703, guid: edb82fce4d005514eb02790a74e671e6, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
   _gauge:
-    type: 2
+    enabled: 1
+    unit: 1
     capacity: 50
-    consumptionPerSecond: 2000
-    consumptionPerUse: 0
-  _primaryActions: []
-  _secondaryActions: []
+  _slot: 2
   references:
     version: 2
     RefIds: []

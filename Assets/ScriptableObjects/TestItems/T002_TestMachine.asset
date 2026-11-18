@@ -16,12 +16,7 @@ MonoBehaviour:
   _stackMax: 10
   _name: Test Machine
   _description: Test consumer, red when powered and white otherwise.
-  _sprite: {fileID: 0}
+  _sprite: {fileID: -139506121, guid: edb82fce4d005514eb02790a74e671e6, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4202000000000000001, guid: 1ac9ee36060946c8a8b2c73953cf351c, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

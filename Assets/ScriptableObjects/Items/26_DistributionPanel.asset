@@ -15,13 +15,9 @@ MonoBehaviour:
   _id: 26
   _stackMax: 10
   _name: Distribution Panel
-  _description: Creates a circuit after its output and manages it (switch, power limit, load shedding).
-  _sprite: {fileID: 0}
+  _description: Creates a circuit after its output and manages it (switch, power
+    limit, load shedding).
+  _sprite: {fileID: 35273683, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4204000000000000001, guid: 1cde0da8bffd4d429336998b3540c2c1, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 
+// Base of every item. Subclasses: ConsummableData (right click), PlaceableItemData, UsableItemData (bar: ToolData,
+// EquipmentData)
 [CreateAssetMenu(menuName = "Item/Item")]
 [Serializable]
 public class ItemData : ScriptableObject
@@ -13,8 +14,7 @@ public class ItemData : ScriptableObject
 
     [SerializeField]
     private int _stackMax = 99;
-    // An item with a bar (charge or wear) does not stack: each one keeps its own value
-    public int StackMax { get => HasGauge ? 1 : _stackMax; protected set => _stackMax = value; }
+    public virtual int StackMax => _stackMax;
 
     [SerializeField]
     private string _name;
@@ -31,54 +31,4 @@ public class ItemData : ScriptableObject
     [SerializeField]
     private GameObject _model;
     public GameObject Model { get => _model; protected set => _model = value; }
-
-    // Charge (rechargeable) or wear bar of a tool or an equipment, shown in the slots (ItemGauge)
-    [SerializeField]
-    private ItemGauge _gauge = new ItemGauge();
-    public ItemGauge Gauge => _gauge;
-    public bool HasGauge => _gauge != null && _gauge.Enabled;
-
-    // Done when the item is in hand: primary use (left click) and secondary use (right click)
-    [SerializeReference, SubclassPicker]
-    private List<ItemAction> _primaryActions = new List<ItemAction>();
-    public List<ItemAction> PrimaryActions => _primaryActions;
-
-    [SerializeReference, SubclassPicker]
-    private List<ItemAction> _secondaryActions = new List<ItemAction>();
-    public List<ItemAction> SecondaryActions => _secondaryActions;
-
-    // Returns true when at least one action was done. The hold actions that started are added to startedHolds
-    public bool Use(bool primary, ItemUseContext context, List<HoldItemAction> startedHolds = null)
-    {
-        bool done = false;
-
-        foreach (ItemAction action in primary ? _primaryActions : _secondaryActions)
-        {
-            if (action != null && action.Execute(context))
-            {
-                done = true;
-
-                if (action is HoldItemAction hold)
-                {
-                    startedHolds?.Add(hold);
-                }
-            }
-        }
-
-        return done;
-    }
-
-    // The item leaves the hand: every action stops what it does
-    public void Unequip(ItemUseContext context)
-    {
-        foreach (ItemAction action in _primaryActions)
-        {
-            action?.OnUnequip(context);
-        }
-
-        foreach (ItemAction action in _secondaryActions)
-        {
-            action?.OnUnequip(context);
-        }
-    }
 }

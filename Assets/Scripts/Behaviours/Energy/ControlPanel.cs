@@ -26,8 +26,8 @@ public class ControlPanel : MonoBehaviour, IInterractable
         devices.Add(Consumer);
         queue.Enqueue(Consumer);
 
-        // Consumers link the networks; the output of a panel reached by its input opens its circuit. A generator or a
-        // storage is in the network but does not lead further
+        // Everything linked by cables is in the network; the output of a panel reached by its input opens its circuit.
+        // Not the other way: the input of a panel reached by its output (upstream) is not followed
         while (queue.Count > 0)
         {
             EnergyDevice device = queue.Dequeue();
@@ -52,11 +52,7 @@ public class ControlPanel : MonoBehaviour, IInterractable
                 if (other == null || !visited.Add(other)) continue;
 
                 devices.Add(other);
-
-                if (other is EnergyConsumer)
-                {
-                    queue.Enqueue(other);
-                }
+                queue.Enqueue(other);
             }
         }
     }

@@ -15,13 +15,9 @@ MonoBehaviour:
   _id: 27
   _stackMax: 5
   _name: Control Panel
-  _description: Linked to a network, it shows a map of the network and manages its devices from afar.
-  _sprite: {fileID: 0}
+  _description: Linked to a network, it shows a map of the network and manages its
+    devices from afar.
+  _sprite: {fileID: -1191033675, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4206000000000000001, guid: 0ab46080f8524d03af4aab6fd6aa89a3, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

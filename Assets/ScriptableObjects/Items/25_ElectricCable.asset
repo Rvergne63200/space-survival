@@ -16,13 +16,8 @@ MonoBehaviour:
   _stackMax: 99
   _name: Electric Cable
   _description: Links electrical devices. One cable per meter.
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 1956873513, guid: 5e671917852d3894b8d171226d762a94, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   metersPerItem: 1
   width: 0.05
   material: {fileID: 2100000, guid: defd3fcb4b2d473cae6f5d64bf94a5c4, type: 2}
-  references:
-    version: 2
-    RefIds: []

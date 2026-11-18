@@ -2,15 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Electrical networks: built from the devices (EnergyDevice) and their cables, updated every "interval" seconds.
-// - A network is a group of consumers linked by cables, with the generators and storages linked to them. Generators and
-//   storages do not link networks: linked on two sides, they belong to two networks. Two of them linked together
-//   (generator - battery...) form a network without consumer.
-// - Each update: the generators linked to a single network give it first what it needs, then the shared generators
-//   cover what is still missing, in proportion to what each of their networks lacks. Their surplus charges the
-//   storages of their networks (equal shares, within their input rate), and the storages then give what is still
-//   missing (within their output rate). The rest of the production is lost.
-// - A network that still lacks power trips: its consumers stop, and its share of the shared generators goes to their
-//   other networks. It is rearmed after "rearmDelay" seconds once its generators and storages could cover its demand.
+// - A network is everything linked by cables (consumers, generators, storages): each device is in a single network.
+//   Only the distribution panels separate networks: their input and their output are two devices without cable
+//   between them.
+// - Each update: the generators of the network give it what it needs, their surplus charges its storages (equal
+//   shares, within their input rate), and the storages then give what is still missing (within their output rate).
+//   The rest of the production is lost.
+// - A network that still lacks power trips: its consumers stop. It is rearmed after "rearmDelay" seconds once its
+//   generators and storages could cover its demand.
 // - Distribution panels (DistributionPanel): their input is a consumer of the upstream network asking what their
 //   circuit needs, their output a generator of the circuit served last (see Simulate).
 // Created on first use, persists between the scenes
@@ -44,6 +43,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
     private class Network
     {
+        public readonly List<EnergyDevice> devices = new List<EnergyDevice>();
         public readonly List<EnergyConsumer> consumers = new List<EnergyConsumer>();
         public readonly List<EnergyGenerator> generators = new List<EnergyGenerator>();
         public readonly List<EnergyStorage> storages = new List<EnergyStorage>();
@@ -58,8 +58,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
     private readonly HashSet<EnergyDevice> devices = new HashSet<EnergyDevice>();
     private readonly List<Network> networks = new List<Network>();
-    private readonly Dictionary<EnergyGenerator, List<Network>> generatorNetworks = new Dictionary<EnergyGenerator, List<Network>>();
-    private readonly Dictionary<EnergyStorage, List<Network>> storageNetworks = new Dictionary<EnergyStorage, List<Network>>();
+    private readonly Dictionary<EnergyDevice, Network> deviceNetworks = new Dictionary<EnergyDevice, Network>();
 
     private bool dirty;
     private float timer;
@@ -129,124 +128,93 @@ public class EnergyNetworkManager : MonoBehaviour
     {
         dirty = false;
 
-        // A new network stays tripped if one of its consumers was in a tripped network
-        HashSet<EnergyConsumer> wasTripped = new HashSet<EnergyConsumer>();
+        // A new network stays tripped if one of its devices was in a tripped network
+        HashSet<EnergyDevice> wasTripped = new HashSet<EnergyDevice>();
 
         foreach (Network network in networks)
         {
             if (!network.tripped) continue;
 
-            foreach (EnergyConsumer consumer in network.consumers)
+            foreach (EnergyDevice device in network.devices)
             {
-                wasTripped.Add(consumer);
+                wasTripped.Add(device);
             }
         }
 
         networks.Clear();
-        generatorNetworks.Clear();
-        storageNetworks.Clear();
-        consumerNetworks.Clear();
+        deviceNetworks.Clear();
         devices.RemoveWhere(device => device == null);
 
-        HashSet<EnergyDevice> visited = new HashSet<EnergyDevice>();
-
-        foreach (EnergyDevice device in devices)
+        // Everything linked by cables, whatever the kind of device
+        foreach (EnergyDevice start in devices)
         {
-            if (!(device is EnergyConsumer start) || visited.Contains(device)) continue;
+            if (deviceNetworks.ContainsKey(start)) continue;
 
             Network network = new Network();
-            Queue<EnergyConsumer> queue = new Queue<EnergyConsumer>();
+            Queue<EnergyDevice> queue = new Queue<EnergyDevice>();
 
             queue.Enqueue(start);
-            visited.Add(start);
+            deviceNetworks[start] = network;
 
             while (queue.Count > 0)
             {
-                EnergyConsumer consumer = queue.Dequeue();
-                network.consumers.Add(consumer);
-                consumerNetworks[consumer] = network;
-                network.tripped |= wasTripped.Contains(consumer);
+                EnergyDevice device = queue.Dequeue();
+                Add(network, device);
+                network.tripped |= wasTripped.Contains(device);
 
-                foreach (ElectricCable cable in consumer.Cables)
+                foreach (ElectricCable cable in device.Cables)
                 {
-                    EnergyDevice other = cable != null ? cable.Other(consumer) : null;
+                    EnergyDevice other = cable != null ? cable.Other(device) : null;
 
-                    if (other == null || !devices.Contains(other)) continue;
+                    if (other == null || !devices.Contains(other) || deviceNetworks.ContainsKey(other)) continue;
 
-                    if (other is EnergyConsumer otherConsumer)
-                    {
-                        if (visited.Add(otherConsumer))
-                        {
-                            queue.Enqueue(otherConsumer);
-                        }
-                    }
-                    else
-                    {
-                        AddSource(network, other);
-                    }
+                    deviceNetworks[other] = network;
+                    queue.Enqueue(other);
                 }
             }
 
-            AddNetwork(network);
-        }
-
-        // Generators and storages linked together, without consumer between them
-        HashSet<ElectricCable> sourceCables = new HashSet<ElectricCable>();
-
-        foreach (EnergyDevice device in devices)
-        {
-            if (device.LinksNetworks) continue;
-
-            foreach (ElectricCable cable in device.Cables)
-            {
-                EnergyDevice other = cable != null ? cable.Other(device) : null;
-
-                if (other == null || other.LinksNetworks || !devices.Contains(other) || !sourceCables.Add(cable)) continue;
-
-                Network network = new Network();
-                AddSource(network, device);
-                AddSource(network, other);
-                AddNetwork(network);
-            }
+            networks.Add(network);
         }
     }
 
-    private static void AddSource(Network network, EnergyDevice device)
+    private static void Add(Network network, EnergyDevice device)
     {
-        if (device is EnergyGenerator generator && !network.generators.Contains(generator))
+        network.devices.Add(device);
+
+        if (device is EnergyConsumer consumer)
+        {
+            network.consumers.Add(consumer);
+        }
+        else if (device is EnergyGenerator generator)
         {
             network.generators.Add(generator);
         }
-        else if (device is EnergyStorage storage && !network.storages.Contains(storage))
+        else if (device is EnergyStorage storage)
         {
             network.storages.Add(storage);
         }
     }
 
-    private void AddNetwork(Network network)
+    private Network NetworkOf(EnergyDevice device)
     {
-        networks.Add(network);
-
-        foreach (EnergyGenerator generator in network.generators)
-        {
-            GetList(generatorNetworks, generator).Add(network);
-        }
-
-        foreach (EnergyStorage storage in network.storages)
-        {
-            GetList(storageNetworks, storage).Add(network);
-        }
+        return device != null && deviceNetworks.TryGetValue(device, out Network network) ? network : null;
     }
 
-    private static List<Network> GetList<T>(Dictionary<T, List<Network>> map, T key)
+    // State of the network of a cable (both ends are in the same network), for the map of the control panel:
+    // Tripped, Powered (at least one consumer powered), NotLinked (no consumer), SwitchedOff otherwise
+    public NetworkState CableState(ElectricCable cable)
     {
-        if (!map.TryGetValue(key, out List<Network> list))
+        Network network = NetworkOf(cable.Start) ?? NetworkOf(cable.End);
+
+        if (network == null || network.consumers.Count == 0) return NetworkState.NotLinked;
+        if (network.tripped) return NetworkState.Tripped;
+
+        foreach (EnergyConsumer consumer in network.consumers)
         {
-            list = new List<Network>();
-            map[key] = list;
+            if (consumer != null && consumer.State == NetworkState.Powered) return NetworkState.Powered;
         }
 
-        return list;
+        return NetworkState.SwitchedOff;
     }
 
     // ---------- Simulation ----------
@@ -306,14 +274,13 @@ public class EnergyNetworkManager : MonoBehaviour
         foreach (DistributionPanel panel in panels)
         {
             Network inputNetwork = InputNetwork(panel);
-            bool loop = inputNetwork != null && generatorNetworks.TryGetValue(panel.Output, out List<Network> outputNetworks) && outputNetworks.Contains(inputNetwork);
+            bool loop = inputNetwork != null && NetworkOf(panel.Output) == inputNetwork;
 
             panel.BeginUpdate(deltaTime, BatteryRatio(inputNetwork), loop);
             SetPanelFlow(panel, panel.IsFeeding);
         }
 
-        // 3. Distribution. The networks that cannot be powered shed or trip one after the other, freeing the generators
-        // they shared
+        // 3. Distribution. The networks that cannot be powered shed or trip one after the other, until nothing changes
         for (int iteration = 0; iteration < MaxTripIterations; iteration++)
         {
             Allocate(hours);
@@ -390,7 +357,6 @@ public class EnergyNetworkManager : MonoBehaviour
     private bool ignoreTrips;
 
     private readonly List<DistributionPanel> panels = new List<DistributionPanel>();
-    private readonly Dictionary<EnergyConsumer, Network> consumerNetworks = new Dictionary<EnergyConsumer, Network>();
 
     private void CollectPanels()
     {
@@ -407,38 +373,35 @@ public class EnergyNetworkManager : MonoBehaviour
     }
 
     // Everything in the circuit of a switched off panel is off, through the panels under it too (their input is in the
-    // circuit). A device in several circuits is off as soon as one of their panels is (AND). Not the outputs of other
-    // panels feeding the same networks: their production follows their own panel
+    // circuit). Not the outputs of other panels feeding the same network: their production follows their own panel
     private readonly HashSet<EnergyDevice> forcedOff = new HashSet<EnergyDevice>();
 
     private void UpdateForcedOff()
     {
         forcedOff.Clear();
-        Queue<EnergyDevice> queue = new Queue<EnergyDevice>();
+        HashSet<Network> seen = new HashSet<Network>();
+        Queue<Network> queue = new Queue<Network>();
 
         foreach (DistributionPanel panel in panels)
         {
-            if (!panel.SwitchedOn) queue.Enqueue(panel.Output);
+            Network circuit = NetworkOf(panel.Output);
+
+            if (!panel.SwitchedOn && circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
         }
 
         while (queue.Count > 0)
         {
-            EnergyDevice device = queue.Dequeue();
-
-            foreach (ElectricCable cable in device.Cables)
+            foreach (EnergyDevice device in queue.Dequeue().devices)
             {
-                EnergyDevice other = cable != null ? cable.Other(device) : null;
+                if (device == null || device is DistributionPanelOutput) continue;
 
-                if (other == null || other is DistributionPanelOutput || !forcedOff.Add(other)) continue;
+                forcedOff.Add(device);
 
-                if (other is EnergyConsumer)
+                if (device is DistributionPanelInput input && input.Panel != null)
                 {
-                    queue.Enqueue(other);
-                }
+                    Network circuit = NetworkOf(input.Panel.Output);
 
-                if (other is DistributionPanelInput input && input.Panel != null && input.Panel.Output != null)
-                {
-                    queue.Enqueue(input.Panel.Output);
+                    if (circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
                 }
             }
         }
@@ -451,7 +414,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
     private Network InputNetwork(DistributionPanel panel)
     {
-        return panel.Input != null && panel.Input.Cables.Count > 0 && consumerNetworks.TryGetValue(panel.Input, out Network network) ? network : null;
+        return panel.Input != null && panel.Input.Cables.Count > 0 ? NetworkOf(panel.Input) : null;
     }
 
     // Required power asked upstream (a lack trips or sheds), and room for the charge of the circuit's batteries, given by
@@ -509,6 +472,7 @@ public class EnergyNetworkManager : MonoBehaviour
         generatorLeft.Clear();
         generatorGiven.Clear();
         generatorCharged.Clear();
+        generatorLeftBeforeCharge.Clear();
         panelCharge.Clear();
         storageCharge.Clear();
         storageDischarge.Clear();
@@ -525,113 +489,91 @@ public class EnergyNetworkManager : MonoBehaviour
             network.lack = network.tripped && !ignoreTrips ? 0f : network.demand;
         }
 
-        foreach (KeyValuePair<EnergyGenerator, List<Network>> entry in generatorNetworks)
+        // The networks share nothing: each one is computed on its own (the distribution panels pass from one to the
+        // other through their values, set between two allocations)
+        foreach (Network network in networks)
         {
-            generatorLeft[entry.Key] = entry.Key != null ? entry.Key.Production : 0f;
+            Allocate(network, hours);
+        }
+    }
+
+    private void Allocate(Network network, float hours)
+    {
+        bool powered = ignoreTrips || !network.tripped;
+
+        // The outputs of the distribution panels last: the circuit uses its own generators first
+        List<EnergyGenerator> generators = new List<EnergyGenerator>();
+
+        foreach (EnergyGenerator generator in network.generators)
+        {
+            if (generator != null && !(generator is DistributionPanelOutput)) generators.Add(generator);
         }
 
-        // Generators linked to a single powered network, then the shared ones: what is still missing, in proportion to
-        // the lack of each network. The outputs of the distribution panels last: their circuit uses its own
-        // generators first
-        for (int pass = 0; pass < 3; pass++)
+        foreach (EnergyGenerator generator in network.generators)
         {
-            foreach (KeyValuePair<EnergyGenerator, List<Network>> entry in generatorNetworks)
+            if (generator is DistributionPanelOutput) generators.Add(generator);
+        }
+
+        foreach (EnergyGenerator generator in generators)
+        {
+            float production = generator.Production;
+            float given = powered ? Give(production, network) : 0f;
+
+            generatorGiven[generator] = given;
+            generatorLeft[generator] = Subtract(production, given);
+            generatorLeftBeforeCharge[generator] = generatorLeft[generator];
+        }
+
+        // Surplus of the generators. First the charge of the batteries behind the distribution panels of the network:
+        // for upstream, a consumption like the others (before its own batteries), only it does not trip the network
+        // when it is not fully covered. Then the storages of the network (also when it is tripped)
+        List<object> panelSinks = new List<object>();
+
+        if (powered)
+        {
+            foreach (DistributionPanel panel in panels)
             {
-                List<Network> powered = PoweredNetworks(entry.Value);
-
-                if (powered.Count == 0) continue;
-
-                bool isPanel = entry.Key is DistributionPanelOutput;
-
-                if (pass == 2 ? !isPanel : (isPanel || (pass == 0) != (powered.Count == 1))) continue;
-
-                float given = Give(generatorLeft[entry.Key], powered);
-                generatorGiven[entry.Key] = Get(generatorGiven, entry.Key) + given;
-                generatorLeft[entry.Key] = Subtract(generatorLeft[entry.Key], given);
+                if (panel.ChargeRoom > 0f && InputNetwork(panel) == network) panelSinks.Add(panel);
             }
         }
 
-        generatorLeftBeforeCharge.Clear();
+        List<object> storageSinks = new List<object>();
 
-        foreach (KeyValuePair<EnergyGenerator, float> entry in generatorLeft)
+        foreach (EnergyStorage storage in network.storages)
         {
-            generatorLeftBeforeCharge[entry.Key] = entry.Value;
+            if (storage != null) storageSinks.Add(storage);
         }
 
-        // Surplus of the generators: charges the storages of their networks (also the tripped ones). The panels last,
-        // the surplus of the circuit's own generators goes first
-        List<KeyValuePair<EnergyGenerator, List<Network>>> chargers = new List<KeyValuePair<EnergyGenerator, List<Network>>>(generatorNetworks);
-        chargers.Sort((a, b) => (a.Key is DistributionPanelOutput ? 1 : 0).CompareTo(b.Key is DistributionPanelOutput ? 1 : 0));
-
-        // The distribution panels first: for upstream, the charge of the batteries of their circuit is a consumption like
-        // the others (before the upstream batteries), only it does not trip the network when it is not fully covered.
-        // Then the storages of the networks
-        for (int pass = 0; pass < 2; pass++)
+        foreach (List<object> sinks in new[] { panelSinks, storageSinks })
         {
-            foreach (KeyValuePair<EnergyGenerator, List<Network>> entry in chargers)
+            if (sinks.Count == 0) continue;
+
+            foreach (EnergyGenerator generator in generators)
             {
-                float left = generatorLeft[entry.Key];
+                float left = generatorLeft[generator];
 
                 if (left <= 0f) continue;
 
-                List<object> sinks = new List<object>();
-
-                foreach (Network network in entry.Value)
-                {
-                    if (pass == 0)
-                    {
-                        foreach (DistributionPanel panel in panels)
-                        {
-                            if (panel.ChargeRoom > 0f && !sinks.Contains(panel) && InputNetwork(panel) == network && (ignoreTrips || !network.tripped))
-                            {
-                                sinks.Add(panel);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (EnergyStorage storage in network.storages)
-                        {
-                            if (storage != null && !sinks.Contains(storage)) sinks.Add(storage);
-                        }
-                    }
-                }
-
-                if (sinks.Count == 0) continue;
-
                 float charged = Charge(left, sinks, hours);
-                generatorGiven[entry.Key] = Get(generatorGiven, entry.Key) + charged;
-                generatorCharged[entry.Key] = Get(generatorCharged, entry.Key) + charged;
-                generatorLeft[entry.Key] = Subtract(left, charged);
+                generatorGiven[generator] += charged;
+                generatorCharged[generator] = Get(generatorCharged, generator) + charged;
+                generatorLeft[generator] = Subtract(left, charged);
             }
         }
 
-        // Storages: what is still missing, energy charged during this update included
-        foreach (KeyValuePair<EnergyStorage, List<Network>> entry in storageNetworks)
-        {
-            EnergyStorage storage = entry.Key;
+        if (!powered) return;
 
+        // Storages: what is still missing, energy charged during this update included
+        foreach (EnergyStorage storage in network.storages)
+        {
             if (storage == null) continue;
 
-            List<Network> powered = PoweredNetworks(entry.Value);
-
-            if (powered.Count == 0) continue;
-
             float available = Mathf.Min(storage.OutputRate, storage.MaxDischarge(hours) + Get(storageCharge, storage));
-            float given = Give(available, powered);
+            float given = Give(available, network);
 
-            // Then the charge of the batteries behind the distribution panels of its networks (optional, like the
-            // surplus of a generator). Not a panel whose circuit holds this storage: the energy would only loop
-            List<object> sinks = new List<object>();
-
-            foreach (DistributionPanel panel in panels)
-            {
-                if (panel.ChargeRoom <= 0f || !powered.Contains(InputNetwork(panel))) continue;
-
-                if (generatorNetworks.TryGetValue(panel.Output, out List<Network> circuit) && circuit.Exists(network => network.storages.Contains(storage))) continue;
-
-                sinks.Add(panel);
-            }
+            // Then the charge of the batteries behind the distribution panels of the network (optional, like the
+            // surplus of a generator). Not a panel whose circuit is this network: the energy would only loop
+            List<object> sinks = panelSinks.FindAll(sink => NetworkOf(((DistributionPanel)sink).Output) != network);
 
             if (sinks.Count > 0)
             {
@@ -648,53 +590,24 @@ public class EnergyNetworkManager : MonoBehaviour
         return float.IsPositiveInfinity(amount) ? amount : Mathf.Max(0f, amount - given);
     }
 
-    private List<Network> PoweredNetworks(List<Network> networksOfDevice)
+    // Gives "amount" to the lack of the network. Returns what was given
+    private static float Give(float amount, Network network)
     {
-        List<Network> powered = new List<Network>();
-
-        foreach (Network network in networksOfDevice)
-        {
-            if (ignoreTrips || !network.tripped) powered.Add(network);
-        }
-
-        return powered;
-    }
-
-    // Gives "amount" to the lack of the networks, in proportion to their lack. Returns what was given
-    private static float Give(float amount, List<Network> targets)
-    {
-        if (amount <= 0f) return 0f;
-
-        float totalLack = 0f;
-
-        foreach (Network network in targets)
-        {
-            totalLack += network.lack;
-        }
-
-        if (totalLack <= 0f) return 0f;
+        if (amount <= 0f || network.lack <= 0f) return 0f;
 
         if (float.IsPositiveInfinity(amount))
         {
-            foreach (Network network in targets)
-            {
-                network.lack = 0f;
-            }
-
-            return totalLack;
+            float lack = network.lack;
+            network.lack = 0f;
+            return lack;
         }
 
         // Infinite demand: cannot be covered by a finite amount, the network will trip
-        if (float.IsPositiveInfinity(totalLack)) return 0f;
+        if (float.IsPositiveInfinity(network.lack)) return 0f;
 
-        float ratio = Mathf.Min(1f, amount / totalLack);
-
-        foreach (Network network in targets)
-        {
-            network.lack = ratio >= 1f ? 0f : network.lack * (1f - ratio);
-        }
-
-        return totalLack * ratio;
+        float given = Mathf.Min(amount, network.lack);
+        network.lack = given >= network.lack ? 0f : network.lack - given;
+        return given;
     }
 
     // Equal shares between the sinks (storages, or distribution panels charging the batteries of their circuit), each one
@@ -755,8 +668,7 @@ public class EnergyNetworkManager : MonoBehaviour
         return map.TryGetValue(key, out float value) ? value : 0f;
     }
 
-    // A tripped network is rearmed after rearmDelay seconds once its generators (what the others leave them) and its
-    // storages could cover its demand
+    // A tripped network is rearmed after rearmDelay seconds once its generators and its storages could cover its demand
     private void UpdateRearm(float deltaTime, float hours)
     {
         foreach (Network network in networks)
@@ -780,7 +692,7 @@ public class EnergyNetworkManager : MonoBehaviour
         }
     }
 
-    // What the generators (what the other networks leave them) and the storages of the network could still give
+    // What the generators and the storages of the network could still give
     private float Available(Network network, float hours)
     {
         float available = 0f;
@@ -800,24 +712,18 @@ public class EnergyNetworkManager : MonoBehaviour
 
     private void ApplyResults(float hours)
     {
-        foreach (KeyValuePair<EnergyGenerator, List<Network>> entry in generatorNetworks)
-        {
-            if (entry.Key != null)
-            {
-                entry.Key.Output = Get(generatorGiven, entry.Key);
-            }
-        }
-
-        foreach (KeyValuePair<EnergyStorage, List<Network>> entry in storageNetworks)
-        {
-            if (entry.Key != null)
-            {
-                entry.Key.Apply(Get(storageCharge, entry.Key), Get(storageDischarge, entry.Key), hours);
-            }
-        }
-
         foreach (Network network in networks)
         {
+            foreach (EnergyGenerator generator in network.generators)
+            {
+                if (generator != null) generator.Output = Get(generatorGiven, generator);
+            }
+
+            foreach (EnergyStorage storage in network.storages)
+            {
+                if (storage != null) storage.Apply(Get(storageCharge, storage), Get(storageDischarge, storage), hours);
+            }
+
             foreach (EnergyConsumer consumer in network.consumers)
             {
                 if (consumer == null) continue;
@@ -834,19 +740,6 @@ public class EnergyNetworkManager : MonoBehaviour
                 {
                     consumer.SetState(network.tripped ? NetworkState.Tripped : NetworkState.Powered);
                 }
-            }
-        }
-
-        // Devices without network: nothing given or taken
-        foreach (EnergyDevice device in devices)
-        {
-            if (device is EnergyGenerator generator && !generatorNetworks.ContainsKey(generator))
-            {
-                generator.Output = 0f;
-            }
-            else if (device is EnergyStorage storage && !storageNetworks.ContainsKey(storage))
-            {
-                storage.Apply(0f, 0f, hours);
             }
         }
     }

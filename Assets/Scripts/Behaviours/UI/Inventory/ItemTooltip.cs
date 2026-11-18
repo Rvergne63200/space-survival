@@ -66,8 +66,8 @@ public static class ItemTooltip
     {
         if (item == null || !item.HasGauge) return "";
 
-        ItemGauge gauge = item.Data.Gauge;
-        return (gauge.Rechargeable ? "Charge : " : "Usure : ") + gauge.Format(item.Gauge);
+        ItemGauge gauge = item.GaugeSettings;
+        return gauge.Label + " : " + gauge.Format(item.Gauge);
     }
 
     // The element just under the visual tree of the panel: the root of the UIDocument

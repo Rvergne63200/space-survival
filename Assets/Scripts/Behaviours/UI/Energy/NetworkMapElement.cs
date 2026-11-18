@@ -403,24 +403,17 @@ public class NetworkMapElement : VisualElement
         }
     }
 
-    // State of the network of the cable: that of a consumer end (both are in the same network), one switched on if any
+    // State of the network of the cable (EnergyNetworkManager.CableState)
     private static Color CableColor(ElectricCable cable)
     {
-        EnergyConsumer consumer = cable.Start as EnergyConsumer;
-        EnergyConsumer other = cable.End as EnergyConsumer;
+        if (!EnergyNetworkManager.HasInstance) return InactiveColor;
 
-        if (consumer == null || (other != null && !consumer.IsOn))
-        {
-            consumer = other;
-        }
-
-        // Between a generator and a storage
-        if (consumer == null) return new Color(PoweredColor.r, PoweredColor.g, PoweredColor.b, 0.5f);
-
-        switch (consumer.State)
+        switch (EnergyNetworkManager.Instance.CableState(cable))
         {
             case EnergyNetworkManager.NetworkState.Tripped: return TrippedColor;
             case EnergyNetworkManager.NetworkState.Powered: return PoweredColor;
+            // Network without consumer (generators and storages only)
+            case EnergyNetworkManager.NetworkState.NotLinked: return new Color(PoweredColor.r, PoweredColor.g, PoweredColor.b, 0.5f);
             default: return InactiveColor;
         }
     }

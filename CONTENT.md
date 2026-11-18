@@ -106,17 +106,22 @@ Vue à la première personne uniquement.
 ## 4. Inventaire
 
 ### Données
-- **ItemData** (ScriptableObject `Item/Item`) : `Id` (texte saisi à la main, unique : un doublon ou un id vide est signalé par le SaveManager au lancement), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classe `ConsummableData` (voir feature 3).
+- **ItemData** (ScriptableObject `Item/Item`) : `Id` (texte saisi à la main, unique : un doublon ou un id vide est signalé par le SaveManager au lancement), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classes :
+  - `ConsummableData` (consommé au clic droit, voir feature 3), `PlaceableItemData` (et `CableItemData`, section 10).
+  - `UsableItemData` (abstraite) : un item qui peut avoir une barre (`Gauge`, voir plus bas). Deux sous-classes :
+    - `ToolData` (`Item/Tool`) : un outil utilisé en main, avec ses actions au clic gauche (`PrimaryActions`) et au clic droit (`SecondaryActions`), et la consommation de sa barre : mode `Continuous` (par seconde tant que l'outil est actif, en W pour une charge, en L/s ou unités/s sinon) ou `PerUse` (montant fixe à chaque utilisation), quelle que soit l'unité. Item actuel : `22_Flashlight`.
+    - `EquipmentData` (`Item/Equipment`) : un item qui s'équipe, avec son emplacement (`Slot` : `Head`, `Body`, `Back`). Le système d'équipement et la consommation de la barre des équipements restent à faire (F45). Items actuels : `18_Jetpack` et `17_OxygenTank` (dos).
 - **Ids et fichiers** : un item est nommé `<id>_<Nom>`. Les items du jeu (`ScriptableObjects/Items`) sont numérotés à la suite, sans trou, de `0` à `28`. Les items qui ne servent qu'aux tests (`ScriptableObjects/TestItems`) ont un id `T` suivi de 3 chiffres (`T001` à `T004` : générateur infini, machine et batterie de test, voir section 10, et `Test Potion`, consommable qui retire de la vie).
 - **Objets** (`ScriptableObjects/Items` ; 25 à 28 : câble, tableau de distribution, panneau de contrôle et station de recharge, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
 - **Item** : un ItemData (`Item.CreateFromData`) et la valeur de sa barre (`Gauge`), propre à chaque objet.
-- **Barre de charge ou d'usure** (`ItemData.Gauge`, `ItemGauge`) des outils et équipements :
-  - **Charge** (`Energy`, rechargeable) : en Wh, consommation en W pendant que l'objet est actif, et/ou en Wh par utilisation. L'objet neuf est vide. À 0, il est inutilisable (ses actions s'éteignent, « déchargé ») jusqu'à sa recharge (station de recharge, section 10).
-  - **Usure** (`Wear`) : en unités, usure par seconde d'activité et/ou par utilisation. L'objet neuf est plein. À 0, il est détruit (« cassé »).
-  - **Actif** : une action `Toggle` allumée ou une action `Hold` en cours (`PlayerInventory.UpdateGauge`). Une utilisation est un clic dont l'action a été faite.
+- **Barre** (`UsableItemData.Gauge`, `ItemGauge`) des outils et équipements : case `enabled` (décochée : pas de barre, quelle que soit la consommation), unité (`unit`) et capacité. L'unité ne change que l'affichage et la façon de remplir la barre :
+  - **Électricité** (`Energy`, Wh) : l'objet neuf est vide. À 0, il est inutilisable (ses actions s'éteignent, « déchargé ») jusqu'à sa recharge à la station de recharge (section 10).
+  - **Oxygène** (`Oxygen`, L) : l'objet neuf est vide. À 0, il est inutilisable (« vide »). Il se remplira dans un appareil à oxygène, qui reste à faire (rechargeur de bouteilles, F52).
+  - **Usure** (`Wear`, unités) : l'objet neuf est plein et ne se recharge pas. À 0, il est détruit (« cassé »).
+  - **Consommation** : pour l'instant, seuls les outils vident leur barre (`ToolData`). Un outil est **actif** quand une action `Toggle` est allumée ou qu'une action `Hold` est en cours (`PlayerInventory.UpdateGauge`). Une utilisation est un clic dont l'action a été faite.
   - Un objet avec une barre ne s'empile pas (`StackMax` vaut 1) : chaque slot en garde une copie (`Item.Copy` dans `ItemSlot.Add`), et la valeur suit l'objet quand il change de slot ou est jeté. Elle est sauvegardée avec les slots (`ItemSlotSaveData.gauge`) et les objets au sol (`Pickupable`).
-  - **Affichage** : une barre en bas du slot, bleue pour une charge, verte puis orange (sous 50 %) puis rouge (sous 20 %) pour une usure.
-  - Objets actuels : `22_Flashlight` (10 Wh, 5 W allumée, soit 2 h) et `18_Jetpack` (50 Wh, 2000 W en vol ; le vol n'existe pas encore, F45).
+  - **Affichage** : une barre en bas du slot, bleue pour une charge, cyan clair pour l'oxygène, verte puis orange (sous 50 %) puis rouge (sous 20 %) pour une usure. L'infobulle affiche « Charge », « Oxygène » ou « Usure » avec la valeur dans son unité.
+  - Objets actuels : `22_Flashlight` (outil, 10 Wh, 5 W en continu quand elle est allumée, soit 2 h) et `18_Jetpack` (équipement, 50 Wh ; sa consommation attend le système d'équipement et le vol, F45). La barre de `17_OxygenTank` est en oxygène mais désactivée, ses valeurs restent à définir.
 - **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` passe par `Pickupable.Spawn`, qui instancie le `Model` devant la source avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion. Le slot n'est vidé que si le spawn réussit (modèle valide avec un `Pickupable`).
 - **ItemCollection** : liste de slots de taille fixe (`MaxSize`). `Add` complète d'abord les stacks non pleins puis remplit les slots vides, et renvoie le surplus. `RemoveItem` retire en partant du dernier slot. `Count` compte la quantité totale d'un item. Event `ev_Update`.
 - **ItemStorage** (MonoBehaviour) : encapsule une ItemCollection. Sert de base au PlayerInventory et aux conteneurs.
@@ -126,14 +131,14 @@ Vue à la première personne uniquement.
 - `Add` : un slot qui contient déjà le même item est prioritaire (barre d'outils, puis inventaire), puis les slots vides de la barre d'outils, puis ceux de l'inventaire. `Remove` retire de l'inventaire, puis de la barre d'outils.
 - Touche Inventaire : ouvre ou ferme l'inventaire (`ev_UpdateIsOpen`).
 - Molette : change le slot en main (`HandedIndex`, avec bouclage).
-- **Usage de l'item en main** : `Use1` (clic gauche) exécute ses actions principales et `Use2` (clic droit) ses actions secondaires (`ItemData.PrimaryActions` / `SecondaryActions`, des `ItemAction` comme `ApplyModifiersAction`). Sans action secondaire, un `ConsummableData` est consommé au clic droit. Les deux sont ignorés quand une interface est ouverte ou en mode construction (`OPTION_USE_DISABLED`).
+- **Usage de l'item en main** : pour un outil, `Use1` (clic gauche) exécute ses actions principales et `Use2` (clic droit) ses actions secondaires (`ToolData.PrimaryActions` / `SecondaryActions`, des `ItemAction` comme `ApplyModifiersAction`). Sans action secondaire, un `ConsummableData` est consommé au clic droit. Les deux sont ignorés quand une interface est ouverte ou en mode construction (`OPTION_USE_DISABLED`).
   - **Modes des actions** (`ItemAction.Mode`) : les outils s'utilisent au clic gauche.
     - `Press` (`ItemAction`) : `Execute` une fois par clic (arme qui tire, consommable).
     - `Toggle` (`ToggleItemAction`) : chaque clic alterne allumé / éteint (`SetOn`). L'action s'éteint quand l'item quitte la main.
     - `Hold` (`HoldItemAction`) : `Execute` démarre, `Hold(context, heldTime)` est appelé à chaque frame jusqu'à ce qu'il renvoie false, puis `End(context, completed)`. Le relâchement du bouton, l'ouverture d'une interface ou le changement d'item arrêtent l'action (`completed` = false).
-  - **Item en main** : `PlayerInventory` vérifie à chaque frame si l'item en main change (autre slot, slot vidé, joueur absent). Il appelle alors `OnUnequip` sur les actions de l'ancien item (`ItemData.Unequip`).
+  - **Item en main** : `PlayerInventory` vérifie à chaque frame si l'item en main change (autre slot, slot vidé, joueur absent). Il appelle alors `OnUnequip` sur les actions de l'ancien outil (`ToolData.Unequip`).
   - `ItemUseContext.View` : le transform de la caméra du joueur.
-  - L'état d'une action (allumée, maintenue) est porté par l'asset ItemData : il est partagé par tous les items de ce type.
+  - L'état d'une action (allumée, maintenue) est porté par l'asset ToolData : il est partagé par tous les items de ce type.
 - **Lampe torche** (`22_Flashlight`, `FlashlightAction`) : un spot (couleur, intensité 1,5, portée 30 m, angle 60°, ombres douces) créé comme enfant de la caméra au premier allumage.
 - Touche Drop (inventaire ouvert) : jette devant le joueur tout le contenu du slot tenu au curseur. Le slot du curseur est aussi jeté automatiquement quand la dernière interface se ferme.
 
@@ -237,21 +242,19 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
 
 - **EnergyValue** : une puissance (W) ou une énergie (Wh) qui peut être infinie (`float.PositiveInfinity`). Dans l'Inspector, c'est une valeur suivie d'une case « ∞ ».
 - **EnergyDevice** (base) : un appareil du réseau, relié par des câbles. Les câbles s'accrochent à `connector`, ou à défaut à l'enfant `Connector`, ou au haut de l'objet. Détruit avec son objet, il détruit et rend ses câbles.
-  - **EnergyConsumer** : consommation en W. Il est alimenté (`IsPowered`, `ev_OnPoweredChanged`) quand son réseau n'est pas disjoncté. Les consommateurs **relient** les réseaux.
+  - **EnergyConsumer** : consommation en W. Il est alimenté (`IsPowered`, `ev_OnPoweredChanged`) quand son réseau n'est pas disjoncté.
   - **EnergyGenerator** : production en W. Il tourne toujours à fond. `Output` est ce qu'il a réellement donné.
   - **EnergyStorage** : capacité, stock (sauvegardé) et débits entrant et sortant.
-  - Générateurs et batteries **ne relient pas** les réseaux : reliés des deux côtés, ils appartiennent aux deux.
-  - **On / off** (`SwitchedOn`, `SetSwitchedOn`, sauvegardé) : éteint, un consommateur ne consomme plus (état « éteinte »), un générateur ne produit plus, une batterie ne charge ni ne décharge. Le câble passe toujours : un consommateur éteint relie toujours les réseaux. Les ports d'un tableau de distribution ne s'éteignent pas (`CanSwitch`), le tableau a sa propre coupure.
+  - **On / off** (`SwitchedOn`, `SetSwitchedOn`, sauvegardé) : éteint, un consommateur ne consomme plus (état « éteinte »), un générateur ne produit plus, une batterie ne charge ni ne décharge. Le câble passe toujours : un appareil éteint relie toujours son réseau. Les ports d'un tableau de distribution ne s'éteignent pas (`CanSwitch`), le tableau a sa propre coupure.
     - **Tableau éteint** : tout son sous-réseau, circuits des tableaux imbriqués compris, est éteint de force (`ForcedOff`, recalculé à chaque mise à jour par `EnergyNetworkManager.UpdateForcedOff`). Un appareil ne marche que si son réglage est sur on **et** si aucun tableau au-dessus de lui n'est éteint (`IsOn`). Son réglage est gardé : au rallumage du tableau, il retrouve son état. Tant qu'il est éteint de force, son on/off est bloqué (« éteint par le tableau »). Les sorties d'autres tableaux qui alimentent le même circuit ne sont pas éteintes.
 - **EnergyNetworkManager** (créé au premier appareil, persistant) : il reconstruit les réseaux quand un appareil ou un câble change, et les calcule toutes les 0,2 s.
-  - **Réseaux** : un réseau est un groupe de consommateurs reliés par câbles, avec les générateurs et les batteries reliés à eux. Deux générateurs ou batteries reliés directement forment un réseau sans consommateur.
-  - **Ordre de calcul** :
-    1. Les générateurs reliés à un seul réseau donnent d'abord ce qu'il demande.
-    2. Les générateurs partagés couvrent ensuite ce qui manque, au prorata du manque de chaque réseau.
-    3. Leur surplus charge les batteries de leurs réseaux, réseaux disjonctés compris : parts égales, dans la limite du débit entrant et de la place.
-    4. Les batteries donnent ensuite ce qui manque encore, y compris ce qu'elles viennent de recevoir, dans la limite du débit sortant.
-    5. Le reste de la production est perdu.
-  - **Disjonction** : un réseau qui manque encore d'énergie disjoncte, et ses consommateurs s'arrêtent. Le calcul est refait sans lui : sa part des générateurs partagés revient aux autres réseaux.
+  - **Réseaux** : un réseau est tout ce qui est relié par des câbles, consommateurs, générateurs et batteries confondus. Chaque appareil est dans un seul réseau. Seuls les tableaux de distribution séparent les réseaux : leur entrée et leur sortie sont deux appareils sans câble entre eux.
+  - **Ordre de calcul** (chaque réseau à part, il ne partage rien avec les autres) :
+    1. Les générateurs du réseau donnent ce qu'il demande (les sorties de tableaux en dernier).
+    2. Leur surplus charge les batteries du réseau, réseau disjoncté compris : parts égales, dans la limite du débit entrant et de la place.
+    3. Les batteries donnent ensuite ce qui manque encore, y compris ce qu'elles viennent de recevoir, dans la limite du débit sortant.
+    4. Le reste de la production est perdu.
+  - **Disjonction** : un réseau qui manque encore d'énergie disjoncte, et tous ses consommateurs s'arrêtent. Pour isoler des machines les unes des autres, il faut passer par un tableau de distribution.
   - **Réarmement** : le réseau se réarme après `rearmDelay` (3 s) dès que ses générateurs et ses batteries peuvent couvrir sa demande.
 - **ElectricCable** : objet « runtime » sauvegardé (`cable:<id de l'item>`), avec les ids de ses deux appareils, ses points de passage et le nombre de câbles utilisés.
   - **Tracé** : une courbe de Catmull-Rom qui pend légèrement entre deux points (`LineRenderer`).
@@ -278,7 +281,7 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
        - un tableau délesté ou sans alimentation repart quand l'amont pourrait de nouveau le servir ;
        - pour un tableau délesté, après 3 s ;
        - puis il attend son démarrage différé.
-  - **États** : en marche, éteint (ou éteint par le tableau du dessus), démarrage, pas d'alimentation en entrée, sauté, délesté, boucle (la sortie alimente le réseau de sa propre entrée).
+  - **États** : en marche, éteint (ou éteint par le tableau du dessus), démarrage, pas d'alimentation en entrée, sauté, délesté, boucle (la sortie alimente le réseau de sa propre entrée, par exemple une batterie ou un générateur câblé à la fois sur l'amont et sur le circuit).
   - **Sauvegarde** : les réglages et l'énergie transmise au total.
   - **Limite** : le délestage ne se réarme que sur les sources du réseau d'entrée lui-même. Un tableau délesté dans un circuit déjà alimenté par un autre tableau ne compte pas sur ce que l'amont de ce dernier pourrait donner en plus.
 - **DistributionPanelUI** (`UI.prefab`, `DistributionPanel.uxml`, style dans `Game.uss`) : ouverte en interagissant avec le tableau. C'est une interface, fermée par Échap.
@@ -292,13 +295,13 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - **Carte** (`NetworkMapElement`), nord en haut :
     - Relief stylisé : teinte selon la hauteur, ombrage des pentes et courbes de niveau tous les 4 m (une sur 5 plus marquée), calculés depuis la seed (`ChunkManager.GeneratedHeightAt`) pour la zone affichée. Une grille par-dessus.
     - Bâtiments (`BuiltStructure`) : le contour de leur emprise.
-    - Câbles : lignes lumineuses, cyan si leur réseau est alimenté, rouges s'il est disjoncté, grises sinon.
+    - Câbles : lignes lumineuses, cyan si leur réseau est alimenté, cyan pâle si leur réseau n'a aucun consommateur, rouges s'il est disjoncté, grises sinon (`EnergyNetworkManager.CableState`).
     - Icônes : rond pour une machine, triangle pour un générateur, barre pour une batterie (la partie sombre est la place libre), losange pour un tableau, carré pour un panneau de contrôle. Le panneau utilisé est entouré d'un anneau qui pulse. Couleur selon l'état (gris : éteint ou non alimenté, rouge : disjoncté ou tableau coupé par une protection).
     - Molette : zoom autour du curseur. Glisser : déplacer. Survol : nom de l'appareil. Clic : sélection.
   - **Sélection** : pour une machine, un générateur ou une batterie, ses informations et un bouton Allumer / Éteindre. Pour un tableau, tous ses réglages, comme dans son interface.
 - **Station de recharge** (`ChargingStation`, un `EnergyConsumer`, et un `ItemStorage` d'un slot, prefab `Prefabs/Environment/Energy/ChargingStation`, item `28_ChargingStation`) :
   - Interagir avec elle ouvre son slot, comme un conteneur. Le texte au pointeur indique la charge de l'objet déposé.
-  - Alimentée, elle recharge l'objet rechargeable déposé avec `chargePower` (100 W). Elle ne demande cette puissance à son réseau que tant que l'objet n'est pas plein, et rien sinon.
+  - Alimentée, elle recharge l'objet électrique (barre en Wh) déposé avec `chargePower` (100 W). Elle ne demande cette puissance à son réseau que tant que l'objet n'est pas plein, et rien sinon.
 - **Items du réseau** (`ScriptableObjects/Items`) :
   - `25_ElectricCable` : le câble, 1 par mètre.
   - `26_DistributionPanel` : le tableau de distribution.

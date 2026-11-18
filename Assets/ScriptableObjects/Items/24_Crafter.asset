@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Workbench to assemble advanced items.
   _sprite: {fileID: -607573958, guid: 4cdeafb422b4c2546a57ce2aefb8b4f3, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4102000000000000001, guid: 02541a318c709f248bf09220489e61ce, type: 3}
   _refund: []
   references:

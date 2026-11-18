@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Bandages and medicine to heal wounds (health +50).
   _sprite: {fileID: -1897837068, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   modifiers:
   - rid: 7413000000000000001
   references:

@@ -15,13 +15,9 @@ MonoBehaviour:
   _id: 28
   _stackMax: 5
   _name: Charging Station
-  _description: Linked to a network, it recharges the rechargeable item put inside (100 W).
-  _sprite: {fileID: 0}
+  _description: Linked to a network, it recharges the rechargeable item put inside
+    (100 W).
+  _sprite: {fileID: -361027641, guid: 4cdeafb422b4c2546a57ce2aefb8b4f3, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4207000000000000001, guid: e63d8449343d4eb1b3ac50a16965f9b2, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

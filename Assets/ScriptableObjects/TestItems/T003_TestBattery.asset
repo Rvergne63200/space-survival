@@ -16,12 +16,7 @@ MonoBehaviour:
   _stackMax: 10
   _name: Test Battery
   _description: Test battery, stores the surplus of its networks.
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 1053572825, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4203000000000000001, guid: ac035266c946467aa9591392a7220878, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

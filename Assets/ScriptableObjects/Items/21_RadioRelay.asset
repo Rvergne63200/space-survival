@@ -18,8 +18,6 @@ MonoBehaviour:
   _description: Antenna that relays radio signals over long distances.
   _sprite: {fileID: 1619589461, guid: 4cdeafb422b4c2546a57ce2aefb8b4f3, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4102000000000000001, guid: 0528c41da9f17c040ba5d169c19a8107, type: 3}
   _refund: []
   references:

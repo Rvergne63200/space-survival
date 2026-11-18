@@ -258,13 +258,13 @@ public class PlayerInventory : ItemStorage
     }
 
 
-    // Primary use of the item in hand (left click): its primary actions (ItemData)
+    // Primary use of the item in hand (left click): the primary actions of a tool (ToolData)
     public void Use1()
     {
         UseHandedItem(true);
     }
 
-    // Secondary use of the item in hand (right click): its secondary actions, or the consumption of a ConsummableData
+    // Secondary use of the item in hand (right click): the secondary actions of a tool, or the consumption of a ConsummableData
     public void Use2()
     {
         if (UseHandedItem(false)) return;
@@ -282,32 +282,32 @@ public class PlayerInventory : ItemStorage
     {
         ItemSlot<Item> slot = HandedSlot;
 
-        if (slot.IsEmpty()) return false;
+        // Only the tools have actions
+        if (slot.IsEmpty() || !(slot.Item.Data is ToolData tool)) return false;
 
         // The item in hand may have changed since the last frame
         UpdateEquipped();
 
-        // Discharged: unusable until recharged (a worn item is already destroyed). Only when it has an action:
-        // the secondary use may still consume a ConsummableData
-        if (slot.Item.IsGaugeEmpty && (primary ? slot.Item.Data.PrimaryActions : slot.Item.Data.SecondaryActions).Count > 0)
+        // Empty: unusable until refilled (a worn item is already destroyed). Only when it has an action on this button
+        if (slot.Item.IsGaugeEmpty && tool.Actions(primary).Count > 0)
         {
-            NotificationUI.Show(slot.Item.Data.Name + " est déchargé.", NotificationType.Warning);
+            NotificationUI.Show(tool.Name + " " + tool.Gauge.EmptyText + ".", NotificationType.Warning);
             return true;
         }
 
         ItemUseContext context = CreateUseContext(slot);
         List<HoldItemAction> startedHolds = new List<HoldItemAction>();
 
-        bool done = slot.Item.Data.Use(primary, context, startedHolds);
+        bool done = tool.Use(primary, context, startedHolds);
 
         foreach (HoldItemAction action in startedHolds)
         {
             holds.Add(new HeldAction { Action = action, Primary = primary, Context = context, StartTime = Time.time });
         }
 
-        if (done && slot.Item != null && slot.Item.HasGauge)
+        if (done && tool.ConsumptionMode == ToolConsumptionMode.PerUse && slot.Item != null && slot.Item.HasGauge)
         {
-            ConsumeGauge(slot, slot.Item.Data.Gauge.consumptionPerUse);
+            ConsumeGauge(slot, tool.Consumption);
         }
 
         return done;
@@ -374,33 +374,16 @@ public class PlayerInventory : ItemStorage
 
     // ---------- Bar of the item in hand (ItemGauge) ----------
 
-    // While the item in hand is active (a toggle action on, a hold running), its bar goes down
+    // Tool with a continuous consumption: while it is active (a toggle action on, a hold running), its bar goes down
     private void UpdateGauge()
     {
         ItemSlot<Item> slot = HandedSlot;
 
         if (equippedData == null || slot == null || slot.IsEmpty() || !slot.Item.HasGauge) return;
+        if (!(slot.Item.Data is ToolData tool) || tool.ConsumptionMode != ToolConsumptionMode.Continuous) return;
+        if (holds.Count == 0 && !tool.IsToggledOn()) return;
 
-        ItemGauge gauge = slot.Item.Data.Gauge;
-
-        if (gauge.consumptionPerSecond <= 0f || !IsActive(slot.Item.Data)) return;
-
-        ConsumeGauge(slot, gauge.PerSecond * Time.deltaTime);
-    }
-
-    private bool IsActive(ItemData data)
-    {
-        if (holds.Count > 0) return true;
-
-        foreach (List<ItemAction> actions in new[] { data.PrimaryActions, data.SecondaryActions })
-        {
-            foreach (ItemAction action in actions)
-            {
-                if (action is ToggleItemAction toggle && toggle.IsOn) return true;
-            }
-        }
-
-        return false;
+        ConsumeGauge(slot, tool.Gauge.PerSecond(tool.Consumption) * Time.deltaTime);
     }
 
     // At 0: a rechargeable item stops (its actions are switched off), a worn item is destroyed
@@ -416,10 +399,10 @@ public class PlayerInventory : ItemStorage
 
         StopHolds(null);
 
-        if (item.Data.Gauge.Rechargeable)
+        if (item.GaugeSettings.Rechargeable)
         {
-            item.Data.Unequip(equippedContext != null ? equippedContext : CreateUseContext(slot));
-            NotificationUI.Show(item.Data.Name + " est déchargé.", NotificationType.Warning);
+            (item.Data as ToolData)?.Unequip(equippedContext != null ? equippedContext : CreateUseContext(slot));
+            NotificationUI.Show(item.Data.Name + " " + item.GaugeSettings.EmptyText + ".", NotificationType.Warning);
         }
         else
         {
@@ -448,9 +431,9 @@ public class PlayerInventory : ItemStorage
 
     private void Unequip()
     {
-        if (equippedData != null)
+        if (equippedData is ToolData tool)
         {
-            equippedData.Unequip(equippedContext ?? CreateUseContext(HandedSlot));
+            tool.Unequip(equippedContext ?? CreateUseContext(HandedSlot));
         }
 
         equippedData = null;

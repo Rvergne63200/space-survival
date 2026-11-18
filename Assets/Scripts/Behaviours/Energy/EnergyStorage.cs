@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
 
-// Stores energy (Wh): it takes the surplus of the generators of its networks and gives what they lack, within its
-// input and output rates (W). Linked on two sides, it passes energy from a network to the other without linking them
+// Stores energy (Wh): it takes the surplus of the generators of its network and gives what it lacks, within its
+// input and output rates (W)
 public class EnergyStorage : EnergyDevice
 {
     [SerializeField] private EnergyValue capacity = new EnergyValue(1000f);
@@ -16,8 +16,6 @@ public class EnergyStorage : EnergyDevice
     public float InputRate => inputRate.Value;
     public float OutputRate => outputRate.Value;
     public float Stored => Mathf.Min(stored.Value, Capacity);
-
-    public override bool LinksNetworks => false;
 
     // Power taken (charge) and given (discharge) during the last update (EnergyNetworkManager)
     public float Charge { get; set; }

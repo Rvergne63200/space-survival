@@ -16,12 +16,7 @@ MonoBehaviour:
   _stackMax: 10
   _name: Infinite Generator
   _description: Test generator, produces power without any condition.
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 1789452441, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
-  _primaryActions: []
-  _secondaryActions: []
   _placedPrefab: {fileID: 4201000000000000001, guid: db6dd8bd992e45cd8176aaa9ecc9b2ad, type: 3}
   _refund: []
-  references:
-    version: 2
-    RefIds: []

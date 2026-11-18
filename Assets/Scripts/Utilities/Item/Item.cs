@@ -8,7 +8,7 @@ public class Item
     private ItemData _data;
     public ItemData Data { get => _data; private set => _data = value; }
 
-    // Value of the bar of the item (ItemData.Gauge): charge in Wh or wear in units. Set on first read when the item is
+    // Value of the bar of the item (UsableItemData.Gauge), in its unit (Wh, L or wear units). Set on first read when the item is
     // new: empty for a rechargeable item, full for one that wears out
     [SerializeField]
     private bool _gaugeSet;
@@ -32,7 +32,10 @@ public class Item
         return (Item)MemberwiseClone();
     }
 
-    public bool HasGauge => Data != null && Data.HasGauge;
+    // Settings of the bar (unit, capacity), null when the item is not a UsableItemData
+    public ItemGauge GaugeSettings => (Data as UsableItemData)?.Gauge;
+
+    public bool HasGauge => Data is UsableItemData usable && usable.HasGauge;
 
     public float Gauge
     {
@@ -42,25 +45,25 @@ public class Item
 
             if (!_gaugeSet)
             {
-                _gauge = Data.Gauge.Rechargeable ? 0f : Data.Gauge.capacity;
+                _gauge = GaugeSettings.Rechargeable ? 0f : GaugeSettings.capacity;
                 _gaugeSet = true;
             }
 
-            return Mathf.Min(_gauge, Data.Gauge.capacity);
+            return Mathf.Min(_gauge, GaugeSettings.capacity);
         }
     }
 
     // 0 to 1
-    public float GaugeRatio => HasGauge ? Gauge / Data.Gauge.capacity : 0f;
+    public float GaugeRatio => HasGauge ? Gauge / GaugeSettings.capacity : 0f;
 
     public bool IsGaugeEmpty => HasGauge && Gauge <= 0.0001f;
-    public bool IsGaugeFull => HasGauge && Gauge >= Data.Gauge.capacity - 0.0001f;
+    public bool IsGaugeFull => HasGauge && Gauge >= GaugeSettings.capacity - 0.0001f;
 
     public void SetGauge(float value)
     {
         if (!HasGauge) return;
 
-        _gauge = Mathf.Clamp(value, 0f, Data.Gauge.capacity);
+        _gauge = Mathf.Clamp(value, 0f, GaugeSettings.capacity);
         _gaugeSet = true;
     }
 

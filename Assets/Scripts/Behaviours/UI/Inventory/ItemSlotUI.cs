@@ -116,9 +116,10 @@ public class ItemSlotUI
         }
     }
 
-    // Bar at the bottom of the slot (element "slot-gauge", its child "slot-gauge-fill"): blue for a charge, green then
-    // orange (50 %) then red (20 %) for a wear
+    // Bar at the bottom of the slot (element "slot-gauge", its child "slot-gauge-fill"): blue for a charge, light cyan for
+    // oxygen, green then orange (50 %) then red (20 %) for a wear
     private static readonly Color ChargeColor = new Color(0.25f, 0.6f, 1f);
+    private static readonly Color OxygenColor = new Color(0.55f, 0.9f, 0.95f);
     private static readonly Color WearGoodColor = new Color(0.3f, 0.85f, 0.4f);
     private static readonly Color WearMediumColor = new Color(1f, 0.62f, 0.15f);
     private static readonly Color WearBadColor = new Color(0.95f, 0.25f, 0.25f);
@@ -134,7 +135,8 @@ public class ItemSlotUI
         }
 
         float ratio = Mathf.Clamp01(item.GaugeRatio);
-        Color color = item.Data.Gauge.Rechargeable ? ChargeColor : ratio > 0.5f ? WearGoodColor : ratio > 0.2f ? WearMediumColor : WearBadColor;
+        ItemGaugeUnit unit = item.GaugeSettings.unit;
+        Color color = unit == ItemGaugeUnit.Energy ? ChargeColor : unit == ItemGaugeUnit.Oxygen ? OxygenColor : ratio > 0.5f ? WearGoodColor : ratio > 0.2f ? WearMediumColor : WearBadColor;
 
         gauge.style.display = DisplayStyle.Flex;
 

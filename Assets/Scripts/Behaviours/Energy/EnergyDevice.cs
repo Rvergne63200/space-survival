@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Something of the electrical network (EnergyNetworkManager): consumer, generator or storage, linked by electric cables.
-// The consumers link the networks: everything linked to them is in their network. The generators and the storages do
-// not: linked on two sides, they belong to two networks without merging them
+// Everything linked by cables is in the same network, whatever the kind of device
 public abstract class EnergyDevice : MonoBehaviour, ISaveableComponent
 {
     // Off: it stops (a consumer no longer consumes, a generator no longer produces, a storage neither charges nor
-    // discharges), but the cables still pass through it: a consumer off still links the networks. Saved
+    // discharges), but the cables still pass through it: a device off still links its network. Saved
     [SerializeField] private bool switchedOn = true;
 
     // Where the cables are attached. Empty: the child named "Connector", or else the top of the object
@@ -15,8 +14,6 @@ public abstract class EnergyDevice : MonoBehaviour, ISaveableComponent
 
     private readonly List<ElectricCable> cables = new List<ElectricCable>();
     public IReadOnlyList<ElectricCable> Cables => cables;
-
-    public abstract bool LinksNetworks { get; }
 
     // Its own setting (kept while a distribution panel holds it off)
     public bool SwitchedOn => switchedOn;
