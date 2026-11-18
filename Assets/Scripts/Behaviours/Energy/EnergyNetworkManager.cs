@@ -4,7 +4,8 @@ using UnityEngine;
 // Electrical networks: built from the devices (EnergyDevice) and their cables, updated every "interval" seconds.
 // - A network is everything linked by cables (consumers, generators, storages): each device is in a single network.
 //   Only the distribution panels separate networks: their input and their output are two devices without cable
-//   between them.
+//   between them. A building (BuildingPowerPanel) links its built-in panel output to everything placed inside it, and
+//   a corridor (Corridor) links the inputs of its two buildings.
 // - Each update: the generators of the network give it what it needs, their surplus charges its storages (equal
 //   shares, within their input rate), and the storages then give what is still missing (within their output rate).
 //   The rest of the production is lost.
@@ -145,7 +146,9 @@ public class EnergyNetworkManager : MonoBehaviour
         deviceNetworks.Clear();
         devices.RemoveWhere(device => device == null);
 
-        // Everything linked by cables, whatever the kind of device
+        BuildBuildingLinks();
+
+        // Everything linked (cables, buildings), whatever the kind of device
         foreach (EnergyDevice start in devices)
         {
             if (deviceNetworks.ContainsKey(start)) continue;
@@ -162,11 +165,9 @@ public class EnergyNetworkManager : MonoBehaviour
                 Add(network, device);
                 network.tripped |= wasTripped.Contains(device);
 
-                foreach (ElectricCable cable in device.Cables)
+                foreach (EnergyDevice other in Links(device))
                 {
-                    EnergyDevice other = cable != null ? cable.Other(device) : null;
-
-                    if (other == null || !devices.Contains(other) || deviceNetworks.ContainsKey(other)) continue;
+                    if (!devices.Contains(other) || deviceNetworks.ContainsKey(other)) continue;
 
                     deviceNetworks[other] = network;
                     queue.Enqueue(other);
@@ -174,6 +175,101 @@ public class EnergyNetworkManager : MonoBehaviour
             }
 
             networks.Add(network);
+        }
+    }
+
+    // Links without cable, built with the networks:
+    // - the output of the panel built into a building (BuildingPowerPanel) feeds everything placed inside the building
+    //   (BuildingInterior). Not the outputs of other distribution panels: their circuit is what is linked after them
+    // - a corridor links the inputs of its two buildings
+    private readonly Dictionary<EnergyDevice, List<EnergyDevice>> buildingLinks = new Dictionary<EnergyDevice, List<EnergyDevice>>();
+
+    private void BuildBuildingLinks()
+    {
+        buildingLinks.Clear();
+
+        foreach (EnergyDevice device in devices)
+        {
+            if (!(device is DistributionPanelOutput output) || !(output.Panel is BuildingPowerPanel building) || building.Interior == null) continue;
+
+            foreach (EnergyDevice other in devices)
+            {
+                if (other is DistributionPanelOutput || building.IsPartOfBuilding(other)) continue;
+                if (!building.Interior.Contains(other.transform.position)) continue;
+
+                AddBuildingLink(output, other);
+                AddBuildingLink(other, output);
+            }
+
+            // The output socket takes from the inside (what is in excess)
+            DistributionPanelInput outletInput = building.Outlet != null ? building.Outlet.Input : null;
+
+            if (outletInput != null && devices.Contains(outletInput))
+            {
+                AddBuildingLink(output, outletInput);
+                AddBuildingLink(outletInput, output);
+            }
+        }
+
+        // Corridors (finished): the inputs of their two buildings are linked, both ways, like a cable from input to input.
+        // Each building keeps its own panel (switching one off does not switch off the other)
+        foreach (Corridor corridor in Corridor.All)
+        {
+            if (corridor == null || !corridor.IsBuilt) continue;
+
+            DistributionPanelInput startInput = BuildingInput(corridor.Start);
+            DistributionPanelInput endInput = BuildingInput(corridor.End);
+
+            if (startInput == null || endInput == null || !devices.Contains(startInput) || !devices.Contains(endInput)) continue;
+
+            AddBuildingLink(startInput, endInput);
+            AddBuildingLink(endInput, startInput);
+        }
+    }
+
+    private static DistributionPanelInput BuildingInput(BuiltStructure structure)
+    {
+        BuildingPowerPanel panel = structure != null ? structure.GetComponentInChildren<BuildingPowerPanel>() : null;
+        return panel != null ? panel.Input : null;
+    }
+
+    private void AddBuildingLink(EnergyDevice from, EnergyDevice to)
+    {
+        if (!buildingLinks.TryGetValue(from, out List<EnergyDevice> links))
+        {
+            links = new List<EnergyDevice>();
+            buildingLinks[from] = links;
+        }
+
+        links.Add(to);
+    }
+
+    // Devices linked to this one: by cable, or through a building (inside of it, or its built-in panel). Up to date
+    // after each rebuild of the networks
+    public IEnumerable<EnergyDevice> Links(EnergyDevice device)
+    {
+        foreach (ElectricCable cable in device.Cables)
+        {
+            EnergyDevice other = cable != null ? cable.Other(device) : null;
+
+            if (other != null) yield return other;
+        }
+
+        if (buildingLinks.TryGetValue(device, out List<EnergyDevice> links))
+        {
+            foreach (EnergyDevice other in links)
+            {
+                if (other != null) yield return other;
+            }
+        }
+    }
+
+    // Linked to at least one device, by cable or through a building
+    public bool IsLinked(EnergyDevice device)
+    {
+        using (IEnumerator<EnergyDevice> links = Links(device).GetEnumerator())
+        {
+            return links.MoveNext();
         }
     }
 
@@ -198,6 +294,13 @@ public class EnergyNetworkManager : MonoBehaviour
     private Network NetworkOf(EnergyDevice device)
     {
         return device != null && deviceNetworks.TryGetValue(device, out Network network) ? network : null;
+    }
+
+    // The network of the device is tripped (map of the control panel: generators and storages in red)
+    public bool IsTripped(EnergyDevice device)
+    {
+        Network network = NetworkOf(device);
+        return network != null && network.tripped;
     }
 
     // State of the network of a cable (both ends are in the same network), for the map of the control panel:
@@ -234,49 +337,30 @@ public class EnergyNetworkManager : MonoBehaviour
         UpdateForcedOff();
 
         // 1. Demand of the circuits
-        ignoreTrips = true;
-
-        foreach (DistributionPanel panel in panels)
-        {
-            panel.InputDemand = 0f;
-            panel.ChargeRoom = 0f;
-            panel.OutputSupply = float.PositiveInfinity;
-        }
-
-        for (int iteration = 0; iteration < MaxPanelIterations && panels.Count > 0; iteration++)
-        {
-            Allocate(hours);
-
-            bool changed = false;
-
-            foreach (DistributionPanel panel in panels)
-            {
-                // What the output gave to the consumers is required, what it gave to the batteries is optional
-                float charge = Get(generatorCharged, panel.Output);
-                float request = Mathf.Max(0f, Get(generatorGiven, panel.Output) - charge);
-
-                if (!Mathf.Approximately(request, panel.Request) || !Mathf.Approximately(charge, panel.ChargeRequest)) changed = true;
-
-                panel.Request = request;
-                panel.ChargeRequest = charge;
-                // Seen from the circuit of a panel above it: its machines are required, the charge of its batteries
-                // optional and within its power limit
-                panel.InputDemand = panel.IsFeeding ? request : 0f;
-                panel.ChargeRoom = panel.IsFeeding ? Mathf.Min(charge, Mathf.Max(0f, Subtract(panel.PowerLimit.Value, request))) : 0f;
-            }
-
-            if (!changed && iteration > 0) break;
-        }
-
-        ignoreTrips = false;
+        ComputeDemands(hours);
 
         // 2. Decisions of the panels
+        bool feedingChanged = false;
+
         foreach (DistributionPanel panel in panels)
         {
             Network inputNetwork = InputNetwork(panel);
             bool loop = inputNetwork != null && NetworkOf(panel.Output) == inputNetwork;
+            bool wasFeeding = panel.IsFeeding;
 
             panel.BeginUpdate(deltaTime, BatteryRatio(inputNetwork), loop);
+            feedingChanged |= wasFeeding != panel.IsFeeding;
+        }
+
+        // A panel that starts (or stops) changes what the panels above it ask: their demand is computed again, so that
+        // a circuit starting under another one does not trip it
+        if (feedingChanged)
+        {
+            ComputeDemands(hours);
+        }
+
+        foreach (DistributionPanel panel in panels)
+        {
             SetPanelFlow(panel, panel.IsFeeding);
         }
 
@@ -303,7 +387,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
                 // The charge of the circuit's batteries is what the upstream surplus gave (optional): the output gives
                 // the required power plus that
-                float supply = panel.Request + Get(panelCharge, panel);
+                float supply = (panel.OptionalDemand ? 0f : panel.Request) + Get(panelCharge, panel);
 
                 if (!Mathf.Approximately(supply, panel.OutputSupply))
                 {
@@ -311,6 +395,11 @@ public class EnergyNetworkManager : MonoBehaviour
                     changed = true;
                 }
             }
+
+            // The optional power (charge, output sockets of buildings) goes down one panel per pass: the networks only
+            // trip once it has arrived everywhere (otherwise a circuit behind an output socket would trip before
+            // receiving anything)
+            if (changed && iteration < MaxTripIterations - 1) continue;
 
             foreach (Network network in networks)
             {
@@ -345,8 +434,121 @@ public class EnergyNetworkManager : MonoBehaviour
 
             // What the output actually gave to the batteries of the circuit
             panel.ChargeSupplied = Get(generatorCharged, panel.Output);
-            panel.EndUpdate(deltaTime, hours, inputPowered, inputPowered ? Available(inputNetwork, hours) : 0f);
+            panel.OutletSupplied = Mathf.Min(panel.ChargeSupplied, panel.OutletRequest);
+            // A building also counts on what the panels feeding its network could still get upstream
+            float upstream = !inputPowered ? 0f : panel is BuildingPowerPanel ? Potential(inputNetwork, hours, new HashSet<DistributionPanel>()) : Available(inputNetwork, hours);
+            panel.EndUpdate(deltaTime, hours, inputPowered, upstream);
         }
+    }
+
+    // The outputs of the panels give without limit (after the other generators of their circuit): what they give is
+    // what the circuit asks. Repeated for the panels inside the circuit of others. Tripped networks count too (to be
+    // rearmed, they must receive their demand)
+    private void ComputeDemands(float hours)
+    {
+        ignoreTrips = true;
+
+        foreach (DistributionPanel panel in panels)
+        {
+            panel.InputDemand = 0f;
+            panel.ChargeRoom = 0f;
+            panel.OutputSupply = float.PositiveInfinity;
+        }
+
+        for (int iteration = 0; iteration < MaxPanelIterations && panels.Count > 0; iteration++)
+        {
+            Allocate(hours);
+
+            bool changed = false;
+
+            foreach (DistributionPanel panel in panels)
+            {
+                // What the output gave to the consumers is required, what it gave to the batteries is optional
+                float charge = Get(generatorCharged, panel.Output);
+                float request = Mathf.Max(0f, Get(generatorGiven, panel.Output) - charge);
+
+                if (!Mathf.Approximately(request, panel.Request) || !Mathf.Approximately(charge, panel.ChargeRequest)) changed = true;
+
+                panel.Request = request;
+                panel.ChargeRequest = charge;
+                SetDemand(panel, panel.IsFeeding);
+            }
+
+            if (!changed && iteration > 0) break;
+        }
+
+        // Part of the optional demand going to output sockets of buildings (display: "Sortie", not a charge)
+        foreach (DistributionPanel panel in panels)
+        {
+            panel.OutletRequest = OutletRequest(panel, 0);
+        }
+
+        ignoreTrips = false;
+    }
+
+    // Optional power the panel passes to output sockets of buildings: all of it for an output socket, otherwise what the
+    // panels of its circuit pass there (within what they may take as optional)
+    private float OutletRequest(DistributionPanel panel, int depth)
+    {
+        if (panel.OptionalDemand) return panel.Request + panel.ChargeRequest;
+        if (depth > MaxPanelIterations) return 0f;
+
+        Network circuit = NetworkOf(panel.Output);
+        float outlet = 0f;
+
+        foreach (DistributionPanel child in panels)
+        {
+            if (child == panel || circuit == null || InputNetwork(child) != circuit) continue;
+
+            outlet += Mathf.Min(OutletRequest(child, depth + 1), child.ChargeRoom);
+        }
+
+        return Mathf.Min(outlet, panel.ChargeRequest);
+    }
+
+    // Seen from the circuit above the panel: its machines are required, the charge of its batteries optional and within
+    // its power limit. A panel with an optional demand (output socket of a building): everything is optional
+    private static void SetDemand(DistributionPanel panel, bool feeding)
+    {
+        if (!feeding)
+        {
+            panel.InputDemand = 0f;
+            panel.ChargeRoom = 0f;
+        }
+        else if (panel.OptionalDemand)
+        {
+            panel.InputDemand = 0f;
+            panel.ChargeRoom = Mathf.Min(panel.Request + panel.ChargeRequest, panel.PowerLimit.Value);
+        }
+        else
+        {
+            panel.InputDemand = panel.Request;
+            panel.ChargeRoom = Mathf.Min(panel.ChargeRequest, Mathf.Max(0f, Subtract(panel.PowerLimit.Value, panel.Request)));
+        }
+    }
+
+    // What the network could still give, counting what the panels feeding it could still get from upstream (within
+    // their power limit). Used for the buildings, to start again behind the output socket of another one
+    private float Potential(Network network, float hours, HashSet<DistributionPanel> seen)
+    {
+        float potential = Available(network, hours);
+
+        foreach (EnergyGenerator generator in network.generators)
+        {
+            if (!(generator is DistributionPanelOutput output) || output.Panel == null || !output.Panel.IsFeeding || !seen.Add(output.Panel)) continue;
+
+            DistributionPanel panel = output.Panel;
+            Network inputNetwork = InputNetwork(panel);
+
+            if (inputNetwork == null || inputNetwork.tripped) continue;
+
+            float given = (panel.OptionalDemand ? 0f : panel.Request) + Get(panelCharge, panel);
+            float room = Subtract(panel.PowerLimit.Value, given);
+
+            potential += Mathf.Min(room, Potential(inputNetwork, hours, seen));
+        }
+
+        return potential;
     }
 
     private const int MaxPanelIterations = 8;
@@ -372,8 +574,13 @@ public class EnergyNetworkManager : MonoBehaviour
         }
     }
 
-    // Everything in the circuit of a switched off panel is off, through the panels under it too (their input is in the
-    // circuit). Not the outputs of other panels feeding the same network: their production follows their own panel
+    // Switched off by a panel (ForcedOff), their own setting being kept:
+    // - distribution panel: everything in its circuit, through the panels under it too (their input is in the circuit)
+    // - building (BuildingPowerPanel): only what it holds (BuildingInterior), and the circuits of the panels placed in
+    //   it. Not what is only cabled to its output outside (Bât1 ---> Bât2 ---- G1, Bât1 switched off: G1 keeps running)
+    // Never the outputs of other panels feeding the same network (their production follows their own panel), nor a
+    // building fed by the circuit (Bât1 ---> Bât2, Bât1 switched off: Bât2 is no longer fed, its own generators and
+    // batteries keep it running)
     private readonly HashSet<EnergyDevice> forcedOff = new HashSet<EnergyDevice>();
 
     private void UpdateForcedOff()
@@ -382,27 +589,50 @@ public class EnergyNetworkManager : MonoBehaviour
         HashSet<Network> seen = new HashSet<Network>();
         Queue<Network> queue = new Queue<Network>();
 
+        void SwitchOff(EnergyDevice device)
+        {
+            if (device == null || device is DistributionPanelOutput) return;
+            if (device is DistributionPanelInput buildingInput && (buildingInput.Panel is BuildingPowerPanel || buildingInput.Panel is BuildingOutlet)) return;
+
+            forcedOff.Add(device);
+
+            // A panel in the circuit: its own circuit too
+            if (device is DistributionPanelInput input && input.Panel != null)
+            {
+                Network circuit = NetworkOf(input.Panel.Output);
+
+                if (circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
+            }
+        }
+
         foreach (DistributionPanel panel in panels)
         {
-            Network circuit = NetworkOf(panel.Output);
+            if (panel.SwitchedOn) continue;
 
-            if (!panel.SwitchedOn && circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
+            if (panel is BuildingPowerPanel)
+            {
+                // The inside of the building: linked to its output without cable
+                if (panel.Output != null && buildingLinks.TryGetValue(panel.Output, out List<EnergyDevice> inside))
+                {
+                    foreach (EnergyDevice device in inside)
+                    {
+                        SwitchOff(device);
+                    }
+                }
+
+                continue;
+            }
+
+            Network network = NetworkOf(panel.Output);
+
+            if (network != null && seen.Add(network)) queue.Enqueue(network);
         }
 
         while (queue.Count > 0)
         {
             foreach (EnergyDevice device in queue.Dequeue().devices)
             {
-                if (device == null || device is DistributionPanelOutput) continue;
-
-                forcedOff.Add(device);
-
-                if (device is DistributionPanelInput input && input.Panel != null)
-                {
-                    Network circuit = NetworkOf(input.Panel.Output);
-
-                    if (circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
-                }
+                SwitchOff(device);
             }
         }
 
@@ -414,7 +644,7 @@ public class EnergyNetworkManager : MonoBehaviour
 
     private Network InputNetwork(DistributionPanel panel)
     {
-        return panel.Input != null && panel.Input.Cables.Count > 0 ? NetworkOf(panel.Input) : null;
+        return panel.Input != null && IsLinked(panel.Input) ? NetworkOf(panel.Input) : null;
     }
 
     // Required power asked upstream (a lack trips or sheds), and room for the charge of the circuit's batteries, given by
@@ -422,11 +652,11 @@ public class EnergyNetworkManager : MonoBehaviour
     // required power, the charge is added once the upstream surplus is known (Simulate)
     private static void SetPanelFlow(DistributionPanel panel, bool feeding)
     {
-        float limitRoom = Mathf.Max(0f, Subtract(panel.PowerLimit.Value, panel.Request));
+        SetDemand(panel, feeding);
 
-        panel.InputDemand = feeding ? panel.Request : 0f;
-        panel.ChargeRoom = feeding ? Mathf.Min(panel.ChargeRequest, limitRoom) : 0f;
-        panel.OutputSupply = feeding ? panel.Request : 0f;
+        // The required power at first, the charge is added once the upstream surplus is known (Simulate). Nothing
+        // required for an optional demand: it only gives what it received
+        panel.OutputSupply = feeding && !panel.OptionalDemand ? panel.Request : 0f;
     }
 
     // Charge of the batteries of the network (0 to 1). 1 without battery
@@ -732,7 +962,7 @@ public class EnergyNetworkManager : MonoBehaviour
                 {
                     consumer.SetState(NetworkState.SwitchedOff);
                 }
-                else if (consumer.Cables.Count == 0)
+                else if (!IsLinked(consumer))
                 {
                     consumer.SetState(NetworkState.NotLinked);
                 }

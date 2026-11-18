@@ -172,6 +172,10 @@ public class PlayerInventory : ItemStorage
     {
         if (!HasPlayer) return;
 
+        // Not while an interface (inventory, control panel...) or a menu is open: the wheel belongs to it (zoom, lists)
+        if (InterfaceManager.GetInstance().HasOpenInterface) return;
+        if (ModeManager.Instance != null && (ModeManager.Instance.Mode & (PlayingMode.Interface | PlayingMode.Menu)) != 0) return;
+
         ChangeHandedItem(ctx.control);
     }
 

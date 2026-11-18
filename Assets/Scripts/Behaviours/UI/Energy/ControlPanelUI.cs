@@ -16,7 +16,8 @@ public class ControlPanelUI : MonoBehaviour
     private readonly DistributionPanelSettingsView settings = new DistributionPanelSettingsView();
     private readonly List<EnergyDevice> devices = new List<EnergyDevice>();
     private readonly List<ElectricCable> cables = new List<ElectricCable>();
-    private readonly List<Rect> buildings = new List<Rect>();
+    private readonly List<Vector2[]> buildings = new List<Vector2[]>();
+    private readonly List<BuiltStructure> buildingOwners = new List<BuiltStructure>();
 
     private ControlPanel target;
     private bool open;
@@ -157,34 +158,10 @@ public class ControlPanelUI : MonoBehaviour
         }
     }
 
-    // Outlines of the buildings (bounds of their renderers, seen from above)
+    // Outlines of the buildings seen from above: the shape of their meshes (round dome, oriented corridor...)
     private void CollectBuildings()
     {
-        buildings.Clear();
-
-        foreach (BuiltStructure structure in FindObjectsByType<BuiltStructure>(FindObjectsSortMode.None))
-        {
-            bool any = false;
-            Bounds bounds = default;
-
-            foreach (Renderer renderer in structure.GetComponentsInChildren<Renderer>())
-            {
-                if (!any)
-                {
-                    bounds = renderer.bounds;
-                    any = true;
-                }
-                else
-                {
-                    bounds.Encapsulate(renderer.bounds);
-                }
-            }
-
-            if (any)
-            {
-                buildings.Add(Rect.MinMaxRect(bounds.min.x, bounds.min.z, bounds.max.x, bounds.max.z));
-            }
-        }
+        MapUtility.CollectBuildings(buildings, buildingOwners);
     }
 
     // Devices and cables of the network: they may have changed (cables placed, devices destroyed)
@@ -193,7 +170,7 @@ public class ControlPanelUI : MonoBehaviour
         if (target == null || map == null) return;
 
         target.CollectNetwork(devices, cables);
-        map.SetNetwork(devices, cables, buildings, target.Consumer);
+        map.SetNetwork(devices, cables, buildings, buildingOwners, target.Consumer);
     }
 
     private void ShowDetail()

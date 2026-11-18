@@ -6,11 +6,12 @@ using UnityEngine.InputSystem;
 // - build wheel: hold the Build key (B) and click an option (Destroy or a structure), releasing the key closes it
 // - placement: while a placeable item is in hand, a ghost shows where it will be placed
 // - build: the structure chosen in the wheel is shown as a ghost, then placed as a plan (StructureBlueprint)
+// - corridor (CorridorData): click a first building, then a second one: the corridor between them is placed as a plan
 // - destruction: the pointed structure, plan, placed object or electric cable is highlighted, a click destroys it
 // With a ghost: R rotates (Shift + R: 45° steps), left click places, right click cancels
 public class Builder : MonoBehaviour
 {
-    private enum Mode { None, Placing, Building, Destroying }
+    private enum Mode { None, Placing, Building, Corridor, Destroying }
 
     public float range = 8f;
     public float rotationSpeed = 90f;
@@ -31,6 +32,13 @@ public class Builder : MonoBehaviour
 
     private PlaceableItemData placingItem;
     private StructureData buildingStructure;
+
+    // Corridor: first building clicked, and the corridor towards the aimed building
+    public float corridorAimRange = 30f;
+    private BuiltStructure corridorStart;
+    private BuiltStructure corridorEnd;
+    private float corridorLength;
+    private string corridorHint;
 
     // Placement cancelled with a right click: not shown again until the item in hand changes
     private ItemData dismissedItem;
@@ -112,18 +120,25 @@ public class Builder : MonoBehaviour
         SetMode(Mode.None);
         buildingStructure = structure;
         CreateGhost(structure.Prefab);
-        SetMode(Mode.Building);
+        SetMode(structure is CorridorData ? Mode.Corridor : Mode.Building);
     }
 
     // ---------- Modes ----------
 
     private void SetMode(Mode newMode)
     {
-        if (newMode != Mode.Placing && newMode != Mode.Building)
+        if (newMode != Mode.Placing && newMode != Mode.Building && newMode != Mode.Corridor)
         {
             DestroyGhost();
             placingItem = null;
             buildingStructure = null;
+        }
+
+        if (newMode != Mode.Corridor)
+        {
+            corridorStart = null;
+            corridorEnd = null;
+            corridorHint = null;
         }
 
         if (newMode != Mode.Destroying)
@@ -163,6 +178,9 @@ public class Builder : MonoBehaviour
             case Mode.Destroying:
                 BuildModeUI.Instance.Show("Destruction   ·   Clic gauche : détruire la cible (en rouge)   ·   Clic droit / Échap : quitter");
                 break;
+            case Mode.Corridor:
+                // Shown each frame by UpdateCorridor
+                break;
             default:
                 BuildModeUI.Instance.Hide();
                 break;
@@ -189,6 +207,9 @@ public class Builder : MonoBehaviour
             case Mode.Building:
                 UpdateRotation();
                 UpdateGhost();
+                break;
+            case Mode.Corridor:
+                UpdateCorridor();
                 break;
             case Mode.Destroying:
                 UpdateDestroyTarget();
@@ -419,6 +440,9 @@ public class Builder : MonoBehaviour
             case Mode.Building:
                 PlaceBlueprint();
                 break;
+            case Mode.Corridor:
+                ClickCorridor();
+                break;
             case Mode.Destroying:
                 DestroyTarget();
                 break;
@@ -469,6 +493,135 @@ public class Builder : MonoBehaviour
         }
 
         BuildUtility.CreateBlueprint(buildingStructure, position, ghost.transform.rotation);
+        SetMode(Mode.None);
+    }
+
+    // ---------- Corridor ----------
+
+    private CorridorData CorridorStructure => buildingStructure as CorridorData;
+
+    // Finished building with an inside (Corridor.InteriorOf) aimed by the camera
+    private BuiltStructure AimedBuilding()
+    {
+        int layerMask = ~(1 << gameObject.layer);
+
+        if (!Physics.Raycast(Source.position, Source.forward, out RaycastHit hit, corridorAimRange, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            return null;
+        }
+
+        BuiltStructure structure = hit.collider.GetComponentInParent<BuiltStructure>();
+        return Corridor.InteriorOf(structure) != null ? structure : null;
+    }
+
+    private void UpdateCorridor()
+    {
+        CorridorData data = CorridorStructure;
+
+        if (data == null || ghost == null) return;
+
+        const string controls = "   ·   Clic droit / Échap : annuler";
+        BuiltStructure aimed = AimedBuilding();
+        corridorEnd = null;
+
+        if (corridorStart == null)
+        {
+            ghost.SetActive(false);
+            ShowCorridorHint("Couloir : " + (aimed != null ? "clic gauche pour partir de ce bâtiment" : "visez un premier bâtiment") + controls);
+            return;
+        }
+
+        if (aimed == null || aimed == corridorStart
+            || !Corridor.ComputePlacement(corridorStart, aimed, out Vector3 position, out Quaternion rotation, out float length))
+        {
+            ghost.SetActive(false);
+            ShowCorridorHint("Couloir : visez le second bâtiment" + controls);
+            return;
+        }
+
+        corridorEnd = aimed;
+        corridorLength = length;
+
+        ghost.SetActive(true);
+        ghost.transform.SetPositionAndRotation(position, rotation);
+
+        Vector3 scale = data.Prefab.transform.localScale;
+        scale.z *= length;
+        ghost.transform.localScale = scale;
+
+        string problem = CorridorProblem(data, corridorStart, aimed, length);
+        bool valid = problem == null;
+
+        if (valid != ghostValid)
+        {
+            ghostValid = valid;
+            SetGhostMaterial(valid ? validMaterial : invalidMaterial);
+        }
+
+        int meters = Mathf.Max(1, Mathf.CeilToInt(length));
+        List<string> cost = new List<string>();
+
+        foreach (RecipeData.ItemBlock block in data.Cost)
+        {
+            cost.Add((block.Quantity * meters) + " " + (block.Item != null ? block.Item.Name : "?"));
+        }
+
+        ShowCorridorHint("Couloir : " + length.ToString("0.0") + " m (" + string.Join(", ", cost) + ")"
+            + (valid ? "   ·   Clic gauche : poser le plan" : "   ·   " + problem) + controls);
+    }
+
+    // Why the corridor cannot be placed, null if it can
+    private string CorridorProblem(CorridorData data, BuiltStructure start, BuiltStructure end, float length)
+    {
+        if (Corridor.AreLinked(start, end)) return "ces bâtiments sont déjà reliés";
+        if (length < data.MinLength) return "trop court (min " + data.MinLength.ToString("0.#") + " m)";
+        if (length > data.MaxLength) return "trop long (max " + data.MaxLength.ToString("0.#") + " m)";
+        if (Mathf.Abs(start.transform.position.y - end.transform.position.y) > data.MaxSlope) return "dénivelé trop fort (max " + data.MaxSlope.ToString("0.#") + " m)";
+
+        // Anything in the way, the terrain and the two buildings excepted
+        GetGhostBox(out Vector3 center, out Vector3 halfExtents);
+        int layerMask = ~LayerMask.GetMask("Terrain");
+
+        foreach (Collider collider in Physics.OverlapBox(center, halfExtents * 0.9f, ghost.transform.rotation, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            BuiltStructure owner = collider.GetComponentInParent<BuiltStructure>();
+
+            if (owner != start && owner != end) return "obstacle sur le passage";
+        }
+
+        return null;
+    }
+
+    private void ShowCorridorHint(string text)
+    {
+        if (text == corridorHint || BuildModeUI.Instance == null) return;
+
+        corridorHint = text;
+        BuildModeUI.Instance.Show(text);
+    }
+
+    private void ClickCorridor()
+    {
+        CorridorData data = CorridorStructure;
+
+        if (data == null || Source == null) return;
+
+        if (corridorStart == null)
+        {
+            corridorStart = AimedBuilding();
+            return;
+        }
+
+        if (corridorEnd == null || ghost == null || !ghost.activeSelf || !ghostValid) return;
+
+        GameObject blueprint = BuildUtility.CreateBlueprint(data, ghost.transform.position, ghost.transform.rotation);
+        Corridor corridor = blueprint.GetComponent<Corridor>();
+
+        if (corridor != null)
+        {
+            corridor.Setup(corridorStart, corridorEnd, corridorLength);
+        }
+
         SetMode(Mode.None);
     }
 

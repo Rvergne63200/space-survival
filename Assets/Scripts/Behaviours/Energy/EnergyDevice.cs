@@ -65,13 +65,18 @@ public abstract class EnergyDevice : MonoBehaviour, ISaveableComponent
     }
 
     // Display name (text at the pointer): the placed item, or the object
-    public virtual string DisplayName
+    public virtual string DisplayName => NameOf(this);
+
+    // Name of the placed item or of the building holding the component, or else of its object
+    public static string NameOf(Component component)
     {
-        get
-        {
-            PlacedObject placed = GetComponentInParent<PlacedObject>();
-            return placed != null && placed.Data != null ? placed.Data.Name : gameObject.name;
-        }
+        PlacedObject placed = component.GetComponentInParent<PlacedObject>();
+        if (placed != null && placed.Data != null) return placed.Data.Name;
+
+        BuiltStructure structure = component.GetComponentInParent<BuiltStructure>();
+        if (structure != null && structure.Data != null) return structure.Data.Name;
+
+        return component.gameObject.name;
     }
 
     public Vector3 ConnectionPoint

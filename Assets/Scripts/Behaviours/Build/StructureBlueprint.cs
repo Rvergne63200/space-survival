@@ -8,6 +8,11 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
 {
     public StructureData Data { get; private set; }
 
+    // Cost multiplied by it: the length of a corridor (per meter), 1 otherwise
+    public int CostMultiplier { get; set; } = 1;
+
+    private int Required(int index) => Data.Cost[index].Quantity * CostMultiplier;
+
     // Quantity brought for each cost line (same index as Data.Cost)
     private int[] delivered = new int[0];
 
@@ -35,7 +40,7 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
         {
             RecipeData.ItemBlock cost = Data.Cost[i];
             info.Append(i == 0 ? " : " : ", ");
-            info.Append(cost.Item != null ? cost.Item.Name : "?").Append(' ').Append(delivered[i]).Append('/').Append(cost.Quantity);
+            info.Append(cost.Item != null ? cost.Item.Name : "?").Append(' ').Append(delivered[i]).Append('/').Append(Required(i));
         }
 
         return info.ToString();
@@ -52,7 +57,7 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
         for (int i = 0; i < Data.Cost.Count; i++)
         {
             ItemData item = Data.Cost[i].Item;
-            int missing = Data.Cost[i].Quantity - delivered[i];
+            int missing = Required(i) - delivered[i];
 
             if (item == null || missing <= 0) continue;
 
@@ -68,7 +73,17 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
 
         if (IsComplete())
         {
-            BuildUtility.InstantiateStructure(Data, transform.position, transform.rotation);
+            GameObject built = BuildUtility.InstantiateStructure(Data, transform.position, transform.rotation);
+
+            // A corridor keeps its buildings and its length
+            Corridor corridor = GetComponent<Corridor>();
+            Corridor builtCorridor = built.GetComponent<Corridor>();
+
+            if (corridor != null && builtCorridor != null)
+            {
+                corridor.CopyTo(builtCorridor);
+            }
+
             NotificationUI.Show(Data.Name + " construit.");
             Destroy(gameObject);
         }
@@ -82,7 +97,7 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
     {
         for (int i = 0; i < Data.Cost.Count; i++)
         {
-            if (delivered[i] < Data.Cost[i].Quantity) return false;
+            if (delivered[i] < Required(i)) return false;
         }
 
         return true;

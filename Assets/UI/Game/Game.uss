@@ -118,7 +118,7 @@
     margin-right: 5px;
 }
 
-/* Round minimap, top right (MinimapUI): the rendered map is clipped by the circle, the arrow of the player at the
+/* Round minimap, top right (MinimapUI): the stylized map is clipped by the circle, the arrow of the player at the
    center, the "N" moved along the edge */
 .minimap {
     position: absolute;
@@ -129,16 +129,16 @@
     border-radius: 50%;
     border-width: 3px;
     border-color: rgba(120, 200, 255, 0.7);
-    background-color: rgb(13, 18, 26);
+    background-color: rgba(40, 58, 75, 0.25);
     overflow: hidden;
+    opacity: 0.8;
 }
 
+/* Topography tile of the minimap: placed, sized and turned around the player by MinimapUI */
 .minimap-image {
     position: absolute;
     left: 0;
     top: 0;
-    right: 0;
-    bottom: 0;
     -unity-background-scale-mode: stretch-to-fill;
 }
 

@@ -7,7 +7,10 @@ public class DistributionPanelInput : EnergyConsumer
     [SerializeField] private DistributionPanel panel;
 
     public override DistributionPanel Panel => panel != null ? panel : (panel = GetComponentInParent<DistributionPanel>());
-    public override string PortId => "input";
+    // Saved with the cables. Empty: "input". Set when an object holds several panels (building and its outlet)
+    [SerializeField] private string portId;
+
+    public override string PortId => string.IsNullOrEmpty(portId) ? "input" : portId;
     public override bool CanSwitch => false;
     public override float Consumption => Panel != null ? Panel.InputDemand : 0f;
     public override string DisplayName => base.DisplayName + " (entrée)";

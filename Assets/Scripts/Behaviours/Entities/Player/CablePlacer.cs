@@ -180,13 +180,24 @@ public class CablePlacer : MonoBehaviour
 
     private bool CanEndOn(EnergyDevice device)
     {
-        return start != null && device != null && device != start && !start.IsLinkedTo(device) && !SamePanel(start, device);
+        return start != null && device != null && device != start && !start.IsLinkedTo(device) && !SamePanel(start, device) && !TwoBuildingInputs(start, device);
     }
 
-    // The input and the output of a panel cannot be linked together
+    // The input and the output of a panel cannot be linked together, nor two ports of the same building (input and output
+    // socket)
     private static bool SamePanel(EnergyDevice a, EnergyDevice b)
     {
-        return a.Panel != null && a.Panel == b.Panel;
+        if (a.Panel == null || b.Panel == null) return false;
+        if (a.Panel == b.Panel) return true;
+
+        BuiltStructure building = a.Panel.GetComponentInParent<BuiltStructure>();
+        return building != null && building == b.Panel.GetComponentInParent<BuiltStructure>();
+    }
+
+    // The inputs of two buildings cannot be cabled together: a building feeds another one from its output
+    private static bool TwoBuildingInputs(EnergyDevice a, EnergyDevice b)
+    {
+        return a is DistributionPanelInput && a.Panel is BuildingPowerPanel && b is DistributionPanelInput && b.Panel is BuildingPowerPanel;
     }
 
     // ---------- Hint ----------
@@ -288,6 +299,12 @@ public class CablePlacer : MonoBehaviour
         if (SamePanel(start, end))
         {
             NotificationUI.Show("L'entrée et la sortie d'un tableau ne peuvent pas être reliées.", NotificationType.Warning);
+            return;
+        }
+
+        if (TwoBuildingInputs(start, end))
+        {
+            NotificationUI.Show("Les entrées de deux bâtiments ne peuvent pas être reliées : partez de la sortie d'un bâtiment.", NotificationType.Warning);
             return;
         }
 

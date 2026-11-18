@@ -6,36 +6,31 @@ using UnityEngine.UIElements;
 // Map of an electrical network, in the control panel (ControlPanelUI), north at the top. Stylized:
 // - the topography of the terrain as contour lines and shading (generated heights, ChunkManager.GeneratedHeightAt),
 //   regenerated for the area shown, and a grid
-// - the buildings (outline of their bounds), the cables (glowing lines colored by the state of their network) and an
-//   icon per device: circle for a consumer, triangle for a generator, bar for a storage, diamond for a distribution
-//   panel, square for a control panel. The control panel in use pulses
-// Wheel to zoom, drag to move, click on a device to select it
+// - the buildings (outline of their shape seen from above, highlighted under the mouse: a click selects their built-in
+//   panel), the cables (glowing lines colored by the state of their network) and an icon per device: square for a
+//   machine, circle for a generator, flat rectangle for a storage, triangle for a control panel, diamond for a
+//   distribution panel (none for the panel built into a building). Colors: blue running, red tripped, grey off. The
+//   control panel in use pulses
+// Wheel to zoom, drag to move, click on a device or a building to select it
 public class NetworkMapElement : VisualElement
 {
     private const int TopographyResolution = 160;
-    private const float ContourStep = 4f;
     private const float PickRadius = 14f;
     private const float DragThreshold = 4f;
     private const float MinMetersPerPixel = 0.05f;
     private const float MaxMetersPerPixel = 20f;
 
-    private static readonly Color BaseColor = new Color(0.02f, 0.05f, 0.09f);
-    private static readonly Color HighColor = new Color(0.06f, 0.16f, 0.24f);
-    private static readonly Color ContourColor = new Color(0.2f, 0.65f, 0.85f);
-    private static readonly Color GridColor = new Color(0.3f, 0.7f, 1f, 0.08f);
-    private static readonly Color BuildingColor = new Color(0.55f, 0.85f, 1f);
     private static readonly Color PoweredColor = new Color(0.25f, 0.95f, 1f);
     private static readonly Color TrippedColor = new Color(1f, 0.3f, 0.3f);
     private static readonly Color InactiveColor = new Color(0.45f, 0.5f, 0.55f);
-    private static readonly Color GeneratorColor = new Color(1f, 0.85f, 0.25f);
-    private static readonly Color StorageColor = new Color(0.4f, 1f, 0.5f);
-    private static readonly Color PanelColor = new Color(1f, 0.6f, 0.2f);
     private static readonly Color HereColor = new Color(1f, 1f, 1f);
     private static readonly Color SelectedColor = new Color(1f, 1f, 1f);
 
     private readonly List<EnergyDevice> devices = new List<EnergyDevice>();
     private readonly List<ElectricCable> cables = new List<ElectricCable>();
-    private readonly List<Rect> buildings = new List<Rect>();
+    private readonly List<Vector2[]> buildings = new List<Vector2[]>();
+    private readonly List<BuiltStructure> buildingOwners = new List<BuiltStructure>();
+    private int hoveredBuilding = -1;
 
     // Shown devices: one per distribution panel (its ports are merged)
     private readonly List<EnergyDevice> shown = new List<EnergyDevice>();
@@ -48,6 +43,7 @@ public class NetworkMapElement : VisualElement
     private float metersPerPixel = 0.5f;
 
     private Texture2D topography;
+    private readonly List<MapUtility.ContourSegment> contours = new List<MapUtility.ContourSegment>();
     private bool topographyDirty = true;
     private Vector2 topographyCenter;
     private float topographyScale;
@@ -78,7 +74,7 @@ public class NetworkMapElement : VisualElement
         RegisterCallback<PointerDownEvent>(OnPointerDown);
         RegisterCallback<PointerMoveEvent>(OnPointerMove);
         RegisterCallback<PointerUpEvent>(OnPointerUp);
-        RegisterCallback<PointerLeaveEvent>(evt => SetHovered(null));
+        RegisterCallback<PointerLeaveEvent>(evt => { SetHovered(null); hoveredBuilding = -1; MarkDirtyRepaint(); });
         RegisterCallback<GeometryChangedEvent>(evt => topographyDirty = true);
         RegisterCallback<DetachFromPanelEvent>(evt => DestroyTopography());
     }
@@ -87,14 +83,19 @@ public class NetworkMapElement : VisualElement
 
     // ---------- Content ----------
 
-    public void SetNetwork(IEnumerable<EnergyDevice> networkDevices, IEnumerable<ElectricCable> networkCables, IEnumerable<Rect> buildingRects, EnergyDevice current)
+    // owners: the structure of each outline (same index)
+    public void SetNetwork(IEnumerable<EnergyDevice> networkDevices, IEnumerable<ElectricCable> networkCables, IEnumerable<Vector2[]> buildingOutlines,
+        IEnumerable<BuiltStructure> owners, EnergyDevice current)
     {
         devices.Clear();
         devices.AddRange(networkDevices);
         cables.Clear();
         cables.AddRange(networkCables);
         buildings.Clear();
-        buildings.AddRange(buildingRects);
+        buildings.AddRange(buildingOutlines);
+        buildingOwners.Clear();
+        buildingOwners.AddRange(owners);
+        if (hoveredBuilding >= buildings.Count) hoveredBuilding = -1;
         here = current;
 
         shown.Clear();
@@ -103,6 +104,8 @@ public class NetworkMapElement : VisualElement
         foreach (EnergyDevice device in devices)
         {
             if (device == null) continue;
+            // The panel built into a building has no icon: the building itself is selected
+            if (device.Panel is BuildingPowerPanel || device.Panel is BuildingOutlet) continue;
             if (device.Panel != null && !panels.Add(device.Panel)) continue;
 
             shown.Add(device);
@@ -220,63 +223,9 @@ public class NetworkMapElement : VisualElement
             style.backgroundImage = Background.FromTexture2D(topography);
         }
 
-        ChunkManager chunks = ChunkManager.Instance;
-        float[,] heights = new float[width + 1, height + 1];
-        float minHeight = float.MaxValue;
-        float maxHeight = float.MinValue;
-
         // Texture row 0 is at the bottom: the south of the view
         Vector2 southWest = ToWorld(new Vector2(0f, rect.height));
-        float stepX = rect.width * metersPerPixel / width;
-        float stepY = rect.height * metersPerPixel / height;
-
-        for (int x = 0; x <= width; x++)
-        {
-            for (int y = 0; y <= height; y++)
-            {
-                float value = chunks != null ? chunks.GeneratedHeightAt(southWest.x + x * stepX, southWest.y + y * stepY) : 0f;
-                heights[x, y] = value;
-                minHeight = Mathf.Min(minHeight, value);
-                maxHeight = Mathf.Max(maxHeight, value);
-            }
-        }
-
-        float range = Mathf.Max(1f, maxHeight - minHeight);
-        Color[] pixels = new Color[width * height];
-        Vector3 light = new Vector3(-1f, 1.5f, 1f).normalized;
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                float value = heights[x, y];
-                float right = heights[x + 1, y];
-                float up = heights[x, y + 1];
-
-                // Height as a tint, slope as a shading
-                Color color = Color.Lerp(BaseColor, HighColor, (value - minHeight) / range);
-                Vector3 normal = new Vector3(value - right, stepX, value - up).normalized;
-                float shade = Mathf.Clamp01(Vector3.Dot(normal, light));
-                color *= 0.75f + shade * 0.5f;
-
-                // Contour line where the band changes, every fifth one brighter
-                int band = Mathf.FloorToInt(value / ContourStep);
-                int bandRight = Mathf.FloorToInt(right / ContourStep);
-                int bandUp = Mathf.FloorToInt(up / ContourStep);
-
-                if (band != bandRight || band != bandUp)
-                {
-                    int line = Mathf.Max(band, Mathf.Max(bandRight, bandUp));
-                    color = Color.Lerp(color, ContourColor, line % 5 == 0 ? 0.55f : 0.25f);
-                }
-
-                color.a = 1f;
-                pixels[y * width + x] = color;
-            }
-        }
-
-        topography.SetPixels(pixels);
-        topography.Apply();
+        MapUtility.FillTopography(topography, southWest, rect.width * metersPerPixel / width, rect.height * metersPerPixel / height, contours);
     }
 
     private void DestroyTopography()
@@ -301,11 +250,12 @@ public class NetworkMapElement : VisualElement
             topographyDirty = true;
         }
 
+        MapUtility.DrawContours(painter, contours, ToLocal);
         DrawGrid(painter, rect);
 
-        foreach (Rect building in buildings)
+        for (int i = 0; i < buildings.Count; i++)
         {
-            DrawBuilding(painter, building);
+            DrawBuilding(painter, i);
         }
 
         foreach (ElectricCable cable in cables)
@@ -337,7 +287,7 @@ public class NetworkMapElement : VisualElement
         Vector2 min = ToWorld(new Vector2(0f, rect.height));
         Vector2 max = ToWorld(new Vector2(rect.width, 0f));
 
-        painter.strokeColor = GridColor;
+        painter.strokeColor = MapUtility.GridColor;
         painter.lineWidth = 1f;
         painter.BeginPath();
 
@@ -358,22 +308,51 @@ public class NetworkMapElement : VisualElement
         painter.Stroke();
     }
 
-    private void DrawBuilding(Painter2D painter, Rect building)
+    // Outline of the building seen from above (world X, Z). Highlighted under the mouse, and when its built-in panel
+    // is selected
+    private void DrawBuilding(Painter2D painter, int index)
     {
-        Vector2 a = ToLocal(new Vector2(building.xMin, building.yMax));
-        Vector2 b = ToLocal(new Vector2(building.xMax, building.yMin));
+        Vector2[] building = buildings[index];
+        bool highlighted = index == hoveredBuilding || (selected != null && selected.Panel is BuildingPowerPanel panel && OwnerOf(index) == panel.GetComponentInParent<BuiltStructure>());
 
-        painter.fillColor = new Color(BuildingColor.r, BuildingColor.g, BuildingColor.b, 0.12f);
-        painter.strokeColor = new Color(BuildingColor.r, BuildingColor.g, BuildingColor.b, 0.8f);
-        painter.lineWidth = 1.5f;
+        if (!highlighted)
+        {
+            MapUtility.DrawOutline(painter, building, ToLocal, MapUtility.BuildingColor);
+            return;
+        }
+
+        painter.fillColor = new Color(MapUtility.BuildingColor.r, MapUtility.BuildingColor.g, MapUtility.BuildingColor.b, 0.35f);
+        painter.strokeColor = Color.white;
+        painter.lineWidth = 2.5f;
         painter.BeginPath();
-        painter.MoveTo(a);
-        painter.LineTo(new Vector2(b.x, a.y));
-        painter.LineTo(b);
-        painter.LineTo(new Vector2(a.x, b.y));
+        painter.MoveTo(ToLocal(building[0]));
+
+        for (int i = 1; i < building.Length; i++)
+        {
+            painter.LineTo(ToLocal(building[i]));
+        }
+
         painter.ClosePath();
         painter.Fill();
         painter.Stroke();
+    }
+
+    private BuiltStructure OwnerOf(int index)
+    {
+        return index >= 0 && index < buildingOwners.Count ? buildingOwners[index] : null;
+    }
+
+    // A port of the built-in panel of the building, if it is in the network shown (to select it)
+    private EnergyDevice PanelPortOf(BuiltStructure structure)
+    {
+        if (structure == null) return null;
+
+        foreach (EnergyDevice device in devices)
+        {
+            if (device != null && device.Panel is BuildingPowerPanel && device.GetComponentInParent<BuiltStructure>() == structure) return device;
+        }
+
+        return null;
     }
 
     private void DrawCable(Painter2D painter, ElectricCable cable)
@@ -418,6 +397,8 @@ public class NetworkMapElement : VisualElement
         }
     }
 
+    // Shapes: square for a machine, circle for a generator, flat rectangle for a storage, triangle for a control panel,
+    // diamond for a distribution panel. Colors: the state only (DeviceColor)
     private void DrawDevice(Painter2D painter, EnergyDevice device)
     {
         Vector2 point = ToLocal(Flat(Position(device)));
@@ -439,49 +420,41 @@ public class NetworkMapElement : VisualElement
         }
         else if (device.GetComponent<ControlPanel>() != null)
         {
-            painter.MoveTo(point + new Vector2(-size, -size));
-            painter.LineTo(point + new Vector2(size, -size));
-            painter.LineTo(point + new Vector2(size, size));
-            painter.LineTo(point + new Vector2(-size, size));
-            painter.ClosePath();
-        }
-        else if (device is EnergyGenerator)
-        {
             painter.MoveTo(point + new Vector2(0f, -size - 2f));
             painter.LineTo(point + new Vector2(size + 1f, size));
             painter.LineTo(point + new Vector2(-size - 1f, size));
             painter.ClosePath();
         }
-        else if (device is EnergyStorage)
-        {
-            painter.MoveTo(point + new Vector2(-size * 0.6f, -size - 1f));
-            painter.LineTo(point + new Vector2(size * 0.6f, -size - 1f));
-            painter.LineTo(point + new Vector2(size * 0.6f, size + 1f));
-            painter.LineTo(point + new Vector2(-size * 0.6f, size + 1f));
-            painter.ClosePath();
-        }
-        else
+        else if (device is EnergyGenerator)
         {
             painter.Arc(point, size, Angle.Degrees(0f), Angle.Degrees(360f));
             painter.ClosePath();
+        }
+        else if (device is EnergyStorage)
+        {
+            Rectangle(painter, point, size * 1.4f, size * 0.7f);
+        }
+        else
+        {
+            Rectangle(painter, point, size, size);
         }
 
         painter.Fill();
         painter.Stroke();
 
-        // Charge of a storage: a dark part from the top
+        // Charge of a storage: a dark part from the right
         if (device is EnergyStorage storage && !float.IsInfinity(storage.Capacity) && storage.Capacity > 0f)
         {
             float empty = 1f - Mathf.Clamp01(storage.Stored / storage.Capacity);
-            float top = point.y - size - 1f;
-            float bottom = point.y + size + 1f;
+            float left = point.x - size * 1.4f + 1f;
+            float right = point.x + size * 1.4f - 1f;
 
             painter.fillColor = new Color(0f, 0f, 0f, 0.6f);
             painter.BeginPath();
-            painter.MoveTo(new Vector2(point.x - size * 0.6f + 1f, top + 1f));
-            painter.LineTo(new Vector2(point.x + size * 0.6f - 1f, top + 1f));
-            painter.LineTo(new Vector2(point.x + size * 0.6f - 1f, Mathf.Lerp(top + 1f, bottom - 1f, empty)));
-            painter.LineTo(new Vector2(point.x - size * 0.6f + 1f, Mathf.Lerp(top + 1f, bottom - 1f, empty)));
+            painter.MoveTo(new Vector2(Mathf.Lerp(right, left, empty), point.y - size * 0.7f + 1f));
+            painter.LineTo(new Vector2(right, point.y - size * 0.7f + 1f));
+            painter.LineTo(new Vector2(right, point.y + size * 0.7f - 1f));
+            painter.LineTo(new Vector2(Mathf.Lerp(right, left, empty), point.y + size * 0.7f - 1f));
             painter.ClosePath();
             painter.Fill();
         }
@@ -515,14 +488,28 @@ public class NetworkMapElement : VisualElement
         return a == b || (a.Panel != null && a.Panel == b.Panel);
     }
 
+    private static void Rectangle(Painter2D painter, Vector2 center, float halfWidth, float halfHeight)
+    {
+        painter.MoveTo(center + new Vector2(-halfWidth, -halfHeight));
+        painter.LineTo(center + new Vector2(halfWidth, -halfHeight));
+        painter.LineTo(center + new Vector2(halfWidth, halfHeight));
+        painter.LineTo(center + new Vector2(-halfWidth, halfHeight));
+        painter.ClosePath();
+    }
+
+    // Three colors only: blue running, red tripped (or a panel that blew, is shed, has no input, loops), grey off or not
+    // linked (or a panel starting)
     private static Color DeviceColor(EnergyDevice device)
     {
         if (device.Panel != null)
         {
-            DistributionPanel panel = device.Panel;
-            if (panel.State == DistributionPanel.PanelState.On) return PanelColor;
-            if (panel.State == DistributionPanel.PanelState.Starting) return Color.Lerp(PanelColor, InactiveColor, 0.5f);
-            return panel.State == DistributionPanel.PanelState.Off ? InactiveColor : TrippedColor;
+            switch (device.Panel.State)
+            {
+                case DistributionPanel.PanelState.On: return PoweredColor;
+                case DistributionPanel.PanelState.Off:
+                case DistributionPanel.PanelState.Starting: return InactiveColor;
+                default: return TrippedColor;
+            }
         }
 
         if (!device.IsOn) return InactiveColor;
@@ -537,12 +524,10 @@ public class NetworkMapElement : VisualElement
             }
         }
 
-        if (device is EnergyGenerator generator)
-        {
-            return generator.Output > 0.01f ? GeneratorColor : Color.Lerp(GeneratorColor, InactiveColor, 0.6f);
-        }
+        // Generators and storages: their network
+        if (!EnergyNetworkManager.HasInstance || !EnergyNetworkManager.Instance.IsLinked(device)) return InactiveColor;
 
-        return StorageColor;
+        return EnergyNetworkManager.Instance.IsTripped(device) ? TrippedColor : PoweredColor;
     }
 
     // ---------- Input ----------
@@ -618,9 +603,23 @@ public class NetworkMapElement : VisualElement
 
         SetHovered(Pick(local));
 
-        if (hovered != null)
+        // No device under the mouse: the building under it is highlighted
+        int building = hovered == null ? PickBuilding(local) : -1;
+
+        if (building != hoveredBuilding)
         {
-            tooltip.text = hovered.Panel != null ? hovered.Panel.DisplayName : hovered.DisplayName;
+            hoveredBuilding = building;
+            MarkDirtyRepaint();
+        }
+
+        string text = hovered != null ? (hovered.Panel != null ? hovered.Panel.DisplayName : hovered.DisplayName)
+            : OwnerOf(hoveredBuilding) != null && OwnerOf(hoveredBuilding).Data != null ? OwnerOf(hoveredBuilding).Data.Name : null;
+
+        tooltip.EnableInClassList("hidden", text == null);
+
+        if (text != null)
+        {
+            tooltip.text = text;
             tooltip.style.left = local.x + 12f;
             tooltip.style.top = local.y - 8f;
         }
@@ -635,10 +634,31 @@ public class NetworkMapElement : VisualElement
 
         if (!dragging)
         {
-            Select(Pick(evt.localPosition));
+            // A device, or else a building: its built-in panel (if it is in the network shown)
+            EnergyDevice device = Pick(evt.localPosition);
+
+            if (device == null)
+            {
+                device = PanelPortOf(OwnerOf(PickBuilding(evt.localPosition)));
+            }
+
+            Select(device);
         }
 
         dragging = false;
+    }
+
+    // Building under the point of the element, -1 if none. The last drawn (on top) first
+    private int PickBuilding(Vector2 local)
+    {
+        Vector2 world = ToWorld(local);
+
+        for (int i = buildings.Count - 1; i >= 0; i--)
+        {
+            if (MapUtility.Contains(buildings[i], world)) return i;
+        }
+
+        return -1;
     }
 
     private void SetHovered(EnergyDevice device)

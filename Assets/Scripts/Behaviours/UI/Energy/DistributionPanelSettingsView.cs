@@ -128,7 +128,8 @@ public class DistributionPanelSettingsView
         if (stateLabel != null) stateLabel.text = "État : " + target.StateText;
         if (powerLabel != null) powerLabel.text = "Demande du circuit : " + EnergyValue.Format(target.Request, "W")
             + "   ·   Transmis : " + EnergyValue.Format(target.Supplied, "W")
-            + "   ·   Recharge : " + EnergyValue.Format(target.ChargeSupplied, "W");
+            + "   ·   Recharge : " + EnergyValue.Format(target.BatteryChargeSupplied, "W")
+            + "   ·   Sortie : " + EnergyValue.Format(target.OutletSupplied, "W");
         if (energyLabel != null) energyLabel.text = "Énergie transmise : " + EnergyValue.Format(target.ConsumedEnergy, "Wh");
         if (switchButton != null)
         {

@@ -30,8 +30,25 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     private DistributionPanelInput input;
     private DistributionPanelOutput output;
 
-    public DistributionPanelInput Input => input != null ? input : (input = GetComponentInChildren<DistributionPanelInput>());
-    public DistributionPanelOutput Output => output != null ? output : (output = GetComponentInChildren<DistributionPanelOutput>());
+    // Its ports: the ones whose panel is this one, under it or else in its whole object (several panels in a building)
+    public DistributionPanelInput Input => input != null ? input : (input = FindPort<DistributionPanelInput>());
+    public DistributionPanelOutput Output => output != null ? output : (output = FindPort<DistributionPanelOutput>());
+
+    private T FindPort<T>() where T : EnergyDevice
+    {
+        foreach (Transform root in new[] { transform, transform.root })
+        {
+            foreach (T port in root.GetComponentsInChildren<T>(true))
+            {
+                if (port.Panel == this) return port;
+            }
+        }
+
+        return null;
+    }
+
+    // All its demand is optional (BuildingOutlet): served only by the upstream surplus, a lack never trips upstream
+    public virtual bool OptionalDemand => false;
 
     // Its own on/off setting. Off, it feeds nothing and everything in its circuit is off (EnergyNetworkManager), their own
     // setting being kept for when it is switched on again
@@ -61,12 +78,20 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     // Given to the circuit during the last update (W), part of it to charge its batteries (W), and in total (Wh, saved)
     public float Supplied { get; private set; }
     public float ChargeSupplied { get; set; }
+
+    // Part of the optional demand going to the output sockets of buildings behind it (BuildingOutlet, W), and the part
+    // of ChargeSupplied that actually went there: shown as "Sortie", not as a charge nor as the demand of the circuit
+    public float OutletRequest { get; set; }
+    public float OutletSupplied { get; set; }
+
+    // What actually went to the batteries of the circuit
+    public float BatteryChargeSupplied => Mathf.Max(0f, ChargeSupplied - OutletSupplied);
     public float ConsumedEnergy { get; private set; }
 
     private float timer;
     private bool shedByBattery;
 
-    public EnergyDevice ClosestPort(Vector3 point)
+    public virtual EnergyDevice ClosestPort(Vector3 point)
     {
         if (Input == null) return Output;
         if (Output == null) return Input;
@@ -217,14 +242,7 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
         }
     }
 
-    public string DisplayName
-    {
-        get
-        {
-            PlacedObject placed = GetComponent<PlacedObject>();
-            return placed != null && placed.Data != null ? placed.Data.Name : gameObject.name;
-        }
-    }
+    public string DisplayName => EnergyDevice.NameOf(this);
 
     // ---------- Interaction ----------
 
@@ -240,9 +258,14 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
     {
         string text = DisplayName + " : " + StateText + " (" + EnergyValue.Format(Supplied, "W") + " / " + EnergyValue.Format(Request, "W");
 
-        if (ChargeSupplied > 0.01f)
+        if (BatteryChargeSupplied > 0.01f)
         {
-            text += ", dont " + EnergyValue.Format(ChargeSupplied, "W") + " en recharge";
+            text += ", dont " + EnergyValue.Format(BatteryChargeSupplied, "W") + " en recharge";
+        }
+
+        if (OutletSupplied > 0.01f)
+        {
+            text += ", dont " + EnergyValue.Format(OutletSupplied, "W") + " en sortie";
         }
 
         return text + ")";
@@ -263,7 +286,7 @@ public class DistributionPanel : MonoBehaviour, IInterractable, ISaveableCompone
         public float consumedEnergy;
     }
 
-    public string SaveKey => "distributionPanel";
+    public virtual string SaveKey => "distributionPanel";
 
     public string CaptureState()
     {

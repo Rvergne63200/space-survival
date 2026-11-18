@@ -99,7 +99,7 @@ public static class BuildUtility
             Object.Destroy(verifier);
         }
 
-        // Building layer: rendered by the minimap (MinimapUI). The parts on another layer than Default keep it
+        // Building layer, to tell the buildings apart (physics, rendering). The parts on another layer than Default keep it
         int buildingLayer = LayerMask.NameToLayer("Building");
 
         if (buildingLayer >= 0)
@@ -114,6 +114,13 @@ public static class BuildUtility
         }
 
         instance.AddComponent<BuiltStructure>().Initialize(data);
+
+        // A corridor keeps its buildings and its length (set by Corridor.Setup or CopyTo, or restored from the save)
+        if (data is CorridorData)
+        {
+            instance.AddComponent<Corridor>();
+        }
+
         SetRuntime(instance, SaveManager.BuildPrefabKeyPrefix + data.Id, id);
 
         return instance;
@@ -145,6 +152,12 @@ public static class BuildUtility
         }
 
         blueprint.AddComponent<StructureBlueprint>().Initialize(data);
+
+        if (data is CorridorData)
+        {
+            blueprint.AddComponent<Corridor>();
+        }
+
         SetRuntime(blueprint, SaveManager.BlueprintPrefabKeyPrefix + data.Id, id);
 
         return blueprint;

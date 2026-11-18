@@ -61,6 +61,16 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B47** **[Énergie]** Vu de l'amont, la recharge derrière un tableau de distribution était servie à parts égales avec les batteries amont. Elle est maintenant servie comme la consommation d'une machine : le tableau demande ce qu'il faut pour ses machines et ses batteries, dans la limite de sa puissance max, et il passe **avant** la recharge des batteries amont. Seule la part des machines fait disjoncter si elle n'est pas couverte.
 - [x] **B48** **[Énergie]** Tableaux imbriqués (PD2 sous PD1) : pendant le calcul de la demande des circuits, la place de recharge de PD2 n'était pas plafonnée par sa puissance max. PD1 pouvait demander en amont plus de recharge que PD2 ne pouvait en faire passer, et la différence était perdue. Vu du circuit de PD1, PD2 compte maintenant ses machines en demande (part obligatoire) et sa recharge en recharge, plafonnée par sa puissance max.
 - [x] **B49** **[Interfaces]** La minimap ne tournait pas avec la vue, puis se recalait d'un coup : la caméra du joueur n'a pas le tag `MainCamera`, donc `Camera.main` ne la trouvait pas, et la minimap suivait le corps du joueur, qui ne pivote que quand il se déplace. `MinimapUI` lit maintenant l'orientation de la caméra qui porte `CameraMovement`.
+- [x] **B50** **[Inventaire]** La molette changeait le slot en main pendant qu'une interface (panneau de contrôle, inventaire…) ou un menu était ouvert : elle ne le fait plus.
+- [x] **B51** **[Énergie]** `Bât1 ---> Bât2` : couper Bât1 éteignait Bât2 de force. Maintenant Bât2 n'est plus alimenté (« pas d'alimentation en entrée ») mais reste allumé, et ses propres générateurs et batteries le font tourner. Un générateur de Bât2 n'alimente toujours pas Bât1 (sens unique).
+- [x] **B52** **[Énergie]** Panneau de contrôle dans un bâtiment seul (`PD1 ---> G1 ---> Bât1`, panneau dans Bât1) : G1 et PD1 n'étaient pas visibles. Règle unique : dans un bâtiment, le panneau voit le réseau qui alimente le bâtiment, en s'arrêtant aux tableaux et bâtiments qui l'alimentent.
+- [x] **B53** **[Énergie]** `Bât1 ---> Bât2 ---- G1` : couper Bât1 éteignait G1 (dans le circuit de Bât1). Un bâtiment coupé n'éteint plus que ce qu'il contient (et les circuits des tableaux posés dedans), pas ce qui est seulement câblé à sa sortie, dehors.
+- [x] **B54** **[Énergie]** `G1 -- PD1 -- B1 === B2 ---> B3 === B4 --- G3` : B2, B3, B4 et G3 disjonctaient. Deux causes : la demande des tableaux était calculée avant que ceux du dessous démarrent (un circuit qui démarrait faisait disjoncter celui du dessus ; elle est maintenant recalculée), et la sortie d'un bâtiment comptait ce qui est derrière dans sa demande obligatoire. La prise de sortie d'un bâtiment (`BuildingOutlet`) ne renvoie plus que le surplus : ce qui est derrière manque de courant (ou repart quand l'amont peut l'alimenter), jamais le bâtiment.
+  - Affichage des tableaux : la puissance envoyée aux prises de sortie de bâtiments en aval est affichée en « Sortie », séparée de la demande du circuit et de la recharge des batteries.
+- [x] **B55** **[Énergie]** `B2 -[câble]-> B3` : la sortie de B2 ne transmettait rien à B3, alors qu'une batterie dans B2 se chargeait. La part facultative descend d'un tableau par passe de calcul, et le circuit derrière la sortie disjonctait dès la première passe, avant de l'avoir reçue. Les réseaux ne disjonctent plus qu'une fois les flux stabilisés.
+- [x] **B56** **[Énergie]** Panneau de contrôle dans un bâtiment alimenté par un tableau : il ne voyait pas les autres appareils branchés sur ce tableau (une batterie, par exemple). Il s'arrêtait à la sortie du tableau ; il suit maintenant tout ce réseau, sans remonter derrière l'entrée du tableau ni entrer dans un autre bâtiment.
+- [x] **B57** **[Énergie]** `PD1 ---> B1` et `PD1 ---> B5`, panneau de contrôle dans B1 : il montrait le contenu de B5. Dans le réseau qui alimente le bâtiment, un autre bâtiment n'est ouvert que s'il est relié par couloir au bâtiment du panneau (`Corridor.Group`) ; sinon on voit le bâtiment et son câble, pas son contenu.
+- [x] **B58** **[Énergie]** `B1 ==== B2 ---> B3`, panneau de contrôle dans B1 : le contenu de B3 n'était pas visible. Ce qui est derrière un circuit ouvert (bâtiment du groupe, tableau alimenté par le réseau) est en aval et affiché en entier, bâtiments derrière sa prise de sortie compris.
 
 ## Feature
 
@@ -114,6 +124,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
   - **Les générateurs et les batteries ne relient pas les réseaux** : un générateur ou une batterie relié de deux côtés appartient à deux réseaux, sans les fusionner.
     - Exemple : `G1 - A1 - G2 - A2` donne deux réseaux, {G1, A1, G2} et {G2, A2}. A1 profite de G1 et de G2, A2 ne profite que de G2.
     - Un générateur ou une batterie posé dans un bâtiment fait partie du réseau du bâtiment. S'il est aussi relié par câble à une machine dehors, il est dans deux réseaux. Le joueur pourra peut-être l'exclure du réseau du bâtiment (à voir).
+    - Revu par R19 et F64 : générateurs et batteries relient maintenant les réseaux (plus de réseau partagé). Posé dans un bâtiment, il est dans le circuit du bâtiment ; câblé aussi à une machine dehors, cette machine rejoint ce circuit.
   - **Générateurs** :
     - Ils tournent toujours à fond, dans la limite de l'oxygène reçu pour ceux qui en ont besoin (F52).
     - Un générateur ne donne à chaque réseau que ce dont il a besoin, batteries comprises. Le reste est perdu, rejeté sous forme de chaleur (surchauffe de certains générateurs peut-être plus tard).
@@ -127,6 +138,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
     - **Pas de débit maximum** de charge ou de décharge. Plus tard, peut-être certaines batteries avec un débit, à côté de batteries à débit infini.
   - **Manque d'énergie** : si la production et les batteries ne suffisent pas, le réseau **disjoncte** et tout ce qu'il alimente s'arrête. Il se **réarme automatiquement** (après quelques secondes) quand la production et les batteries couvrent la demande de tout ce qui est allumé.
   - **Contrôle des bâtiments** : on peut couper l'alimentation d'un bâtiment et programmer ses heures d'alimentation (F54). Ces réglages sont ceux du tableau de distribution intégré au bâtiment (F56). Un bâtiment coupé arrête ses machines, qui ne consomment plus, mais le courant le traverse toujours vers ce qui est relié derrière lui.
+    - Fait (F64) : coupure et réglages du tableau intégré. Le passage du courant vers un bâtiment relié attend les couloirs (F26). Horaires : attend F54.
 - [ ] **F51** **[Oxygène]** **Système d'oxygène** (modèle détaillé de F27) :
   - **Unités** :
     - L'oxygène se compte en **litres**. Les débits (production, consommation, régulateurs) sont en **L/s**.
@@ -182,6 +194,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
     - **Sens unique** : un générateur ou une batterie du sous-réseau ne renvoie jamais d'énergie vers l'amont.
   - **Coupure** : couper le tableau arrête tout ce qui est derrière lui.
   - **Tableau intégré aux bâtiments** : chaque bâtiment a un tableau de distribution intégré. Sa coupure et ses horaires (F50) sont ceux de ce tableau.
+    - Fait (F64), sauf les horaires.
   - **Protection** :
     - **Limite de puissance** (W max) : si le sous-réseau demande plus, seul le tableau saute, l'amont continue de tourner.
     - **Délestage automatique** : il coupe son sous-réseau quand l'amont manque d'énergie, ou quand la charge des batteries de l'amont passe sous X %. Il réarme quand ça remonte. On protège ainsi l'essentiel en sacrifiant le secondaire.
@@ -201,11 +214,15 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
     - Un indicateur montre le panneau de contrôle en cours d'utilisation.
   - **Gestion** : un clic sur un élément affiche ses informations (état, puissance, charge) et un bouton on/off (F61). Pour un tableau de distribution, tous ses réglages sont disponibles, comme dans son interface.
   - Fait : prefab `ControlPanel` (20 W, item `27_ControlPanel`), `ControlPanelUI` et `NetworkMapElement` (relief calculé depuis la seed, zoom à la molette, déplacement en glissant). La partie « Interface du bâtiment » de F55 attend les bâtiments dans le réseau (F50).
+  - Les bâtiments sont dessinés selon leur forme vue de dessus (enveloppe convexe de leurs meshes), et non plus par leur rectangle englobant.
+  - Icônes : carré (machine), rond (générateur), rectangle plat (batterie), triangle (panneau de contrôle), losange (tableau). Trois couleurs : bleu en marche, rouge disjoncté, gris éteint. Pas d'icône pour le tableau d'un bâtiment : le bâtiment est surligné au survol et se sélectionne d'un clic.
 - [x] **F60** **[Interfaces]** **Minimap** :
   - Ronde, en haut à droite du HUD, elle tourne avec le joueur.
   - **Rendu** : une caméra vue de dessus qui ne rend que le terrain et les bâtiments, sans les objets placés, le décor ni les entités.
   - Le joueur n'est pas rendu : une petite flèche le remplace.
   - Zoom fixe (rayon réglable dans l'Inspector), toujours affichée.
+  - Revue : rendu stylisé comme la carte du panneau de contrôle (`MapUtility` : relief, courbes de niveau, grille), sans le réseau électrique, avec les contours des bâtiments, des couloirs et des objets posés. La caméra et sa texture sont supprimées.
+  - Courbes de niveau tracées en vectoriel (plus de pixélisation, minimap et panneau de contrôle), minimap légèrement transparente, rayon 60 → 50 m. Fond de la minimap plus clair et plus transparent (réglable sur `MinimapUI`).
   - Fait : `MinimapUI` sur le HUD, layer `Building` donné aux structures terminées. Sous un dôme, la minimap montre son toit (vue de dessus).
 - [x] **F61** **[Énergie]** **On / off de chaque appareil** (machine, générateur, batterie) :
   - Un appareil sur off s'arrête : une machine ne consomme plus, un générateur ne produit plus, une batterie ne charge ni ne décharge.
@@ -234,7 +251,24 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
   - Plaçable `Distribution Panel`, avec une entrée (verte) et une sortie (orange). Le câble se branche sur la plus proche de la visée, et l'entrée et la sortie d'un même tableau ne peuvent pas être reliées.
   - Coupure, limite de puissance (fusible), délestage (sur manque d'énergie en amont, par priorité, ou sur batteries amont sous un seuil), démarrage différé.
   - Interface (`DistributionPanelUI`, touche d'interaction) : état, demande du circuit, puissance transmise, énergie transmise au total, et réglages.
-- [ ] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
+- [x] **F64** **[Énergie]** **Électricité des bâtiments** (la partie bâtiments de F50 et le tableau intégré de F56, sans les horaires ni les couloirs) :
+  - Intérieur du bâtiment (`BuildingInterior`, trigger sur l'enfant `Interior` du dôme) : il sert à savoir ce qui est posé dedans, et servira à l'oxygène (F51) et au HUD (F55).
+  - Tableau intégré (`BuildingPowerPanel`, hérite de `DistributionPanel`) : une prise au bord du dôme, avec une entrée (à câbler depuis l'extérieur) et une sortie (vers un autre bâtiment ou une machine dehors, dans le circuit du bâtiment). Tout ce qui est posé dans le bâtiment est alimenté sans câble. Mêmes réglages et même interface qu'un tableau de distribution, sur la prise et depuis le panneau de contrôle.
+  - Chaînage par câble : de la sortie d'un bâtiment à l'entrée d'un autre, comme un tableau de distribution (sens unique), mais couper le premier ne fait que priver le second d'alimentation (B51). Relier les entrées de deux bâtiments est refusé. Les couloirs (F26) auront leurs propres règles.
+- [x] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
+  - **Fait** : structure `Couloir` (`CorridorData`, `Corridor`) dans la roue de construction. On clique un premier dôme puis un second : un couloir droit (2 à 20 m, 2 fer + 1 bois par mètre) est tracé entre leurs bords, n'importe où sur le pourtour, puis passe par l'étape plan. Détruit et remboursé avec un de ses dômes. Électricité et portée du panneau de contrôle selon les règles ci-dessous. Modèle provisoire (sol, murs, toit en cubes), terrain non aplani sous le couloir.
+  - Portée du panneau de contrôle avec un simple câble entre bâtiments : faite, voir le dernier point ci-dessous.
+  - **Électricité à travers un couloir** : un bâtiment ne se comporte pas tout à fait comme un tableau de distribution. Exemple : `G1 ---- Bât1 ==== Bât2` (`----` câble, `====` couloir).
+    - Bât1 et Bât2 sont tous deux alimentés.
+    - Couper Bât1 ne coupe pas Bât2. Réduire la limite de puissance de Bât1 ne change rien pour Bât2 : c'est comme si un câble faisait `G1 ---- Bât2`. Les deux bâtiments forment en gros deux sous-réseaux, chacun derrière son propre tableau intégré.
+    - Mais un panneau de contrôle posé dans Bât1 est vu dans le réseau {G1, Bât1, Bât2}, et non dans le seul sous-réseau de Bât1 : les bâtiments reliés par couloir ne sont pas des sous-réseaux pour lui.
+    - Couper Bât1 depuis ce panneau de contrôle ne coupe pas Bât2, exactement comme depuis la prise du bâtiment. Et le panneau de contrôle, posé dans Bât1, se coupe avec lui.
+    - Cette règle ne vaut que pour les couloirs. Deux bâtiments reliés par un simple câble se comportent comme des tableaux de distribution : `G1 ---> Bât1 ---> Bât2`, de la **prise de sortie** de Bât1 (faite, F64) à la prise d'entrée de Bât2. Couper Bât1 prive alors Bât2 d'alimentation, sans l'éteindre (B51). Le câble de prise d'entrée à prise d'entrée reste interdit.
+    - Le couloir marche dans les deux sens, comme un câble : si seule la prise de Bât2 est câblée, Bât1 est alimenté par le couloir.
+    - Deux sources : `G1 ---- Bât1 ==== Bât2 ---- G2` fusionne a priori G1 et G2 en un seul réseau, comme un câble direct. À tester en jeu pour valider.
+    - **Portée du panneau de contrôle** :
+      - `G2 --- PD1 --- G1 --- Bât1 ==== Bât2`, panneau dans Bât1 : il voit G1, Bât1 et Bât2, mais pas G2 (en amont du tableau PD1, règle habituelle).
+      - `G1 ---> Bât1 ---> Bât2` (simple câble), panneau dans Bât2 : il voit Bât1, mais pas son contenu, ni G1. Règle propre aux bâtiments : un panneau dans le circuit d'un tableau de distribution ne voit toujours rien de ce qui alimente ce tableau.
 - [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur. Modèle détaillé : voir F51.
 - [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde.
 - [x] **F29** **[Construction]** Portée de placement, de build et de destruction réduite à 8 m (`Builder.range`, au lieu de 300 m). Pour une structure, la portée s'ajoute au rayon de son emprise, et son centre reste à au moins « rayon + 1 m » du joueur : sinon, le joueur serait toujours à l'intérieur d'un grand dôme (fantôme invalide).
