@@ -14,8 +14,26 @@ public abstract class EnergyDevice : MonoBehaviour
 
     public abstract bool LinksNetworks { get; }
 
+    // Several devices on the same saved object (input and output of a distribution panel): saved with the cables to
+    // find the right one again. Null for a single device
+    public virtual string PortId => null;
+
+    // Distribution panel the device is a port of
+    public virtual DistributionPanel Panel => null;
+
+    // Aimed device: the one holding the collider, or the closest port of an aimed distribution panel
+    public static EnergyDevice FromHit(RaycastHit hit)
+    {
+        EnergyDevice device = hit.collider.GetComponentInParent<EnergyDevice>();
+
+        if (device != null) return device;
+
+        DistributionPanel panel = hit.collider.GetComponentInParent<DistributionPanel>();
+        return panel != null ? panel.ClosestPort(hit.point) : null;
+    }
+
     // Display name (text at the pointer): the placed item, or the object
-    public string DisplayName
+    public virtual string DisplayName
     {
         get
         {

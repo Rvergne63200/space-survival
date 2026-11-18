@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
+  m_Name: 29_DistributionPanel
+  m_EditorClassIdentifier: 
+  _id: 29
+  _stackMax: 10
+  _name: Distribution Panel
+  _description: Creates a circuit after its output and manages it (switch, power limit, load shedding).
+  _sprite: {fileID: 0}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _primaryActions: []
+  _secondaryActions: []
+  _placedPrefab: {fileID: 4204000000000000001, guid: 1cde0da8bffd4d429336998b3540c2c1, type: 3}
+  _refund: []
+  references:
+    version: 2
+    RefIds: []

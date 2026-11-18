@@ -439,6 +439,74 @@
     -unity-font-style: bold;
 }
 
+/* ---------- Distribution panel (DistributionPanel.uxml) ---------- */
+
+.distribution-panel {
+    left: 50%;
+    top: 50%;
+    width: 460px;
+    translate: -50% -50%;
+}
+
+.distribution-state {
+    color: rgb(255, 255, 255);
+    font-size: 15px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+
+.distribution-info {
+    color: rgb(200, 200, 200);
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.distribution-switch {
+    height: 34px;
+    margin: 10px 0 0 0;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.distribution-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.distribution-row .distribution-field {
+    flex-grow: 1;
+}
+
+.distribution-field {
+    margin: 3px 0;
+}
+
+.distribution-field Label,
+.distribution-toggle Label {
+    color: rgb(220, 220, 220);
+    font-size: 13px;
+    min-width: 170px;
+}
+
+.distribution-toggle {
+    margin-left: 8px;
+}
+
+.distribution-toggle Label {
+    min-width: 0;
+}
+
+.distribution-hint {
+    color: rgb(160, 160, 160);
+    font-size: 11px;
+    white-space: normal;
+}
+
+.distribution-close {
+    height: 30px;
+    margin: 12px 0 0 0;
+}
+
 /* ---------- Item held at the cursor (HeldItem.uxml) ---------- */
 
 .held-item {

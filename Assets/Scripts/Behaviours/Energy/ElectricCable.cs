@@ -20,6 +20,8 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
     // Kept to draw the cable before its devices are found (load) and to find them again
     private string startId;
     private string endId;
+    private string startPort;
+    private string endPort;
     private Vector3 startPosition;
     private Vector3 endPosition;
     private readonly List<Vector3> points = new List<Vector3>();
@@ -136,6 +138,7 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
         if (start != null)
         {
             startId = start.SaveId;
+            startPort = start.PortId;
             startPosition = start.ConnectionPoint;
             start.AddCable(this);
         }
@@ -143,6 +146,7 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
         if (end != null)
         {
             endId = end.SaveId;
+            endPort = end.PortId;
             endPosition = end.ConnectionPoint;
             end.AddCable(this);
         }
@@ -163,18 +167,26 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
     {
         if (SaveManager.Instance == null) return;
 
-        EnergyDevice foundStart = start != null ? start : FindDevice(startId);
-        EnergyDevice foundEnd = end != null ? end : FindDevice(endId);
+        EnergyDevice foundStart = start != null ? start : FindDevice(startId, startPort);
+        EnergyDevice foundEnd = end != null ? end : FindDevice(endId, endPort);
 
         if (foundStart == null || foundEnd == null) return;
 
         SetEnds(foundStart, foundEnd);
     }
 
-    private static EnergyDevice FindDevice(string id)
+    private static EnergyDevice FindDevice(string id, string port)
     {
         SaveableObject saveable = SaveManager.Instance.GetLiveObject(id);
-        return saveable != null ? saveable.GetComponentInChildren<EnergyDevice>() : null;
+
+        if (saveable == null) return null;
+
+        foreach (EnergyDevice device in saveable.GetComponentsInChildren<EnergyDevice>())
+        {
+            if (string.IsNullOrEmpty(port) || device.PortId == port) return device;
+        }
+
+        return null;
     }
 
     private void Redraw()
@@ -251,6 +263,8 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
     {
         public string startId;
         public string endId;
+        public string startPort;
+        public string endPort;
         public Vector3 startPosition;
         public Vector3 endPosition;
         public List<Vector3> points = new List<Vector3>();
@@ -265,6 +279,8 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
         {
             startId = startId,
             endId = endId,
+            startPort = startPort,
+            endPort = endPort,
             startPosition = start != null ? start.ConnectionPoint : startPosition,
             endPosition = end != null ? end.ConnectionPoint : endPosition,
             points = new List<Vector3>(points),
@@ -280,6 +296,8 @@ public class ElectricCable : MonoBehaviour, ISaveableComponent
 
         startId = state.startId;
         endId = state.endId;
+        startPort = state.startPort;
+        endPort = state.endPort;
         startPosition = state.startPosition;
         endPosition = state.endPosition;
         itemCount = state.itemCount;

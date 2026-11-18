@@ -106,7 +106,8 @@ public class CablePlacer : MonoBehaviour
         int layerMask = ~(1 << gameObject.layer);
 
         hasAim = Physics.Raycast(Source.position, Source.forward, out RaycastHit hit, range, layerMask, QueryTriggerInteraction.Ignore);
-        aimedDevice = hasAim ? hit.collider.GetComponentInParent<EnergyDevice>() : null;
+        // A distribution panel: its input or output, the closest to the aimed point
+        aimedDevice = hasAim ? EnergyDevice.FromHit(hit) : null;
         aimPoint = hasAim ? hit.point + hit.normal * 0.03f : Source.position + Source.forward * range;
 
         if (aimedDevice != null)
@@ -179,7 +180,13 @@ public class CablePlacer : MonoBehaviour
 
     private bool CanEndOn(EnergyDevice device)
     {
-        return start != null && device != null && device != start && !start.IsLinkedTo(device);
+        return start != null && device != null && device != start && !start.IsLinkedTo(device) && !SamePanel(start, device);
+    }
+
+    // The input and the output of a panel cannot be linked together
+    private static bool SamePanel(EnergyDevice a, EnergyDevice b)
+    {
+        return a.Panel != null && a.Panel == b.Panel;
     }
 
     // ---------- Hint ----------
@@ -193,6 +200,11 @@ public class CablePlacer : MonoBehaviour
         if (start == null)
         {
             text = cableItem.Name + "   ·   Clic gauche sur un appareil électrique : début du câble";
+
+            if (aimedDevice != null)
+            {
+                text += "   ·   Visé : " + aimedDevice.DisplayName;
+            }
         }
         else
         {
@@ -270,6 +282,12 @@ public class CablePlacer : MonoBehaviour
         if (start.IsLinkedTo(end))
         {
             NotificationUI.Show("Ces deux appareils sont déjà reliés.", NotificationType.Warning);
+            return;
+        }
+
+        if (SamePanel(start, end))
+        {
+            NotificationUI.Show("L'entrée et la sortie d'un tableau ne peuvent pas être reliées.", NotificationType.Warning);
             return;
         }
 

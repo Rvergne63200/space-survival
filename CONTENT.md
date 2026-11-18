@@ -100,7 +100,7 @@ Vue à la première personne uniquement.
 
 ### Données
 - **ItemData** (ScriptableObject `Item/Item`) : `Id` (int saisi à la main), `StackMax` (99 par défaut), `Name`, `Description`, `Sprite` (icône UI) et `Model` (prefab 3D utilisé au drop). Sous-classe `ConsummableData` (voir feature 3).
-- **Objets** (`ScriptableObjects/Items`, ids 0 à 28 ; 25 à 28 : câble et objets de test électriques, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
+- **Objets** (`ScriptableObjects/Items`, ids 0 à 29 ; 25 à 29 : câble, objets de test électriques et tableau de distribution, voir section 10) : ressources `Rock`, `Wood Log`, `Branch`, `Plant Fibers`, `Iron Ore`, `Iron`, `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue` ; consommables `Ration`, `Water`, `First Aid Kit` ; plaçables `Crate`, `Radio Relay` (prefab `RadioRelais`, sans effet pour l'instant) et `Crafter` (prefab `Crafter`, `CraftingStation` sans recette pour l'instant) ; `Oxygen Tank` et `Jetpack` sans effet pour l'instant, `Flashlight` (pile de 1). Chaque objet doit être dans la liste `items` du SaveManager (Bootstrap).
 - **Item** : simple wrapper autour d'un ItemData (`Item.CreateFromData`). Pas encore de données d'instance (durabilité, etc.).
 - **ItemSlot** : un item et une quantité. `Add` respecte `StackMax` et renvoie le reste, `Remove` renvoie ce qui manque. `Switch` échange le contenu avec un autre slot. `Drop` passe par `Pickupable.Spawn`, qui instancie le `Model` devant la source avec un `Pickupable` déjà identifié et un Rigidbody qui reçoit une petite impulsion. Le slot n'est vidé que si le spawn réussit (modèle valide avec un `Pickupable`).
 - **ItemCollection** : liste de slots de taille fixe (`MaxSize`). `Add` complète d'abord les stacks non pleins puis remplit les slots vides, et renvoie le surplus. `RemoveItem` retire en partant du dernier slot. `Count` compte la quantité totale d'un item. Event `ev_Update`.
@@ -247,9 +247,28 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - Consommateur : alimenté, réseau disjoncté ou non raccordé, avec sa consommation.
   - Générateur : donné / production.
   - Batterie : stock / capacité et flux.
+- **Tableau de distribution** (`DistributionPanel`, sur la racine du prefab `Prefabs/Environment/Energy/DistributionPanel`) :
+  - **Ports** : deux ports enfants. `DistributionPanelInput` (`EnergyConsumer`, cube vert) est un consommateur du réseau amont. `DistributionPanelOutput` (`EnergyGenerator`, cube orange) est un générateur de son circuit.
+  - **Branchement** : un câble se branche sur le port le plus proche du point visé (`EnergyDevice.FromHit`). Les câbles sauvegardent le port (`PortId`). L'entrée et la sortie d'un même tableau ne peuvent pas être reliées.
+  - **Sens unique** : rien ne remonte vers l'amont. La sortie est servie **après** les générateurs du circuit, et son surplus charge les batteries du circuit après le leur.
+  - **Calcul** (`EnergyNetworkManager.Simulate`) :
+    1. **Demande** : les sorties donnent sans limite, et ce qu'elles donnent est la demande du circuit (`Request`). Ce qu'elles donnent aux consommateurs est **obligatoire** (`Request`), ce qu'elles donnent aux batteries est **facultatif** (`ChargeRequest`). Pour un tableau sous un autre, la demande de ses machines compte dans la demande du tableau du dessus, et sa recharge (plafonnée par sa puissance max) dans la recharge du tableau du dessus. Le calcul est répété pour les tableaux imbriqués. Les réseaux disjonctés comptent aussi, pour pouvoir se réarmer.
+    2. **Décisions** du tableau (`BeginUpdate`) : coupure, fusible (demande au-dessus de la limite), délestage sur batteries amont (sous le seuil, réarmé 5 % au-dessus), démarrage différé.
+    3. **Distribution** : l'entrée demande la part obligatoire à l'amont. La part facultative (la recharge, dans la limite de puissance) est servie comme une consommation, avant la recharge des batteries amont, mais ne fait pas disjoncter si elle n'est pas couverte entièrement. Elle est aussi servie par les batteries du réseau d'entrée, une fois leurs manques couverts (dans la limite de leur débit sortant, stock compris). La sortie donne au circuit la part obligatoire plus ce qui a été reçu pour la recharge. Un réseau en manque déleste d'abord ses tableaux réglés sur « manque d'énergie » (priorité la plus faible en premier), puis disjoncte. Un tableau dont le réseau d'entrée disjoncte ne donne plus rien.
+    4. **Après la distribution** (`EndUpdate`) :
+       - un tableau délesté ou sans alimentation repart quand l'amont pourrait de nouveau le servir ;
+       - pour un tableau délesté, après 3 s ;
+       - puis il attend son démarrage différé.
+  - **États** : en marche, coupé, démarrage, pas d'alimentation en entrée, sauté, délesté, boucle (la sortie alimente le réseau de sa propre entrée).
+  - **Sauvegarde** : les réglages et l'énergie transmise au total.
+  - **Limite** : le délestage ne se réarme que sur les sources du réseau d'entrée lui-même. Un tableau délesté dans un circuit déjà alimenté par un autre tableau ne compte pas sur ce que l'amont de ce dernier pourrait donner en plus.
+- **DistributionPanelUI** (`UI.prefab`, `DistributionPanel.uxml`, style dans `Game.uss`) : ouverte en interagissant avec le tableau. C'est une interface, fermée par Échap.
+  - **Affichage** : état, demande du circuit (ses consommateurs seulement), puissance transmise, puissance réellement envoyée en recharge des batteries du circuit (`ChargeSupplied`), énergie transmise. Le texte au pointeur affiche aussi la part en recharge.
+  - **Réglages** : bouton Couper / Rétablir, limite de puissance (ou illimitée), délestage (aucun, manque d'énergie en amont, batteries en amont sous le seuil), seuil des batteries, priorité, démarrage différé.
 - **Objets de test** (`Prefabs/Environment/Energy`, matériau `Materials/EnergyTest`) :
   - `26_InfiniteGenerator` : générateur, 1000 W par défaut.
   - `27_TestMachine` : consommateur de 100 W, avec `TestMachine`. Elle est rouge quand elle est alimentée, blanche sinon.
   - `28_TestBattery` : batterie de 1000 Wh, avec des débits de 500 W.
+  - `29_DistributionPanel` : le tableau de distribution.
   - `25_ElectricCable` : le câble, 1 par mètre.
-  - Inventaire de départ : 99 câbles et 2 générateurs dans la barre d'outils, 3 machines et 2 batteries dans l'inventaire.
+  - Inventaire de départ : 99 câbles et 2 générateurs dans la barre d'outils, 3 machines, 2 batteries et 3 tableaux de distribution dans l'inventaire.

@@ -508,8 +508,8 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       _item:
-        _data: {fileID: 0}
-      _quantity: 0
+        _data: {fileID: 11400000, guid: 1ce1a766d22c430ca0115abb97db156f, type: 2}
+      _quantity: 3
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
@@ -807,6 +807,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b0d354a17c2f425fb212b68f6ed31035, type: 2}
   - {fileID: 11400000, guid: 1ab95310f5ce4ee3925a34f7a8df3d59, type: 2}
   - {fileID: 11400000, guid: 643dc9f97b4a4cbdaa891ae4f8fa10c1, type: 2}
+  - {fileID: 11400000, guid: 1ce1a766d22c430ca0115abb97db156f, type: 2}
   structureCatalog: {fileID: 11400000, guid: 4d4be868b39c4f598490ac65ced4af44, type: 2}
   runtimePrefabs:
   - {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class EnergyConsumer : EnergyDevice
 {
     [SerializeField] private EnergyValue consumption = new EnergyValue(100f);
-    public float Consumption => consumption.Value;
+    public virtual float Consumption => consumption.Value;
 
     public override bool LinksNetworks => true;
 

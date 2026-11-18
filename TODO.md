@@ -56,6 +56,10 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B42** **[Stats]** Une barre de stat prenait la valeur courante comme maximum jusqu'au premier changement du max (`StatBarUI.SetStat`) : une stat sauvegardée à moitié s'affichait pleine (« 50/50 »). Elle prend maintenant `Stat.MaxValue`.
 - [x] **B43** **[Inventaire]** L'icône de l'objet tenu au curseur bloquait parfois le clic sur le slot en dessous : impossible d'y déposer l'objet, même sur un slot vide. `HeldItemUI` force maintenant `PickingMode.Ignore` sur l'élément, ses enfants et tous ses parents jusqu'au panel, sans dépendre uniquement des attributs du UXML.
 - [x] **B44** **[Inventaire]** Vraie cause du dépôt impossible avec un objet au curseur (B43 n'était qu'une précaution) : le double-clic se basait sur `PointerDownEvent.clickCount`. Avec l'EventSystem, ce compteur concerne tout le panel et non le slot cliqué, et il continue d'augmenter tant que les clics se suivent à moins de ~0,5 s. Prendre un objet puis cliquer vite sur un autre slot, ou insister, déclenchait donc `GatherToCursor` au lieu de poser l'objet. `ItemSlotUI` détecte maintenant le double-clic lui-même : deux clics gauches sur le **même slot** à moins de 0,35 s.
+- [x] **B45** **[Énergie]** À travers un tableau de distribution, la recharge des batteries du circuit était une demande obligatoire. Par exemple, 300 W en amont pour une machine de 100 W et une batterie de 400 W faisaient disjoncter l'amont. Le débit d'une batterie est maintenant un maximum : la demande du tableau est séparée en une part obligatoire (les consommateurs, `Request`) et une part facultative (la recharge, `ChargeRequest`). La part facultative est servie avec le surplus des générateurs amont, comme une batterie. Dans l'exemple, 300 W donnent 100 W à la machine et 200 W à la batterie. Avec 1000 W disponibles, le tableau ne transmet que 500 W.
+- [x] **B46** **[Énergie]** La recharge des batteries derrière un tableau de distribution (la part facultative, B45) n'était servie que par le surplus d'un générateur du réseau d'entrée. Un tableau alimenté par une batterie (G1 → B1 → PD2) ne recevait donc que la part obligatoire. Une batterie donne maintenant aussi, après les manques, de quoi recharger les batteries derrière les tableaux de ses réseaux, dans la limite de son débit sortant, stock compris. Ce n'est pas le cas pour un tableau dont le circuit contient cette même batterie.
+- [x] **B47** **[Énergie]** Vu de l'amont, la recharge derrière un tableau de distribution était servie à parts égales avec les batteries amont. Elle est maintenant servie comme la consommation d'une machine : le tableau demande ce qu'il faut pour ses machines et ses batteries, dans la limite de sa puissance max, et il passe **avant** la recharge des batteries amont. Seule la part des machines fait disjoncter si elle n'est pas couverte.
+- [x] **B48** **[Énergie]** Tableaux imbriqués (PD2 sous PD1) : pendant le calcul de la demande des circuits, la place de recharge de PD2 n'était pas plafonnée par sa puissance max. PD1 pouvait demander en amont plus de recharge que PD2 ne pouvait en faire passer, et la différence était perdue. Vu du circuit de PD1, PD2 compte maintenant ses machines en demande (part obligatoire) et sa recharge en recharge, plafonnée par sa puissance max.
 
 ## Feature
 
@@ -181,7 +185,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
     - **Priorité** : en cas de manque, les tableaux de priorité faible coupent en premier.
     - Sans délestage ni priorité configurés, un manque d'énergie fait disjoncter tout le réseau, sous-réseaux compris (F50).
   - **Automatisation** :
-    - **Horaires** : alimentation par plages horaires (F54).
+    - **Horaires** : alimentation par plages horaires (F54). **Reste à faire** (attend F54) : tout le reste de F56 est fait (F59).
     - **Démarrage différé** : après une coupure, il attend X secondes avant de réarmer, pour échelonner les redémarrages.
     - Les conditions (personne dans le bâtiment, jour ou nuit…) ne sont pas prévues pour l'instant.
   - **Affichage** : consommation instantanée du sous-réseau, énergie consommée au total, état (en marche, coupé, sauté, et pourquoi).
@@ -191,6 +195,10 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
   - `EnergyNetworkManager` : réseaux reliés par câbles, générateurs et batteries qui ne relient pas les réseaux, répartition des générateurs partagés, disjonction et réarmement automatique.
   - **Câble électrique** (`Electric Cable`, `CablePlacer`) : pose par clics successifs, tracé arrondi, 1 câble par mètre. Il est détruit avec la roue de construction et rendu.
   - **Objets de test** (plaçables) : `Infinite Generator`, `Test Machine` (rouge quand elle est alimentée, blanche sinon) et `Test Battery`. Leur état s'affiche en les visant.
+- [x] **F59** **[Énergie]** **Tableau de distribution** (F56 sans les horaires, ni le tableau intégré aux bâtiments) :
+  - Plaçable `Distribution Panel`, avec une entrée (verte) et une sortie (orange). Le câble se branche sur la plus proche de la visée, et l'entrée et la sortie d'un même tableau ne peuvent pas être reliées.
+  - Coupure, limite de puissance (fusible), délestage (sur manque d'énergie en amont, par priorité, ou sur batteries amont sous un seuil), démarrage différé.
+  - Interface (`DistributionPanelUI`, touche d'interaction) : état, demande du circuit, puissance transmise, énergie transmise au total, et réglages.
 - [ ] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules.
 - [ ] **F27** **[Construction]** **Réseau d'oxygène** : un générateur produit une quantité d'O2. La concentration dépend de la puissance totale des générateurs et du volume de l'ensemble des bâtiments reliés. Lien avec la stat Oxygène du joueur. Modèle détaillé : voir F51.
 - [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde.
