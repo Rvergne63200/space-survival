@@ -46,6 +46,12 @@ public class ParentUI : MonoBehaviour
     {
         InterfaceManager.GetInstance();
         inputActions = new PlayerInputActions();
+
+#if UNITY_EDITOR
+        // In the editor, Escape always releases the cursor (the game view loses the lock): ² (backquote key position)
+        // replaces it. Builds keep Escape
+        inputActions.Actions.CloseInterfaces.ApplyBindingOverride(new InputBinding { path = "<Keyboard>/escape", overridePath = "<Keyboard>/backquote" });
+#endif
     }
 
     private void OnEnable()

@@ -72,6 +72,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B57** **[Énergie]** `PD1 ---> B1` et `PD1 ---> B5`, panneau de contrôle dans B1 : il montrait le contenu de B5. Dans le réseau qui alimente le bâtiment, un autre bâtiment n'est ouvert que s'il est relié par couloir au bâtiment du panneau (`Corridor.Group`) ; sinon on voit le bâtiment et son câble, pas son contenu.
 - [x] **B58** **[Énergie]** `B1 ==== B2 ---> B3`, panneau de contrôle dans B1 : le contenu de B3 n'était pas visible. Ce qui est derrière un circuit ouvert (bâtiment du groupe, tableau alimenté par le réseau) est en aval et affiché en entier, bâtiments derrière sa prise de sortie compris.
 - [x] **B59** **[Stats]** Le saut ne consomme plus d'endurance (trop contraignant) : `jumpEnduranceCost` et son marker sont retirés. Seul le sprint en consomme.
+- [x] **B60** **[UI]** Dans l'éditeur, Échap libère toujours le curseur : il restait visible après la fermeture d'un menu. Dans l'éditeur seulement, ² remplace Échap pour fermer les interfaces et ouvrir le menu pause.
 
 ## Feature
 
