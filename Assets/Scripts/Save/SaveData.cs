@@ -49,6 +49,7 @@ public class PlayerSaveData
 
     public List<ItemSlotSaveData> inventory = new List<ItemSlotSaveData>();
     public List<ItemSlotSaveData> toolBar = new List<ItemSlotSaveData>();
+    public List<ItemSlotSaveData> equipment = new List<ItemSlotSaveData>();
     public int handedIndex;
 }
 

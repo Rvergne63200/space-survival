@@ -19,6 +19,45 @@ public class PlayerInventory : ItemStorage
     protected ItemCollection<Item> _toolBar;
     public ItemCollection<Item> ToolBar { get => _toolBar; private set => _toolBar = value; }
 
+    // Equipment worn by the player: one slot per entry of EquipmentLayout (head, body, back, hands, feet, two oxygen
+    // tanks), each accepting only the EquipmentData of its slot, one at a time. Shown with the inventory (Tab or I)
+    public static readonly EquipmentSlot[] EquipmentLayout =
+    {
+        EquipmentSlot.Head, EquipmentSlot.Body, EquipmentSlot.Back, EquipmentSlot.Hands, EquipmentSlot.Feet,
+        EquipmentSlot.OxygenTank, EquipmentSlot.OxygenTank
+    };
+
+    private ItemCollection<Item> _equipment;
+    public ItemCollection<Item> Equipment
+    {
+        get
+        {
+            if (_equipment == null)
+            {
+                _equipment = new ItemCollection<Item>(EquipmentLayout.Length);
+
+                for (int i = 0; i < EquipmentLayout.Length; i++)
+                {
+                    EquipmentSlot place = EquipmentLayout[i];
+                    _equipment.Slots[i].SetRestriction(data => data is EquipmentData equipment && equipment.Slot == place, 1);
+                }
+            }
+
+            return _equipment;
+        }
+    }
+
+    // The first slot of this kind holding an item, null if none
+    public ItemSlot<Item> WornSlot(EquipmentSlot place)
+    {
+        for (int i = 0; i < EquipmentLayout.Length; i++)
+        {
+            if (EquipmentLayout[i] == place && !Equipment.Slots[i].IsEmpty()) return Equipment.Slots[i];
+        }
+
+        return null;
+    }
+
     private int _handedIndex;
     public int HandedIndex { 
         get => _handedIndex;
@@ -543,7 +582,16 @@ public class PlayerInventory : ItemStorage
         bool fromStorage = storage != null && storage.Slots.Contains(slot);
         ItemCollection<Item> target;
 
-        if (fromStorage)
+        // An equipment without storage open goes to (or comes back from) its equipment slot
+        if (storage == null && Equipment.Slots.Contains(slot))
+        {
+            target = Content;
+        }
+        else if (storage == null && slot.Item.Data is EquipmentData && (Content.Slots.Contains(slot) || ToolBar.Slots.Contains(slot)) && CanWear(slot.Item.Data))
+        {
+            target = Equipment;
+        }
+        else if (fromStorage)
         {
             target = null;
         }
@@ -565,13 +613,31 @@ public class PlayerInventory : ItemStorage
 
         slot.Clear();
 
-        count = fromStorage ? Add(item, count) : target.Add(item, count);
+        // Into the equipment: only the empty slots accepting it (Add would insist on the first empty slot)
+        count = fromStorage ? Add(item, count) : target == Equipment ? Equipment.AddToEmptySlots(item, count) : target.Add(item, count);
+
+        // From the equipment, an inventory full: the tool bar
+        if (count > 0 && target == Content && Equipment.Slots.Contains(slot))
+        {
+            count = ToolBar.Add(item, count);
+        }
 
         // What did not fit stays in the source slot
         if (count > 0)
         {
             slot.Add(item, count);
         }
+    }
+
+    // An empty equipment slot accepts this item
+    private bool CanWear(ItemData data)
+    {
+        foreach (ItemSlot<Item> slot in Equipment.Slots)
+        {
+            if (slot.IsEmpty() && slot.Accepts(data)) return true;
+        }
+
+        return false;
     }
 
     public void TryMerge(ItemSlot<Item> slot, Direction dir)

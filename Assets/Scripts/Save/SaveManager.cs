@@ -454,6 +454,7 @@ public class SaveManager : MonoBehaviour
             stats = playerManager.Stats.Capture(),
             inventory = playerManager.Inventory.Content.CaptureSlots(),
             toolBar = playerManager.Inventory.ToolBar.CaptureSlots(),
+            equipment = playerManager.Inventory.Equipment.CaptureSlots(),
             handedIndex = playerManager.Inventory.HandedIndex
         };
     }
@@ -469,6 +470,7 @@ public class SaveManager : MonoBehaviour
             playerManager.Stats.Restore(player.stats);
             playerManager.Inventory.Content.RestoreSlots(player.inventory, GetItem);
             playerManager.Inventory.ToolBar.RestoreSlots(player.toolBar, GetItem);
+            playerManager.Inventory.Equipment.RestoreSlots(player.equipment, GetItem);
             playerManager.Inventory.SetHandedIndex(player.handedIndex);
 
             CameraMovement cameraMovement = GetCameraMovement();

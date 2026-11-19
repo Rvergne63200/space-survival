@@ -169,8 +169,6 @@ MonoBehaviour:
   item:
     _data: {fileID: 11400000, guid: 54d530aa7c3d3a7409abbadbb4db0f87, type: 2}
   sprintEnduranceConsumeSpeed: 5
-  jumpEnduranceCost: 5
-  jumpEnduranceConsumeSpeed: 20
 --- !u!114 &7019758872836574315
 MonoBehaviour:
   m_ObjectHideFlags: 0

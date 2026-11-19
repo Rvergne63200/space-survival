@@ -22,4 +22,4 @@ MonoBehaviour:
     enabled: 1
     unit: 2
     capacity: 30
-  _slot: 2
+  _slot: 5

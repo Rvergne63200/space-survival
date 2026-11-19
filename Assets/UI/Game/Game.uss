@@ -310,6 +310,29 @@
     width: 640px;
 }
 
+/* Equipment of the player, under the inventory (PlayerInventoryContentUI): one slot per place, its name under it */
+.equipment-title {
+    margin-top: 10px;
+}
+
+.equipment-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 640px;
+}
+
+.equipment-slot {
+    align-items: center;
+}
+
+.equipment-slot-name {
+    color: rgb(170, 190, 210);
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+    -unity-text-align: upper-center;
+}
+
 /* ---------- Crafting station (CraftingStation.uxml, RecipeSlot.uxml, RecipeIngredient.uxml) ---------- */
 
 .crafting-panel {

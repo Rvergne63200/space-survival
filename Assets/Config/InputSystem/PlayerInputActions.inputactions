@@ -276,6 +276,17 @@
                 },
                 {
                     "name": "",
+                    "id": "2cbc7344-81ce-4989-848e-acf0f6d9891d",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b21636a4-c86b-4b2a-8970-c73f8292e0fe",
                     "path": "<Keyboard>/escape",
                     "interactions": "",

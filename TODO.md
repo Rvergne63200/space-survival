@@ -71,6 +71,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B56** **[Énergie]** Panneau de contrôle dans un bâtiment alimenté par un tableau : il ne voyait pas les autres appareils branchés sur ce tableau (une batterie, par exemple). Il s'arrêtait à la sortie du tableau ; il suit maintenant tout ce réseau, sans remonter derrière l'entrée du tableau ni entrer dans un autre bâtiment.
 - [x] **B57** **[Énergie]** `PD1 ---> B1` et `PD1 ---> B5`, panneau de contrôle dans B1 : il montrait le contenu de B5. Dans le réseau qui alimente le bâtiment, un autre bâtiment n'est ouvert que s'il est relié par couloir au bâtiment du panneau (`Corridor.Group`) ; sinon on voit le bâtiment et son câble, pas son contenu.
 - [x] **B58** **[Énergie]** `B1 ==== B2 ---> B3`, panneau de contrôle dans B1 : le contenu de B3 n'était pas visible. Ce qui est derrière un circuit ouvert (bâtiment du groupe, tableau alimenté par le réseau) est en aval et affiché en entier, bâtiments derrière sa prise de sortie compris.
+- [x] **B59** **[Stats]** Le saut ne consomme plus d'endurance (trop contraignant) : `jumpEnduranceCost` et son marker sont retirés. Seul le sprint en consomme.
 
 ## Feature
 
@@ -109,9 +110,10 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **F42** **[Crafting]** Nouvelle interface de craft : liste des recettes (icônes) et détail de la recette sélectionnée (nom, description, ingrédients possédés/requis), quantité à fabriquer (−, +, Max, via `Crafter.MaxCraftable`) et filtre « Fabricables uniquement ».
 - [x] **F43** **[Interfaces]** L'inventaire du joueur s'ouvre avec la station de craft et avec un conteneur fouillé, et se referme avec eux sauf si le joueur l'avait ouvert lui-même (`PlayerInventory.OpenWith` / `CloseWith`).
 - [x] **F44** **[Inventaire]** Nouveaux objets (`ScriptableObjects/Items`, ids 9 à 24, sans sprite pour l'instant). Ressources : `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue`. Consommable : `First Aid Kit` (vie +50). Équipements, outil et plaçables encore sans effet : `Oxygen Tank`, `Jetpack`, `Flashlight`, `Radio Relay`, `Crafter` (voir F45 à F48). Ajoutés à l'inventaire de départ (les plaçables dans la barre d'outils) et à la liste `items` du SaveManager.
-- [ ] **F45** **[Inventaire]** **Système d'équipement** : slots d'équipement pour l'`Oxygen Tank` (réserve d'oxygène pour respirer dehors, lien avec F27 et la stat Oxygène) et le `Jetpack` (vol sur de courtes distances). Menu des équipements ouvert avec la touche **Tab**.
-  - Les données existent déjà (`EquipmentData`, R18) : emplacement `Head`, `Body` ou `Back`, à revoir avec ce système.
-  - À définir : comment la barre d'un équipement se vide. Valeur prévue pour le jetpack : 2000 W en vol (50 Wh).
+- [x] **F45** **[Inventaire]** **Système d'équipement** : slots d'équipement pour l'`Oxygen Tank` (réserve d'oxygène pour respirer dehors, lien avec F27 et la stat Oxygène) et le `Jetpack` (vol sur de courtes distances). Menu des équipements ouvert avec la touche **Tab**.
+  - Fait : 7 emplacements (tête, corps, dos, mains, pieds, deux bouteilles d'oxygène), affichés sous l'inventaire (I ou Tab). Les bouteilles ont leurs emplacements à part du dos : jetpack et oxygène se portent ensemble.
+  - Jetpack (`JetpackData`) : la touche Saut maintenue en l'air pousse vers le haut, 2000 W de sa barre de 50 Wh (90 s de vol), rechargeable à la station.
+  - Reste : la consommation d'oxygène des bouteilles (avec le réseau d'oxygène, F27 / F51), et les items des autres emplacements (casque, combinaison, gants, sur-chaussures).
 - [x] **F46** **[Inventaire]** **Lampe torche** (`Flashlight`) : au clic gauche en main, allume ou éteint un spot devant la caméra (`FlashlightAction`). Elle s'éteint quand elle quitte la main. Les actions des outils ont maintenant trois modes (`ItemActionMode`) : `Press` (un clic = une utilisation, ex. arme), `Toggle` (`ToggleItemAction`, activer / désactiver) et `Hold` (`HoldItemAction`, tant que le bouton est maintenu, ex. pioche).
 - [ ] **F47** **[Construction]** **Relais radio** (`Radio Relay`) : effet à définir (le prefab posé `RadioRelais` existe).
 - [ ] **F48** **[Crafting]** **Crafter** : recettes de sa `CraftingStation` (le prefab posé `Crafter` existe).

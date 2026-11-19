@@ -126,6 +126,7 @@ public class PlayerManager : MonoBehaviour
         List<ItemSlot<Item>> slots = new List<ItemSlot<Item>>();
         slots.AddRange(inventory.Content.Slots);
         slots.AddRange(inventory.ToolBar.Slots);
+        slots.AddRange(inventory.Equipment.Slots);
         slots.Add(inventory.draggingSlot);
 
         bool hasItems = slots.Exists(slot => slot != null && !slot.IsEmpty());
@@ -165,6 +166,7 @@ public class PlayerManager : MonoBehaviour
 
         inventory.Content.ev_Update.Invoke();
         inventory.ToolBar.ev_Update.Invoke();
+        inventory.Equipment.ev_Update.Invoke();
     }
 
     public void DespawnPlayer()

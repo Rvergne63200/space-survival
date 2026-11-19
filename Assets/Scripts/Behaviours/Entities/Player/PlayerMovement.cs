@@ -44,13 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float sprintEnduranceConsumeSpeed = 5f;
 
-    public float jumpEnduranceCost = 5f;
-    public float jumpEnduranceConsumeSpeed = 20f;
-
     private float jumpCountdown = 0f;
-
-    // Makes each jump marker key unique, so a new jump does not replace the marker of the previous one
-    private int jumpCount = 0;
 
     public float maxSlopeAngle = 45f;
     public float groundCheckDistance = 0.1f;
@@ -224,6 +218,8 @@ public class PlayerMovement : MonoBehaviour
             rigidbody.AddForce(-Vector3.ProjectOnPlane(Physics.gravity * gravityMultiplier, groundNormal), ForceMode.Acceleration);
         }
 
+        ApplyJetpack(grounded);
+
         // Contacts are collected again by the next physics step
         wallNormals.Clear();
     }
@@ -300,17 +296,55 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    // ---------- Jetpack ----------
+
+    // Jetpack worn on the back (JetpackData): the jump key held in the air cancels the gravity of the player and pushes
+    // up, up to its max rise speed, while its bar is not empty (its consumption per second)
+    private bool jetpackEmptyShown;
+
+    private void ApplyJetpack(bool grounded)
+    {
+        if (grounded || !active || !inputActions.Movement.Jump.IsPressed()) return;
+
+        PlayerInventory inventory = PlayerManager.Instance != null ? PlayerManager.Instance.Inventory : null;
+        ItemSlot<Item> slot = inventory != null ? inventory.WornSlot(EquipmentSlot.Back) : null;
+
+        if (slot == null || !(slot.Item.Data is JetpackData jetpack)) return;
+
+        if (slot.Item.HasGauge && slot.Item.IsGaugeEmpty)
+        {
+            if (!jetpackEmptyShown)
+            {
+                NotificationUI.Show(jetpack.Name + " " + jetpack.Gauge.EmptyText + ".", NotificationType.Warning);
+                jetpackEmptyShown = true;
+            }
+
+            return;
+        }
+
+        jetpackEmptyShown = false;
+
+        float gravity = Physics.gravity.magnitude * gravityMultiplier;
+        float push = rigidbody.linearVelocity.y < jetpack.MaxRiseSpeed ? jetpack.Thrust : 0f;
+
+        rigidbody.AddForce(Vector3.up * (gravity + push), ForceMode.Acceleration);
+
+        if (slot.Item.HasGauge)
+        {
+            slot.Item.ConsumeGauge(jetpack.Gauge.PerSecond(jetpack.Consumption) * Time.fixedDeltaTime);
+            slot.NotifyChanged();
+        }
+    }
+
     public void Jump()
     {
-        if(endurance.Value > jumpEnduranceCost && jumpCountdown <= 0f && active && IsGrounded())
+        if(jumpCountdown <= 0f && active && IsGrounded())
         {
             // Velocity needed to reach jumpHeight with the player's gravity
             float gravity = Physics.gravity.magnitude * gravityMultiplier;
             Vector3 velocity = rigidbody.linearVelocity;
             velocity.y = Mathf.Sqrt(2f * gravity * jumpHeight);
             rigidbody.linearVelocity = velocity;
-            // Negative marker: consumes jumpEnduranceCost over 0.25 s
-            endurance.AddMarker("player_jump_" + jumpCount++, -jumpEnduranceCost * 4f, 0.25f);
             jumpCountdown = jumpCooldown;
         }
     }
