@@ -164,6 +164,37 @@
     -unity-text-align: middle-center;
 }
 
+/* Clock under the minimap (ClockUI): day and time, with a sun or a moon drawn in "clock-icon" */
+.clock {
+    position: absolute;
+    right: 30px;
+    top: 258px;
+    width: 220px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.9;
+}
+
+.clock-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+}
+
+.clock-label {
+    padding: 2px 10px;
+    margin: 0;
+    border-radius: 10px;
+    background-color: rgba(40, 58, 75, 0.45);
+    border-width: 1px;
+    border-color: rgba(120, 200, 255, 0.5);
+    color: rgb(235, 245, 255);
+    font-size: 15px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
 /* Tool bar, bottom center. The handed cursor is moved over the selected slot by HandedCursorUI */
 .toolbar {
     position: absolute;

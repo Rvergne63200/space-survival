@@ -179,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
+  - component: {fileID: 705507996}
   m_Layer: 3
   m_Name: Directional Light
   m_TagString: Untagged
@@ -251,6 +252,37 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &705507996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 705507993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 055f087a7dd41980ea8fef686c62c3e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayDuration: 900
+  nightDuration: 600
+  startHour: 8
+  speed: 1
+  day: 1
+  hour: 8
+  sun: {fileID: 705507994}
+  sunIntensity: 1
+  horizonColor: {r: 1, g: 0.5, b: 0.25, a: 1}
+  sunYaw: 0
+  sunTilt: 30
+  moonColor: {r: 0.55, g: 0.65, b: 1, a: 1}
+  darkMoonIntensity: 0.01
+  brightMoonIntensity: 0.3
+  darkAmbient: 0.02
+  brightAmbient: 0.2
+  darkSky: 0.01
+  brightSky: 0.12
+  brightNightRarity: 4
 --- !u!4 &705507995
 Transform:
   m_ObjectHideFlags: 0

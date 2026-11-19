@@ -403,7 +403,8 @@ public class SaveManager : MonoBehaviour
             saveName = save.saveName,
             lastSaveTime = DateTime.Now.ToString("o"),
             worldSeed = ChunkManager.Instance.Seed,
-            player = CapturePlayer(playerManager)
+            player = CapturePlayer(playerManager),
+            time = DayNightCycle.Instance != null ? DayNightCycle.Instance.Capture() : save.time
         };
 
         // Objects not loaded right now (in chunks not generated this session) keep their last saved state
@@ -479,6 +480,12 @@ public class SaveManager : MonoBehaviour
             {
                 cameraMovement.SetRotation(player.cameraPitch, player.cameraYaw);
             }
+        }
+
+        // A new game (no save, or a save without time) starts at the start hour
+        if (DayNightCycle.Instance != null)
+        {
+            DayNightCycle.Instance.Restore(save != null ? save.time : null);
         }
 
         // Scene and generated objects restore themselves when they register. Runtime objects must be created again

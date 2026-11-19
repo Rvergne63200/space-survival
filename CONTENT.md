@@ -44,6 +44,7 @@ Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune
   - **Tuile** : le relief est calculé depuis la seed sur un carré de `tileFactor` (3) × `radius` de côté, en `topographyResolution` (256) pixels. Il est recalculé quand le joueur s'approche de son bord. L'élément `minimap-image` est déplacé et tourné autour du joueur. Les contours sont recollectés toutes les `refreshInterval` (1 s).
   - Une flèche jaune au centre représente le joueur. Le rayon affiché (`radius`) est fixe et réglable dans l'Inspector (50 m, sur le prefab `UI`). Légèrement transparente (`opacity` 0,8 dans `Game.uss`). Fond plus clair et plus transparent que la carte du panneau de contrôle (`lowColor`, `highColor`, `backgroundAlpha` 0,5, et fond du cercle à 25 %), lignes et contours inchangés.
   - Elle est masquée sans joueur ou à la mort.
+- **Horloge** (`ClockUI`, sur le GameObject HUD, éléments `clock` de `Hud.uxml`) : sous la minimap, « Jour N  HH:MM », avec un soleil le jour et un croissant de lune la nuit (dessinés en Painter2D). Masquée si la scène n'a pas de cycle jour / nuit.
 
 
 ### Sauvegarde (`SaveManager`, dans `Bootstrap`)
@@ -52,7 +53,7 @@ Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune
   - Monde lancé directement dans l'éditeur, sans passer par le menu : une sauvegarde « Partie éditeur » est créée.
   - Version du format (`SaveData.CurrentVersion`, 2) : une sauvegarde d'une version plus ancienne est ignorée (absente du menu, avertissement dans la console). La version 2 est arrivée avec les ids d'items en texte et la renumérotation des items.
   - Menu contextuel du composant : « Refresh item list » et « Open saves folder ».
-- **Contenu** : la seed du monde, le joueur (position, rotation, vue de la caméra, stats, inventaire, barre d'outils, slot en main), les objets sauvegardables, les objets retirés et les aplanissements du terrain.
+- **Contenu** : la seed du monde, l'heure du monde (`SaveData.time` : jour et heure, une sauvegarde sans heure repart à l'heure de départ), le joueur (position, rotation, vue de la caméra, stats, inventaire, barre d'outils, équipement, slot en main), les objets sauvegardables, les objets retirés et les aplanissements du terrain.
 - **SaveableObject** : un objet sauvegardé (transform et composants `ISaveableComponent`, y compris ceux de ses enfants qui n'ont pas leur propre SaveableObject). Trois sortes d'objets :
   - **posé dans une scène** : id = `scène:chemin dans la hiérarchie` (voir R15) ;
   - **généré** (`EnvironmentSpawner`) : id déterministe (`env_<x>_<z>_<index>`) ;
@@ -144,7 +145,9 @@ Vue à la première personne uniquement.
   - **Item en main** : `PlayerInventory` vérifie à chaque frame si l'item en main change (autre slot, slot vidé, joueur absent). Il appelle alors `OnUnequip` sur les actions de l'ancien outil (`ToolData.Unequip`).
   - `ItemUseContext.View` : le transform de la caméra du joueur.
   - L'état d'une action (allumée, maintenue) est porté par l'asset ToolData : il est partagé par tous les items de ce type.
-- **Lampe torche** (`22_Flashlight`, `FlashlightAction`) : un spot (couleur, intensité 1,5, portée 30 m, angle 60°, ombres douces) créé comme enfant de la caméra au premier allumage.
+- **Lampe torche** (`22_Flashlight`, `FlashlightAction`, `FlashlightBeam`) : créée comme enfant de la caméra au premier allumage. Réglages sur l'asset.
+  - **Faisceau** : un spot (intensité 3, portée 45 m, angle 75°, ombres douces) tenu en main, un peu à droite et sous les yeux (`handOffset`) : les ombres des objets se voient. Il suit la vue sans retard.
+  - **Forme** : un cookie généré donne un centre lumineux (`hotspot`, 30 % du cône), un léger anneau du réflecteur et un halo large et faible autour (`spill`, 20 %), au lieu d'un disque uniforme.
 - Touche Drop (inventaire ouvert) : jette devant le joueur tout le contenu du slot tenu au curseur. Le slot du curseur est aussi jeté automatiquement quand la dernière interface se ferme.
 
 ### Interactions UI
@@ -227,7 +230,7 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
 - **Sauvegarde** : les structures (`build:<id>`), les plans (`blueprint:<id>`, avec les ressources apportées) et les objets posés (`placed:<itemId>`, avec le contenu de leurs conteneurs) sont des objets « runtime », recréés par `BuildUtility` au chargement.
 - Ancien système, encore présent sur le prefab `BaseDom` : `BuildObject` (`Put()` active les colliders, appelé à l'instanciation de la structure), `BuildVerifier` et `BuildObjectTexture` (retirés de l'instance, voir R14). `ObjectPlacement` n'est pas utilisé.
 
-## 8. Terrain procédural
+## 8. Monde (terrain procédural, jour et nuit)
 
 - **ChunkManager** (singleton, scène Monde) :
   - Grille de chunks de `chunkSize` (64 m). Les chunks situés à moins de `generationDistance` (5 dans `0_World`) de celui du joueur sont chargés, soit une grille de 11×11. Ce calcul n'est refait que quand le joueur change de chunk.
@@ -239,6 +242,14 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - Gizmos de debug : chunks générés et chargés.
 - **TerrainGenerator** (sur le prefab `Chunk`) : duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks. Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux. Émet `ev_OnTerminateGeneration` à la fin. `HeightAt` donne la hauteur générée en un point du bruit, et `ChunkManager.GeneratedHeightAt(x, z)` en une position du monde, chargée ou non (sans les aplanissements). La carte du panneau de contrôle s'en sert pour le relief.
 - **EnvironmentSpawner** (sur le prefab `Chunk`) : appelé une fois les hauteurs générées (`ev_OnTerminateGeneration`). Pour chaque m² du chunk, il a 0.1 % de chances de faire apparaître `prefab`, avec une rotation et une taille aléatoires. Le tirage est seedé par la seed du monde et la position du chunk : un chunk a toujours les mêmes objets.
+- **Cycle jour / nuit** (`DayNightCycle`, sur la `Directional Light` de `0_World`, qui est le soleil ; dossier `Scripts/Behaviours/Environment`) :
+  - **Horloge** : le soleil se lève à 6:00 et se couche à 18:00. Le jour dure `dayDuration` (900 s, 15 min réelles), la nuit `nightDuration` (600 s, 10 min) : l'horloge va plus vite la nuit. Une nouvelle partie commence le jour 1 à `startHour` (8:00). Le temps s'arrête pendant la pause (`timeScale` 0). L'heure est sauvegardée.
+  - **Test** : `speed` accélère l'horloge, et `day` / `hour` se modifient dans l'Inspector en jeu.
+  - **Soleil** : il tourne à vitesse constante par heure de jeu, de l'est (`sunYaw`) à l'ouest, à `sunTilt` (30°) du zénith à midi. Sa lumière s'éteint en passant sous l'horizon et devient orangée près de lui (`horizonColor`).
+  - **Lune** : une seconde lumière directionnelle (enfant `Moon`, créée en jeu, ombres douces), à l'opposé du soleil, bleutée (`moonColor`). Une seule des deux est allumée à la fois.
+  - **Nuits** : chaque nuit a sa luminosité, tirée de la seed du monde et du numéro de la nuit (une nuit commence au coucher du soleil). La plupart sont très sombres (la lampe torche est nécessaire), certaines sont claires : luminosité = tirage ^ `brightNightRarity` (4), soit une nuit sur six environ à plus de 50 %. Elle règle la lune (`darkMoonIntensity` 0,01 à `brightMoonIntensity` 0,3), la lumière ambiante et les reflets (`darkAmbient` 2 % à `brightAmbient` 20 % de ceux du jour) et le ciel (`darkSky` 1 % à `brightSky` 12 % de son exposition).
+  - **Crépuscule** : le ciel, la lumière ambiante et les reflets passent du jour à la nuit entre un peu au-dessus et un peu sous l'horizon. Le ciel est une copie du skybox de la scène, dont l'exposition est baissée ; les valeurs du jour sont celles de la scène.
+  - **Pour les autres systèmes** : `Day`, `Hour`, `IsDay`, `Sunlight` (lumière du soleil au sol, 0 à 1, pour les panneaux solaires et les plantes) et `NightBrightness`.
 
 ## 9. Modes de jeu & interfaces
 

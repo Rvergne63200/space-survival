@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="Game.uss" />
     <!-- HUD, always shown in game. The names are used by PlayerStatsUI, PlayerToolBarUI, HandedCursorUI,
-         PointedInterractorInformationUI, PickupInfoGroupUI and MinimapUI. Only the tool bar slots catch the mouse -->
+         PointedInterractorInformationUI, PickupInfoGroupUI, MinimapUI and ClockUI. Only the tool bar slots catch the mouse -->
     <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
         <ui:VisualElement name="crosshair" picking-mode="Ignore" class="crosshair" />
         <ui:Label name="pointed-label" text="Info [F]" picking-mode="Ignore" class="pointed-label" />
@@ -11,6 +11,10 @@
             <ui:VisualElement name="minimap-image" picking-mode="Ignore" class="minimap-image" />
             <ui:VisualElement name="minimap-arrow" picking-mode="Ignore" class="minimap-arrow" />
             <ui:Label name="minimap-north" text="N" picking-mode="Ignore" class="minimap-north" />
+        </ui:VisualElement>
+        <ui:VisualElement name="clock" picking-mode="Ignore" class="clock">
+            <ui:VisualElement name="clock-icon" picking-mode="Ignore" class="clock-icon" />
+            <ui:Label name="clock-label" text="Jour 1  08:00" picking-mode="Ignore" class="clock-label" />
         </ui:VisualElement>
         <ui:VisualElement name="toolbar" picking-mode="Ignore" class="toolbar">
             <ui:VisualElement name="toolbar-slots" picking-mode="Ignore" class="toolbar-slots" />

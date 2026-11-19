@@ -121,36 +121,33 @@ public class ApplyModifiersAction : ItemAction
     }
 }
 
-// Flashlight: a spot light in front of the camera, switched on and off by the click
+// Flashlight: a beam held in the hand (FlashlightBeam, child of the camera), switched on and off by the click
 [Serializable]
 public class FlashlightAction : ToggleItemAction
 {
-    public Color color = new Color(1f, 0.95f, 0.85f);
-    public float intensity = 1.5f;
-    public float range = 30f;
-    [Range(1f, 179f)] public float spotAngle = 60f;
+    public Color color = new Color(1f, 0.96f, 0.9f);
+    public float intensity = 3f;
+    public float range = 45f;
+    [Range(1f, 179f)] public float spotAngle = 75f;
+    // Size of the bright center (fraction of the cone) and brightness of the spill around it (fraction of the center)
+    [Range(0.05f, 1f)] public float hotspot = 0.3f;
+    [Range(0f, 1f)] public float spill = 0.2f;
+    // Position from the eyes (right, up, forward)
+    public Vector3 handOffset = new Vector3(0.2f, -0.25f, 0.1f);
 
-    [NonSerialized] private Light light;
+    [NonSerialized] private FlashlightBeam beam;
 
     protected override void SetOn(ItemUseContext context, bool on)
     {
         // Destroyed with the camera (respawned): created again
-        if (light == null)
+        if (beam == null)
         {
             if (!on || context.View == null) return;
 
-            GameObject lightObject = new GameObject("Flashlight");
-            lightObject.transform.SetParent(context.View, false);
-
-            light = lightObject.AddComponent<Light>();
-            light.type = LightType.Spot;
-            light.shadows = LightShadows.Soft;
+            beam = FlashlightBeam.Create(context.View);
         }
 
-        light.color = color;
-        light.intensity = intensity;
-        light.range = range;
-        light.spotAngle = spotAngle;
-        light.enabled = on;
+        beam.Configure(this);
+        beam.SetOn(on);
     }
 }

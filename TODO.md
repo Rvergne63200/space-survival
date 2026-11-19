@@ -73,6 +73,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B58** **[Énergie]** `B1 ==== B2 ---> B3`, panneau de contrôle dans B1 : le contenu de B3 n'était pas visible. Ce qui est derrière un circuit ouvert (bâtiment du groupe, tableau alimenté par le réseau) est en aval et affiché en entier, bâtiments derrière sa prise de sortie compris.
 - [x] **B59** **[Stats]** Le saut ne consomme plus d'endurance (trop contraignant) : `jumpEnduranceCost` et son marker sont retirés. Seul le sprint en consomme.
 - [x] **B60** **[UI]** Dans l'éditeur, Échap libère toujours le curseur : il restait visible après la fermeture d'un menu. Dans l'éditeur seulement, ² remplace Échap pour fermer les interfaces et ouvrir le menu pause.
+- [x] **B61** **[Outils]** La lampe torche faisait un disque uniforme qui sonnait faux et éclairait peu la nuit. Faisceau tenu en main (décalé des yeux, sans retard sur la vue), cookie avec centre, anneau et halo et portée 45 m (`FlashlightBeam`).
 
 ## Feature
 
@@ -185,6 +186,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
   - **Rejet d'oxygène** : les plantes rejettent de l'O2 dans la pièce (F51), en quantité qui dépend de la plante.
 - [ ] **F54** **[Monde]** **Cycle jour / nuit et météo** :
   - **Cycle** : le soleil tourne, l'heure du jeu est sauvegardée et la durée d'une journée est réglable : **25 minutes** pour commencer (15 de jour, 10 de nuit), à ajuster si nécessaire. Le cycle sert aux panneaux solaires (F49), à la lumière du soleil pour les plantes (F53) et aux horaires d'alimentation (F50).
+    - [x] Fait (`DayNightCycle`) : soleil de 6:00 à 18:00 (15 min de jour, 10 min de nuit), lune, nuits très sombres avec quelques nuits claires (tirées de la seed), crépuscule, heure sauvegardée, départ à 8:00, horloge dans le HUD sous la minimap (`ClockUI`).
+    - Reste : brancher les panneaux solaires (F49, `Sunlight`), les plantes (F53) et les horaires d'alimentation (F50/F56).
   - **Météo** : vent variable pour les éoliennes, tempêtes de poussière qui réduisent le solaire, etc.
 - [ ] **F55** **[Interfaces]** **Informations des réseaux** (énergie, F50, et oxygène, F51) :
   - **Interface du bâtiment** (en interagissant avec lui ou avec un panneau de contrôle, F57) : production, consommation, charge des batteries, O2 de la pièce, alimentation on/off et horaires.

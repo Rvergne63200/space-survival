@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 7100000000000000007}
   - component: {fileID: 7100000000000000008}
   - component: {fileID: 7100000000000000009}
+  - component: {fileID: 7100000000000000010}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -795,6 +796,21 @@ MonoBehaviour:
   resolution: 512
   height: 300
   backgroundColor: {r: 0.05, g: 0.07, b: 0.1, a: 1}
+--- !u!114 &7100000000000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6ebfa969ac0f731dbcc268f17f4abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  document: {fileID: 7100000000000000003}
+  sunColor: {r: 1, g: 0.82, b: 0.35, a: 1}
+  moonColor: {r: 0.75, g: 0.82, b: 1, a: 1}
 --- !u!1 &7100000000000000101
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,7 +33,10 @@ MonoBehaviour:
     - rid: 7413000000000000101
       type: {class: FlashlightAction, ns: , asm: Assembly-CSharp}
       data:
-        color: {r: 1, g: 0.95, b: 0.85, a: 1}
-        intensity: 1.5
-        range: 30
-        spotAngle: 60
+        color: {r: 1, g: 0.96, b: 0.9, a: 1}
+        intensity: 3
+        range: 45
+        spotAngle: 75
+        hotspot: 0.3
+        spill: 0.2
+        handOffset: {x: 0.2, y: -0.25, z: 0.1}

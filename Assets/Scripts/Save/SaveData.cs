@@ -19,6 +19,9 @@ public class SaveData
 
     public PlayerSaveData player;
 
+    // Time of the world (DayNightCycle). Missing in older saves: hour stays -1, the game starts at the start hour
+    public WorldTimeSaveData time = new WorldTimeSaveData();
+
     // Objects that exist in the world: scene objects, generated objects and runtime objects (built, dropped...)
     public List<ObjectSaveData> objects = new List<ObjectSaveData>();
 
@@ -26,6 +29,13 @@ public class SaveData
     public List<string> destroyedObjects = new List<string>();
 
     public List<TerrainEditSaveData> terrainEdits = new List<TerrainEditSaveData>();
+}
+
+[Serializable]
+public class WorldTimeSaveData
+{
+    public int day = 1;
+    public float hour = -1f;
 }
 
 // A save as listed in the main menu
