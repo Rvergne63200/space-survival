@@ -74,6 +74,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B59** **[Stats]** Le saut ne consomme plus d'endurance (trop contraignant) : `jumpEnduranceCost` et son marker sont retirés. Seul le sprint en consomme.
 - [x] **B60** **[UI]** Dans l'éditeur, Échap libère toujours le curseur : il restait visible après la fermeture d'un menu. Dans l'éditeur seulement, ² remplace Échap pour fermer les interfaces et ouvrir le menu pause.
 - [x] **B61** **[Outils]** La lampe torche faisait un disque uniforme qui sonnait faux et éclairait peu la nuit. Faisceau tenu en main (décalé des yeux, sans retard sur la vue), cookie avec centre, anneau et halo et portée 45 m (`FlashlightBeam`).
+- [x] **B62** **[Énergie]** Carte du panneau de contrôle très dézoomée : erreur « Attempting to allocate … vertices which exceeds the limit of 65535 ». Les courbes de niveau étaient tracées en un seul chemin ; elles le sont maintenant par lots de 2000 segments (`MapUtility.DrawContours`, aussi utilisé par la minimap).
 
 ## Feature
 

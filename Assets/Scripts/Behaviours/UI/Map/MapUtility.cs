@@ -150,7 +150,10 @@ public static class MapUtility
         crossings[count++] = Vector2.Lerp(a, b, t);
     }
 
-    // Contour lines, toLocal giving the position on the element of a world (X, Z)
+    // Segments stroked per path: a UI Toolkit mesh holds at most 65535 vertices, a very zoomed out map has more segments
+    private const int SegmentsPerStroke = 2000;
+
+    // Contour lines, toLocal giving the position on the element of a world (X, Z). Stroked in batches (SegmentsPerStroke)
     public static void DrawContours(Painter2D painter, List<ContourSegment> contours, Func<Vector2, Vector2> toLocal)
     {
         if (contours == null || contours.Count == 0) return;
@@ -161,17 +164,25 @@ public static class MapUtility
 
             painter.strokeColor = new Color(ContourColor.r, ContourColor.g, ContourColor.b, major ? 0.6f : 0.3f);
             painter.lineWidth = major ? 1.4f : 1f;
-            painter.BeginPath();
+            int inPath = 0;
 
             foreach (ContourSegment segment in contours)
             {
                 if (segment.major != major) continue;
 
+                if (inPath == 0) painter.BeginPath();
+
                 painter.MoveTo(toLocal(segment.a));
                 painter.LineTo(toLocal(segment.b));
+
+                if (++inPath >= SegmentsPerStroke)
+                {
+                    painter.Stroke();
+                    inPath = 0;
+                }
             }
 
-            painter.Stroke();
+            if (inPath > 0) painter.Stroke();
         }
     }
 
