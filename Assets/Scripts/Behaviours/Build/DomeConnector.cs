@@ -25,7 +25,7 @@ public class DomeConnector : MonoBehaviour
     // What the connector belongs to (airlock, corridor): it destroys it with itself
     public Component Owner { get; set; }
 
-    public Transform Socket => socket != null ? socket : (socket = FindChild(transform, "Socket"));
+    public Transform Socket => socket != null ? socket : (socket = BuildUtility.FindChild(transform, "Socket"));
 
     // World to unit box: |p| < 0.5 on the three axes inside the mask
     public Matrix4x4 MaskMatrix => Matrix4x4.TRS(transform.TransformPoint(maskCenter), transform.rotation, maskSize).inverse;
@@ -55,13 +55,6 @@ public class DomeConnector : MonoBehaviour
     {
         all.Remove(this);
         UpdateMasks();
-    }
-
-    // The point is inside the mask
-    public bool MaskContains(Vector3 worldPoint)
-    {
-        Vector3 p = MaskMatrix.MultiplyPoint3x4(worldPoint);
-        return Mathf.Abs(p.x) < 0.5f && Mathf.Abs(p.y) < 0.5f && Mathf.Abs(p.z) < 0.5f;
     }
 
     // Planes of the mask box in world space (normal outward, for the clipping of the colliders)
@@ -97,15 +90,5 @@ public class DomeConnector : MonoBehaviour
         {
             Debug.LogWarning("More than " + MaxMasks + " dome connectors: the others do not open their dome.");
         }
-    }
-
-    private static Transform FindChild(Transform parent, string childName)
-    {
-        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
-        {
-            if (child.name == childName) return child;
-        }
-
-        return null;
     }
 }

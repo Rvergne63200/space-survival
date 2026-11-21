@@ -74,9 +74,6 @@ public static class CorridorPieces
         OwnedMeshes owned = container.AddComponent<OwnedMeshes>();
         bool sheared = Mathf.Abs(slope) > 0.0001f;
 
-        Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
-        bool hasBounds = false;
-
         foreach (Piece piece in Layout(data, length))
         {
             GameObject model = piece.Straight ? data.StraightPiece : data.ExtensionPiece;
@@ -100,32 +97,20 @@ public static class CorridorPieces
                 part.gameObject.layer = corridor.gameObject.layer;
             }
 
-            foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+            if (material != null)
             {
-                if (material != null)
+                BuildUtility.SetMaterial(instance, material);
+
+                foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
                 {
-                    Material[] materials = renderer.sharedMaterials;
-                    for (int i = 0; i < materials.Length; i++) materials[i] = material;
-                    renderer.sharedMaterials = materials;
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                }
-
-                Bounds world = renderer.bounds;
-
-                for (int corner = 0; corner < 8; corner++)
-                {
-                    Vector3 point = corridor.InverseTransformPoint(world.center + Vector3.Scale(world.extents,
-                        new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1)));
-
-                    if (!hasBounds) { bounds = new Bounds(point, Vector3.zero); hasBounds = true; }
-                    else bounds.Encapsulate(point);
                 }
             }
 
             if (colliders) BuildUtility.AddMeshColliders(instance);
         }
 
-        return bounds;
+        return BuildUtility.LocalRendererBounds(container, corridor);
     }
 
     // Vertical shear of the meshes of a piece (local space of the corridor): y += slope x z

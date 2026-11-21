@@ -36,9 +36,6 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     public BuiltStructure End => end;
     public float Length => length;
 
-    // Height change per meter along the corridor (it stays level, its pieces are sheared, CorridorPieces)
-    public float Slope => slope;
-
     // Finished (not a plan)
     public bool IsBuilt => GetComponent<BuiltStructure>() != null;
 
@@ -194,15 +191,7 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     }
 
     // Destroyed with one of its buildings: gives back its resources (plan: what was brought)
-    public void Deconstruct()
-    {
-        StructureBlueprint blueprint = GetComponent<StructureBlueprint>();
-        BuiltStructure built = GetComponent<BuiltStructure>();
-
-        if (blueprint != null) blueprint.Deconstruct();
-        else if (built != null) built.Deconstruct();
-        else Destroy(gameObject);
-    }
+    public void Deconstruct() => BuildUtility.DeconstructStructure(gameObject);
 
     // ---------- Life ----------
 

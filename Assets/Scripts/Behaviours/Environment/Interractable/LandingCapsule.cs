@@ -27,15 +27,9 @@ public class LandingCapsule : MonoBehaviour, ISaveableComponent
     {
         capsuleAnimator = GetComponent<LandingCapsuleAnimator>();
 
-        foreach (MeshFilter filter in GetComponentsInChildren<MeshFilter>(true))
-        {
-            if (filter.sharedMesh == null || filter.GetComponent<Collider>() != null) continue;
+        BuildUtility.AddMeshColliders(gameObject);
 
-            MeshCollider meshCollider = filter.gameObject.AddComponent<MeshCollider>();
-            meshCollider.sharedMesh = filter.sharedMesh;
-        }
-
-        Transform door = FindChild(transform, doorName);
+        Transform door = BuildUtility.FindChild(transform, doorName);
 
         if (door != null)
         {
@@ -71,15 +65,5 @@ public class LandingCapsule : MonoBehaviour, ISaveableComponent
         {
             capsuleAnimator.SetOpenImmediate(state.open);
         }
-    }
-
-    private static Transform FindChild(Transform parent, string childName)
-    {
-        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
-        {
-            if (child.name == childName) return child;
-        }
-
-        return null;
     }
 }

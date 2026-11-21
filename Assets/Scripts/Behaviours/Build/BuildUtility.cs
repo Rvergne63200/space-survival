@@ -81,24 +81,6 @@ public static class BuildUtility
     {
         GameObject instance = Object.Instantiate(data.Prefab, position, rotation);
 
-        // Components of the former build system, used when the prefab itself was the ghost
-        BuildObject buildObject = instance.GetComponent<BuildObject>();
-        if (buildObject != null)
-        {
-            // Enables the colliders
-            buildObject.Put();
-        }
-
-        foreach (BuildObjectTexture texture in instance.GetComponentsInChildren<BuildObjectTexture>(true))
-        {
-            Object.Destroy(texture);
-        }
-
-        foreach (BuildVerifier verifier in instance.GetComponentsInChildren<BuildVerifier>(true))
-        {
-            Object.Destroy(verifier);
-        }
-
         // Building layer, to tell the buildings apart (physics, rendering). The parts on another layer than Default keep it
         int buildingLayer = LayerMask.NameToLayer("Building");
 
@@ -194,6 +176,63 @@ public static class BuildUtility
         }
 
         saveable.SetRuntime(prefabKey, id);
+    }
+
+    // Every renderer of the object (and its children) gets the material, on all its slots (ghosts, plans)
+    public static void SetMaterial(GameObject root, Material material)
+    {
+        foreach (Renderer renderer in root.GetComponentsInChildren<Renderer>(true))
+        {
+            Material[] materials = renderer.sharedMaterials;
+            for (int i = 0; i < materials.Length; i++) materials[i] = material;
+            renderer.sharedMaterials = materials;
+        }
+    }
+
+    // Bounds of the renderers of the object, in the local space of "space"
+    public static Bounds LocalRendererBounds(GameObject root, Transform space)
+    {
+        Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+        bool hasBounds = false;
+
+        foreach (Renderer renderer in root.GetComponentsInChildren<Renderer>())
+        {
+            Bounds world = renderer.bounds;
+
+            for (int corner = 0; corner < 8; corner++)
+            {
+                Vector3 point = space.InverseTransformPoint(world.center + Vector3.Scale(world.extents,
+                    new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1)));
+
+                if (!hasBounds) { bounds = new Bounds(point, Vector3.zero); hasBounds = true; }
+                else bounds.Encapsulate(point);
+            }
+        }
+
+        return bounds;
+    }
+
+    // Child at any depth, by name
+    public static Transform FindChild(Transform parent, string childName)
+    {
+        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == childName) return child;
+        }
+
+        return null;
+    }
+
+    // A structure attached to others (corridor, airlock), destroyed with one of them: gives back its resources (plan:
+    // what was brought)
+    public static void DeconstructStructure(GameObject structure)
+    {
+        StructureBlueprint blueprint = structure.GetComponent<StructureBlueprint>();
+        BuiltStructure built = structure.GetComponent<BuiltStructure>();
+
+        if (blueprint != null) blueprint.Deconstruct();
+        else if (built != null) built.Deconstruct();
+        else Object.Destroy(structure);
     }
 
     // A mesh collider on each mesh of a model without collider (models imported again keep working)

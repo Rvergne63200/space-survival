@@ -428,20 +428,7 @@ public class Builder : MonoBehaviour
         return true;
     }
 
-    private void SetGhostMaterial(Material material)
-    {
-        foreach (MeshRenderer renderer in ghost.GetComponentsInChildren<MeshRenderer>(true))
-        {
-            Material[] materials = renderer.sharedMaterials;
-
-            for (int i = 0; i < materials.Length; i++)
-            {
-                materials[i] = material;
-            }
-
-            renderer.sharedMaterials = materials;
-        }
-    }
+    private void SetGhostMaterial(Material material) => BuildUtility.SetMaterial(ghost, material);
 
     // World center and half size of the ghost bounds
     private void GetGhostBox(out Vector3 center, out Vector3 halfExtents)

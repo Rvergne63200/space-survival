@@ -158,12 +158,7 @@ public class ConnectorPreview
         visual.transform.SetPositionAndRotation(position, rotation);
         visual.SetActive(true);
 
-        foreach (MeshRenderer renderer in visual.GetComponentsInChildren<MeshRenderer>(true))
-        {
-            Material[] materials = renderer.sharedMaterials;
-            for (int i = 0; i < materials.Length; i++) materials[i] = material;
-            renderer.sharedMaterials = materials;
-        }
+        BuildUtility.SetMaterial(visual, material);
     }
 
     public void Hide()

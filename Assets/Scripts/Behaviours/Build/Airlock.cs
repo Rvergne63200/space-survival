@@ -24,7 +24,6 @@ public class Airlock : MonoBehaviour, ISaveableComponent
 
     private AirlockAnimator doors;
 
-    public BuiltStructure Dome => dome;
     public bool IsBuilt => GetComponent<BuiltStructure>() != null;
 
     public void Setup(BuiltStructure newDome)
@@ -73,21 +72,7 @@ public class Airlock : MonoBehaviour, ISaveableComponent
             }
         }
 
-        bool hasBounds = false;
-
-        foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
-        {
-            Bounds world = renderer.bounds;
-
-            for (int corner = 0; corner < 8; corner++)
-            {
-                Vector3 point = transform.InverseTransformPoint(world.center + Vector3.Scale(world.extents,
-                    new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1)));
-
-                if (!hasBounds) { localBounds = new Bounds(point, Vector3.zero); hasBounds = true; }
-                else localBounds.Encapsulate(point);
-            }
-        }
+        localBounds = BuildUtility.LocalRendererBounds(gameObject, transform);
     }
 
     private void OnEnable()
@@ -150,15 +135,7 @@ public class Airlock : MonoBehaviour, ISaveableComponent
     }
 
     // Destroyed with its dome: gives back its resources (plan: what was brought)
-    public void Deconstruct()
-    {
-        StructureBlueprint blueprint = GetComponent<StructureBlueprint>();
-        BuiltStructure built = GetComponent<BuiltStructure>();
-
-        if (blueprint != null) blueprint.Deconstruct();
-        else if (built != null) built.Deconstruct();
-        else Destroy(gameObject);
-    }
+    public void Deconstruct() => BuildUtility.DeconstructStructure(gameObject);
 
     // ---------- Save ----------
 
