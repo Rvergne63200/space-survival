@@ -54,6 +54,12 @@ public class Crafter : MonoBehaviour
             return;
         }
 
+        if (!station.IsUsable)
+        {
+            NotificationUI.Show("La station n'est pas alimentée.", NotificationType.Warning);
+            return;
+        }
+
         if (!station.Recipes.Contains(recipe))
         {
             NotificationUI.Show("Cette recette ne se fabrique pas ici.", NotificationType.Warning);
@@ -72,18 +78,8 @@ public class Crafter : MonoBehaviour
             inventory.Remove(Item.CreateFromData(ingredient.Item), ingredient.Quantity);
         }
 
-        // Add crafted item in the inventory, and drop on the ground what does not fit
-        foreach (RecipeData.ItemBlock result in recipe.Results)
-        {
-            Item item = Item.CreateFromData(result.Item);
-            int rest = inventory.Add(item, result.Quantity);
-
-            if (rest > 0)
-            {
-                Pickupable.Spawn(item, rest, transform);
-                NotificationUI.Show("Inventaire plein : " + result.Item.Name + " posé au sol.", NotificationType.Warning);
-            }
-        }
+        // Crafted by the station, after its craft time (CraftingStation)
+        station.Enqueue(recipe, 1);
     }
 
     public bool CheckHasItems(RecipeData recipe)

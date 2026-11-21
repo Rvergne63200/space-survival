@@ -25,6 +25,9 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     private DomeConnector startConnector;
     private DomeConnector endConnector;
 
+    // Bounds of its pieces (local space), to tell what is inside
+    private Bounds pieceBounds;
+
     // Plan: the two connectors shown as a plan too, until the corridor is built
     private ConnectorPreview startBlueprintConnector;
     private ConnectorPreview endBlueprintConnector;
@@ -121,6 +124,17 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         return group;
     }
 
+    // The point is inside a finished corridor (bounds of its pieces)
+    public static bool AnyContains(Vector3 point)
+    {
+        foreach (Corridor corridor in all)
+        {
+            if (corridor.IsBuilt && corridor.pieceBounds.Contains(corridor.transform.InverseTransformPoint(point))) return true;
+        }
+
+        return false;
+    }
+
     public bool Links(BuiltStructure structure)
     {
         return structure != null && (start == structure || end == structure);
@@ -166,6 +180,7 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         if (data == null) return;
 
         Bounds bounds = CorridorPieces.Build(transform, data, length, slope, built != null ? null : BuildUtility.BlueprintMaterial, built != null);
+        pieceBounds = bounds;
 
         // Finished: no terrain drawn inside (tilted with the corridor)
         if (built != null) TerrainMask.SetBox(gameObject, 0.9f, 0.1f, 2.6f, -length * 0.5f, length * 0.5f, slope);

@@ -9,7 +9,7 @@ public class DeathScreenUI : MonoBehaviour
     public static DeathScreenUI Instance { get; private set; }
 
     [SerializeField] private GameObject panel;
-    [SerializeField] private float respawnDelay = 25f;
+    [SerializeField] private float respawnDelay = 3f;
     [SerializeField] private string mainMenuScene = "0_MainMenu";
 
     private Button respawnButton;

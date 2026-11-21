@@ -6,6 +6,22 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class BuildingInterior : MonoBehaviour
 {
+    private static readonly System.Collections.Generic.List<BuildingInterior> all = new System.Collections.Generic.List<BuildingInterior>();
+
+    // The point is inside a building (an inside zone)
+    public static bool AnyContains(Vector3 point)
+    {
+        foreach (BuildingInterior interior in all)
+        {
+            if (interior != null && interior.Contains(point)) return true;
+        }
+
+        return false;
+    }
+
+    private void OnEnable() => all.Add(this);
+    private void OnDisable() => all.Remove(this);
+
     private Collider zone;
     private Collider Zone => zone != null ? zone : (zone = GetComponent<Collider>());
 

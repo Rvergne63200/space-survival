@@ -382,6 +382,40 @@
     margin-bottom: 0;
 }
 
+/* State of the crafting station (CraftingStationUI): power, crafts in progress, cancel and power buttons */
+.station-bar {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.station-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.station-state {
+    color: rgb(230, 240, 250);
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+
+.station-queue {
+    color: rgb(170, 185, 200);
+    font-size: 12px;
+    white-space: normal;
+}
+
+.station-button {
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 6px;
+}
+
 .crafting-filter {
     margin: 0;
 }

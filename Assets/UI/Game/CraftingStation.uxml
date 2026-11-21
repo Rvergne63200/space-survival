@@ -1,12 +1,21 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="Game.uss" />
     <!-- Crafting station (CraftingStationUI): list of the recipes (one RecipeSlot.uxml each, added in "recipes")
-         and detail of the selected one (ingredients: RecipeIngredient.uxml, added in "detail-ingredients") -->
+         and detail of the selected one (ingredients: RecipeIngredient.uxml, added in "detail-ingredients"). "station": state
+         of the station, crafts in progress, cancel and power buttons -->
     <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
         <ui:VisualElement name="panel" class="game-panel panel-right crafting-panel">
             <ui:VisualElement name="header" class="crafting-header">
                 <ui:Label name="title" text="Fabrication" class="panel-title crafting-title" />
                 <ui:Toggle name="craftable-only" label="Fabricables uniquement" class="crafting-filter" />
+            </ui:VisualElement>
+            <ui:VisualElement name="station" class="station-bar">
+                <ui:VisualElement class="station-text">
+                    <ui:Label name="station-state" text="Alimentée" class="station-state" />
+                    <ui:Label name="station-queue" text="Aucune fabrication en cours" class="station-queue" />
+                </ui:VisualElement>
+                <ui:Button name="station-cancel" text="Annuler" class="quantity-button station-button" />
+                <ui:Button name="station-power" text="Éteindre" class="quantity-button station-button" />
             </ui:VisualElement>
             <ui:VisualElement name="body" class="crafting-body">
                 <ui:VisualElement name="list" class="recipe-list">

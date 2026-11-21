@@ -120,7 +120,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F47** **[Construction]** **Relais radio** (`Radio Relay`) : effet à définir (le prefab posé `RadioRelais` existe).
 - [ ] **F48** **[Crafting]** **Crafter** : recettes de sa `CraftingStation` (le prefab posé `Crafter` existe).
 - [ ] **F49** **[Énergie]** **Génération d'énergie** : panneaux solaires, éoliennes, générateur à charbon (consomme du `Coal` et de l'oxygène, voir F51), etc.
-  - [x] Panneau solaire (`SolarPanel`, objet 29) : puissance selon la hauteur du soleil et l'orientation des cellules, 1000 W max à midi, 0 la nuit ; se déplie et suit le soleil allumé, se replie éteint.
+  - [x] Panneau solaire (`SolarPanel`, objet 29) : puissance selon la hauteur du soleil et l'orientation des cellules, 1000 W max à midi, 0 la nuit ; se déplie et suit le soleil allumé, se replie éteint. Se pose uniquement dehors (`PlaceableItemData.OutdoorOnly`).
 - [ ] **F50** **[Énergie]** **Réseau électrique** : batteries, et câbles posés à la main. Unité : le **watt** (production et consommation en W).
   - **Pose des câbles et des tuyaux** (F51) : un lien automatique entre deux objets, qui peut passer par plusieurs points intermédiaires. Le tracé est arrondi entre deux points, pour l'esthétique.
   - **Réseaux** :
@@ -292,6 +292,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
   - [x] Sas : portes ouvertes et fermées par interaction (cycle du sas entre les deux).
   - [x] Couloirs droits : modèles `Tunnel_Straight` répétés et centrés, `Tunnel_Extension` étiré à chaque bout jusqu'au connecteur (`CorridorPieces`). Extensions de 0,5 à 1,5 m (0,25 à 0,75 morceau droit), pour que le morceau incliné ne rentre pas dans le connecteur en bas d'une pente. Pose : le connecteur suit le point visé sur le premier dôme, le couloir part en rouge vers le point visé, puis se fixe sur le second dôme (recalé sur la ligne des centres). Les plans du sas et du couloir montrent leurs connecteurs. En pente, le couloir reste à plat et ses morceaux sont cisaillés verticalement : sections verticales sur les brides, lignes droites d'un dôme à l'autre.
   - [x] Terrain sous les constructions : aplanissement refait (disque ou rectangle incliné, 18 cm sous le sol, creusé ou remblayé, pente douce autour, `TerrainFlattening`), y compris sous les couloirs, et masque du terrain dans le shader au-dessus des sols (`TerrainMask`). Ancien aplanissement retiré.
+  - [x] Station de craft : modèle `CraftStation` (animé par `CraftingStationAnimator`), 20 W (allumée et alimentée : écran et hologrammes, sinon inutilisable), 2 s par exemplaire, résultat récupéré automatiquement à proximité ou laissé sur la station (F), allumage / extinction et annulation dans son interface.
   - Reste : coudes, T et croix des tunnels (`Tunnel_Elbow45`, `Tunnel_Elbow90`, `Tunnel_T`, `Tunnel_Cross`), les autres modèles (générateurs, éolienne, foreuse, antenne, coffres, station de craft…).
 
 ## Optimisation

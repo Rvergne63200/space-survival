@@ -21,3 +21,4 @@ MonoBehaviour:
   _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
   _placedPrefab: {fileID: 4208000000000000001, guid: 2b17b6cb6547b4144baf1946cf359639, type: 3}
   _refund: []
+  _outdoorOnly: 1

@@ -12,4 +12,8 @@ public class PlaceableItemData : ItemData
     // Given back when the placed object is destroyed. Empty: the item itself
     [SerializeField] private List<RecipeData.ItemBlock> _refund = new List<RecipeData.ItemBlock>();
     public List<RecipeData.ItemBlock> Refund => _refund;
+
+    // Placed outside only (solar panel, wind turbine): not inside a dome, an airlock or a corridor (Builder)
+    [SerializeField] private bool _outdoorOnly;
+    public bool OutdoorOnly => _outdoorOnly;
 }

@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 // Crafting station used by the player (CraftingStation.uxml): list of its recipes (one RecipeSlot.uxml each) and
 // detail of the selected one: name, description, ingredients (owned / required), quantity to craft and craft button.
+// Above: state of the station (power), button to switch it on or off, crafts in progress and button to cancel them
+// (CraftingStation). Nothing can be crafted while it is not usable (off or not powered).
 // "Craftable only" hides the recipes that cannot be crafted. The panel (GameObject holding the UIDocument) is
 // registered as an interface while it is open, and opens the player inventory with it
 public class CraftingStationUI : MonoBehaviour
@@ -16,6 +18,7 @@ public class CraftingStationUI : MonoBehaviour
     [SerializeField] private float refreshInterval = 0.25f;
 
     private Crafter crafter;
+    private CraftingStation station;
     private bool open;
     private float refreshTimer;
 
@@ -40,6 +43,10 @@ public class CraftingStationUI : MonoBehaviour
     private Button plusButton;
     private Button maxButton;
     private Button craftButton;
+    private Label stationState;
+    private Label stationQueue;
+    private Button powerButton;
+    private Button cancelButton;
     private readonly List<Label> ingredientCounts = new List<Label>();
 
     private void Awake()
@@ -71,6 +78,7 @@ public class CraftingStationUI : MonoBehaviour
 
         BindElements(panel.GetComponent<UIDocument>().rootVisualElement);
 
+        station = craftingStation;
         recipeSlots.Clear();
         selected = null;
         quantity = 1;
@@ -120,6 +128,13 @@ public class CraftingStationUI : MonoBehaviour
         plusButton = root.Q<Button>("quantity-plus");
         maxButton = root.Q<Button>("quantity-max");
         craftButton = root.Q<Button>("craft-button");
+        stationState = root.Q<Label>("station-state");
+        stationQueue = root.Q<Label>("station-queue");
+        powerButton = root.Q<Button>("station-power");
+        cancelButton = root.Q<Button>("station-cancel");
+
+        if (powerButton != null) powerButton.clicked += () => { if (station != null) station.SetSwitchedOn(!station.Power.SwitchedOn); Refresh(); };
+        if (cancelButton != null) cancelButton.clicked += () => { if (station != null) station.CancelQueue(); Refresh(); };
 
         if (minusButton != null) minusButton.clicked += () => SetQuantity(quantity - 1);
         if (plusButton != null) plusButton.clicked += () => SetQuantity(quantity + 1);
@@ -221,6 +236,8 @@ public class CraftingStationUI : MonoBehaviour
     {
         if (!open) return;
 
+        RefreshStation();
+
         // The selected recipe stays visible, unless the filter hides it: the first visible one is selected instead
         bool hasVisible = false;
         RecipeSlotUI firstVisible = null;
@@ -310,7 +327,48 @@ public class CraftingStationUI : MonoBehaviour
         minusButton?.SetEnabled(quantity > 1);
         plusButton?.SetEnabled(quantity < max);
         maxButton?.SetEnabled(max > 1 && quantity < max);
-        craftButton?.SetEnabled(max >= quantity && max > 0);
+        craftButton?.SetEnabled(max >= quantity && max > 0 && station != null && station.IsUsable);
+    }
+
+    // State of the station (power, queue) and its buttons
+    private void RefreshStation()
+    {
+        if (station == null) return;
+
+        EnergyConsumer power = station.Power;
+        string state;
+
+        if (power.ForcedOff) state = "Éteinte par le tableau";
+        else if (!power.SwitchedOn) state = "Éteinte";
+        else if (power.IsPowered) state = "Alimentée";
+        else if (power.State == EnergyNetworkManager.NetworkState.Tripped) state = "Réseau disjoncté";
+        else state = "Non alimentée";
+
+        if (stationState != null) stationState.text = state + " (" + EnergyValue.Format(power.Consumption, "W") + ")";
+
+        if (stationQueue != null)
+        {
+            RecipeData current = station.Current;
+            string text = current == null ? "Aucune fabrication en cours" : "En cours : " + RecipeName(current) + " (" + Mathf.RoundToInt(station.Progress * 100f) + " %)"
+                + (station.Queue.Count > 1 ? ", puis " + (station.Queue.Count - 1) + " en attente" : "");
+
+            if (!station.Output.IsEmpty()) text += "   ·   Sur la station : " + station.Output.Quantity + "x " + station.Output.Item.Data.Name + " [F]";
+
+            stationQueue.text = text;
+        }
+
+        if (powerButton != null)
+        {
+            powerButton.text = power.SwitchedOn ? "Éteindre" : "Allumer";
+            powerButton.SetEnabled(!power.ForcedOff);
+        }
+
+        cancelButton?.SetEnabled(station.Queue.Count > 0);
+    }
+
+    private static string RecipeName(RecipeData recipe)
+    {
+        return recipe.Results.Length > 0 && recipe.Results[0].Item != null ? recipe.Results[0].Item.Name : recipe.name;
     }
 
     private void OnCraft()

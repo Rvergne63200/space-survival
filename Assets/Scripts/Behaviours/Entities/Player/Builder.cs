@@ -56,6 +56,9 @@ public class Builder : MonoBehaviour
 
     // Placement cancelled with a right click: not shown again until the item in hand changes
     private ItemData dismissedItem;
+
+    // The ghost of an outdoor only object is inside (shown in the hint)
+    private bool placingIndoor;
     private int dismissedIndex = -1;
 
     // Destruction
@@ -141,6 +144,8 @@ public class Builder : MonoBehaviour
 
     private void SetMode(Mode newMode)
     {
+        placingIndoor = false;
+
         if (newMode != Mode.Placing && newMode != Mode.Building && newMode != Mode.Corridor && newMode != Mode.Airlock)
         {
             DestroyGhost();
@@ -192,7 +197,7 @@ public class Builder : MonoBehaviour
         switch (mode)
         {
             case Mode.Placing:
-                BuildModeUI.Instance.Show("Placement : " + (placingItem != null ? placingItem.Name : "") + "   ·   " + ghostControls);
+                BuildModeUI.Instance.Show("Placement : " + (placingItem != null ? placingItem.Name : "") + (placingIndoor ? "   ·   Se pose uniquement dehors" : "") + "   ·   " + ghostControls);
                 break;
             case Mode.Building:
                 BuildModeUI.Instance.Show("Construction : " + (buildingStructure != null ? buildingStructure.Name : "") + "   ·   " + ghostControls);
@@ -359,10 +364,17 @@ public class Builder : MonoBehaviour
             valid &= CheckSlope(buildingStructure.MaxSlope);
         }
 
-        // Nothing can be placed inside an airlock
-        if (mode == Mode.Placing && Airlock.AnyContains(point))
+        // Nothing can be placed inside an airlock; some objects only outside (solar panel...)
+        if (mode == Mode.Placing)
         {
-            valid = false;
+            bool indoor = placingItem != null && placingItem.OutdoorOnly && IsIndoor(point);
+            valid &= !Airlock.AnyContains(point) && !indoor;
+
+            if (indoor != placingIndoor)
+            {
+                placingIndoor = indoor;
+                UpdateHint();
+            }
         }
 
         // The ghost is created with the invalid material (ghostValid false)
@@ -371,6 +383,13 @@ public class Builder : MonoBehaviour
             ghostValid = valid;
             SetGhostMaterial(valid ? validMaterial : invalidMaterial);
         }
+    }
+
+    // Inside a dome, an airlock or a corridor
+    private static bool IsIndoor(Vector3 point)
+    {
+        Vector3 above = point + Vector3.up * 0.3f;
+        return BuildingInterior.AnyContains(above) || Airlock.AnyContains(above) || Corridor.AnyContains(above);
     }
 
     // Where the camera aims, within maxDistance. Closer than minDistance (horizontally) to the player, the point is pushed
