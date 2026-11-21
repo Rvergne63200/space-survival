@@ -359,192 +359,256 @@ MonoBehaviour:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     _maxSize: 32
   size: 0
@@ -560,6 +624,8 @@ MonoBehaviour:
         m_Calls: []
     _item:
       _data: {fileID: 0}
+      _gaugeSet: 0
+      _gauge: 0
     _quantity: 0
   _toolBar:
     ev_Update:
@@ -571,36 +637,48 @@ MonoBehaviour:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     - _ev_update:
         m_PersistentCalls:
           m_Calls: []
       _item:
         _data: {fileID: 0}
+        _gaugeSet: 0
+        _gauge: 0
       _quantity: 0
     _maxSize: 6
 --- !u!4 &734431898
