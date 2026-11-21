@@ -78,6 +78,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B63** **[Inventaire]** `ItemCollection.Add` bouclait sans fin quand un emplacement filtré refusait l'objet (réserve du générateur à charbon) : il ne recommence que si quelque chose a été ajouté.
 - [x] **B64** **[Énergie]** Générateur à charbon : le foyer (cercle orange), le ventilateur et le voyant ne s'allumaient pas. `TurnOn` était rappelé à chaque frame pendant l'animation du levier, ce qui la relançait sans fin ; il n'est appelé que quand l'état change.
 - [x] **B65** **[Énergie]** Bâtiments reliés par couloir : les générateurs posés dans un bâtiment n'alimentaient pas les machines de l'autre (le couloir ne reliait que les entrées). Il relie maintenant aussi leurs intérieurs (sorties des tableaux intégrés) : générateurs et batteries partagés. Couper un bâtiment n'éteint que ce qui est à l'intérieur. Le tableau intégré affiche la consommation du bâtiment seul ; borne intérieure dans chaque dôme pour ouvrir son tableau (`BuildingPanelTerminal`).
+- [x] **B66** **[Interaction]** Avertissement « Physics.ClosestPoint can only be used with … a convex MeshCollider » en fouillant le générateur à charbon (colliders de son modèle non convexes) : `InteractionDistance` prend pour eux le point le plus proche de leur boîte englobante.
 
 ## Feature
 
