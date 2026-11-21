@@ -63,6 +63,13 @@ public class DayNightCycle : MonoBehaviour
     public float Hour => hour;
     public bool IsDay => hour >= SunriseHour && hour < SunsetHour;
 
+    // The light of the sun, and the direction toward it (below the horizon at night)
+    public Light Sun => sun;
+    public Vector3 SunDirection { get; private set; } = Vector3.up;
+
+    // Height of the sun at noon (y of SunDirection, 0 to 1): the highest it goes
+    public float NoonSunHeight => Mathf.Cos(sunTilt * Mathf.Deg2Rad);
+
     // Light of the sun on the ground, 0 (night) to 1 (sun at its highest), for the solar panels and the plants
     public float Sunlight { get; private set; }
 
@@ -161,6 +168,7 @@ public class DayNightCycle : MonoBehaviour
         Vector3 east = yaw * Vector3.right;
         Vector3 noon = Mathf.Cos(sunTilt * Mathf.Deg2Rad) * Vector3.up + Mathf.Sin(sunTilt * Mathf.Deg2Rad) * (yaw * Vector3.back);
         Vector3 toSun = Mathf.Cos(angle) * east + Mathf.Sin(angle) * noon;
+        SunDirection = toSun;
 
         float sunHeight = toSun.y;
         float moonHeight = -toSun.y;

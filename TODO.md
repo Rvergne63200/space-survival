@@ -120,6 +120,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F47** **[Construction]** **Relais radio** (`Radio Relay`) : effet à définir (le prefab posé `RadioRelais` existe).
 - [ ] **F48** **[Crafting]** **Crafter** : recettes de sa `CraftingStation` (le prefab posé `Crafter` existe).
 - [ ] **F49** **[Énergie]** **Génération d'énergie** : panneaux solaires, éoliennes, générateur à charbon (consomme du `Coal` et de l'oxygène, voir F51), etc.
+  - [x] Panneau solaire (`SolarPanel`, objet 29) : puissance selon la hauteur du soleil et l'orientation des cellules, 1000 W max à midi, 0 la nuit ; se déplie et suit le soleil allumé, se replie éteint.
 - [ ] **F50** **[Énergie]** **Réseau électrique** : batteries, et câbles posés à la main. Unité : le **watt** (production et consommation en W).
   - **Pose des câbles et des tuyaux** (F51) : un lien automatique entre deux objets, qui peut passer par plusieurs points intermédiaires. Le tracé est arrondi entre deux points, pour l'esthétique.
   - **Réseaux** :
@@ -187,7 +188,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F54** **[Monde]** **Cycle jour / nuit et météo** :
   - **Cycle** : le soleil tourne, l'heure du jeu est sauvegardée et la durée d'une journée est réglable : **25 minutes** pour commencer (15 de jour, 10 de nuit), à ajuster si nécessaire. Le cycle sert aux panneaux solaires (F49), à la lumière du soleil pour les plantes (F53) et aux horaires d'alimentation (F50).
     - [x] Fait (`DayNightCycle`) : soleil de 6:00 à 18:00 (15 min de jour, 10 min de nuit), lune, nuits très sombres avec quelques nuits claires (tirées de la seed), crépuscule, heure sauvegardée, départ à 8:00, horloge dans le HUD sous la minimap (`ClockUI`).
-    - Reste : brancher les panneaux solaires (F49, `Sunlight`), les plantes (F53) et les horaires d'alimentation (F50/F56).
+    - Fait : panneaux solaires (F49). Reste : les plantes (F53) et les horaires d'alimentation (F50/F56).
   - **Météo** : vent variable pour les éoliennes, tempêtes de poussière qui réduisent le solaire, etc.
 - [ ] **F55** **[Interfaces]** **Informations des réseaux** (énergie, F50, et oxygène, F51) :
   - **Interface du bâtiment** (en interagissant avec lui ou avec un panneau de contrôle, F57) : production, consommation, charge des batteries, O2 de la pièce, alimentation on/off et horaires.
@@ -286,7 +287,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **F35** **[Interfaces]** Menu principal (`MainMenuUI`, UI Toolkit, mise en page modifiable dans le UI Builder : `Assets/UI/Menus`) : Nouvelle partie (nom et seed pré-remplie aléatoire, bouton Aléatoire, texte converti en nombre), Charger une partie (liste des sauvegardes avec nom, seed et date ; Charger, Supprimer avec confirmation), Quitter.
 - [x] **F36** **[Bootstrap]** Plusieurs sauvegardes : un fichier par partie dans `Application.persistentDataPath/Saves`. L'ancienne sauvegarde unique (`save.json`) est convertie en « Partie sauvegardée ». Une partie lancée directement depuis `0_World` dans l'éditeur crée une sauvegarde « Partie éditeur ».
 - [ ] **F65** **[Modèles]** **Intégration des modèles 3D** (`Resources/Models`, avec leurs scripts d'animation dans `Scripts/Behaviours/Animations`) :
-  - [x] Capsule de départ : modèle `LandingCapsule` dans le prefab `SpaceCapsule` (ancien modèle, coffres de test et station de craft retirés, intérieur vide), porte qui s'ouvre et se ferme en interagissant avec elle, état de la porte sauvegardé.
+  - [x] Capsule de départ : modèle `LandingCapsule` dans le prefab `SpaceCapsule` (ancien modèle, coffres de test et station de craft retirés, intérieur vide), porte qui s'ouvre et se ferme en interagissant avec elle, état de la porte sauvegardé. Coffre de test à côté de la capsule avec tous les items (`TestChest`).
   - Reste : les autres modèles (dômes, couloirs, sas, générateurs, panneau solaire, éolienne, foreuse, antenne, coffres, station de craft…).
 
 ## Optimisation

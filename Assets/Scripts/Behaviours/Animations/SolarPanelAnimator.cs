@@ -103,6 +103,34 @@ public class SolarPanelAnimator : MonoBehaviour
 
     public void SetSun(Light light) => sun = light;
 
+    /// <summary>Ramène progressivement la tête à sa pose de repos (vers l'avant de l'objet).</summary>
+    public void ReturnToRest() { if (yaw != null) FaceDirection(RestFront()); }
+
+    /// <summary>Avant actuel de la tête (monde) : la direction vers laquelle les cellules s'inclinent.</summary>
+    public Vector3 PanelFront => yaw != null ? yaw.rotation * Vector3.down : transform.forward;
+    /// <summary>Axe vertical de la tête (monde).</summary>
+    public Vector3 PanelUp => yaw != null ? VerticalAxis() : transform.up;
+
+    /// <summary>Avancement du dépliage : 0 replié, 1 déplié et incliné.</summary>
+    public float DeployProgress
+    {
+        get
+        {
+            var state = animator.GetCurrentAnimatorStateInfo(PanelLayer);
+            float t = Mathf.Clamp01(state.normalizedTime);
+            if (state.IsName("Panel_Deploy")) return t;
+            if (state.IsName("Panel_Fold")) return 1f - t;
+            return 0f;
+        }
+    }
+
+    /// <summary>Pose dépliée ou repliée sans animation (chargement d'une sauvegarde).</summary>
+    public void SetDeployedImmediate(bool deployed)
+    {
+        IsDeployed = deployed;
+        animator.Play(deployed ? "Panel_Deploy" : "Panel_Fold", PanelLayer, 1f);
+    }
+
     void LateUpdate()   // après l'Animator
     {
         if (yaw == null || !scriptDrivesYaw) return;
