@@ -416,6 +416,27 @@
     margin-left: 6px;
 }
 
+/* Machine whose interface is its storage (ItemStorageUI, IStorageMachine): gauge under its state */
+.machine-bar {
+    width: 100%;
+}
+
+.machine-gauge {
+    height: 8px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+}
+
+.machine-gauge-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    background-color: rgb(255, 140, 40);
+}
+
 .crafting-filter {
     margin: 0;
 }

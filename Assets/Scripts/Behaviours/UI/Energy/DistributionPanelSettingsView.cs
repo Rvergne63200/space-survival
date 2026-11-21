@@ -126,7 +126,12 @@ public class DistributionPanelSettingsView
         if (target == null) return;
 
         if (stateLabel != null) stateLabel.text = "État : " + target.StateText;
-        if (powerLabel != null) powerLabel.text = "Demande du circuit : " + EnergyValue.Format(target.Request, "W")
+        // A building: what it uses itself (its inside is shared with the buildings linked by corridors)
+        string demand = target is BuildingPowerPanel building && EnergyNetworkManager.HasInstance
+            ? "Consommation du bâtiment : " + EnergyValue.Format(EnergyNetworkManager.Instance.BuildingConsumption(building), "W")
+            : "Demande du circuit : " + EnergyValue.Format(target.Request, "W");
+
+        if (powerLabel != null) powerLabel.text = demand
             + "   ·   Transmis : " + EnergyValue.Format(target.Supplied, "W")
             + "   ·   Recharge : " + EnergyValue.Format(target.BatteryChargeSupplied, "W")
             + "   ·   Sortie : " + EnergyValue.Format(target.OutletSupplied, "W");

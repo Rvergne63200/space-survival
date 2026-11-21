@@ -9,13 +9,14 @@ using UnityEngine;
 //    sockets of buildings behind it), within its power limit. The optional part is only served by the surplus, before
 //    the batteries above: not fully served, it never trips anything.
 // 3. Building: a panel whose circuit is its inside (BuildingPowerPanel). Its output socket is a panel inside it whose
-//    whole demand is optional (BuildingOutlet). A corridor links the inputs of two buildings.
+//    whole demand is optional (BuildingOutlet). A corridor links the inputs of two buildings, and their insides (they
+//    share their generators and batteries).
 // 4. Each network: its generators give what it needs, their surplus charges its storages (equal shares, within their
 //    input rate), the storages give what is still missing (within their output rate). The rest is lost.
 // 5. Lack: once the flows are settled, a network that still lacks power sheds its panels set to "shortage" (lowest
 //    priority first), then trips: its consumers stop. Rearmed after "rearmDelay" seconds once it could be powered.
-// 6. Switching off: a switched off panel switches off its circuit and the circuits of the panels in it, except the
-//    panels built into a building, which are only no longer fed.
+// 6. Switching off: a switched off panel switches off its circuit (a building: what is inside it) and the circuits of the
+//    panels in it, except the panels built into a building, which are only no longer fed.
 // 7. Restart: a panel without input or shed starts again once upstream could feed it again. A built-in panel also
 //    counts on what the panels above could still get from further upstream.
 // Created on first use, persists between the scenes
@@ -216,8 +217,9 @@ public class EnergyNetworkManager : MonoBehaviour
             }
         }
 
-        // Corridors (finished): the inputs of their two buildings are linked, both ways, like a cable from input to input.
-        // Each building keeps its own panel (switching one off does not switch off the other)
+        // Corridors (finished): the inputs of their two buildings are linked, both ways, like a cable from input to input,
+        // and so are their insides (the outputs of their built-in panels): the buildings linked by corridors share their
+        // generators and batteries. Each building keeps its own panel (switching one off only switches off what is inside it)
         foreach (Corridor corridor in Corridor.All)
         {
             if (corridor == null || !corridor.IsBuilt) continue;
@@ -229,6 +231,14 @@ public class EnergyNetworkManager : MonoBehaviour
 
             AddBuildingLink(startInput, endInput);
             AddBuildingLink(endInput, startInput);
+
+            DistributionPanelOutput startOutput = BuildingOutput(corridor.Start);
+            DistributionPanelOutput endOutput = BuildingOutput(corridor.End);
+
+            if (startOutput == null || endOutput == null || !devices.Contains(startOutput) || !devices.Contains(endOutput)) continue;
+
+            AddBuildingLink(startOutput, endOutput);
+            AddBuildingLink(endOutput, startOutput);
         }
     }
 
@@ -236,6 +246,12 @@ public class EnergyNetworkManager : MonoBehaviour
     {
         BuildingPowerPanel panel = structure != null ? structure.GetComponentInChildren<BuildingPowerPanel>() : null;
         return panel != null ? panel.Input : null;
+    }
+
+    private static DistributionPanelOutput BuildingOutput(BuiltStructure structure)
+    {
+        BuildingPowerPanel panel = structure != null ? structure.GetComponentInChildren<BuildingPowerPanel>() : null;
+        return panel != null ? panel.Output : null;
     }
 
     private void AddBuildingLink(EnergyDevice from, EnergyDevice to)
@@ -299,6 +315,25 @@ public class EnergyNetworkManager : MonoBehaviour
     private Network NetworkOf(EnergyDevice device)
     {
         return device != null && deviceNetworks.TryGetValue(device, out Network network) ? network : null;
+    }
+
+    // Power used by what is inside the building only (not by the other buildings sharing its inside)
+    public float BuildingConsumption(BuildingPowerPanel building)
+    {
+        Network network = building != null ? NetworkOf(building.Output) : null;
+
+        if (network == null || network.tripped || building.Interior == null) return 0f;
+
+        float consumption = 0f;
+
+        foreach (EnergyConsumer consumer in network.consumers)
+        {
+            if (consumer == null || building.IsPartOfBuilding(consumer) || !building.Interior.Contains(consumer.transform.position)) continue;
+
+            consumption += consumer.Demand;
+        }
+
+        return consumption;
     }
 
     // The network of the device is tripped (map of the control panel: generators and storages in red)
@@ -582,20 +617,25 @@ public class EnergyNetworkManager : MonoBehaviour
     // A switched off panel switches off its circuit (ForcedOff, their own setting being kept), and the circuits of the
     // panels in it, except the panels built into a building (the building fed by the circuit, the output socket of a
     // building): they are only no longer fed. Never the outputs of other panels feeding the same network: their
-    // production follows their own panel
+    // production follows their own panel. A building only switches off what is inside it (its inside is shared with the
+    // buildings linked by corridors)
     private readonly HashSet<EnergyDevice> forcedOff = new HashSet<EnergyDevice>();
 
     private void UpdateForcedOff()
     {
         forcedOff.Clear();
-        HashSet<Network> seen = new HashSet<Network>();
-        Queue<Network> queue = new Queue<Network>();
+
+        // Circuit to switch off, and the building it is limited to: the inside of a building is shared with the buildings
+        // linked by corridors (one network), switching it off only switches off what is inside it
+        HashSet<(Network, BuildingPowerPanel)> seen = new HashSet<(Network, BuildingPowerPanel)>();
+        Queue<(Network network, BuildingPowerPanel building)> queue = new Queue<(Network, BuildingPowerPanel)>();
 
         void SwitchOffCircuit(DistributionPanel panel)
         {
             Network circuit = NetworkOf(panel.Output);
+            BuildingPowerPanel building = panel as BuildingPowerPanel;
 
-            if (circuit != null && seen.Add(circuit)) queue.Enqueue(circuit);
+            if (circuit != null && seen.Add((circuit, building))) queue.Enqueue((circuit, building));
         }
 
         foreach (DistributionPanel panel in panels)
@@ -605,9 +645,15 @@ public class EnergyNetworkManager : MonoBehaviour
 
         while (queue.Count > 0)
         {
-            foreach (EnergyDevice device in queue.Dequeue().devices)
+            (Network network, BuildingPowerPanel building) = queue.Dequeue();
+
+            foreach (EnergyDevice device in network.devices)
             {
                 if (device == null || device is DistributionPanelOutput) continue;
+
+                // Only what is inside the building (its own ports included)
+                if (building != null && !building.IsPartOfBuilding(device)
+                    && (building.Interior == null || !building.Interior.Contains(device.transform.position))) continue;
 
                 if (device is DistributionPanelInput input && input.Panel != null)
                 {

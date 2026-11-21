@@ -1,9 +1,20 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="Game.uss" />
-    <!-- Searched storage (ItemStorageUI): the slots are added in "slots" -->
+    <!-- Searched storage (ItemStorageUI): the slots are added in "slots". "machine": shown when the storage is the
+         interface of a machine (IStorageMachine, coal generator): its state, a gauge and its power button -->
     <ui:VisualElement name="root" picking-mode="Ignore" class="game-root">
         <ui:VisualElement name="panel" class="game-panel panel-right">
             <ui:Label name="title" text="Conteneur" class="panel-title" />
+            <ui:VisualElement name="machine" class="station-bar machine-bar hidden">
+                <ui:VisualElement class="station-text">
+                    <ui:Label name="machine-state" text="En marche" class="station-state" />
+                    <ui:VisualElement name="machine-gauge" class="machine-gauge">
+                        <ui:VisualElement name="machine-gauge-fill" class="machine-gauge-fill" />
+                    </ui:VisualElement>
+                    <ui:Label name="machine-gauge-text" text="Charbon en cours" class="station-queue" />
+                </ui:VisualElement>
+                <ui:Button name="machine-power" text="Éteindre" class="quantity-button station-button" />
+            </ui:VisualElement>
             <ui:VisualElement name="slots" class="item-grid" />
         </ui:VisualElement>
     </ui:VisualElement>

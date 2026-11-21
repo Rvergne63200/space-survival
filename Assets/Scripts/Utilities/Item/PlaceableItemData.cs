@@ -16,4 +16,8 @@ public class PlaceableItemData : ItemData
     // Placed outside only (solar panel, wind turbine): not inside a dome, an airlock or a corridor (Builder)
     [SerializeField] private bool _outdoorOnly;
     public bool OutdoorOnly => _outdoorOnly;
+
+    // Not in a corridor (too low: coal generator). Nothing is ever placed in an airlock
+    [SerializeField] private bool _notInCorridors;
+    public bool NotInCorridors => _notInCorridors;
 }

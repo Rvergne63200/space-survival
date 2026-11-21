@@ -51,6 +51,8 @@ public class CoalGeneratorAnimator : MonoBehaviour
     [SerializeField] float collarHeight = -1f;
     [Tooltip("Débord du collier autour du fût (m), quelle que soit son inclinaison.")]
     [SerializeField] float collarOverhang = 0.10f;
+    [Tooltip("Épaisseur du collier (m). Le disque du FBX fait CollarMeshThickness : il est étiré selon sa normale.")]
+    [SerializeField] float collarThickness = CollarMeshThickness;
     [Tooltip("Fumée optionnelle. Si vide, cherche un ParticleSystem sous l'enfant Smoke.")]
     [SerializeField] ParticleSystem smoke;
 
@@ -61,6 +63,7 @@ public class CoalGeneratorAnimator : MonoBehaviour
     public const float DefaultChimneyHeight = ChimneyBaseHeight + DefaultShaftLength + HeadHeight;   // 3.10 m
     public const float ShaftRadius = 0.19f;           // rayon du fût (aux sommets des 12 facettes)
     public const float CollarMeshRadius = 0.29f;      // rayon du disque du collier dans le FBX (échelle 1)
+    public const float CollarMeshThickness = 0.06f;   // épaisseur du disque du collier dans le FBX (échelle 1)
     const float MinCollarCos = 0.0175f;               // garde-fou : cos(89°), évite une division par zéro
     const float MinShaftLength = 0.30f;
     const float CollarMargin = 0.20f;                 // le collier reste à 20 cm du socle et de la tête
@@ -199,6 +202,13 @@ public class CoalGeneratorAnimator : MonoBehaviour
     /// <summary>Place le collier à une altitude monde (point de traversée du dôme).</summary>
     public void SetCollarWorldHeight(float worldY) => SetCollarHeight(ToModelHeight(worldY));
 
+    /// <summary>Règle l'épaisseur du collier (m, selon sa normale), par exemple celle de la structure qu'il cache.</summary>
+    public void SetCollarThickness(float thickness)
+    {
+        collarThickness = Mathf.Max(0.01f, thickness);
+        ApplyCollarShape();
+    }
+
     /// <summary>Masque le collier (générateur posé dehors).</summary>
     public void HideCollar()
     {
@@ -289,7 +299,7 @@ public class CoalGeneratorAnimator : MonoBehaviour
         float across = ShaftRadius + collarOverhang;
         collar.localScale = new Vector3(collarRestScale.x * along / CollarMeshRadius,
                                         collarRestScale.y * across / CollarMeshRadius,
-                                        collarRestScale.z);
+                                        collarRestScale.z * collarThickness / CollarMeshThickness);
     }
 
     float ToModelHeight(float worldY)

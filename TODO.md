@@ -75,6 +75,9 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **B60** **[UI]** Dans l'éditeur, Échap libère toujours le curseur : il restait visible après la fermeture d'un menu. Dans l'éditeur seulement, ² remplace Échap pour fermer les interfaces et ouvrir le menu pause.
 - [x] **B61** **[Outils]** La lampe torche faisait un disque uniforme qui sonnait faux et éclairait peu la nuit. Faisceau tenu en main (décalé des yeux, sans retard sur la vue), cookie avec centre, anneau et halo et portée 45 m (`FlashlightBeam`).
 - [x] **B62** **[Énergie]** Carte du panneau de contrôle très dézoomée : erreur « Attempting to allocate … vertices which exceeds the limit of 65535 ». Les courbes de niveau étaient tracées en un seul chemin ; elles le sont maintenant par lots de 2000 segments (`MapUtility.DrawContours`, aussi utilisé par la minimap).
+- [x] **B63** **[Inventaire]** `ItemCollection.Add` bouclait sans fin quand un emplacement filtré refusait l'objet (réserve du générateur à charbon) : il ne recommence que si quelque chose a été ajouté.
+- [x] **B64** **[Énergie]** Générateur à charbon : le foyer (cercle orange), le ventilateur et le voyant ne s'allumaient pas. `TurnOn` était rappelé à chaque frame pendant l'animation du levier, ce qui la relançait sans fin ; il n'est appelé que quand l'état change.
+- [x] **B65** **[Énergie]** Bâtiments reliés par couloir : les générateurs posés dans un bâtiment n'alimentaient pas les machines de l'autre (le couloir ne reliait que les entrées). Il relie maintenant aussi leurs intérieurs (sorties des tableaux intégrés) : générateurs et batteries partagés. Couper un bâtiment n'éteint que ce qui est à l'intérieur. Le tableau intégré affiche la consommation du bâtiment seul ; borne intérieure dans chaque dôme pour ouvrir son tableau (`BuildingPanelTerminal`).
 
 ## Feature
 
@@ -122,6 +125,7 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F48** **[Crafting]** **Crafter** : recettes de sa `CraftingStation` (le prefab posé `Crafter` existe).
 - [ ] **F49** **[Énergie]** **Génération d'énergie** : panneaux solaires, éoliennes, générateur à charbon (consomme du `Coal` et de l'oxygène, voir F51), etc.
   - [x] Panneau solaire (`SolarPanel`, objet 29) : puissance selon la hauteur du soleil et l'orientation des cellules, 1000 W max à midi, 0 la nuit ; se déplie et suit le soleil allumé, se replie éteint. Se pose uniquement dehors (`PlaceableItemData.OutdoorOnly`).
+  - [x] Générateur à charbon (`CoalGenerator`, objet 30) : 1000 W tant qu'un charbon brûle (60 s chacun, réserve de 99 par la trappe), une seule interface (réserve, état, jauge du charbon en cours, Allumer / Éteindre), charbon en cours perdu quand on l'éteint, fantôme de pose avec la cheminée réglée en direct, cheminée qui traverse la coupole d'un dôme avec son collier. Reste : sa consommation d'oxygène (F51).
 - [ ] **F50** **[Énergie]** **Réseau électrique** : batteries, et câbles posés à la main. Unité : le **watt** (production et consommation en W).
   - **Pose des câbles et des tuyaux** (F51) : un lien automatique entre deux objets, qui peut passer par plusieurs points intermédiaires. Le tracé est arrondi entre deux points, pour l'esthétique.
   - **Réseaux** :

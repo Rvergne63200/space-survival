@@ -33,6 +33,9 @@ public class Builder : MonoBehaviour
     private Material validMaterial;
     private Material invalidMaterial;
 
+    // The placed object updates its ghost itself (IPlacementPreview), null otherwise
+    private IPlacementPreview placementPreview;
+
     private PlaceableItemData placingItem;
     private StructureData buildingStructure;
 
@@ -57,8 +60,8 @@ public class Builder : MonoBehaviour
     // Placement cancelled with a right click: not shown again until the item in hand changes
     private ItemData dismissedItem;
 
-    // The ghost of an outdoor only object is inside (shown in the hint)
-    private bool placingIndoor;
+    // Why the ghost cannot be placed there (outdoor only object inside, object too high in a corridor), shown in the hint
+    private string placingProblem;
     private int dismissedIndex = -1;
 
     // Destruction
@@ -144,7 +147,7 @@ public class Builder : MonoBehaviour
 
     private void SetMode(Mode newMode)
     {
-        placingIndoor = false;
+        placingProblem = null;
 
         if (newMode != Mode.Placing && newMode != Mode.Building && newMode != Mode.Corridor && newMode != Mode.Airlock)
         {
@@ -197,7 +200,7 @@ public class Builder : MonoBehaviour
         switch (mode)
         {
             case Mode.Placing:
-                BuildModeUI.Instance.Show("Placement : " + (placingItem != null ? placingItem.Name : "") + (placingIndoor ? "   ·   Se pose uniquement dehors" : "") + "   ·   " + ghostControls);
+                BuildModeUI.Instance.Show("Placement : " + (placingItem != null ? placingItem.Name : "") + (placingProblem != null ? "   ·   " + placingProblem : "") + "   ·   " + ghostControls);
                 break;
             case Mode.Building:
                 BuildModeUI.Instance.Show("Construction : " + (buildingStructure != null ? buildingStructure.Name : "") + "   ·   " + ghostControls);
@@ -295,7 +298,33 @@ public class Builder : MonoBehaviour
     {
         DestroyGhost();
 
-        ghost = BuildUtility.CreateVisual(prefab, invalidMaterial, out ghostBounds);
+        // An object shown as it will be once placed (IPlacementPreview): a copy of its model, with its animation script
+        placementPreview = prefab.GetComponent<IPlacementPreview>();
+        GameObject model = placementPreview != null ? placementPreview.PreviewModel : null;
+
+        if (model != null)
+        {
+            ghost = new GameObject(prefab.name);
+            GameObject copy = Instantiate(model, ghost.transform, false);
+            copy.transform.localPosition = model.transform.localPosition;
+            copy.transform.localRotation = model.transform.localRotation;
+            copy.transform.localScale = model.transform.localScale;
+
+            BuildUtility.SetMaterial(ghost, invalidMaterial);
+
+            foreach (Renderer renderer in ghost.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+
+            ghostBounds = BuildUtility.LocalRendererBounds(ghost, ghost.transform);
+        }
+        else
+        {
+            placementPreview = null;
+            ghost = BuildUtility.CreateVisual(prefab, invalidMaterial, out ghostBounds);
+        }
+
         ghost.name = prefab.name + " (ghost)";
         ghostCorridorLength = -1f;
         ghostCorridorSlope = 0f;
@@ -357,6 +386,8 @@ public class Builder : MonoBehaviour
         ghost.SetActive(true);
         ghost.transform.SetPositionAndRotation(point, Quaternion.Euler(0f, rotation, 0f));
 
+        if (mode == Mode.Placing) placementPreview?.UpdatePreview(ghost);
+
         bool valid = normal.y > 0.6f && !Overlaps();
 
         if (mode == Mode.Building && buildingStructure != null)
@@ -367,12 +398,17 @@ public class Builder : MonoBehaviour
         // Nothing can be placed inside an airlock; some objects only outside (solar panel...)
         if (mode == Mode.Placing)
         {
-            bool indoor = placingItem != null && placingItem.OutdoorOnly && IsIndoor(point);
-            valid &= !Airlock.AnyContains(point) && !indoor;
+            Vector3 above = point + Vector3.up * 0.3f;
+            string problem = null;
 
-            if (indoor != placingIndoor)
+            if (placingItem != null && placingItem.OutdoorOnly && IsIndoor(point)) problem = "Se pose uniquement dehors";
+            else if (placingItem != null && placingItem.NotInCorridors && (Corridor.AnyContains(above) || Airlock.AnyContains(above))) problem = "Ne rentre pas dans un couloir";
+
+            valid &= !Airlock.AnyContains(point) && problem == null;
+
+            if (problem != placingProblem)
             {
-                placingIndoor = indoor;
+                placingProblem = problem;
                 UpdateHint();
             }
         }

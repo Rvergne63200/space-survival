@@ -193,7 +193,8 @@ public class ItemCollection<T> where T : Item
 
         int rest = slot.Add(item, count);
 
-        if (rest > 0)
+        // Only while something was added: a slot that refuses the item (restricted slot) would loop forever
+        if (rest > 0 && rest < count)
         {
             rest = Add(item, rest);
         }
