@@ -184,7 +184,7 @@ public static class MapUtility
         outlines.Clear();
         owners?.Clear();
 
-        foreach (BuiltStructure structure in UnityEngine.Object.FindObjectsByType<BuiltStructure>(FindObjectsSortMode.None))
+        foreach (BuiltStructure structure in UnityEngine.Object.FindObjectsByType<BuiltStructure>())
         {
             Vector2[] outline = Footprint(structure);
 
@@ -214,7 +214,7 @@ public static class MapUtility
     {
         outlines.Clear();
 
-        foreach (PlacedObject placed in UnityEngine.Object.FindObjectsByType<PlacedObject>(FindObjectsSortMode.None))
+        foreach (PlacedObject placed in UnityEngine.Object.FindObjectsByType<PlacedObject>())
         {
             AddOutline(outlines, placed);
         }
