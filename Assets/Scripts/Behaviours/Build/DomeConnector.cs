@@ -40,6 +40,9 @@ public class DomeConnector : MonoBehaviour
     private void Awake()
     {
         BuildUtility.AddMeshColliders(gameObject);
+
+        // No terrain drawn in the passage
+        TerrainMask.SetBox(gameObject, 0.9f, 0.1f, 2.6f, -0.3f, 0.6f);
     }
 
     private void OnEnable()

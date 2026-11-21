@@ -4,7 +4,7 @@ using UnityEngine;
 
 // Corridor between two buildings (CorridorData), added by BuildUtility on its plan (StructureBlueprint) and on the
 // finished structure (BuiltStructure). It keeps its two buildings (found again by their save id, like the cables) and
-// its length (scale of the object along Z, and cost multiplier: cost and refund are per meter).
+// its length (pieces of its model, CorridorPieces, and cost multiplier: cost and refund are per meter).
 // Electricity (EnergyNetworkManager): a finished corridor links the inputs of the panels of its two buildings without
 // cable, both ways, like a cable from input to input. Each building keeps its own panel: switching one off does not
 // switch off the other. What is placed in the corridor itself is not linked to anything (it must be cabled).
@@ -21,12 +21,20 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     private string startId;
     private string endId;
     private float length = 1f;
+    private float slope;
     private DomeConnector startConnector;
     private DomeConnector endConnector;
+
+    // Plan: the two connectors shown as a plan too, until the corridor is built
+    private ConnectorPreview startBlueprintConnector;
+    private ConnectorPreview endBlueprintConnector;
 
     public BuiltStructure Start => start;
     public BuiltStructure End => end;
     public float Length => length;
+
+    // Height change per meter along the corridor (it stays level, its pieces are sheared, CorridorPieces)
+    public float Slope => slope;
 
     // Finished (not a plan)
     public bool IsBuilt => GetComponent<BuiltStructure>() != null;
@@ -37,12 +45,13 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     // ---------- Placement ----------
 
     // Straight corridor between the flanges of the connectors of two domes, toward each other: position (center of its
-    // floor), rotation (Z from a to b) and length
-    public static bool ComputePlacement(BuiltStructure a, BuiltStructure b, out Vector3 position, out Quaternion rotation, out float corridorLength)
+    // floor), rotation (level, Z from a to b), horizontal length and slope (height change per meter, from a to b)
+    public static bool ComputePlacement(BuiltStructure a, BuiltStructure b, out Vector3 position, out Quaternion rotation, out float corridorLength, out float corridorSlope)
     {
         position = Vector3.zero;
         rotation = Quaternion.identity;
         corridorLength = 0f;
+        corridorSlope = 0f;
 
         Dome domeA = DomeConnection.DomeOf(a);
         Dome domeB = DomeConnection.DomeOf(b);
@@ -65,9 +74,12 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         // The buildings overlap: no room for a corridor
         if (Vector3.Dot(along, direction) <= 0f) return false;
 
+        Vector3 horizontal = new Vector3(along.x, 0f, along.z);
+
         position = (edgeA + edgeB) * 0.5f;
-        rotation = Quaternion.LookRotation(along, Vector3.up);
-        corridorLength = along.magnitude;
+        rotation = Quaternion.LookRotation(horizontal, Vector3.up);
+        corridorLength = horizontal.magnitude;
+        corridorSlope = along.y / corridorLength;
         return true;
     }
 
@@ -114,8 +126,9 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         return structure != null && (start == structure || end == structure);
     }
 
-    public void Setup(BuiltStructure newStart, BuiltStructure newEnd, float newLength)
+    public void Setup(BuiltStructure newStart, BuiltStructure newEnd, float newLength, float newSlope)
     {
+        slope = newSlope;
         start = newStart;
         end = newEnd;
         startId = DomeConnection.IdOf(newStart);
@@ -131,6 +144,7 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         other.end = end;
         other.startId = startId;
         other.endId = endId;
+        other.slope = slope;
         other.SetLength(length);
         MarkNetworksDirty();
     }
@@ -139,15 +153,29 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     {
         length = Mathf.Max(0.1f, newLength);
 
-        Vector3 scale = transform.localScale;
-        scale.z = length;
-        transform.localScale = scale;
-
         BuiltStructure built = GetComponent<BuiltStructure>();
-        if (built != null) built.CostMultiplier = CostMultiplier;
-
         StructureBlueprint blueprint = GetComponent<StructureBlueprint>();
+
+        if (built != null) built.CostMultiplier = CostMultiplier;
         if (blueprint != null) blueprint.CostMultiplier = CostMultiplier;
+
+        // Model: the pieces for this length. Finished: models with colliders. Plan: blueprint material, and its collider
+        // (to be aimed at) around the pieces
+        CorridorData data = (built != null ? built.Data : blueprint != null ? blueprint.Data : null) as CorridorData;
+
+        if (data == null) return;
+
+        Bounds bounds = CorridorPieces.Build(transform, data, length, slope, built != null ? null : BuildUtility.BlueprintMaterial, built != null);
+
+        // Finished: no terrain drawn inside (tilted with the corridor)
+        if (built != null) TerrainMask.SetBox(gameObject, 0.9f, 0.1f, 2.6f, -length * 0.5f, length * 0.5f, slope);
+        BoxCollider box = built == null ? GetComponent<BoxCollider>() : null;
+
+        if (box != null)
+        {
+            box.center = bounds.center;
+            box.size = bounds.size;
+        }
     }
 
     // Destroyed with one of its buildings: gives back its resources (plan: what was brought)
@@ -177,6 +205,9 @@ public class Corridor : MonoBehaviour, ISaveableComponent
 
     private void OnDestroy()
     {
+        startBlueprintConnector?.Destroy();
+        endBlueprintConnector?.Destroy();
+
         if (!gameObject.scene.isLoaded) return;
 
         DomeConnection.Remove(startConnector);
@@ -189,6 +220,16 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         if ((start == null && !string.IsNullOrEmpty(startId)) || (end == null && !string.IsNullOrEmpty(endId)))
         {
             TryFindEnds();
+        }
+
+        // Plan, both domes known: the connectors shown as a plan
+        if (startBlueprintConnector == null && !IsBuilt && start != null && end != null)
+        {
+            Vector3 between = end.transform.position - start.transform.position;
+            startBlueprintConnector = new ConnectorPreview();
+            endBlueprintConnector = new ConnectorPreview();
+            startBlueprintConnector.Show(DomeConnection.DomeOf(start), between, BuildUtility.BlueprintMaterial);
+            endBlueprintConnector.Show(DomeConnection.DomeOf(end), -between, BuildUtility.BlueprintMaterial);
         }
 
         // Finished, both domes known: the connectors on their walls, toward each other
@@ -229,13 +270,14 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         public string startId;
         public string endId;
         public float length;
+        public float slope;
     }
 
     public string SaveKey => "corridor";
 
     public string CaptureState()
     {
-        return JsonUtility.ToJson(new State { startId = startId, endId = endId, length = length });
+        return JsonUtility.ToJson(new State { startId = startId, endId = endId, length = length, slope = slope });
     }
 
     public void RestoreState(string json)
@@ -248,6 +290,7 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         endId = state.endId;
         start = null;
         end = null;
+        slope = state.slope;
         SetLength(state.length);
         TryFindEnds();
     }

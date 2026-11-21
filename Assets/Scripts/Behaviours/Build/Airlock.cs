@@ -17,6 +17,9 @@ public class Airlock : MonoBehaviour, ISaveableComponent
     private BuiltStructure dome;
     private string domeId;
     private DomeConnector connector;
+
+    // Plan: the connector shown as a plan too, until the airlock is built
+    private ConnectorPreview blueprintConnector;
     private Bounds localBounds;
 
     private AirlockAnimator doors;
@@ -54,6 +57,9 @@ public class Airlock : MonoBehaviour, ISaveableComponent
         if (!IsBuilt) return;
 
         BuildUtility.AddMeshColliders(gameObject);
+
+        // No terrain drawn in the chamber
+        TerrainMask.SetBox(gameObject, 1.2f, 0.1f, 2.85f, 0f, 3.62f);
 
         doors = GetComponentInChildren<AirlockAnimator>();
 
@@ -96,6 +102,8 @@ public class Airlock : MonoBehaviour, ISaveableComponent
 
     private void OnDestroy()
     {
+        blueprintConnector?.Destroy();
+
         if (!gameObject.scene.isLoaded) return;
 
         DomeConnection.Remove(connector);
@@ -109,6 +117,12 @@ public class Airlock : MonoBehaviour, ISaveableComponent
         if (connector == null && IsBuilt && dome != null)
         {
             connector = DomeConnection.Create(DomeConnection.DomeOf(dome), transform.position - dome.transform.position, this);
+        }
+
+        if (blueprintConnector == null && !IsBuilt && dome != null)
+        {
+            blueprintConnector = new ConnectorPreview();
+            blueprintConnector.Show(DomeConnection.DomeOf(dome), transform.position - dome.transform.position, BuildUtility.BlueprintMaterial);
         }
     }
 

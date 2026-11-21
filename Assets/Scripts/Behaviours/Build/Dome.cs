@@ -43,6 +43,10 @@ public class Dome : MonoBehaviour
     {
         UseMaskedMaterials();
 
+        // No terrain drawn above the floor, inside the wall
+        float inner = Mathf.Max(radius - 0.2f, 0.1f);
+        TerrainMask.Set(gameObject, TerrainMask.Shape.Cylinder, new Vector3(0f, 1.55f, 0f), new Vector3(inner * 2f, 2.9f, inner * 2f));
+
         foreach (MeshFilter filter in Model.GetComponentsInChildren<MeshFilter>(true))
         {
             if (filter.sharedMesh == null) continue;

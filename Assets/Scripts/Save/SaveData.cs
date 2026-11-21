@@ -108,7 +108,26 @@ public class ComponentSaveData
 [Serializable]
 public class TerrainEditSaveData
 {
+    // Older saves (former flattening): ignored
+    public const int Legacy = 0;
+    public const int Disc = 1;
+    public const int Box = 2;
+
+    public int shape;
+
+    // Center of the footprint, target height at the center
     public Vector3 position;
-    public float radius;
     public float height;
+
+    // Disc
+    public float radius;
+
+    // Rectangle: yaw (degrees), half sizes across (x) and along (z), height change per meter along z
+    public float yaw;
+    public float halfWidth;
+    public float halfLength;
+    public float slope;
+
+    // Width of the slope joining the natural terrain around the footprint
+    public float margin;
 }

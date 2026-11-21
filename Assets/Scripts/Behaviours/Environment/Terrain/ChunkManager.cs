@@ -167,20 +167,9 @@ public class ChunkManager : MonoBehaviour
     // Called by TerrainGenerator when the heights of a chunk are generated, before ev_OnTerminateGeneration
     public void ApplyTerrainEdits(Terrain terrain)
     {
-        Vector3 chunkPosition = terrain.transform.position;
-        Vector3 size = terrain.terrainData.size;
-
         foreach (TerrainEditSaveData edit in terrainEdits)
         {
-            // FlattenOnChunk modifies the terrain up to 1.3x the radius
-            float reach = edit.radius * 1.3f;
-            float closestX = Mathf.Clamp(edit.position.x, chunkPosition.x, chunkPosition.x + size.x);
-            float closestZ = Mathf.Clamp(edit.position.z, chunkPosition.z, chunkPosition.z + size.z);
-
-            if (new Vector2(edit.position.x - closestX, edit.position.z - closestZ).sqrMagnitude <= reach * reach)
-            {
-                FlattenOnChunk(terrain, edit.position, edit.radius, edit.height);
-            }
+            ApplyTerrainEdit(terrain, edit);
         }
     }
 
@@ -282,90 +271,58 @@ public class ChunkManager : MonoBehaviour
         );
     }
 
-    public void FlattenTerrainAt(Vector3 worldPos, float radius, float targetHeight)
+    // ---------- Flattening under the constructions (TerrainFlattening) ----------
+
+    // Saved and applied to the loaded chunks; replayed on the chunks generated later
+    public void AddTerrainEdit(TerrainEditSaveData edit)
     {
-        terrainEdits.Add(new TerrainEditSaveData { position = worldPos, radius = radius, height = targetHeight });
+        terrainEdits.Add(edit);
 
-        List<Terrain> terrains = GetChunksInRadius(worldPos, radius);
-
-        foreach (Terrain terrain in terrains)
+        foreach (Terrain terrain in GetChunksInRadius(edit.position, TerrainFlattening.Reach(edit)))
         {
-            FlattenOnChunk(terrain, worldPos, radius, targetHeight);
+            ApplyTerrainEdit(terrain, edit);
         }
     }
 
-    private void FlattenOnChunk(Terrain chunk, Vector3 worldPos, float flatRadius, float targetHeight)
+    // Inside the footprint (disc or tilted rectangle) the terrain is set to the target height (dug or filled), around it
+    // it joins the natural terrain over "margin" meters. Only the samples within reach are read and written
+    private void ApplyTerrainEdit(Terrain chunk, TerrainEditSaveData edit)
     {
+        if (edit.shape == TerrainEditSaveData.Legacy) return;
+
         TerrainData data = chunk.terrainData;
         Vector3 chunkPos = chunk.transform.position;
-
         int resolution = data.heightmapResolution;
+        float step = data.size.x / (resolution - 1);
+        float reach = TerrainFlattening.Reach(edit);
 
-        float[,] heights = data.GetHeights(0, 0, resolution, resolution);
+        int xMin = Mathf.Clamp(Mathf.FloorToInt((edit.position.x - reach - chunkPos.x) / step), 0, resolution - 1);
+        int xMax = Mathf.Clamp(Mathf.CeilToInt((edit.position.x + reach - chunkPos.x) / step), 0, resolution - 1);
+        int zMin = Mathf.Clamp(Mathf.FloorToInt((edit.position.z - reach - chunkPos.z) / step), 0, resolution - 1);
+        int zMax = Mathf.Clamp(Mathf.CeilToInt((edit.position.z + reach - chunkPos.z) / step), 0, resolution - 1);
 
-        // Conversion monde => heightmap
-        float normalizedTargetHeight = (targetHeight - chunkPos.y) / data.size.y;
+        if (xMin >= xMax || zMin >= zMax) return;
 
-        // Idéalement expose ça en paramètre
-        float toleranceWorld = 4f;
-        float tolerance = toleranceWorld / data.size.y;
+        int width = xMax - xMin + 1;
+        int depth = zMax - zMin + 1;
+        float[,] heights = data.GetHeights(xMin, zMin, width, depth);
+        bool changed = false;
 
-        float radius = flatRadius * 1.3f;
-
-        for (int z = 0; z < resolution; z++)
+        for (int z = 0; z < depth; z++)
         {
-            for (int x = 0; x < resolution; x++)
+            for (int x = 0; x < width; x++)
             {
-                float worldX = chunkPos.x + (x / (float)(resolution - 1)) * data.size.x;
-                float worldZ = chunkPos.z + (z / (float)(resolution - 1)) * data.size.z;
+                Vector3 world = new Vector3(chunkPos.x + (xMin + x) * step, 0f, chunkPos.z + (zMin + z) * step);
 
-                float dist = Vector2.Distance(
-                    new Vector2(worldX, worldZ),
-                    new Vector2(worldPos.x, worldPos.z)
-                );
+                if (!TerrainFlattening.Evaluate(edit, world, out float target, out float weight)) continue;
 
-                if (dist > radius) continue;
-
-                // -------------------------
-                // 1. Falloff radial (plateau + pente)
-                // -------------------------
-                float falloff;
-
-                if (dist <= flatRadius)
-                {
-                    falloff = 1f;
-                }
-                else
-                {
-                    float t = (dist - flatRadius) / (radius - flatRadius);
-                    t = Mathf.Pow(t, 2f); // douceur de la pente
-                    falloff = Mathf.Lerp(1f, 0f, t);
-                }
-
-                // -------------------------
-                // 2. Falloff vertical (tolérance douce)
-                // -------------------------
-                float currentHeight = heights[z, x];
-
-                float delta = currentHeight - (normalizedTargetHeight - tolerance);
-
-                float toleranceFactor = Mathf.Clamp01(delta / tolerance);
-
-                // adoucissement
-                toleranceFactor = Mathf.Pow(toleranceFactor, 2f);
-                // alternative :
-                // toleranceFactor = Mathf.SmoothStep(0f, 1f, toleranceFactor);
-
-                // -------------------------
-                // 3. Combinaison des deux
-                // -------------------------
-                float finalFalloff = falloff * toleranceFactor;
-
-                heights[z, x] = Mathf.Lerp(currentHeight, normalizedTargetHeight, finalFalloff);
+                float normalizedTarget = (target - chunkPos.y) / data.size.y;
+                heights[z, x] = Mathf.Lerp(heights[z, x], normalizedTarget, weight);
+                changed = true;
             }
         }
 
-        data.SetHeights(0, 0, heights);
+        if (changed) data.SetHeights(xMin, zMin, heights);
     }
 
     public List<Terrain> GetChunksInRadius(Vector3 position, float radius)

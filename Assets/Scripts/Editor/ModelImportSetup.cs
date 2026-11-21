@@ -165,6 +165,8 @@ public class ModelImportSetup : AssetPostprocessor
         mi.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
         // Dôme : mesh lisible au runtime (découpe du mur Dome_Wall pour les connexions)
         if (modelName.StartsWith("Dome_")) mi.isReadable = true;     // Dome_8m / Dome_12m / Dome_16m
+        // Tunnel droit et extension : meshes lisibles au runtime (cisaillés en pente, CorridorPieces)
+        if (modelName == "Tunnel_Straight" || modelName == "Tunnel_Extension") mi.isReadable = true;
         string dir = Path.GetDirectoryName(assetPath).Replace('\\', '/');
         foreach (var guid in AssetDatabase.FindAssets("t:Material", new[] { dir }))
         {

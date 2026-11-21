@@ -24,7 +24,12 @@ MonoBehaviour:
   _refund:
   - _item: {fileID: 11400000, guid: 86781ecd2669c6b4396cb86d899a26c6, type: 2}
     _quantity: 1
-  _flattenTerrain: 0
+  _flattenTerrain: 1
   _maxSlope: 2
   _minLength: 2
   _maxLength: 20
+  _straightPiece: {fileID: 919132149155446097, guid: 13363d4a751eefe4ea83bfbec531dc21, type: 3}
+  _straightLength: 2
+  _extensionPiece: {fileID: 919132149155446097, guid: 80a29a0246230c646a4792feb901d609, type: 3}
+  _extensionLength: 1
+  _maxExtension: 0.75

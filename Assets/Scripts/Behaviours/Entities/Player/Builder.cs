@@ -41,6 +41,9 @@ public class Builder : MonoBehaviour
     private BuiltStructure corridorStart;
     private BuiltStructure corridorEnd;
     private float corridorLength;
+    private float corridorSlope;
+    private float ghostCorridorSlope;
+    private float ghostCorridorLength = -1f;
     private string corridorHint;
 
     // Ghosts of the connectors (corridor: one per dome, airlock: the first one)
@@ -289,6 +292,8 @@ public class Builder : MonoBehaviour
 
         ghost = BuildUtility.CreateVisual(prefab, invalidMaterial, out ghostBounds);
         ghost.name = prefab.name + " (ghost)";
+        ghostCorridorLength = -1f;
+        ghostCorridorSlope = 0f;
         ghostValid = false;
     }
 
@@ -525,10 +530,20 @@ public class Builder : MonoBehaviour
 
         Vector3 position = ghost.transform.position;
 
-        if (buildingStructure.FlattenTerrain && ChunkManager.Instance != null)
+        if (buildingStructure.FlattenTerrain)
         {
-            GetGhostBox(out _, out Vector3 halfExtents);
-            ChunkManager.Instance.FlattenTerrainAt(position, Mathf.Max(halfExtents.x, halfExtents.z) + 0.5f, position.y + 0.2f);
+            // A dome: its disc. Another structure: its box
+            Dome dome = buildingStructure.Prefab.GetComponent<Dome>();
+
+            if (dome != null)
+            {
+                TerrainFlattening.Disc(position, dome.Radius, position.y);
+            }
+            else
+            {
+                GetGhostBox(out Vector3 center, out Vector3 halfExtents);
+                TerrainFlattening.Box(center, ghost.transform.rotation, halfExtents.x, halfExtents.z, position.y, 0f);
+            }
         }
 
         BuildUtility.CreateBlueprint(buildingStructure, position, ghost.transform.rotation);
@@ -539,20 +554,28 @@ public class Builder : MonoBehaviour
 
     private CorridorData CorridorStructure => buildingStructure as CorridorData;
 
-    // Finished dome aimed by the camera
-    private BuiltStructure AimedBuilding()
+    // Aimed dome and where it is aimed (point on its wall, or on anything else within corridorAimRange)
+    private BuiltStructure AimedBuilding(out Vector3 point)
     {
         int layerMask = ~(1 << gameObject.layer);
+        point = Source.position + Source.forward * corridorAimRange;
 
         if (!Physics.Raycast(Source.position, Source.forward, out RaycastHit hit, corridorAimRange, layerMask, QueryTriggerInteraction.Ignore))
         {
             return null;
         }
 
+        point = hit.point;
         BuiltStructure structure = hit.collider.GetComponentInParent<BuiltStructure>();
         return DomeConnection.DomeOf(structure) != null ? structure : null;
     }
 
+    // Distance from the wall of a dome within which the corridor sticks to it
+    private const float CorridorSnapDistance = 3f;
+
+    // 1. First dome: its connector follows the aimed point on its wall. 2. Clicked: the corridor goes from that connector
+    // toward the aimed point, red. 3. Close to another dome (aimed, or its wall within CorridorSnapDistance): it sticks to
+    // it, on the line between their centers (the first connector moves there), with the second connector
     private void UpdateCorridor()
     {
         CorridorData data = CorridorStructure;
@@ -560,51 +583,60 @@ public class Builder : MonoBehaviour
         if (data == null || ghost == null) return;
 
         const string controls = "   ·   Clic droit / Échap : annuler";
-        BuiltStructure aimed = AimedBuilding();
+        BuiltStructure aimed = AimedBuilding(out Vector3 point);
         corridorEnd = null;
 
         if (corridorStart == null)
         {
             ghost.SetActive(false);
-            startPreview.Hide();
             endPreview.Hide();
-            ShowCorridorHint("Couloir : " + (aimed != null ? "clic gauche pour partir de ce bâtiment" : "visez un premier bâtiment") + controls);
+
+            Dome aimedDome = DomeConnection.DomeOf(aimed);
+
+            if (aimedDome == null)
+            {
+                startPreview.Hide();
+                ShowCorridorHint("Couloir : visez un premier dôme" + controls);
+                return;
+            }
+
+            Vector3 toPoint = point - aimed.transform.position;
+            bool free = DomeConnection.IsFree(aimedDome, toPoint);
+            startPreview.Show(aimedDome, toPoint, free ? validMaterial : invalidMaterial);
+            ShowCorridorHint("Couloir : " + (free ? "clic gauche pour partir de ce dôme" : "un connecteur occupe déjà cet endroit du dôme") + controls);
             return;
         }
 
-        if (aimed == null || aimed == corridorStart
-            || !Corridor.ComputePlacement(corridorStart, aimed, out Vector3 position, out Quaternion rotation, out float length))
+        Dome startDome = DomeConnection.DomeOf(corridorStart);
+
+        // Second dome: aimed, or close to the aimed point
+        BuiltStructure end = aimed != corridorStart ? aimed : null;
+
+        if (end == null)
         {
-            ghost.SetActive(false);
-            startPreview.Hide();
-            endPreview.Hide();
-            ShowCorridorHint("Couloir : visez le second bâtiment" + controls);
+            Dome near = DomeConnection.NearestDome(point, CorridorSnapDistance, out _);
+            end = near != null && near != startDome ? near.Structure : null;
+        }
+
+        if (end == null || !Corridor.ComputePlacement(corridorStart, end, out Vector3 position, out Quaternion rotation, out float length, out float slope))
+        {
+            ShowFreeCorridor(data, startDome, point);
+            ShowCorridorHint("Couloir : approchez-le d'un autre dôme" + controls);
             return;
         }
 
-        corridorEnd = aimed;
+        corridorEnd = end;
         corridorLength = length;
+        corridorSlope = slope;
+        ShowGhostCorridor(data, position, rotation, length, slope);
 
-        ghost.SetActive(true);
-        ghost.transform.SetPositionAndRotation(position, rotation);
+        string problem = CorridorProblem(data, corridorStart, end, length);
+        SetCorridorValid(problem == null);
 
-        Vector3 scale = data.Prefab.transform.localScale;
-        scale.z *= length;
-        ghost.transform.localScale = scale;
-
-        string problem = CorridorProblem(data, corridorStart, aimed, length);
-        bool valid = problem == null;
-
-        if (valid != ghostValid)
-        {
-            ghostValid = valid;
-            SetGhostMaterial(valid ? validMaterial : invalidMaterial);
-        }
-
-        Material previewMaterial = valid ? validMaterial : invalidMaterial;
-        Vector3 between = aimed.transform.position - corridorStart.transform.position;
-        startPreview.Show(DomeConnection.DomeOf(corridorStart), between, previewMaterial);
-        endPreview.Show(DomeConnection.DomeOf(aimed), -between, previewMaterial);
+        Material previewMaterial = ghostValid ? validMaterial : invalidMaterial;
+        Vector3 between = end.transform.position - corridorStart.transform.position;
+        startPreview.Show(startDome, between, previewMaterial);
+        endPreview.Show(DomeConnection.DomeOf(end), -between, previewMaterial);
 
         int meters = Mathf.Max(1, Mathf.CeilToInt(length));
         List<string> cost = new List<string>();
@@ -615,7 +647,45 @@ public class Builder : MonoBehaviour
         }
 
         ShowCorridorHint("Couloir : " + length.ToString("0.0") + " m (" + string.Join(", ", cost) + ")"
-            + (valid ? "   ·   Clic gauche : poser le plan" : "   ·   " + problem) + controls);
+            + (ghostValid ? "   ·   Clic gauche : poser le plan" : "   ·   " + problem) + controls);
+    }
+
+    // Not attached to a second dome: from the connector of the first dome toward the aimed point, red
+    private void ShowFreeCorridor(CorridorData data, Dome startDome, Vector3 point)
+    {
+        Vector3 direction = DomeConnection.Horizontal(point - startDome.transform.position);
+        DomeConnection.FlangePose(startDome, direction, out Vector3 flange, out Quaternion rotation);
+
+        Vector3 toPoint = point - flange;
+        toPoint.y = 0f;
+        float length = Mathf.Clamp(Vector3.Dot(toPoint, direction), data.StraightLength, data.MaxLength);
+
+        ShowGhostCorridor(data, flange + direction * (length * 0.5f), rotation, length, 0f);
+        SetCorridorValid(false);
+        startPreview.Show(startDome, direction, invalidMaterial);
+        endPreview.Hide();
+    }
+
+    // Ghost at the pose, with the pieces of the model for this length and slope (built again only when they change)
+    private void ShowGhostCorridor(CorridorData data, Vector3 position, Quaternion rotation, float length, float slope)
+    {
+        ghost.SetActive(true);
+        ghost.transform.SetPositionAndRotation(position, rotation);
+
+        if (Mathf.Abs(length - ghostCorridorLength) > 0.001f || Mathf.Abs(slope - ghostCorridorSlope) > 0.0005f)
+        {
+            ghostCorridorLength = length;
+            ghostCorridorSlope = slope;
+            ghostBounds = CorridorPieces.Build(ghost.transform, data, length, slope, ghostValid ? validMaterial : invalidMaterial, false);
+        }
+    }
+
+    private void SetCorridorValid(bool valid)
+    {
+        if (valid == ghostValid) return;
+
+        ghostValid = valid;
+        SetGhostMaterial(valid ? validMaterial : invalidMaterial);
     }
 
     // Why the corridor cannot be placed, null if it can
@@ -658,18 +728,28 @@ public class Builder : MonoBehaviour
 
         if (corridorStart == null)
         {
-            corridorStart = AimedBuilding();
+            BuiltStructure aimed = AimedBuilding(out Vector3 point);
+            Dome aimedDome = DomeConnection.DomeOf(aimed);
+
+            if (aimedDome != null && DomeConnection.IsFree(aimedDome, point - aimed.transform.position)) corridorStart = aimed;
             return;
         }
 
         if (corridorEnd == null || ghost == null || !ghost.activeSelf || !ghostValid) return;
+
+        // Under the whole corridor, tilted from one dome to the other
+        if (data.FlattenTerrain)
+        {
+            Vector3 center = ghost.transform.position;
+            TerrainFlattening.Box(center, ghost.transform.rotation, ghostBounds.extents.x, corridorLength * 0.5f, center.y, corridorSlope);
+        }
 
         GameObject blueprint = BuildUtility.CreateBlueprint(data, ghost.transform.position, ghost.transform.rotation);
         Corridor corridor = blueprint.GetComponent<Corridor>();
 
         if (corridor != null)
         {
-            corridor.Setup(corridorStart, corridorEnd, corridorLength);
+            corridor.Setup(corridorStart, corridorEnd, corridorLength, corridorSlope);
         }
 
         SetMode(Mode.None);
@@ -758,10 +838,10 @@ public class Builder : MonoBehaviour
         Vector3 position = ghost.transform.position;
 
         // Same level as the dome floor
-        if (buildingStructure.FlattenTerrain && ChunkManager.Instance != null)
+        if (buildingStructure.FlattenTerrain)
         {
             GetGhostBox(out Vector3 center, out Vector3 halfExtents);
-            ChunkManager.Instance.FlattenTerrainAt(center, Mathf.Max(halfExtents.x, halfExtents.z) + 0.5f, airlockDome.transform.position.y + 0.2f);
+            TerrainFlattening.Box(center, ghost.transform.rotation, halfExtents.x, halfExtents.z, airlockDome.transform.position.y, 0f);
         }
 
         GameObject blueprint = BuildUtility.CreateBlueprint(buildingStructure, position, ghost.transform.rotation);

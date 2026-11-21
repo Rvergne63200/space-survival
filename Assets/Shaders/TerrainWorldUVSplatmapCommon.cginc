@@ -24,6 +24,7 @@ struct Input
 {
     float4 tc;
     float2 worldXZ; // World UV: world position of the pixel, on the horizontal plane
+    float worldY;   // Height of the pixel (terrain masks)
     #ifndef TERRAIN_BASE_PASS
         UNITY_FOG_COORDS(0) // needed because finalcolor oppresses fog code generation.
     #endif
@@ -79,6 +80,22 @@ UNITY_INSTANCING_BUFFER_END(Terrain)
     }
 #endif
 
+// Terrain masks (TerrainMask): volumes of the constructions where the terrain is not drawn (above their floor, inside their
+// walls). World to unit volume matrices; shape 0: box (|p| < 0.5), 1: cylinder along Y (radius 0.5, |p.y| < 0.5)
+int _TerrainMaskCount;
+float4x4 _TerrainMasks[64];
+float _TerrainMaskShapes[64];
+
+void ClipTerrainMasks(float3 worldPosition)
+{
+    for (int i = 0; i < _TerrainMaskCount; i++)
+    {
+        float3 p = mul(_TerrainMasks[i], float4(worldPosition, 1)).xyz;
+        bool inside = _TerrainMaskShapes[i] > 0.5 ? (dot(p.xz, p.xz) < 0.25 && abs(p.y) < 0.5) : all(abs(p) < 0.5);
+        if (inside) discard;
+    }
+}
+
 #if defined(TERRAIN_BASE_PASS) && defined(UNITY_PASS_META)
     // When we render albedo for GI baking, we actually need to take the ST
     float4 _MainTex_ST;
@@ -130,7 +147,9 @@ void SplatmapVert(inout appdata_full v, out Input data)
     data.tc.xy = v.texcoord.xy;
 
     // World UV
-    data.worldXZ = mul(unity_ObjectToWorld, float4(v.vertex.xyz, 1.0f)).xz;
+    float3 worldPosition = mul(unity_ObjectToWorld, float4(v.vertex.xyz, 1.0f)).xyz;
+    data.worldXZ = worldPosition.xz;
+    data.worldY = worldPosition.y;
 
 #ifdef TERRAIN_BASE_PASS
     #ifdef UNITY_PASS_META
@@ -165,6 +184,8 @@ void SplatmapMix(Input IN, out half4 splat_control, out half weight, out fixed4 
     #ifdef _ALPHATEST_ON
         ClipHoles(IN.tc.xy);
     #endif
+
+    ClipTerrainMasks(float3(IN.worldXZ.x, IN.worldY, IN.worldXZ.y));
 
     // adjust splatUVs so the edges of the terrain tile lie on pixel centers
     float2 splatUV = (IN.tc.xy * (_Control_TexelSize.zw - 1.0f) + 0.5f) * _Control_TexelSize.xy;
