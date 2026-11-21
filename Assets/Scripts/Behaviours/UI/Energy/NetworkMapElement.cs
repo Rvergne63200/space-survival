@@ -54,7 +54,7 @@ public class NetworkMapElement : VisualElement
     private Vector2 pointerStart;
     private Vector2 centerStart;
 
-    private readonly Label tooltip;
+    private readonly Label hoverLabel;
 
     public event Action<EnergyDevice> Selected;
 
@@ -65,10 +65,10 @@ public class NetworkMapElement : VisualElement
 
         generateVisualContent += Draw;
 
-        tooltip = new Label { pickingMode = PickingMode.Ignore };
-        tooltip.AddToClassList("network-map-tooltip");
-        tooltip.AddToClassList("hidden");
-        Add(tooltip);
+        hoverLabel = new Label { pickingMode = PickingMode.Ignore };
+        hoverLabel.AddToClassList("network-map-tooltip");
+        hoverLabel.AddToClassList("hidden");
+        Add(hoverLabel);
 
         RegisterCallback<WheelEvent>(OnWheel);
         RegisterCallback<PointerDownEvent>(OnPointerDown);
@@ -615,13 +615,13 @@ public class NetworkMapElement : VisualElement
         string text = hovered != null ? (hovered.Panel != null ? hovered.Panel.DisplayName : hovered.DisplayName)
             : OwnerOf(hoveredBuilding) != null && OwnerOf(hoveredBuilding).Data != null ? OwnerOf(hoveredBuilding).Data.Name : null;
 
-        tooltip.EnableInClassList("hidden", text == null);
+        hoverLabel.EnableInClassList("hidden", text == null);
 
         if (text != null)
         {
-            tooltip.text = text;
-            tooltip.style.left = local.x + 12f;
-            tooltip.style.top = local.y - 8f;
+            hoverLabel.text = text;
+            hoverLabel.style.left = local.x + 12f;
+            hoverLabel.style.top = local.y - 8f;
         }
     }
 
@@ -664,6 +664,6 @@ public class NetworkMapElement : VisualElement
     private void SetHovered(EnergyDevice device)
     {
         hovered = device;
-        tooltip.EnableInClassList("hidden", device == null);
+        hoverLabel.EnableInClassList("hidden", device == null);
     }
 }
