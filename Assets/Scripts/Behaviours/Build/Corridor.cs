@@ -8,6 +8,8 @@ using UnityEngine;
 // Electricity (EnergyNetworkManager): a finished corridor links the inputs of the panels of its two buildings without
 // cable, both ways, like a cable from input to input. Each building keeps its own panel: switching one off does not
 // switch off the other. What is placed in the corridor itself is not linked to anything (it must be cabled).
+// Domes: it goes from the flange of the connector of a dome to the flange of the other (DomeConnection). Finished, it
+// creates the two connectors (they open the walls) and removes them with itself.
 // Destroyed with one of its buildings (refunded)
 public class Corridor : MonoBehaviour, ISaveableComponent
 {
@@ -19,6 +21,8 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     private string startId;
     private string endId;
     private float length = 1f;
+    private DomeConnector startConnector;
+    private DomeConnector endConnector;
 
     public BuiltStructure Start => start;
     public BuiltStructure End => end;
@@ -32,13 +36,7 @@ public class Corridor : MonoBehaviour, ISaveableComponent
 
     // ---------- Placement ----------
 
-    // A building that can hold a corridor: a finished structure with an inside (BuildingInterior)
-    public static BuildingInterior InteriorOf(BuiltStructure structure)
-    {
-        return structure != null ? structure.GetComponentInChildren<BuildingInterior>() : null;
-    }
-
-    // Straight corridor between the edges of two buildings, at the height of their floor: position (center of its
+    // Straight corridor between the flanges of the connectors of two domes, toward each other: position (center of its
     // floor), rotation (Z from a to b) and length
     public static bool ComputePlacement(BuiltStructure a, BuiltStructure b, out Vector3 position, out Quaternion rotation, out float corridorLength)
     {
@@ -46,10 +44,10 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         rotation = Quaternion.identity;
         corridorLength = 0f;
 
-        BuildingInterior interiorA = InteriorOf(a);
-        BuildingInterior interiorB = InteriorOf(b);
+        Dome domeA = DomeConnection.DomeOf(a);
+        Dome domeB = DomeConnection.DomeOf(b);
 
-        if (interiorA == null || interiorB == null || a == b) return false;
+        if (domeA == null || domeB == null || a == b) return false;
 
         Vector3 centerA = a.transform.position;
         Vector3 centerB = b.transform.position;
@@ -60,8 +58,8 @@ public class Corridor : MonoBehaviour, ISaveableComponent
 
         direction.Normalize();
 
-        Vector3 edgeA = centerA + direction * interiorA.Radius;
-        Vector3 edgeB = centerB - direction * interiorB.Radius;
+        Vector3 edgeA = centerA + direction * DomeConnection.FlangeRadius(domeA);
+        Vector3 edgeB = centerB - direction * DomeConnection.FlangeRadius(domeB);
         Vector3 along = edgeB - edgeA;
 
         // The buildings overlap: no room for a corridor
@@ -120,8 +118,8 @@ public class Corridor : MonoBehaviour, ISaveableComponent
     {
         start = newStart;
         end = newEnd;
-        startId = IdOf(newStart);
-        endId = IdOf(newEnd);
+        startId = DomeConnection.IdOf(newStart);
+        endId = DomeConnection.IdOf(newEnd);
         SetLength(newLength);
         MarkNetworksDirty();
     }
@@ -152,12 +150,6 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         if (blueprint != null) blueprint.CostMultiplier = CostMultiplier;
     }
 
-    private static string IdOf(BuiltStructure structure)
-    {
-        SaveableObject saveable = structure != null ? structure.GetComponent<SaveableObject>() : null;
-        return saveable != null ? saveable.Id : null;
-    }
-
     // Destroyed with one of its buildings: gives back its resources (plan: what was brought)
     public void Deconstruct()
     {
@@ -183,6 +175,14 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         MarkNetworksDirty();
     }
 
+    private void OnDestroy()
+    {
+        if (!gameObject.scene.isLoaded) return;
+
+        DomeConnection.Remove(startConnector);
+        DomeConnection.Remove(endConnector);
+    }
+
     private void Update()
     {
         // Loaded from the save: the buildings register after or before the corridor
@@ -190,25 +190,27 @@ public class Corridor : MonoBehaviour, ISaveableComponent
         {
             TryFindEnds();
         }
+
+        // Finished, both domes known: the connectors on their walls, toward each other
+        if (startConnector == null && endConnector == null && IsBuilt && start != null && end != null)
+        {
+            Vector3 direction = end.transform.position - start.transform.position;
+            startConnector = DomeConnection.Create(DomeConnection.DomeOf(start), direction, this);
+            endConnector = DomeConnection.Create(DomeConnection.DomeOf(end), -direction, this);
+        }
     }
 
     private void TryFindEnds()
     {
         if (SaveManager.Instance == null) return;
 
-        if (start == null) start = FindStructure(startId);
-        if (end == null) end = FindStructure(endId);
+        if (start == null) start = DomeConnection.FindStructure(startId);
+        if (end == null) end = DomeConnection.FindStructure(endId);
 
         if (start != null && end != null)
         {
             MarkNetworksDirty();
         }
-    }
-
-    private static BuiltStructure FindStructure(string id)
-    {
-        SaveableObject saveable = SaveManager.Instance.GetLiveObject(id);
-        return saveable != null ? saveable.GetComponent<BuiltStructure>() : null;
     }
 
     private static void MarkNetworksDirty()

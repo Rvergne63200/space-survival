@@ -84,6 +84,15 @@ public class StructureBlueprint : MonoBehaviour, IInterractable, ISaveableCompon
                 corridor.CopyTo(builtCorridor);
             }
 
+            // An airlock keeps its dome
+            Airlock airlock = GetComponent<Airlock>();
+            Airlock builtAirlock = built.GetComponent<Airlock>();
+
+            if (airlock != null && builtAirlock != null)
+            {
+                airlock.CopyTo(builtAirlock);
+            }
+
             NotificationUI.Show(Data.Name + " construit.");
             Destroy(gameObject);
         }

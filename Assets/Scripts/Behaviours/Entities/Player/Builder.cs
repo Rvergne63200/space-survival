@@ -6,12 +6,15 @@ using UnityEngine.InputSystem;
 // - build wheel: hold the Build key (B) and click an option (Destroy or a structure), releasing the key closes it
 // - placement: while a placeable item is in hand, a ghost shows where it will be placed
 // - build: the structure chosen in the wheel is shown as a ghost, then placed as a plan (StructureBlueprint)
-// - corridor (CorridorData): click a first building, then a second one: the corridor between them is placed as a plan
+// - corridor (CorridorData): click a first dome, then a second one: the corridor between them is placed as a plan, with
+//   a ghost of the connector on each dome
+// - airlock (AirlockData): placed freely, the ghost sticks to the wall of a dome close to the aimed point, with a ghost
+//   of the connector (DomeConnection). Not attached to a dome: it cannot be placed
 // - destruction: the pointed structure, plan, placed object or electric cable is highlighted, a click destroys it
 // With a ghost: R rotates (Shift + R: 45° steps), left click places, right click cancels
 public class Builder : MonoBehaviour
 {
-    private enum Mode { None, Placing, Building, Corridor, Destroying }
+    private enum Mode { None, Placing, Building, Corridor, Airlock, Destroying }
 
     public float range = 8f;
     public float rotationSpeed = 90f;
@@ -39,6 +42,14 @@ public class Builder : MonoBehaviour
     private BuiltStructure corridorEnd;
     private float corridorLength;
     private string corridorHint;
+
+    // Ghosts of the connectors (corridor: one per dome, airlock: the first one)
+    private readonly ConnectorPreview startPreview = new ConnectorPreview();
+    private readonly ConnectorPreview endPreview = new ConnectorPreview();
+
+    // Airlock: dome it is attached to, and direction from its center
+    private Dome airlockDome;
+    private Vector3 airlockDirection;
 
     // Placement cancelled with a right click: not shown again until the item in hand changes
     private ItemData dismissedItem;
@@ -120,14 +131,14 @@ public class Builder : MonoBehaviour
         SetMode(Mode.None);
         buildingStructure = structure;
         CreateGhost(structure.Prefab);
-        SetMode(structure is CorridorData ? Mode.Corridor : Mode.Building);
+        SetMode(structure is CorridorData ? Mode.Corridor : structure is AirlockData ? Mode.Airlock : Mode.Building);
     }
 
     // ---------- Modes ----------
 
     private void SetMode(Mode newMode)
     {
-        if (newMode != Mode.Placing && newMode != Mode.Building && newMode != Mode.Corridor)
+        if (newMode != Mode.Placing && newMode != Mode.Building && newMode != Mode.Corridor && newMode != Mode.Airlock)
         {
             DestroyGhost();
             placingItem = null;
@@ -138,8 +149,16 @@ public class Builder : MonoBehaviour
         {
             corridorStart = null;
             corridorEnd = null;
-            corridorHint = null;
         }
+
+        if (newMode != Mode.Corridor && newMode != Mode.Airlock)
+        {
+            corridorHint = null;
+            startPreview.Destroy();
+            endPreview.Destroy();
+        }
+
+        airlockDome = null;
 
         if (newMode != Mode.Destroying)
         {
@@ -179,7 +198,8 @@ public class Builder : MonoBehaviour
                 BuildModeUI.Instance.Show("Destruction   ·   Clic gauche : détruire la cible (en rouge)   ·   Clic droit / Échap : quitter");
                 break;
             case Mode.Corridor:
-                // Shown each frame by UpdateCorridor
+            case Mode.Airlock:
+                // Shown each frame by UpdateCorridor and UpdateAirlock
                 break;
             default:
                 BuildModeUI.Instance.Hide();
@@ -199,6 +219,12 @@ public class Builder : MonoBehaviour
             ghost.SetActive(!blocked);
         }
 
+        if (blocked)
+        {
+            startPreview.Hide();
+            endPreview.Hide();
+        }
+
         if (blocked || Source == null) return;
 
         switch (mode)
@@ -210,6 +236,10 @@ public class Builder : MonoBehaviour
                 break;
             case Mode.Corridor:
                 UpdateCorridor();
+                break;
+            case Mode.Airlock:
+                UpdateRotation();
+                UpdateAirlock();
                 break;
             case Mode.Destroying:
                 UpdateDestroyTarget();
@@ -322,6 +352,12 @@ public class Builder : MonoBehaviour
         if (mode == Mode.Building && buildingStructure != null)
         {
             valid &= CheckSlope(buildingStructure.MaxSlope);
+        }
+
+        // Nothing can be placed inside an airlock
+        if (mode == Mode.Placing && Airlock.AnyContains(point))
+        {
+            valid = false;
         }
 
         // The ghost is created with the invalid material (ghostValid false)
@@ -443,6 +479,9 @@ public class Builder : MonoBehaviour
             case Mode.Corridor:
                 ClickCorridor();
                 break;
+            case Mode.Airlock:
+                PlaceAirlock();
+                break;
             case Mode.Destroying:
                 DestroyTarget();
                 break;
@@ -500,7 +539,7 @@ public class Builder : MonoBehaviour
 
     private CorridorData CorridorStructure => buildingStructure as CorridorData;
 
-    // Finished building with an inside (Corridor.InteriorOf) aimed by the camera
+    // Finished dome aimed by the camera
     private BuiltStructure AimedBuilding()
     {
         int layerMask = ~(1 << gameObject.layer);
@@ -511,7 +550,7 @@ public class Builder : MonoBehaviour
         }
 
         BuiltStructure structure = hit.collider.GetComponentInParent<BuiltStructure>();
-        return Corridor.InteriorOf(structure) != null ? structure : null;
+        return DomeConnection.DomeOf(structure) != null ? structure : null;
     }
 
     private void UpdateCorridor()
@@ -527,6 +566,8 @@ public class Builder : MonoBehaviour
         if (corridorStart == null)
         {
             ghost.SetActive(false);
+            startPreview.Hide();
+            endPreview.Hide();
             ShowCorridorHint("Couloir : " + (aimed != null ? "clic gauche pour partir de ce bâtiment" : "visez un premier bâtiment") + controls);
             return;
         }
@@ -535,6 +576,8 @@ public class Builder : MonoBehaviour
             || !Corridor.ComputePlacement(corridorStart, aimed, out Vector3 position, out Quaternion rotation, out float length))
         {
             ghost.SetActive(false);
+            startPreview.Hide();
+            endPreview.Hide();
             ShowCorridorHint("Couloir : visez le second bâtiment" + controls);
             return;
         }
@@ -558,6 +601,11 @@ public class Builder : MonoBehaviour
             SetGhostMaterial(valid ? validMaterial : invalidMaterial);
         }
 
+        Material previewMaterial = valid ? validMaterial : invalidMaterial;
+        Vector3 between = aimed.transform.position - corridorStart.transform.position;
+        startPreview.Show(DomeConnection.DomeOf(corridorStart), between, previewMaterial);
+        endPreview.Show(DomeConnection.DomeOf(aimed), -between, previewMaterial);
+
         int meters = Mathf.Max(1, Mathf.CeilToInt(length));
         List<string> cost = new List<string>();
 
@@ -574,6 +622,8 @@ public class Builder : MonoBehaviour
     private string CorridorProblem(CorridorData data, BuiltStructure start, BuiltStructure end, float length)
     {
         if (Corridor.AreLinked(start, end)) return "ces bâtiments sont déjà reliés";
+        if (!DomeConnection.IsFree(DomeConnection.DomeOf(start), end.transform.position - start.transform.position)) return "un connecteur occupe déjà cet endroit du premier dôme";
+        if (!DomeConnection.IsFree(DomeConnection.DomeOf(end), start.transform.position - end.transform.position)) return "un connecteur occupe déjà cet endroit du second dôme";
         if (length < data.MinLength) return "trop court (min " + data.MinLength.ToString("0.#") + " m)";
         if (length > data.MaxLength) return "trop long (max " + data.MaxLength.ToString("0.#") + " m)";
         if (Mathf.Abs(start.transform.position.y - end.transform.position.y) > data.MaxSlope) return "dénivelé trop fort (max " + data.MaxSlope.ToString("0.#") + " m)";
@@ -620,6 +670,106 @@ public class Builder : MonoBehaviour
         if (corridor != null)
         {
             corridor.Setup(corridorStart, corridorEnd, corridorLength);
+        }
+
+        SetMode(Mode.None);
+    }
+
+    // ---------- Airlock ----------
+
+    private void UpdateAirlock()
+    {
+        AirlockData data = buildingStructure as AirlockData;
+
+        if (data == null || ghost == null) return;
+
+        const string controls = "   ·   Clic droit / Échap : annuler";
+        airlockDome = null;
+
+        if (!TryGetGhostPoint(range + data.SnapDistance, 0f, out Vector3 point, out _))
+        {
+            ghost.SetActive(false);
+            startPreview.Hide();
+            ghostValid = false;
+            ShowCorridorHint("Sas : visez le sol près d'un dôme" + controls);
+            return;
+        }
+
+        ghost.SetActive(true);
+        Dome dome = DomeConnection.NearestDome(point, data.SnapDistance, out Vector3 direction);
+        string problem = null;
+
+        if (dome == null)
+        {
+            // Free: follows the aim, cannot be placed
+            ghost.transform.SetPositionAndRotation(point, Quaternion.Euler(0f, rotation, 0f));
+            startPreview.Hide();
+            problem = "approchez-le du mur d'un dôme";
+        }
+        else
+        {
+            // Sticks to the wall of the dome, on the flange of its connector
+            DomeConnection.FlangePose(dome, direction, out Vector3 position, out Quaternion flangeRotation);
+            ghost.transform.SetPositionAndRotation(position, flangeRotation);
+
+            if (!DomeConnection.IsFree(dome, direction)) problem = "un connecteur occupe déjà cet endroit du dôme";
+            else if (AirlockBlocked(dome.Structure)) problem = "obstacle sur le passage";
+            else
+            {
+                airlockDome = dome;
+                airlockDirection = direction;
+            }
+        }
+
+        bool valid = problem == null;
+
+        if (valid != ghostValid)
+        {
+            ghostValid = valid;
+            SetGhostMaterial(valid ? validMaterial : invalidMaterial);
+        }
+
+        if (dome != null)
+        {
+            startPreview.Show(dome, direction, valid ? validMaterial : invalidMaterial);
+        }
+
+        ShowCorridorHint("Sas" + (valid ? "   ·   Clic gauche : poser le plan" : " : " + problem) + controls);
+    }
+
+    // Anything in the way, the terrain and the dome excepted
+    private bool AirlockBlocked(BuiltStructure dome)
+    {
+        GetGhostBox(out Vector3 center, out Vector3 halfExtents);
+        int layerMask = ~LayerMask.GetMask("Terrain");
+
+        foreach (Collider collider in Physics.OverlapBox(center, halfExtents * 0.9f, ghost.transform.rotation, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            if (collider.GetComponentInParent<BuiltStructure>() != dome) return true;
+        }
+
+        return false;
+    }
+
+    private void PlaceAirlock()
+    {
+        if (ghost == null || !ghost.activeSelf || !ghostValid || airlockDome == null || buildingStructure == null) return;
+
+        Vector3 position = ghost.transform.position;
+
+        // Same level as the dome floor
+        if (buildingStructure.FlattenTerrain && ChunkManager.Instance != null)
+        {
+            GetGhostBox(out Vector3 center, out Vector3 halfExtents);
+            ChunkManager.Instance.FlattenTerrainAt(center, Mathf.Max(halfExtents.x, halfExtents.z) + 0.5f, airlockDome.transform.position.y + 0.2f);
+        }
+
+        GameObject blueprint = BuildUtility.CreateBlueprint(buildingStructure, position, ghost.transform.rotation);
+        Airlock airlock = blueprint.GetComponent<Airlock>();
+
+        if (airlock != null)
+        {
+            airlock.Setup(airlockDome.Structure);
         }
 
         SetMode(Mode.None);

@@ -121,6 +121,12 @@ public static class BuildUtility
             instance.AddComponent<Corridor>();
         }
 
+        // An airlock keeps its dome
+        if (data is AirlockData)
+        {
+            instance.AddComponent<Airlock>();
+        }
+
         SetRuntime(instance, SaveManager.BuildPrefabKeyPrefix + data.Id, id);
 
         return instance;
@@ -158,6 +164,11 @@ public static class BuildUtility
             blueprint.AddComponent<Corridor>();
         }
 
+        if (data is AirlockData)
+        {
+            blueprint.AddComponent<Airlock>();
+        }
+
         SetRuntime(blueprint, SaveManager.BlueprintPrefabKeyPrefix + data.Id, id);
 
         return blueprint;
@@ -183,6 +194,17 @@ public static class BuildUtility
         }
 
         saveable.SetRuntime(prefabKey, id);
+    }
+
+    // A mesh collider on each mesh of a model without collider (models imported again keep working)
+    public static void AddMeshColliders(GameObject root)
+    {
+        foreach (MeshFilter filter in root.GetComponentsInChildren<MeshFilter>(true))
+        {
+            if (filter.sharedMesh == null || filter.GetComponent<Collider>() != null) continue;
+
+            filter.gameObject.AddComponent<MeshCollider>().sharedMesh = filter.sharedMesh;
+        }
     }
 
     // ---------- Resources given back to the player ----------

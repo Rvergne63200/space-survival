@@ -1,0 +1,131 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Airlock (AirlockData, prefab Prefabs/Build/Airlock, model Resources/Models/Airlock), added by BuildUtility on its plan
+// and on the finished structure, like Corridor. It is attached to a dome (found again by its save id): its origin is on
+// the flange of the connector of the dome, +Z outward (DomeConnection).
+// Finished: mesh colliders on its model, and the connector of the dome (it opens the dome wall). Nothing can be placed
+// inside (Builder). Destroyed and refunded with its dome. The doors (AirlockAnimator) are not used yet
+public class Airlock : MonoBehaviour, ISaveableComponent
+{
+    private static readonly List<Airlock> all = new List<Airlock>();
+    public static IReadOnlyList<Airlock> All => all;
+
+    private BuiltStructure dome;
+    private string domeId;
+    private DomeConnector connector;
+    private Bounds localBounds;
+
+    public BuiltStructure Dome => dome;
+    public bool IsBuilt => GetComponent<BuiltStructure>() != null;
+
+    public void Setup(BuiltStructure newDome)
+    {
+        dome = newDome;
+        domeId = DomeConnection.IdOf(newDome);
+    }
+
+    public void CopyTo(Airlock other)
+    {
+        other.dome = dome;
+        other.domeId = domeId;
+    }
+
+    public bool Links(BuiltStructure structure) => structure != null && dome == structure;
+
+    // The point is inside a finished airlock (bounds of its model)
+    public static bool AnyContains(Vector3 point)
+    {
+        foreach (Airlock airlock in all)
+        {
+            if (airlock.IsBuilt && airlock.localBounds.Contains(airlock.transform.InverseTransformPoint(point))) return true;
+        }
+
+        return false;
+    }
+
+    private void Awake()
+    {
+        if (!IsBuilt) return;
+
+        BuildUtility.AddMeshColliders(gameObject);
+
+        bool hasBounds = false;
+
+        foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
+        {
+            Bounds world = renderer.bounds;
+
+            for (int corner = 0; corner < 8; corner++)
+            {
+                Vector3 point = transform.InverseTransformPoint(world.center + Vector3.Scale(world.extents,
+                    new Vector3((corner & 1) == 0 ? -1 : 1, (corner & 2) == 0 ? -1 : 1, (corner & 4) == 0 ? -1 : 1)));
+
+                if (!hasBounds) { localBounds = new Bounds(point, Vector3.zero); hasBounds = true; }
+                else localBounds.Encapsulate(point);
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (!all.Contains(this)) all.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        all.Remove(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (!gameObject.scene.isLoaded) return;
+
+        DomeConnection.Remove(connector);
+    }
+
+    private void Update()
+    {
+        // Loaded from the save: the dome registers after or before the airlock
+        if (dome == null && !string.IsNullOrEmpty(domeId)) dome = DomeConnection.FindStructure(domeId);
+
+        if (connector == null && IsBuilt && dome != null)
+        {
+            connector = DomeConnection.Create(DomeConnection.DomeOf(dome), transform.position - dome.transform.position, this);
+        }
+    }
+
+    // Destroyed with its dome: gives back its resources (plan: what was brought)
+    public void Deconstruct()
+    {
+        StructureBlueprint blueprint = GetComponent<StructureBlueprint>();
+        BuiltStructure built = GetComponent<BuiltStructure>();
+
+        if (blueprint != null) blueprint.Deconstruct();
+        else if (built != null) built.Deconstruct();
+        else Destroy(gameObject);
+    }
+
+    // ---------- Save ----------
+
+    [Serializable]
+    private class State
+    {
+        public string domeId;
+    }
+
+    public string SaveKey => "airlock";
+
+    public string CaptureState() => JsonUtility.ToJson(new State { domeId = domeId });
+
+    public void RestoreState(string json)
+    {
+        State state = JsonUtility.FromJson<State>(json);
+
+        if (state == null) return;
+
+        domeId = state.domeId;
+        dome = DomeConnection.FindStructure(domeId);
+    }
+}

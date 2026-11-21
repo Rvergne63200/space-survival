@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: StructureCatalog
   m_EditorClassIdentifier: 
   _structures:
-  - {fileID: 11400000, guid: 7ba13dcdc7d247d59339ddd810a75bf0, type: 2}
+  - {fileID: 11400000, guid: 10002bdd4d0e08f7e50866470c14e641, type: 2}
+  - {fileID: 11400000, guid: 25e6f0c61e087fdae5cd4384ca0cde52, type: 2}
+  - {fileID: 11400000, guid: 88a4e55b3a5a228409fcbcadd14891b5, type: 2}
+  - {fileID: 11400000, guid: b0beece17c5fe1541cc48dd5d3f9a239, type: 2}
   - {fileID: 11400000, guid: 79dffeb47274b174f92b087c2fd435ec, type: 2}

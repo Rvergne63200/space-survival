@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // A finished structure (BuildUtility.InstantiateStructure): destroyed from the build wheel, it gives back its refund.
-// The corridors arriving at it (Corridor) are destroyed and refunded with it
+// The corridors and airlocks attached to it (Corridor, Airlock) are destroyed and refunded with it
 public class BuiltStructure : MonoBehaviour
 {
     public StructureData Data { get; private set; }
@@ -22,6 +22,14 @@ public class BuiltStructure : MonoBehaviour
             if (corridor != null && corridor.gameObject != gameObject && corridor.Links(this))
             {
                 corridor.Deconstruct();
+            }
+        }
+
+        foreach (Airlock airlock in new List<Airlock>(Airlock.All))
+        {
+            if (airlock != null && airlock.gameObject != gameObject && airlock.Links(this))
+            {
+                airlock.Deconstruct();
             }
         }
 

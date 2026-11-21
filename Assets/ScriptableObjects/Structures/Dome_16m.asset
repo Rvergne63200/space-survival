@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42436238201845c78f6e324b28d47591, type: 3}
-  m_Name: BaseDom
+  m_Name: Dome_16m
   m_EditorClassIdentifier: 
-  _id: BaseDom
-  _name: Dôme
+  _id: Dome_16m
+  _name: Dôme 16 m
   _icon: {fileID: 21300000, guid: 3edca54f1857b8e4ba720871e4d0f151, type: 3}
-  _prefab: {fileID: 7986256412080422617, guid: dc12d42d1ee0bb847abe518f82e73f78, type: 3}
+  _prefab: {fileID: 7986256412080422617, guid: f19a06658f8e5c05788314533b15b624, type: 3}
   _cost:
   - _item: {fileID: 11400000, guid: 86781ecd2669c6b4396cb86d899a26c6, type: 2}
-    _quantity: 20
+    _quantity: 35
   - _item: {fileID: 11400000, guid: d3b8e752d5d377b4287510e49da39b14, type: 2}
-    _quantity: 30
+    _quantity: 50
   _refund:
   - _item: {fileID: 11400000, guid: 86781ecd2669c6b4396cb86d899a26c6, type: 2}
-    _quantity: 10
+    _quantity: 17
   _flattenTerrain: 1
-  _maxSlope: 4
+  _maxSlope: 5
