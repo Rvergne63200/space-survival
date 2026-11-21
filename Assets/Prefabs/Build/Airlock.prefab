@@ -144,3 +144,4 @@ MonoBehaviour:
   statusIntensity: 2.5
   blinkSpeed: 4
   startPressurized: 1
+  cycleSpeed: 2

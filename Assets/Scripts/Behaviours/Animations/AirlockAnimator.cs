@@ -17,6 +17,8 @@ public class AirlockAnimator : MonoBehaviour
     [SerializeField] float statusIntensity = 2.5f;
     [SerializeField] float blinkSpeed = 4f;
     [SerializeField] bool startPressurized = true;
+    [Tooltip("Vitesse du cycle de pressurisation / dépressurisation (1 = durée du clip Cycle).")]
+    [SerializeField] float cycleSpeed = 2f;
 
     static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
     static readonly int BaseColor = Shader.PropertyToID("_Color");
@@ -117,7 +119,10 @@ public class AirlockAnimator : MonoBehaviour
         }
         blinking = true;
         animator.CrossFadeInFixedTime("Cycle", 0.05f);
-        yield return new WaitForSeconds(Length("Cycle"));
+        float speed = Mathf.Max(cycleSpeed, 0.01f);
+        animator.speed = speed;                    // le cycle se fait portes fermées : seul ce clip joue
+        yield return new WaitForSeconds(Length("Cycle") / speed);
+        animator.speed = 1f;
         blinking = false;
         Pressurized = pressurize;
         SetStatus(Pressurized ? pressurizedColor : depressurizedColor);

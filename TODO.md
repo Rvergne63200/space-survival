@@ -289,7 +289,8 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [ ] **F65** **[Modèles]** **Intégration des modèles 3D** (`Resources/Models`, avec leurs scripts d'animation dans `Scripts/Behaviours/Animations`) :
   - [x] Capsule de départ : modèle `LandingCapsule` dans le prefab `SpaceCapsule` (ancien modèle, coffres de test et station de craft retirés, intérieur vide), porte qui s'ouvre et se ferme en interagissant avec elle, état de la porte sauvegardé. Coffre de test à côté de la capsule avec tous les items (`TestChest`).
   - [x] Dômes 8, 12 et 16 m (prefabs `Dome_<taille>`, ancien `BaseDom` supprimé), connecteurs (`DomeConnector`, masque qui cache le mur du dôme dans le connecteur et découpe ses colliders), sas posé librement et accroché au dôme le plus proche (`Airlock`), connecteur à chaque bout des couloirs. Placement des connecteurs partagé par le sas et le couloir (`DomeConnection`).
-  - Reste : modèles des tunnels (`Tunnel_*`), ouverture des portes du sas, les autres modèles (générateurs, éolienne, foreuse, antenne, coffres, station de craft…).
+  - [x] Sas : portes ouvertes et fermées par interaction (cycle du sas entre les deux).
+  - Reste : modèles des tunnels (`Tunnel_*`), les autres modèles (générateurs, éolienne, foreuse, antenne, coffres, station de craft…).
 
 ## Optimisation
 

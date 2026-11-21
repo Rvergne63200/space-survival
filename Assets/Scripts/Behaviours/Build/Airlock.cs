@@ -6,7 +6,9 @@ using UnityEngine;
 // and on the finished structure, like Corridor. It is attached to a dome (found again by its save id): its origin is on
 // the flange of the connector of the dome, +Z outward (DomeConnection).
 // Finished: mesh colliders on its model, and the connector of the dome (it opens the dome wall). Nothing can be placed
-// inside (Builder). Destroyed and refunded with its dome. The doors (AirlockAnimator) are not used yet
+// inside (Builder). Destroyed and refunded with its dome.
+// Doors: opened and closed by interacting with their leaves (AirlockDoor, added on the Door_Inner_* and Door_Outer_*
+// children), through the sequences of AirlockAnimator: opening a door first closes the other one and cycles the chamber
 public class Airlock : MonoBehaviour, ISaveableComponent
 {
     private static readonly List<Airlock> all = new List<Airlock>();
@@ -16,6 +18,8 @@ public class Airlock : MonoBehaviour, ISaveableComponent
     private string domeId;
     private DomeConnector connector;
     private Bounds localBounds;
+
+    private AirlockAnimator doors;
 
     public BuiltStructure Dome => dome;
     public bool IsBuilt => GetComponent<BuiltStructure>() != null;
@@ -50,6 +54,18 @@ public class Airlock : MonoBehaviour, ISaveableComponent
         if (!IsBuilt) return;
 
         BuildUtility.AddMeshColliders(gameObject);
+
+        doors = GetComponentInChildren<AirlockAnimator>();
+
+        foreach (Transform part in GetComponentsInChildren<Transform>(true))
+        {
+            if (part.name.StartsWith("Door_Inner") || part.name.StartsWith("Door_Outer"))
+            {
+                AirlockDoor door = part.gameObject.AddComponent<AirlockDoor>();
+                door.Airlock = this;
+                door.Outer = part.name.StartsWith("Door_Outer");
+            }
+        }
 
         bool hasBounds = false;
 
@@ -93,6 +109,29 @@ public class Airlock : MonoBehaviour, ISaveableComponent
         if (connector == null && IsBuilt && dome != null)
         {
             connector = DomeConnection.Create(DomeConnection.DomeOf(dome), transform.position - dome.transform.position, this);
+        }
+    }
+
+    // ---------- Doors ----------
+
+    public bool DoorsBusy => doors == null || doors.IsBusy;
+
+    public bool IsDoorOpen(bool outer) => doors != null && (outer ? doors.OuterOpen : doors.InnerOpen);
+
+    // Opens (after closing the other door and cycling the chamber) or closes the door. Ignored during a sequence
+    public void UseDoor(bool outer)
+    {
+        if (DoorsBusy) return;
+
+        if (outer)
+        {
+            if (doors.OuterOpen) doors.CloseOuter();
+            else doors.RequestEnterFromOutside();
+        }
+        else
+        {
+            if (doors.InnerOpen) doors.CloseInner();
+            else doors.RequestEnterFromInside();
         }
     }
 
