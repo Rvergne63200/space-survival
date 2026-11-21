@@ -285,6 +285,9 @@ Identifiants : `B` = Bug, `F` = Feature, `O` = Optimisation, `R` = Refonte. Ils 
 - [x] **F34** **[Interfaces]** Menu pause (`PauseMenuUI`, dans `Bootstrap`) : Échap ferme les interfaces ouvertes, ou ouvre le menu pause s'il n'y en a aucune (en jeu). Il propose Reprendre, Retour au menu principal (après sauvegarde) et Quitter, et met le jeu en pause (`timeScale` 0). Échap le ferme aussi.
 - [x] **F35** **[Interfaces]** Menu principal (`MainMenuUI`, UI Toolkit, mise en page modifiable dans le UI Builder : `Assets/UI/Menus`) : Nouvelle partie (nom et seed pré-remplie aléatoire, bouton Aléatoire, texte converti en nombre), Charger une partie (liste des sauvegardes avec nom, seed et date ; Charger, Supprimer avec confirmation), Quitter.
 - [x] **F36** **[Bootstrap]** Plusieurs sauvegardes : un fichier par partie dans `Application.persistentDataPath/Saves`. L'ancienne sauvegarde unique (`save.json`) est convertie en « Partie sauvegardée ». Une partie lancée directement depuis `0_World` dans l'éditeur crée une sauvegarde « Partie éditeur ».
+- [ ] **F65** **[Modèles]** **Intégration des modèles 3D** (`Resources/Models`, avec leurs scripts d'animation dans `Scripts/Behaviours/Animations`) :
+  - [x] Capsule de départ : modèle `LandingCapsule` dans le prefab `SpaceCapsule` (ancien modèle, coffres de test et station de craft retirés, intérieur vide), porte qui s'ouvre et se ferme en interagissant avec elle, état de la porte sauvegardé.
+  - Reste : les autres modèles (dômes, couloirs, sas, générateurs, panneau solaire, éolienne, foreuse, antenne, coffres, station de craft…).
 
 ## Optimisation
 

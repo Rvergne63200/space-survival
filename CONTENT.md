@@ -5,8 +5,8 @@
 ### Scènes
 - `Bootstrap` : contient les objets persistants (managers).
 - `0_MainMenu` : menu principal, première scène chargée par le Bootstrapper (`MainMenuUI`).
-- `0_World` : le monde. Il contient les capsules (prefab `SpaceCapsule`), avec leur intérieur, et le `PlayerSpawnPoint`.
-  - **Coffres de test** de la capsule de spawn (surcharges de l'instance dans la scène, le prefab reste vide) : `Box 1` (29 slots) contient un stack complet de chaque item du jeu (`0` à `28`), `Box 2` un stack complet de chaque item de test (`T001` à `T004`). `Box 3` est vide. Le joueur commence avec un inventaire et une barre d'outils vides.
+- `0_World` : le monde. Il contient la capsule de départ (prefab `SpaceCapsule`) et le `PlayerSpawnPoint`.
+  - **Capsule de départ** (`SpaceCapsule`) : le modèle `Resources/Models/LandingCapsule` (cabine octogonale sur 4 pieds, porte qui se rabat en rampe), avec son `Animator` (`LandingCapsule.controller`), `LandingCapsuleAnimator` et `LandingCapsule`. L'intérieur est vide pour l'instant (sol de la cabine à 0,72 m au-dessus de l'origine du modèle). La racine est posée sur le terrain à « hauteur + 0,7 m » (`ChunkManager.ToReplace`), le modèle est 0,75 m plus bas : les pieds touchent le sol. Le joueur commence avec un inventaire et une barre d'outils vides.
 - `1_TestScene` : scène de test.
 
 Flux : Menu ⇄ Monde. Les capsules ne sont pas des scènes séparées : chacune est un prefab posé dans le monde, avec son propre intérieur, et on voit l'extérieur depuis l'intérieur.
@@ -100,7 +100,7 @@ Vue à la première personne uniquement.
 - **Modifiers (effets)** : `AbstractModifier.Modify(GameObject)`.
   - `StatModifier` (générique) : modifie une stat de `amount`, d'un coup (`duration` = 0) ou réparti sur `duration` secondes.
   - `LifeModifier` ajoute un marker sur la vie (montant/s pendant `duration`). `EnduranceModifier` ne fait qu'un `Debug.Log`.
-- **Consommables de test** : `6_Ration` (faim +40) et `7_Water` (soif +50), dans les coffres de test de la capsule (section 1).
+- **Consommables de test** : `6_Ration` (faim +40) et `7_Water` (soif +50).
 - **First Aid Kit** (`23_FirstAidKit`) : consommable, vie +50 d'un coup.
 - **Consommables** : `ConsummableData` (ScriptableObject, hérite d'ItemData) contient une liste de modifiers (`SerializeReference` + SubclassPicker), appliqués à la consommation depuis `PlayerInventory`.
 - **UI** : `PlayerStatsUI` crée une barre (`StatBarUI`, `StatBar.uxml`) par stat de `statUIDataCollection` (`StatUIData` : stat, icône, couleur), en bas à gauche du HUD. Chaque barre affiche « valeur/max » et un remplissage proportionnel.
@@ -175,6 +175,7 @@ Vue à la première personne uniquement.
   - **Pickupable** : `item` et `count`. Interagir l'ajoute à l'inventaire via `Pickuper`. L'objet est détruit si tout est ramassé, sinon le reste reste au sol. Si `identified` vaut `true`, le texte affiche « Nx Nom », sinon « Pickup ».
   - **Searchable** : ouvre l'`ItemStorage` associé via `Searcher` dans l'UI de conteneur (`ItemStorageUI`). L'inventaire du joueur s'ouvre avec lui et se referme avec lui, sauf si le joueur l'avait ouvert lui-même (touche Inventaire) : `PlayerInventory.OpenWith` / `CloseWith`. Interagir de nouveau avec le même conteneur le referme, et interagir avec un autre conteneur ouvre celui-ci à la place.
   - **CraftingStation** : voir la feature Crafting.
+  - **LandingCapsuleDoor** (porte de la capsule de départ) : « Ouvrir la porte » / « Fermer la porte ». Interagir avec le battant lance `Door_Open` ou `Door_Close` (`LandingCapsuleAnimator.Toggle`) ; pendant le mouvement, une nouvelle interaction repart vers l'autre position. `LandingCapsule` (racine du modèle) ajoute à l'Awake un `MeshCollider` sur chaque mesh du modèle (coque, sol, pieds, et battant qui devient la rampe), le `LandingCapsuleDoor` sur l'enfant `Door` et un `SaveableObject` : la porte reste ouverte ou fermée dans la sauvegarde (reposée sans animation, `SetOpenImmediate`).
 - **Pickuper** : ajoute à l'inventaire et émet `ev_pickup(quantité ramassée, item)`.
 - **Searcher** : garde le conteneur ouvert et émet `ev_UpdateSearchStorage`. Le conteneur est fermé via `ClearCurrentSearchedStorage` quand l'UI se ferme, quand le joueur s'en éloigne de plus de `maxDistance` (4,5 m, jusqu'à ses colliders) ou quand il est détruit.
 - **UI**
@@ -226,7 +227,6 @@ Deux façons de poser quelque chose, avec le même fantôme vert (valide) ou rou
   - **Destruction** : directement, ou avec un de ses deux bâtiments (plan compris) : il rend ses ressources.
 - **StructureBlueprint** (plan) : **hologramme bleu** (shader `Custom/Hologram` : lueur additive, bords lumineux, lignes de balayage animées, léger scintillement ; matériau `Resources/Materials/Blueprint`). Il a un collider pour être visé, sur le layer `Blueprint`, qui n'entre pas en collision avec le joueur : on le traverse (matrice de collision, et `Physics.IgnoreLayerCollision` par sécurité). La détection du sol du joueur l'ignore aussi. Pour interagir avec le plan, il faut le viser depuis l'extérieur. Interagir dépose tout ce qui manque et qu'on a dans l'inventaire. Le texte affiche l'avancement (« Dôme (plan) : Iron 12/20, WoodLog 4/30 »). Une fois tout apporté, il devient la structure réelle (`BuiltStructure`). Détruit, il rend ce qui lui a été apporté.
 - **PlaceableItemData** (ItemData, Item/Placeable) : `placedPrefab` et `Refund`, rendu à la destruction (vide : l'item lui-même). Le contenu des conteneurs d'un objet détruit va aussi dans l'inventaire. Item actuel : `8_Crate` (caisse de 20 slots).
-- **Matériaux de test** : les coffres de la capsule de spawn (section 1) contiennent un stack complet de chaque item, de quoi construire.
 - **Sauvegarde** : les structures (`build:<id>`), les plans (`blueprint:<id>`, avec les ressources apportées) et les objets posés (`placed:<itemId>`, avec le contenu de leurs conteneurs) sont des objets « runtime », recréés par `BuildUtility` au chargement.
 - Ancien système, encore présent sur le prefab `BaseDom` : `BuildObject` (`Put()` active les colliders, appelé à l'instanciation de la structure), `BuildVerifier` et `BuildObjectTexture` (retirés de l'instance, voir R14). `ObjectPlacement` n'est pas utilisé.
 

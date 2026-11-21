@@ -49,6 +49,14 @@ public class LandingCapsuleAnimator : MonoBehaviour
     public void Close() => Run(false);
     /// <summary>Bascule ouverte / fermée.</summary>
     public void Toggle() { if (IsOpen) Close(); else Open(); }
+    /// <summary>Pose la porte ouverte ou fermée sans animation (chargement d'une sauvegarde).</summary>
+    public void SetOpenImmediate(bool open)
+    {
+        if (sequence != null) { StopCoroutine(sequence); sequence = null; }
+        IsOpen = open;
+        animator.Play(IsOpen ? "Door_Open" : "Door_Close", 0, 1f);
+        SetStatus(IsOpen ? openColor : closedColor);
+    }
 
     // ---------------- séquence ----------------
     void Run(bool open)
