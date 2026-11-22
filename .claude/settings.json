@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./Library/**)", "Read(./Temp/**)", "Read(./Obj/**)",
+      "Read(./Logs/**)", "Read(./Builds/**)", "Read(./UserSettings/**)",
+      "Read(./**/*.meta)", "Read(./**/*.unity)", "Read(./**/*.prefab)",
+      "Read(./**/*.asset)", "Read(./**/*.mat)", "Read(./**/*.anim)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/Richard/.local/bin/graphify.EXE hook-guard search",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/Richard/.local/bin/graphify.EXE hook-guard read",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/Richard/.local/bin/graphify.EXE hook-guard compact",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

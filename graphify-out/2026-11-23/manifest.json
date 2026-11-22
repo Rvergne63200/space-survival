@@ -1,0 +1,2642 @@
+{
+  "ArtPipeline/Blender/al_anim.py": {
+    "mtime": 1795260537.3885262,
+    "seen": 1795341668.4284253,
+    "ast_hash": "96b4668e51da459a62d1a1be2f46bdfb",
+    "semantic_hash": "96b4668e51da459a62d1a1be2f46bdfb"
+  },
+  "ArtPipeline/Blender/al_build.py": {
+    "mtime": 1795260537.3992336,
+    "seen": 1795341668.4284291,
+    "ast_hash": "319d29573f17f1a2744c1f0f38503834",
+    "semantic_hash": "319d29573f17f1a2744c1f0f38503834"
+  },
+  "ArtPipeline/Blender/cg_build.py": {
+    "mtime": 1795263469.0048254,
+    "seen": 1795341668.428431,
+    "ast_hash": "a5182f8cdd1639dd88405f7c0415c899",
+    "semantic_hash": "a5182f8cdd1639dd88405f7c0415c899"
+  },
+  "ArtPipeline/Blender/cs_anim.py": {
+    "mtime": 1795260537.4083004,
+    "seen": 1795341668.428433,
+    "ast_hash": "0e62325a1b54eb052c70dbcc70c688d7",
+    "semantic_hash": "0e62325a1b54eb052c70dbcc70c688d7"
+  },
+  "ArtPipeline/Blender/cs_helpers.py": {
+    "mtime": 1795260537.4181046,
+    "seen": 1795341668.4284341,
+    "ast_hash": "dc6c0143b700a70089144d868a275644",
+    "semantic_hash": "dc6c0143b700a70089144d868a275644"
+  },
+  "ArtPipeline/Blender/cs_v5.py": {
+    "mtime": 1795260537.420756,
+    "seen": 1795341668.4284358,
+    "ast_hash": "cb4c8fa02bff6c6fcb34552b6c47c254",
+    "semantic_hash": "cb4c8fa02bff6c6fcb34552b6c47c254"
+  },
+  "ArtPipeline/Blender/dome_build.py": {
+    "mtime": 1795260537.430745,
+    "seen": 1795341668.4284375,
+    "ast_hash": "b05942fc3fbb099a0f3a1f7b1681ba02",
+    "semantic_hash": "b05942fc3fbb099a0f3a1f7b1681ba02"
+  },
+  "ArtPipeline/Blender/dome_sizes.py": {
+    "mtime": 1795260537.4395235,
+    "seen": 1795341668.428439,
+    "ast_hash": "ed66fc20a6ce53acb9472e41a28a7a78",
+    "semantic_hash": "ed66fc20a6ce53acb9472e41a28a7a78"
+  },
+  "ArtPipeline/Blender/dr_build.py": {
+    "mtime": 1795269210.721028,
+    "seen": 1795341668.42844,
+    "ast_hash": "5f3dd86e6f6f1a57e912917fcfeafe72",
+    "semantic_hash": "5f3dd86e6f6f1a57e912917fcfeafe72"
+  },
+  "ArtPipeline/Blender/geodesic.py": {
+    "mtime": 1795260537.4491034,
+    "seen": 1795341668.4284413,
+    "ast_hash": "4516d04294760ba621e905f3f8957a5e",
+    "semantic_hash": "4516d04294760ba621e905f3f8957a5e"
+  },
+  "ArtPipeline/Blender/lc_build.py": {
+    "mtime": 1795268000.0113397,
+    "seen": 1795341668.4284427,
+    "ast_hash": "7ac64cf96d7ac02597211258bf0a77e3",
+    "semantic_hash": "7ac64cf96d7ac02597211258bf0a77e3"
+  },
+  "ArtPipeline/Blender/ra_build.py": {
+    "mtime": 1795260537.451622,
+    "seen": 1795341668.428444,
+    "ast_hash": "34dd97d52c3a26b83da05ed6bcabbf4c",
+    "semantic_hash": "34dd97d52c3a26b83da05ed6bcabbf4c"
+  },
+  "ArtPipeline/Blender/sp_build.py": {
+    "mtime": 1795260537.4603393,
+    "seen": 1795341668.4284449,
+    "ast_hash": "084b14c7091ca01ae6c909669a412d8f",
+    "semantic_hash": "084b14c7091ca01ae6c909669a412d8f"
+  },
+  "ArtPipeline/Blender/st_build.py": {
+    "mtime": 1795270688.267654,
+    "seen": 1795341668.4284463,
+    "ast_hash": "8090e8656d23415b147879c902689d7d",
+    "semantic_hash": "8090e8656d23415b147879c902689d7d"
+  },
+  "ArtPipeline/Blender/tn_build.py": {
+    "mtime": 1795260537.4707448,
+    "seen": 1795341668.4284475,
+    "ast_hash": "0b24a04a4a953f8b3234f8df877c6b2c",
+    "semantic_hash": "0b24a04a4a953f8b3234f8df877c6b2c"
+  },
+  "ArtPipeline/Blender/wt_build.py": {
+    "mtime": 1795260537.4799206,
+    "seen": 1795341668.4284487,
+    "ast_hash": "cb36a87ab79cdb3fcc245de177cd5a9e",
+    "semantic_hash": "cb36a87ab79cdb3fcc245de177cd5a9e"
+  },
+  "ArtPipeline/Blender/zfight.py": {
+    "mtime": 1795260537.490996,
+    "seen": 1795341668.42845,
+    "ast_hash": "e81a1858b84e5cf886f356b5eec2b0c7",
+    "semantic_hash": "e81a1858b84e5cf886f356b5eec2b0c7"
+  },
+  "Assets/Config/EditorModifier/SubclassPicker/SubclassPicker.cs": {
+    "mtime": 1776637296.867596,
+    "seen": 1795341668.4284513,
+    "ast_hash": "9312c7bc878ad282ccc4aa9f7df88508",
+    "semantic_hash": "9312c7bc878ad282ccc4aa9f7df88508"
+  },
+  "Assets/Config/InputSystem/PlayerInputActions.cs": {
+    "mtime": 1795113813.1792805,
+    "seen": 1795341668.428453,
+    "ast_hash": "031f030008669651f097f5fa781abb2b",
+    "semantic_hash": "031f030008669651f097f5fa781abb2b"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs": {
+    "mtime": 1776637301.1710205,
+    "seen": 1795341668.4284544,
+    "ast_hash": "e684e35594fad9cf5a547bdbebf15140",
+    "semantic_hash": "e684e35594fad9cf5a547bdbebf15140"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs": {
+    "mtime": 1776637301.1732001,
+    "seen": 1795341668.4284554,
+    "ast_hash": "7204101af11cf8adf2b2e0d89b9873f1",
+    "semantic_hash": "7204101af11cf8adf2b2e0d89b9873f1"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs": {
+    "mtime": 1776637301.1766374,
+    "seen": 1795341668.4284568,
+    "ast_hash": "12182f6ca92606ed0672125ce725d066",
+    "semantic_hash": "12182f6ca92606ed0672125ce725d066"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/Benchmark03.cs": {
+    "mtime": 1776637301.178023,
+    "seen": 1795341668.428458,
+    "ast_hash": "abc32bf494a52e957127e7322260e955",
+    "semantic_hash": "abc32bf494a52e957127e7322260e955"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/Benchmark04.cs": {
+    "mtime": 1776637301.1795382,
+    "seen": 1795341668.4284592,
+    "ast_hash": "41c2b5dc62b5fc2bd1e0c0323901f4e1",
+    "semantic_hash": "41c2b5dc62b5fc2bd1e0c0323901f4e1"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/CameraController.cs": {
+    "mtime": 1776637301.1810443,
+    "seen": 1795341668.4284606,
+    "ast_hash": "f75a6e32c750a259e29e00a15e279ca4",
+    "semantic_hash": "f75a6e32c750a259e29e00a15e279ca4"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/ChatController.cs": {
+    "mtime": 1776637301.1825564,
+    "seen": 1795341668.4284618,
+    "ast_hash": "8d813194e132cca1348ed8badc27680b",
+    "semantic_hash": "8d813194e132cca1348ed8badc27680b"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/DropdownSample.cs": {
+    "mtime": 1776637301.1830711,
+    "seen": 1795341668.4284632,
+    "ast_hash": "9920ec8e71190b583a3dceb67888cb84",
+    "semantic_hash": "9920ec8e71190b583a3dceb67888cb84"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/EnvMapAnimator.cs": {
+    "mtime": 1776637301.1850765,
+    "seen": 1795341668.4284642,
+    "ast_hash": "0e5ccff504d29b340d10c690938e2ae1",
+    "semantic_hash": "0e5ccff504d29b340d10c690938e2ae1"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/ObjectSpin.cs": {
+    "mtime": 1776637301.1860762,
+    "seen": 1795341668.4284654,
+    "ast_hash": "b59e3b8ba56457646e97227a579d97ef",
+    "semantic_hash": "b59e3b8ba56457646e97227a579d97ef"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/ShaderPropAnimator.cs": {
+    "mtime": 1776637301.1871393,
+    "seen": 1795341668.4284668,
+    "ast_hash": "4d1e11f7a0618119ff0af11d61b8dd39",
+    "semantic_hash": "4d1e11f7a0618119ff0af11d61b8dd39"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/SimpleScript.cs": {
+    "mtime": 1776637301.1886528,
+    "seen": 1795341668.4284678,
+    "ast_hash": "9457b5a63a198def40dfd310e2b176ad",
+    "semantic_hash": "9457b5a63a198def40dfd310e2b176ad"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/SkewTextExample.cs": {
+    "mtime": 1776637301.1899898,
+    "seen": 1795341668.428469,
+    "ast_hash": "41a8bb099456e8f65cf157d372c51367",
+    "semantic_hash": "41a8bb099456e8f65cf157d372c51367"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_DigitValidator.cs": {
+    "mtime": 1776637301.1909907,
+    "seen": 1795341668.4284704,
+    "ast_hash": "5a2b86de882f72d057d2cfe2b3229d56",
+    "semantic_hash": "5a2b86de882f72d057d2cfe2b3229d56"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_ExampleScript_01.cs": {
+    "mtime": 1776637301.1926725,
+    "seen": 1795341668.4284713,
+    "ast_hash": "008f5326fd7590437feb1a9d485edd97",
+    "semantic_hash": "008f5326fd7590437feb1a9d485edd97"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_FrameRateCounter.cs": {
+    "mtime": 1776637301.193743,
+    "seen": 1795341668.4284725,
+    "ast_hash": "7af01fe89556925e1cbd615fd87fb43e",
+    "semantic_hash": "7af01fe89556925e1cbd615fd87fb43e"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_PhoneNumberValidator.cs": {
+    "mtime": 1776637301.195213,
+    "seen": 1795341668.4284742,
+    "ast_hash": "c9c3048db6974fca282f3d07b73062b3",
+    "semantic_hash": "c9c3048db6974fca282f3d07b73062b3"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventCheck.cs": {
+    "mtime": 1776637301.1968193,
+    "seen": 1795341668.4284751,
+    "ast_hash": "86a7ab221205918c2d04b114c9b893ac",
+    "semantic_hash": "86a7ab221205918c2d04b114c9b893ac"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventHandler.cs": {
+    "mtime": 1776637301.198334,
+    "seen": 1795341668.4284763,
+    "ast_hash": "eac200ecd5909eac57a64f4c163cc4c1",
+    "semantic_hash": "eac200ecd5909eac57a64f4c163cc4c1"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_TextInfoDebugTool.cs": {
+    "mtime": 1776637301.1993437,
+    "seen": 1795341668.4284778,
+    "ast_hash": "0afeb06cf860bad5e5d0ec56d74ae4be",
+    "semantic_hash": "0afeb06cf860bad5e5d0ec56d74ae4be"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_A.cs": {
+    "mtime": 1776637301.201741,
+    "seen": 1795341668.4284794,
+    "ast_hash": "8a0520e7a3bba1c46bcca856f8b0c959",
+    "semantic_hash": "8a0520e7a3bba1c46bcca856f8b0c959"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_B.cs": {
+    "mtime": 1776637301.203254,
+    "seen": 1795341668.4284806,
+    "ast_hash": "1b5ee0c2cdd8f295efb1f35c0d7f8239",
+    "semantic_hash": "1b5ee0c2cdd8f295efb1f35c0d7f8239"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMP_UiFrameRateCounter.cs": {
+    "mtime": 1776637301.2042537,
+    "seen": 1795341668.4284818,
+    "ast_hash": "968d6a3c31bfdf7e839ad89dae9d7dd9",
+    "semantic_hash": "968d6a3c31bfdf7e839ad89dae9d7dd9"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TMPro_InstructionOverlay.cs": {
+    "mtime": 1776637301.2052543,
+    "seen": 1795341668.428483,
+    "ast_hash": "abb2f9ef5b897ef8409d6c0f49fee98b",
+    "semantic_hash": "abb2f9ef5b897ef8409d6c0f49fee98b"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs": {
+    "mtime": 1776637301.2067604,
+    "seen": 1795341668.4284847,
+    "ast_hash": "df80aa1ed341bc62cc103ec8aab3fd01",
+    "semantic_hash": "df80aa1ed341bc62cc103ec8aab3fd01"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TextConsoleSimulator.cs": {
+    "mtime": 1776637301.2082808,
+    "seen": 1795341668.4284859,
+    "ast_hash": "43c70d35c96dec4945418facc6e2bf6b",
+    "semantic_hash": "43c70d35c96dec4945418facc6e2bf6b"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TextMeshProFloatingText.cs": {
+    "mtime": 1776637301.2116275,
+    "seen": 1795341668.428487,
+    "ast_hash": "e965435a8850f7044c0363d05a5c7fab",
+    "semantic_hash": "e965435a8850f7044c0363d05a5c7fab"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/TextMeshSpawner.cs": {
+    "mtime": 1776637301.213626,
+    "seen": 1795341668.4284883,
+    "ast_hash": "4dfc5f357d8bc78820f6e7adabf5717d",
+    "semantic_hash": "4dfc5f357d8bc78820f6e7adabf5717d"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/VertexColorCycler.cs": {
+    "mtime": 1776637301.2156274,
+    "seen": 1795341668.4284897,
+    "ast_hash": "9e46ccee35f6b84d3e22f5de24342bb5",
+    "semantic_hash": "9e46ccee35f6b84d3e22f5de24342bb5"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/VertexJitter.cs": {
+    "mtime": 1776637301.216686,
+    "seen": 1795341668.4284906,
+    "ast_hash": "b955ec108ccb5ad67db91b5628912398",
+    "semantic_hash": "b955ec108ccb5ad67db91b5628912398"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/VertexShakeA.cs": {
+    "mtime": 1776637301.219323,
+    "seen": 1795341668.428492,
+    "ast_hash": "49d28055f5bf1d114171fa261df58df5",
+    "semantic_hash": "49d28055f5bf1d114171fa261df58df5"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs": {
+    "mtime": 1776637301.2203224,
+    "seen": 1795341668.4284933,
+    "ast_hash": "4aa7a6fbcc1655ec907fd4be812a9ce7",
+    "semantic_hash": "4aa7a6fbcc1655ec907fd4be812a9ce7"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs": {
+    "mtime": 1776637301.2219372,
+    "seen": 1795341668.4284945,
+    "ast_hash": "2cfce87d6cbf7654c3e670bb6798a0a2",
+    "semantic_hash": "2cfce87d6cbf7654c3e670bb6798a0a2"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs": {
+    "mtime": 1776637301.223203,
+    "seen": 1795341668.4284956,
+    "ast_hash": "e4e83bc8456713a3c2849fbefb019d08",
+    "semantic_hash": "e4e83bc8456713a3c2849fbefb019d08"
+  },
+  "Assets/Packages/TextMesh Pro/Sprites/EmojiOne.json": {
+    "mtime": 1776637301.4252398,
+    "seen": 1795341668.4284968,
+    "ast_hash": "3cc172b271fdc3fdfad5e6c2c8c65a33",
+    "semantic_hash": "3cc172b271fdc3fdfad5e6c2c8c65a33"
+  },
+  "Assets/Scripts/Behaviours/Animations/AirlockAnimator.cs": {
+    "mtime": 1795280083.610896,
+    "seen": 1795341668.428498,
+    "ast_hash": "e0b6963d15346afc851c0ca215b2e4cf",
+    "semantic_hash": "e0b6963d15346afc851c0ca215b2e4cf"
+  },
+  "Assets/Scripts/Behaviours/Animations/CoalGeneratorAnimator.cs": {
+    "mtime": 1795303076.7237635,
+    "seen": 1795341668.4284995,
+    "ast_hash": "b40f98c2ebb57f2eb3d0d131177783f6",
+    "semantic_hash": "b40f98c2ebb57f2eb3d0d131177783f6"
+  },
+  "Assets/Scripts/Behaviours/Animations/CraftingStationAnimator.cs": {
+    "mtime": 1795210955.442753,
+    "seen": 1795341668.4285004,
+    "ast_hash": "98baa2726d9952103213f9fb0d1c1951",
+    "semantic_hash": "98baa2726d9952103213f9fb0d1c1951"
+  },
+  "Assets/Scripts/Behaviours/Animations/DrillAnimator.cs": {
+    "mtime": 1795269661.6397045,
+    "seen": 1795341668.428502,
+    "ast_hash": "24d867e462fee5e1d09331ed1af16d99",
+    "semantic_hash": "24d867e462fee5e1d09331ed1af16d99"
+  },
+  "Assets/Scripts/Behaviours/Animations/LandingCapsuleAnimator.cs": {
+    "mtime": 1795271714.7429943,
+    "seen": 1795341668.4285033,
+    "ast_hash": "30b954f4ff5ab242f950ae995bdf90f5",
+    "semantic_hash": "30b954f4ff5ab242f950ae995bdf90f5"
+  },
+  "Assets/Scripts/Behaviours/Animations/RelayAntennaAnimator.cs": {
+    "mtime": 1795226401.3886707,
+    "seen": 1795341668.4285042,
+    "ast_hash": "950d3c8f3ee09353f8b19cb2ed49cfd5",
+    "semantic_hash": "950d3c8f3ee09353f8b19cb2ed49cfd5"
+  },
+  "Assets/Scripts/Behaviours/Animations/SolarPanelAnimator.cs": {
+    "mtime": 1795273697.3024335,
+    "seen": 1795341668.4285057,
+    "ast_hash": "b21d9b42292438f8276fcf1995ddc30f",
+    "semantic_hash": "b21d9b42292438f8276fcf1995ddc30f"
+  },
+  "Assets/Scripts/Behaviours/Animations/StorageAnimator.cs": {
+    "mtime": 1795270724.909248,
+    "seen": 1795341668.4285066,
+    "ast_hash": "830a360a26f7137a8bc3dd672fdaa573",
+    "semantic_hash": "830a360a26f7137a8bc3dd672fdaa573"
+  },
+  "Assets/Scripts/Behaviours/Animations/WindTurbineAnimator.cs": {
+    "mtime": 1795229976.4913847,
+    "seen": 1795341668.4285078,
+    "ast_hash": "be0503848dc0de0eb160ea59d0d90b9e",
+    "semantic_hash": "be0503848dc0de0eb160ea59d0d90b9e"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Bootstrapper.cs": {
+    "mtime": 1776637301.5292704,
+    "seen": 1795341668.428509,
+    "ast_hash": "3b4b18d2fecf139b04092032a5e80bb1",
+    "semantic_hash": "3b4b18d2fecf139b04092032a5e80bb1"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Manager/CameraManager.cs": {
+    "mtime": 1776637301.5312765,
+    "seen": 1795341668.4285102,
+    "ast_hash": "d6b74ffda97b8b6416d21c5be946213c",
+    "semantic_hash": "d6b74ffda97b8b6416d21c5be946213c"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Manager/PlayerManager.cs": {
+    "mtime": 1795113911.8452578,
+    "seen": 1795341668.4285114,
+    "ast_hash": "8d5e3b6bf5ec2b375fe12cbd2ba26184",
+    "semantic_hash": "8d5e3b6bf5ec2b375fe12cbd2ba26184"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Manager/SceneLoadingManager.cs": {
+    "mtime": 1776637301.5341191,
+    "seen": 1795341668.4285126,
+    "ast_hash": "2d59aaa6c2501c4f26476ccb845834e3",
+    "semantic_hash": "2d59aaa6c2501c4f26476ccb845834e3"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Manager/UIManager.cs": {
+    "mtime": 1794907747.0900578,
+    "seen": 1795341668.4285138,
+    "ast_hash": "4903aff054e7794292b8d810be492fe5",
+    "semantic_hash": "4903aff054e7794292b8d810be492fe5"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/Root.cs": {
+    "mtime": 1776637301.5367053,
+    "seen": 1795341668.428515,
+    "ast_hash": "969253f41fbfc8468c0394fb74f2f1a4",
+    "semantic_hash": "969253f41fbfc8468c0394fb74f2f1a4"
+  },
+  "Assets/Scripts/Behaviours/Bootstrap/SceneContext.cs": {
+    "mtime": 1776637301.5386672,
+    "seen": 1795341668.4285164,
+    "ast_hash": "31b27bfba003a7bb9638a534b9f1e957",
+    "semantic_hash": "31b27bfba003a7bb9638a534b9f1e957"
+  },
+  "Assets/Scripts/Behaviours/Build/Airlock.cs": {
+    "mtime": 1795299978.2672627,
+    "seen": 1795341668.4285173,
+    "ast_hash": "6d106a819e42577602c69aab75eeab24",
+    "semantic_hash": "6d106a819e42577602c69aab75eeab24"
+  },
+  "Assets/Scripts/Behaviours/Build/AirlockDoor.cs": {
+    "mtime": 1795279960.328686,
+    "seen": 1795341668.4285188,
+    "ast_hash": "2dea1f7af0ad41e3d355887d59431fa9",
+    "semantic_hash": "2dea1f7af0ad41e3d355887d59431fa9"
+  },
+  "Assets/Scripts/Behaviours/Build/BuildUtility.cs": {
+    "mtime": 1795300012.858278,
+    "seen": 1795341668.4285197,
+    "ast_hash": "4dea2083e6adf440d9cc52759ab39fd5",
+    "semantic_hash": "4dea2083e6adf440d9cc52759ab39fd5"
+  },
+  "Assets/Scripts/Behaviours/Build/BuildingInterior.cs": {
+    "mtime": 1795299854.170905,
+    "seen": 1795341668.428521,
+    "ast_hash": "1436396dd4cb9a052663a051af001a72",
+    "semantic_hash": "1436396dd4cb9a052663a051af001a72"
+  },
+  "Assets/Scripts/Behaviours/Build/BuiltStructure.cs": {
+    "mtime": 1795278385.4094179,
+    "seen": 1795341668.4285223,
+    "ast_hash": "62e5c0172e7f75a9a5708e7d194f1773",
+    "semantic_hash": "62e5c0172e7f75a9a5708e7d194f1773"
+  },
+  "Assets/Scripts/Behaviours/Build/Corridor.cs": {
+    "mtime": 1795299978.3113213,
+    "seen": 1795341668.4285235,
+    "ast_hash": "bdb310ccea7871b5cc1eea536773178b",
+    "semantic_hash": "bdb310ccea7871b5cc1eea536773178b"
+  },
+  "Assets/Scripts/Behaviours/Build/Dome.cs": {
+    "mtime": 1795283343.015949,
+    "seen": 1795341668.4285245,
+    "ast_hash": "c2be52f568c0a46b2ac26f0a12abb6e9",
+    "semantic_hash": "c2be52f568c0a46b2ac26f0a12abb6e9"
+  },
+  "Assets/Scripts/Behaviours/Build/DomeConnection.cs": {
+    "mtime": 1795340015.8491018,
+    "seen": 1795341668.428526,
+    "ast_hash": "3d107e7dea114f064b7ac82b3b2b527a",
+    "semantic_hash": "3d107e7dea114f064b7ac82b3b2b527a"
+  },
+  "Assets/Scripts/Behaviours/Build/DomeConnector.cs": {
+    "mtime": 1795299978.2235084,
+    "seen": 1795341668.4285269,
+    "ast_hash": "76eae3568a94d18b8fd80d1a1090b72b",
+    "semantic_hash": "76eae3568a94d18b8fd80d1a1090b72b"
+  },
+  "Assets/Scripts/Behaviours/Build/PlacedObject.cs": {
+    "mtime": 1794854934.5484676,
+    "seen": 1795341668.428528,
+    "ast_hash": "c2066b04df22d888b7a5aeb8dcface99",
+    "semantic_hash": "c2066b04df22d888b7a5aeb8dcface99"
+  },
+  "Assets/Scripts/Behaviours/Build/StructureBlueprint.cs": {
+    "mtime": 1795278385.4684849,
+    "seen": 1795341668.4285295,
+    "ast_hash": "76ff926e556c425af788db2be0712521",
+    "semantic_hash": "76ff926e556c425af788db2be0712521"
+  },
+  "Assets/Scripts/Behaviours/Build/TerrainMask.cs": {
+    "mtime": 1795297513.3442147,
+    "seen": 1795341668.4285305,
+    "ast_hash": "843768b1d16dfcb634d43a3c04f4a2f8",
+    "semantic_hash": "843768b1d16dfcb634d43a3c04f4a2f8"
+  },
+  "Assets/Scripts/Behaviours/Camera/CameraContext.cs": {
+    "mtime": 1776637301.543789,
+    "seen": 1795341668.4285316,
+    "ast_hash": "3d495a8c2a253823f5f7ca9eb6f5ca27",
+    "semantic_hash": "3d495a8c2a253823f5f7ca9eb6f5ca27"
+  },
+  "Assets/Scripts/Behaviours/Camera/CameraMovement.cs": {
+    "mtime": 1794842912.1482112,
+    "seen": 1795341668.4285328,
+    "ast_hash": "26dcdef4e66ee4e9dcd277957074c68f",
+    "semantic_hash": "26dcdef4e66ee4e9dcd277957074c68f"
+  },
+  "Assets/Scripts/Behaviours/Camera/InteractableOutline.cs": {
+    "mtime": 1794784995.4973977,
+    "seen": 1795341668.428534,
+    "ast_hash": "60928b52e664b93a7cc6d93193f243e9",
+    "semantic_hash": "60928b52e664b93a7cc6d93193f243e9"
+  },
+  "Assets/Scripts/Behaviours/Energy/BuildingOutlet.cs": {
+    "mtime": 1795045175.1214592,
+    "seen": 1795341668.428535,
+    "ast_hash": "9cbf88eb38764aef43fa523a91216f0f",
+    "semantic_hash": "9cbf88eb38764aef43fa523a91216f0f"
+  },
+  "Assets/Scripts/Behaviours/Energy/BuildingPanelTerminal.cs": {
+    "mtime": 1795304770.788218,
+    "seen": 1795341668.4285364,
+    "ast_hash": "cf0d7fb04b03694ba17ea0e82f7407f7",
+    "semantic_hash": "cf0d7fb04b03694ba17ea0e82f7407f7"
+  },
+  "Assets/Scripts/Behaviours/Energy/BuildingPowerPanel.cs": {
+    "mtime": 1795045185.5966802,
+    "seen": 1795341668.4285376,
+    "ast_hash": "da4af3570289da48eed083bf36cd70ca",
+    "semantic_hash": "da4af3570289da48eed083bf36cd70ca"
+  },
+  "Assets/Scripts/Behaviours/Energy/ChargingStation.cs": {
+    "mtime": 1795024758.6286154,
+    "seen": 1795341668.4285386,
+    "ast_hash": "b0de08e9a7272ed37adfe65d129bd58a",
+    "semantic_hash": "b0de08e9a7272ed37adfe65d129bd58a"
+  },
+  "Assets/Scripts/Behaviours/Energy/CoalGenerator.cs": {
+    "mtime": 1795303785.587465,
+    "seen": 1795341668.42854,
+    "ast_hash": "f7e6836d640509f56252ae9b5bc69eac",
+    "semantic_hash": "f7e6836d640509f56252ae9b5bc69eac"
+  },
+  "Assets/Scripts/Behaviours/Energy/ControlPanel.cs": {
+    "mtime": 1795045237.7657526,
+    "seen": 1795341668.4285412,
+    "ast_hash": "826ebde1aa2c0d7925caa66b1d83882b",
+    "semantic_hash": "826ebde1aa2c0d7925caa66b1d83882b"
+  },
+  "Assets/Scripts/Behaviours/Energy/DistributionPanel.cs": {
+    "mtime": 1795045175.0426521,
+    "seen": 1795341668.4285424,
+    "ast_hash": "b3e8b0d0f65628cb85c24974b8adc9ab",
+    "semantic_hash": "b3e8b0d0f65628cb85c24974b8adc9ab"
+  },
+  "Assets/Scripts/Behaviours/Energy/DistributionPanelInput.cs": {
+    "mtime": 1795042063.7510207,
+    "seen": 1795341668.4285436,
+    "ast_hash": "eeeb806cf88228714bc1f266271bf6ec",
+    "semantic_hash": "eeeb806cf88228714bc1f266271bf6ec"
+  },
+  "Assets/Scripts/Behaviours/Energy/DistributionPanelOutput.cs": {
+    "mtime": 1795042063.8034322,
+    "seen": 1795341668.4285448,
+    "ast_hash": "1234fccb7948fe74faa12eae09e156c3",
+    "semantic_hash": "1234fccb7948fe74faa12eae09e156c3"
+  },
+  "Assets/Scripts/Behaviours/Energy/ElectricCable.cs": {
+    "mtime": 1795023190.2776346,
+    "seen": 1795341668.4285457,
+    "ast_hash": "da9113405bee6fd6025ce4863293a82d",
+    "semantic_hash": "da9113405bee6fd6025ce4863293a82d"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyConsumer.cs": {
+    "mtime": 1795033875.3577652,
+    "seen": 1795341668.4285471,
+    "ast_hash": "3afc6b3c4816fbf85119ebba2ca98016",
+    "semantic_hash": "3afc6b3c4816fbf85119ebba2ca98016"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyDevice.cs": {
+    "mtime": 1795035059.456241,
+    "seen": 1795341668.428548,
+    "ast_hash": "c405a428be83abffb47cf917840362cd",
+    "semantic_hash": "c405a428be83abffb47cf917840362cd"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyDeviceInfo.cs": {
+    "mtime": 1795008478.4483156,
+    "seen": 1795341668.4285493,
+    "ast_hash": "f2705232e06e37da4020a6647c6c72b4",
+    "semantic_hash": "f2705232e06e37da4020a6647c6c72b4"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyGenerator.cs": {
+    "mtime": 1795033882.946677,
+    "seen": 1795341668.4285505,
+    "ast_hash": "aa5a7ca1a4522d8bd9c466396bbeb708",
+    "semantic_hash": "aa5a7ca1a4522d8bd9c466396bbeb708"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyNetworkManager.cs": {
+    "mtime": 1795304830.1003678,
+    "seen": 1795341668.4285517,
+    "ast_hash": "adf2afd581f73663c213cb61065aab17",
+    "semantic_hash": "adf2afd581f73663c213cb61065aab17"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyStorage.cs": {
+    "mtime": 1795033882.866832,
+    "seen": 1795341668.4285529,
+    "ast_hash": "8bfa72e6f49c0df46f7c27a71ff3e37f",
+    "semantic_hash": "8bfa72e6f49c0df46f7c27a71ff3e37f"
+  },
+  "Assets/Scripts/Behaviours/Energy/EnergyValue.cs": {
+    "mtime": 1794941777.5409844,
+    "seen": 1795341668.428554,
+    "ast_hash": "9cb665e25662d996921ed34a8a113957",
+    "semantic_hash": "9cb665e25662d996921ed34a8a113957"
+  },
+  "Assets/Scripts/Behaviours/Energy/SolarPanel.cs": {
+    "mtime": 1795273728.708647,
+    "seen": 1795341668.4285553,
+    "ast_hash": "c6bb196abcce63a89d4a26a39a076e6e",
+    "semantic_hash": "c6bb196abcce63a89d4a26a39a076e6e"
+  },
+  "Assets/Scripts/Behaviours/Energy/TestMachine.cs": {
+    "mtime": 1794942003.4868627,
+    "seen": 1795341668.4285564,
+    "ast_hash": "5f0c730af647a4860024faab51d4dd3a",
+    "semantic_hash": "5f0c730af647a4860024faab51d4dd3a"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/Builder.cs": {
+    "mtime": 1795340035.66767,
+    "seen": 1795341668.4285579,
+    "ast_hash": "b6e83c54c63e5dfbfefc7021c303efab",
+    "semantic_hash": "b6e83c54c63e5dfbfefc7021c303efab"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/CablePlacer.cs": {
+    "mtime": 1795045255.1672144,
+    "seen": 1795341668.4285588,
+    "ast_hash": "d72af2f1aca570ca29c8ddc47c7be68f",
+    "semantic_hash": "d72af2f1aca570ca29c8ddc47c7be68f"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/Crafter.cs": {
+    "mtime": 1795299125.156591,
+    "seen": 1795341668.4285598,
+    "ast_hash": "8bd6244090abc410be00f0e644b746e1",
+    "semantic_hash": "8bd6244090abc410be00f0e644b746e1"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/FlashlightBeam.cs": {
+    "mtime": 1795128219.7045445,
+    "seen": 1795341668.4285612,
+    "ast_hash": "620067ab707006d8a68e7faec6270f63",
+    "semantic_hash": "620067ab707006d8a68e7faec6270f63"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/InteractionDistance.cs": {
+    "mtime": 1795305127.5346162,
+    "seen": 1795341668.4285624,
+    "ast_hash": "725180e5ee52c5e1e383939a12c4753b",
+    "semantic_hash": "725180e5ee52c5e1e383939a12c4753b"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/Pickuper.cs": {
+    "mtime": 1794858290.799476,
+    "seen": 1795341668.4285636,
+    "ast_hash": "5a4340a5e514597f4145a1f35deead7b",
+    "semantic_hash": "5a4340a5e514597f4145a1f35deead7b"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerContext.cs": {
+    "mtime": 1776637301.5536673,
+    "seen": 1795341668.4285648,
+    "ast_hash": "27b5c30c8c9b691892f9c7a45b452c49",
+    "semantic_hash": "27b5c30c8c9b691892f9c7a45b452c49"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerInterractor.cs": {
+    "mtime": 1794847031.6165295,
+    "seen": 1795341668.428566,
+    "ast_hash": "f39cfa12f3833de5e29c3173c76d4032",
+    "semantic_hash": "f39cfa12f3833de5e29c3173c76d4032"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerInventory.cs": {
+    "mtime": 1795113903.59166,
+    "seen": 1795341668.4285674,
+    "ast_hash": "0cd851bb9719579250bdd7b3c1c19e7c",
+    "semantic_hash": "0cd851bb9719579250bdd7b3c1c19e7c"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerMovement.cs": {
+    "mtime": 1795126151.5529108,
+    "seen": 1795341668.4285684,
+    "ast_hash": "5a2666ba4d29bf3defe1ef97672c39ca",
+    "semantic_hash": "5a2666ba4d29bf3defe1ef97672c39ca"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerPointer.cs": {
+    "mtime": 1794858256.7142794,
+    "seen": 1795341668.4285696,
+    "ast_hash": "206dec196fe10040b859f7e09a303303",
+    "semantic_hash": "206dec196fe10040b859f7e09a303303"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/PlayerStats.cs": {
+    "mtime": 1794848197.96918,
+    "seen": 1795341668.428571,
+    "ast_hash": "c9ce850829a340c8a9d86ff715874d4d",
+    "semantic_hash": "c9ce850829a340c8a9d86ff715874d4d"
+  },
+  "Assets/Scripts/Behaviours/Entities/Player/Searcher.cs": {
+    "mtime": 1794858268.1909082,
+    "seen": 1795341668.4285722,
+    "ast_hash": "f8a1d9e0cdb6045c1a8f12281deebcaf",
+    "semantic_hash": "f8a1d9e0cdb6045c1a8f12281deebcaf"
+  },
+  "Assets/Scripts/Behaviours/Environment/DayNightCycle.cs": {
+    "mtime": 1795273680.5973494,
+    "seen": 1795341668.4285734,
+    "ast_hash": "5775cdffb29304ac868663f02f319af1",
+    "semantic_hash": "5775cdffb29304ac868663f02f319af1"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/CraftingStation.cs": {
+    "mtime": 1795299114.0483346,
+    "seen": 1795341668.4285748,
+    "ast_hash": "bdf25808725f97dcf008a3a1a7f632f7",
+    "semantic_hash": "bdf25808725f97dcf008a3a1a7f632f7"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/DeathBag.cs": {
+    "mtime": 1794855078.2501564,
+    "seen": 1795341668.4285758,
+    "ast_hash": "6a0d47bfcdfafd97b40ddc6a8f415ab3",
+    "semantic_hash": "6a0d47bfcdfafd97b40ddc6a8f415ab3"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/IInterractable.cs": {
+    "mtime": 1794912451.4615524,
+    "seen": 1795341668.428577,
+    "ast_hash": "0caa4c654fffe7400cf0d8915d92228e",
+    "semantic_hash": "0caa4c654fffe7400cf0d8915d92228e"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/LandingCapsule.cs": {
+    "mtime": 1795299978.1900585,
+    "seen": 1795341668.4285784,
+    "ast_hash": "82003e75ac1c3e85b3bde622eeac3bab",
+    "semantic_hash": "82003e75ac1c3e85b3bde622eeac3bab"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/LandingCapsuleDoor.cs": {
+    "mtime": 1795271707.6284297,
+    "seen": 1795341668.4285796,
+    "ast_hash": "6801c6a31f1d5822272d7e012bd26b68",
+    "semantic_hash": "6801c6a31f1d5822272d7e012bd26b68"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/Pickupable.cs": {
+    "mtime": 1795023190.2262907,
+    "seen": 1795341668.4285805,
+    "ast_hash": "da210c64ca2a93949cb0e7f5290f361d",
+    "semantic_hash": "da210c64ca2a93949cb0e7f5290f361d"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/Searchable.cs": {
+    "mtime": 1794912451.2942266,
+    "seen": 1795341668.428582,
+    "ast_hash": "0199dc5989b70513e1550c549a14dc35",
+    "semantic_hash": "0199dc5989b70513e1550c549a14dc35"
+  },
+  "Assets/Scripts/Behaviours/Environment/Interractable/StorageContainer.cs": {
+    "mtime": 1795338404.5457993,
+    "seen": 1795341668.4285831,
+    "ast_hash": "053dc31cda4ce1b0eb1893ae4c1010b7",
+    "semantic_hash": "053dc31cda4ce1b0eb1893ae4c1010b7"
+  },
+  "Assets/Scripts/Behaviours/Environment/Terrain/ChunkManager.cs": {
+    "mtime": 1795283277.7590928,
+    "seen": 1795341668.428584,
+    "ast_hash": "813f44a761b3bb1e58f698e8a988ffe4",
+    "semantic_hash": "813f44a761b3bb1e58f698e8a988ffe4"
+  },
+  "Assets/Scripts/Behaviours/Environment/Terrain/EnvironmentSpawner.cs": {
+    "mtime": 1794842870.498592,
+    "seen": 1795341668.4285855,
+    "ast_hash": "2948cdbbe88f234653d3aac1dbc9dbec",
+    "semantic_hash": "2948cdbbe88f234653d3aac1dbc9dbec"
+  },
+  "Assets/Scripts/Behaviours/Environment/Terrain/TerrainGenerator.cs": {
+    "mtime": 1795006205.3890214,
+    "seen": 1795341668.4285867,
+    "ast_hash": "c89cbc2036bc0f8f6add7d586ffd86f5",
+    "semantic_hash": "c89cbc2036bc0f8f6add7d586ffd86f5"
+  },
+  "Assets/Scripts/Behaviours/Scene/PlayerSpawnPoint.cs": {
+    "mtime": 1794842821.5285742,
+    "seen": 1795341668.428588,
+    "ast_hash": "ebab3cbc55220ee93436a655f77413b9",
+    "semantic_hash": "ebab3cbc55220ee93436a655f77413b9"
+  },
+  "Assets/Scripts/Behaviours/Scene/SceneLoader.cs": {
+    "mtime": 1794842925.1859503,
+    "seen": 1795341668.4285893,
+    "ast_hash": "10458866a3a883b341128de65a823f13",
+    "semantic_hash": "10458866a3a883b341128de65a823f13"
+  },
+  "Assets/Scripts/Behaviours/UI/ClockUI.cs": {
+    "mtime": 1795127293.741177,
+    "seen": 1795341668.4285903,
+    "ast_hash": "ec1f475510f87c2bff60ec80c2ca9023",
+    "semantic_hash": "ec1f475510f87c2bff60ec80c2ca9023"
+  },
+  "Assets/Scripts/Behaviours/UI/Crafting/CraftingStationUI.cs": {
+    "mtime": 1795299154.52651,
+    "seen": 1795341668.4285917,
+    "ast_hash": "294a53e6145c39f640a196360c553040",
+    "semantic_hash": "294a53e6145c39f640a196360c553040"
+  },
+  "Assets/Scripts/Behaviours/UI/Crafting/RecipeSlotUI.cs": {
+    "mtime": 1794908444.2955098,
+    "seen": 1795341668.4285927,
+    "ast_hash": "27604abae05228e4a142dd0a68cd3650",
+    "semantic_hash": "27604abae05228e4a142dd0a68cd3650"
+  },
+  "Assets/Scripts/Behaviours/UI/Energy/ControlPanelUI.cs": {
+    "mtime": 1795040505.0528622,
+    "seen": 1795341668.4285939,
+    "ast_hash": "0a5d7fab5d53b0358d7f5742aa2bbb78",
+    "semantic_hash": "0a5d7fab5d53b0358d7f5742aa2bbb78"
+  },
+  "Assets/Scripts/Behaviours/UI/Energy/DistributionPanelSettingsView.cs": {
+    "mtime": 1795304830.026938,
+    "seen": 1795341668.4285953,
+    "ast_hash": "a9f0f057e3536a01b8e5c071f4ff8cae",
+    "semantic_hash": "a9f0f057e3536a01b8e5c071f4ff8cae"
+  },
+  "Assets/Scripts/Behaviours/UI/Energy/DistributionPanelUI.cs": {
+    "mtime": 1795006262.1104672,
+    "seen": 1795341668.4285963,
+    "ast_hash": "971b01daaedebd7f3e86c3b5e79438da",
+    "semantic_hash": "971b01daaedebd7f3e86c3b5e79438da"
+  },
+  "Assets/Scripts/Behaviours/UI/Energy/NetworkMapElement.cs": {
+    "mtime": 1795300357.0697162,
+    "seen": 1795341668.4285975,
+    "ast_hash": "04c9efa359810a2d187647ff068d7d0f",
+    "semantic_hash": "04c9efa359810a2d187647ff068d7d0f"
+  },
+  "Assets/Scripts/Behaviours/UI/Interraction/PickupInfoGroupUI.cs": {
+    "mtime": 1794907728.601831,
+    "seen": 1795341668.4285986,
+    "ast_hash": "8c23cdfd2d7f2a6b8833afb3b1c48f5e",
+    "semantic_hash": "8c23cdfd2d7f2a6b8833afb3b1c48f5e"
+  },
+  "Assets/Scripts/Behaviours/UI/Interraction/PickupInfoUI.cs": {
+    "mtime": 1794907728.5009513,
+    "seen": 1795341668.4285998,
+    "ast_hash": "27d082cf4f2d6a3fa7e9995f10dcca7e",
+    "semantic_hash": "27d082cf4f2d6a3fa7e9995f10dcca7e"
+  },
+  "Assets/Scripts/Behaviours/UI/Interraction/PointedInterractorInformationUI.cs": {
+    "mtime": 1794908189.9654412,
+    "seen": 1795341668.428601,
+    "ast_hash": "8a73df0057b4485b6d1d7e87ddb4ffbf",
+    "semantic_hash": "8a73df0057b4485b6d1d7e87ddb4ffbf"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/HandedCursorUI.cs": {
+    "mtime": 1794907671.665057,
+    "seen": 1795341668.4286022,
+    "ast_hash": "6660fe0975970daa98a07e5f82164f23",
+    "semantic_hash": "6660fe0975970daa98a07e5f82164f23"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/HeldItemUI.cs": {
+    "mtime": 1794920537.0501583,
+    "seen": 1795341668.4286034,
+    "ast_hash": "ce111321d2c1c78088e81b281820efec",
+    "semantic_hash": "ce111321d2c1c78088e81b281820efec"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/ItemCollectionUI.cs": {
+    "mtime": 1794907671.0214794,
+    "seen": 1795341668.4286046,
+    "ast_hash": "6232cf97656d3b65acec8ebbc001f4c8",
+    "semantic_hash": "6232cf97656d3b65acec8ebbc001f4c8"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/ItemSlotUI.cs": {
+    "mtime": 1795024758.2242143,
+    "seen": 1795341668.4286058,
+    "ast_hash": "70104e4cd247e9b5f7576825efb64d87",
+    "semantic_hash": "70104e4cd247e9b5f7576825efb64d87"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/ItemStorageUI.cs": {
+    "mtime": 1795302340.1275864,
+    "seen": 1795341668.428607,
+    "ast_hash": "3a7da6b85e657d8a99816466695ad96f",
+    "semantic_hash": "3a7da6b85e657d8a99816466695ad96f"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/ItemTooltip.cs": {
+    "mtime": 1795024729.967848,
+    "seen": 1795341668.4286084,
+    "ast_hash": "a9ef36eb3772c21f482aa4080196c911",
+    "semantic_hash": "a9ef36eb3772c21f482aa4080196c911"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/PlayerInventoryContentUI.cs": {
+    "mtime": 1795113935.3842359,
+    "seen": 1795341668.4286096,
+    "ast_hash": "2e1c6f2fdc1dd993fe10e185a8b48558",
+    "semantic_hash": "2e1c6f2fdc1dd993fe10e185a8b48558"
+  },
+  "Assets/Scripts/Behaviours/UI/Inventory/PlayerToolBarUI.cs": {
+    "mtime": 1794907671.119673,
+    "seen": 1795341668.4286108,
+    "ast_hash": "52214261b538a77b81a952b62d5cde28",
+    "semantic_hash": "52214261b538a77b81a952b62d5cde28"
+  },
+  "Assets/Scripts/Behaviours/UI/Map/MapUtility.cs": {
+    "mtime": 1795300533.2736168,
+    "seen": 1795341668.4286118,
+    "ast_hash": "63a90ade1d4c47e875db128611d00f41",
+    "semantic_hash": "63a90ade1d4c47e875db128611d00f41"
+  },
+  "Assets/Scripts/Behaviours/UI/Map/MinimapUI.cs": {
+    "mtime": 1795039278.3716862,
+    "seen": 1795341668.4286132,
+    "ast_hash": "141a439a66e063d140eb37592a2e17e3",
+    "semantic_hash": "141a439a66e063d140eb37592a2e17e3"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/BuildModeUI.cs": {
+    "mtime": 1794856330.8061202,
+    "seen": 1795341668.4286141,
+    "ast_hash": "586d44bec8ad46517850d3fd5aba3440",
+    "semantic_hash": "586d44bec8ad46517850d3fd5aba3440"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/BuildWheelUI.cs": {
+    "mtime": 1794855013.9653144,
+    "seen": 1795341668.4286153,
+    "ast_hash": "0d003a9844192fdbb654ac622a9bca78",
+    "semantic_hash": "0d003a9844192fdbb654ac622a9bca78"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/DeathScreenUI.cs": {
+    "mtime": 1795299725.5860724,
+    "seen": 1795341668.4286168,
+    "ast_hash": "11feecae78cfc6ddef8652eb5bef540d",
+    "semantic_hash": "11feecae78cfc6ddef8652eb5bef540d"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/MainMenuUI.cs": {
+    "mtime": 1794845502.3492868,
+    "seen": 1795341668.4286177,
+    "ast_hash": "1468059518e7948732496e96f2c482ee",
+    "semantic_hash": "1468059518e7948732496e96f2c482ee"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/NotificationUI.cs": {
+    "mtime": 1794858233.951419,
+    "seen": 1795341668.428619,
+    "ast_hash": "e277b55b549d14e7534349456727eb26",
+    "semantic_hash": "e277b55b549d14e7534349456727eb26"
+  },
+  "Assets/Scripts/Behaviours/UI/Menu/PauseMenuUI.cs": {
+    "mtime": 1794845502.5480962,
+    "seen": 1795341668.4286203,
+    "ast_hash": "05a7e659aa88874055d3139d65c353ba",
+    "semantic_hash": "05a7e659aa88874055d3139d65c353ba"
+  },
+  "Assets/Scripts/Behaviours/UI/ParentUI.cs": {
+    "mtime": 1795126490.0808294,
+    "seen": 1795341668.4286213,
+    "ast_hash": "2e5213ecf0332dc6a8a334aa98a63d1a",
+    "semantic_hash": "2e5213ecf0332dc6a8a334aa98a63d1a"
+  },
+  "Assets/Scripts/Behaviours/UI/ParentedUI.cs": {
+    "mtime": 1794783272.8792727,
+    "seen": 1795341668.4286225,
+    "ast_hash": "283200c9f1b9a572346c8f227df12d7f",
+    "semantic_hash": "283200c9f1b9a572346c8f227df12d7f"
+  },
+  "Assets/Scripts/Behaviours/UI/Stat/PlayerStatsUI.cs": {
+    "mtime": 1794907728.216238,
+    "seen": 1795341668.428624,
+    "ast_hash": "75764dafa487bade5624b6a3b1524dd8",
+    "semantic_hash": "75764dafa487bade5624b6a3b1524dd8"
+  },
+  "Assets/Scripts/Behaviours/UI/Stat/StatBarUI.cs": {
+    "mtime": 1794907727.9756284,
+    "seen": 1795341668.428625,
+    "ast_hash": "3720881eca34891986b75a4bfa10c22a",
+    "semantic_hash": "3720881eca34891986b75a4bfa10c22a"
+  },
+  "Assets/Scripts/Behaviours/UI/Stat/StatUIData.cs": {
+    "mtime": 1776637301.5979261,
+    "seen": 1795341668.428626,
+    "ast_hash": "008119dffeb707649b090ced2311fa42",
+    "semantic_hash": "008119dffeb707649b090ced2311fa42"
+  },
+  "Assets/Scripts/Debug/UnityEventRuntimeDebugger.cs": {
+    "mtime": 1776637301.6004624,
+    "seen": 1795341668.4286275,
+    "ast_hash": "1e745353b98c7ce0cdfe4abfab20df42",
+    "semantic_hash": "1e745353b98c7ce0cdfe4abfab20df42"
+  },
+  "Assets/Scripts/Editor/ModelImportSetup.cs": {
+    "mtime": 1795382049.2913537,
+    "seen": 1795382151.8071234,
+    "ast_hash": "4dfb05a60c81bb5c89f25a58c9602fc7",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Enum/Direction.cs": {
+    "mtime": 1776637301.6034744,
+    "seen": 1795341668.4286299,
+    "ast_hash": "535bdd0d6af5919bb05d08b941bb2df7",
+    "semantic_hash": "535bdd0d6af5919bb05d08b941bb2df7"
+  },
+  "Assets/Scripts/Enum/StatName.cs": {
+    "mtime": 1794847534.4522274,
+    "seen": 1795341668.4286308,
+    "ast_hash": "000b7076033caa03d0260843d882b6cf",
+    "semantic_hash": "000b7076033caa03d0260843d882b6cf"
+  },
+  "Assets/Scripts/Manager/InterfaceManager.cs": {
+    "mtime": 1794845467.5831144,
+    "seen": 1795341668.428632,
+    "ast_hash": "f6bf67d4a1b1722deb9573a7398340bd",
+    "semantic_hash": "f6bf67d4a1b1722deb9573a7398340bd"
+  },
+  "Assets/Scripts/Manager/ModeManager.cs": {
+    "mtime": 1776637301.6078079,
+    "seen": 1795341668.4286335,
+    "ast_hash": "b51d68108b14b17ed67dce232dec99be",
+    "semantic_hash": "b51d68108b14b17ed67dce232dec99be"
+  },
+  "Assets/Scripts/Manager/PlayerModeOptions.cs": {
+    "mtime": 1794855078.3182411,
+    "seen": 1795341668.4286346,
+    "ast_hash": "a4a2e119a01f39ceb58cce8023a27067",
+    "semantic_hash": "a4a2e119a01f39ceb58cce8023a27067"
+  },
+  "Assets/Scripts/Manager/PlayingMode.cs": {
+    "mtime": 1794845459.5877907,
+    "seen": 1795341668.4286358,
+    "ast_hash": "60af8524fc9332dceade1a3a0bc401b0",
+    "semantic_hash": "60af8524fc9332dceade1a3a0bc401b0"
+  },
+  "Assets/Scripts/Save/ISaveableComponent.cs": {
+    "mtime": 1794842645.8125181,
+    "seen": 1795341668.428637,
+    "ast_hash": "c131d12e04517682934c95cff1d96938",
+    "semantic_hash": "c131d12e04517682934c95cff1d96938"
+  },
+  "Assets/Scripts/Save/SaveData.cs": {
+    "mtime": 1795283297.881455,
+    "seen": 1795341668.4286382,
+    "ast_hash": "bf5da33933d91be5e7e013cdb97490af",
+    "semantic_hash": "bf5da33933d91be5e7e013cdb97490af"
+  },
+  "Assets/Scripts/Save/SaveManager.cs": {
+    "mtime": 1795127275.437157,
+    "seen": 1795341668.4286394,
+    "ast_hash": "f1075d19a2442931afca623f15979ce9",
+    "semantic_hash": "f1075d19a2442931afca623f15979ce9"
+  },
+  "Assets/Scripts/Save/SaveableObject.cs": {
+    "mtime": 1794846808.2072093,
+    "seen": 1795341668.4286406,
+    "ast_hash": "48f2e31e6dc79ab8c26b07d87dea7033",
+    "semantic_hash": "48f2e31e6dc79ab8c26b07d87dea7033"
+  },
+  "Assets/Scripts/Utilities/Build/AirlockData.cs": {
+    "mtime": 1795280446.5281456,
+    "seen": 1795341668.4286418,
+    "ast_hash": "03cb941728c4e3e9f5c52a83e61fa71c",
+    "semantic_hash": "03cb941728c4e3e9f5c52a83e61fa71c"
+  },
+  "Assets/Scripts/Utilities/Build/CorridorData.cs": {
+    "mtime": 1795297501.3466628,
+    "seen": 1795341668.4286427,
+    "ast_hash": "c8a04e033878f736f75fd8c76e544922",
+    "semantic_hash": "c8a04e033878f736f75fd8c76e544922"
+  },
+  "Assets/Scripts/Utilities/Build/CorridorPieces.cs": {
+    "mtime": 1795299992.206067,
+    "seen": 1795341668.4286442,
+    "ast_hash": "ccf8a1cc57b5d14a5ab9d383d12cd64d",
+    "semantic_hash": "ccf8a1cc57b5d14a5ab9d383d12cd64d"
+  },
+  "Assets/Scripts/Utilities/Build/IPlacementPreview.cs": {
+    "mtime": 1795302393.96532,
+    "seen": 1795341668.4286454,
+    "ast_hash": "529d707d8b99568a5868c801194739f3",
+    "semantic_hash": "529d707d8b99568a5868c801194739f3"
+  },
+  "Assets/Scripts/Utilities/Build/MeshCutter.cs": {
+    "mtime": 1795278299.1228695,
+    "seen": 1795341668.4286466,
+    "ast_hash": "b76aee489074b7cb3615a455922f2924",
+    "semantic_hash": "b76aee489074b7cb3615a455922f2924"
+  },
+  "Assets/Scripts/Utilities/Build/OwnedMeshes.cs": {
+    "mtime": 1795282423.4702957,
+    "seen": 1795341668.4286478,
+    "ast_hash": "278d5233a59d57412df289ccc6190476",
+    "semantic_hash": "278d5233a59d57412df289ccc6190476"
+  },
+  "Assets/Scripts/Utilities/Build/StructureCatalog.cs": {
+    "mtime": 1794854831.8351736,
+    "seen": 1795341668.428649,
+    "ast_hash": "bcd2b9b8854c479bddee9f3ae2d257f6",
+    "semantic_hash": "bcd2b9b8854c479bddee9f3ae2d257f6"
+  },
+  "Assets/Scripts/Utilities/Build/StructureData.cs": {
+    "mtime": 1794854831.7524552,
+    "seen": 1795341668.42865,
+    "ast_hash": "53aa2a3516325ca289befa02eb78282f",
+    "semantic_hash": "53aa2a3516325ca289befa02eb78282f"
+  },
+  "Assets/Scripts/Utilities/Build/TerrainFlattening.cs": {
+    "mtime": 1795283297.969256,
+    "seen": 1795341668.4286513,
+    "ast_hash": "9a5150eb036073f3feea54d24268843b",
+    "semantic_hash": "9a5150eb036073f3feea54d24268843b"
+  },
+  "Assets/Scripts/Utilities/Crafting/RecipeData.cs": {
+    "mtime": 1776637301.6123395,
+    "seen": 1795341668.4286523,
+    "ast_hash": "b26b54304da4e8f2c4040f538cf24242",
+    "semantic_hash": "b26b54304da4e8f2c4040f538cf24242"
+  },
+  "Assets/Scripts/Utilities/Effect/AbstractModifier.cs": {
+    "mtime": 1776637301.615014,
+    "seen": 1795341668.4286535,
+    "ast_hash": "49c2051f954da4c6163764d9e818315b",
+    "semantic_hash": "49c2051f954da4c6163764d9e818315b"
+  },
+  "Assets/Scripts/Utilities/Effect/EnduranceModifier.cs": {
+    "mtime": 1776637301.6160302,
+    "seen": 1795341668.4286547,
+    "ast_hash": "886161230ede77dee55b18b5f1dc8cea",
+    "semantic_hash": "886161230ede77dee55b18b5f1dc8cea"
+  },
+  "Assets/Scripts/Utilities/Effect/LifeModifier.cs": {
+    "mtime": 1776637301.617288,
+    "seen": 1795341668.4286559,
+    "ast_hash": "9a9ac49c8db95a0e5410b84912bf4ab0",
+    "semantic_hash": "9a9ac49c8db95a0e5410b84912bf4ab0"
+  },
+  "Assets/Scripts/Utilities/Effect/StatModifier.cs": {
+    "mtime": 1794847614.7587988,
+    "seen": 1795341668.4286568,
+    "ast_hash": "02256e7fa7d535e1a077d96f3738e314",
+    "semantic_hash": "02256e7fa7d535e1a077d96f3738e314"
+  },
+  "Assets/Scripts/Utilities/Item/CableItemData.cs": {
+    "mtime": 1794942003.2718024,
+    "seen": 1795341668.4286582,
+    "ast_hash": "0cf8287a8e8ae23cbd197f46140f87fa",
+    "semantic_hash": "0cf8287a8e8ae23cbd197f46140f87fa"
+  },
+  "Assets/Scripts/Utilities/Item/ConsummableData.cs": {
+    "mtime": 1776637301.619575,
+    "seen": 1795341668.4286592,
+    "ast_hash": "52de357114b4498a3a19a7985a690f81",
+    "semantic_hash": "52de357114b4498a3a19a7985a690f81"
+  },
+  "Assets/Scripts/Utilities/Item/EquipmentData.cs": {
+    "mtime": 1795113834.7441487,
+    "seen": 1795341668.4286604,
+    "ast_hash": "a496abf76a2fd9ff2347cdf5af3405cc",
+    "semantic_hash": "a496abf76a2fd9ff2347cdf5af3405cc"
+  },
+  "Assets/Scripts/Utilities/Item/IStorageMachine.cs": {
+    "mtime": 1795302285.5307865,
+    "seen": 1795341668.4286618,
+    "ast_hash": "fe7fd162dcae19abba4f77515d56389d",
+    "semantic_hash": "fe7fd162dcae19abba4f77515d56389d"
+  },
+  "Assets/Scripts/Utilities/Item/Item.cs": {
+    "mtime": 1795024741.9184995,
+    "seen": 1795341668.428663,
+    "ast_hash": "c7abfb08610fae4398edd7ea38e753ca",
+    "semantic_hash": "c7abfb08610fae4398edd7ea38e753ca"
+  },
+  "Assets/Scripts/Utilities/Item/ItemAction.cs": {
+    "mtime": 1795128219.7585838,
+    "seen": 1795341668.4286642,
+    "ast_hash": "c0c4015682d0eda2a51ece5d13fc4124",
+    "semantic_hash": "c0c4015682d0eda2a51ece5d13fc4124"
+  },
+  "Assets/Scripts/Utilities/Item/ItemCollection.cs": {
+    "mtime": 1795301625.7803931,
+    "seen": 1795341668.4286654,
+    "ast_hash": "bd39f99d9d0bc42396b03225c42a3dec",
+    "semantic_hash": "bd39f99d9d0bc42396b03225c42a3dec"
+  },
+  "Assets/Scripts/Utilities/Item/ItemData.cs": {
+    "mtime": 1795024670.5036614,
+    "seen": 1795341668.4286666,
+    "ast_hash": "e86bd62d4a512cb2f7dbc04d4a0964b1",
+    "semantic_hash": "e86bd62d4a512cb2f7dbc04d4a0964b1"
+  },
+  "Assets/Scripts/Utilities/Item/ItemGauge.cs": {
+    "mtime": 1795024833.786312,
+    "seen": 1795341668.428668,
+    "ast_hash": "95401b457b312b2a739a14accb2c6a7b",
+    "semantic_hash": "95401b457b312b2a739a14accb2c6a7b"
+  },
+  "Assets/Scripts/Utilities/Item/ItemSlot.cs": {
+    "mtime": 1795113865.5980425,
+    "seen": 1795341668.4286692,
+    "ast_hash": "86f0045fb5b81a7f44cf25dc7c3325c5",
+    "semantic_hash": "86f0045fb5b81a7f44cf25dc7c3325c5"
+  },
+  "Assets/Scripts/Utilities/Item/ItemStorage.cs": {
+    "mtime": 1794855078.1728103,
+    "seen": 1795341668.4286704,
+    "ast_hash": "3ae700309f14c7a9c0d99e92c651f0a8",
+    "semantic_hash": "3ae700309f14c7a9c0d99e92c651f0a8"
+  },
+  "Assets/Scripts/Utilities/Item/JetpackData.cs": {
+    "mtime": 1795113834.721196,
+    "seen": 1795341668.4286718,
+    "ast_hash": "cdb866776fbc1284e63689b0d7b29199",
+    "semantic_hash": "cdb866776fbc1284e63689b0d7b29199"
+  },
+  "Assets/Scripts/Utilities/Item/PlaceableItemData.cs": {
+    "mtime": 1795301680.2315814,
+    "seen": 1795341668.428673,
+    "ast_hash": "f1bbd100079fca031bfab47d79471828",
+    "semantic_hash": "f1bbd100079fca031bfab47d79471828"
+  },
+  "Assets/Scripts/Utilities/Item/ToolData.cs": {
+    "mtime": 1795024833.9358096,
+    "seen": 1795341668.428674,
+    "ast_hash": "2fc6d7c581f61dffa6150277005d3172",
+    "semantic_hash": "2fc6d7c581f61dffa6150277005d3172"
+  },
+  "Assets/Scripts/Utilities/Item/UsableItemData.cs": {
+    "mtime": 1795024833.8714862,
+    "seen": 1795341668.4286752,
+    "ast_hash": "8b92558d6d7e614253855cb5159c9452",
+    "semantic_hash": "8b92558d6d7e614253855cb5159c9452"
+  },
+  "Assets/Scripts/Utilities/Serialization/SerializableKeyValuePair.cs": {
+    "mtime": 1776637301.6330414,
+    "seen": 1795341668.4286766,
+    "ast_hash": "11774ee2aca2c6cf44a9bb5da1bbd327",
+    "semantic_hash": "11774ee2aca2c6cf44a9bb5da1bbd327"
+  },
+  "Assets/Scripts/Utilities/Stat/Stat.cs": {
+    "mtime": 1794834691.1909084,
+    "seen": 1795341668.4286776,
+    "ast_hash": "f783bcbd3dd122d486e26286dd19b7e0",
+    "semantic_hash": "f783bcbd3dd122d486e26286dd19b7e0"
+  },
+  "Assets/Scripts/Utilities/Stat/StatMarker.cs": {
+    "mtime": 1776637301.6363873,
+    "seen": 1795341668.428679,
+    "ast_hash": "51c717880a2cf69524055dc5cb671cc6",
+    "semantic_hash": "51c717880a2cf69524055dc5cb671cc6"
+  },
+  "Packages/manifest.json": {
+    "mtime": 1776637301.939591,
+    "seen": 1795341668.4286802,
+    "ast_hash": "0fc0558d74adb24b87324953c9e7a62e",
+    "semantic_hash": "0fc0558d74adb24b87324953c9e7a62e"
+  },
+  "Packages/packages-lock.json": {
+    "mtime": 1776637301.9408574,
+    "seen": 1795341668.4286814,
+    "ast_hash": "cd0419c8ea252945132c8bce74aaaa78",
+    "semantic_hash": "cd0419c8ea252945132c8bce74aaaa78"
+  },
+  "ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json": {
+    "mtime": 1776637301.9503217,
+    "seen": 1795341668.4286828,
+    "ast_hash": "6e3b6ce3a6c6c017e58a058c16bb1986",
+    "semantic_hash": "6e3b6ce3a6c6c017e58a058c16bb1986"
+  },
+  "ProjectSettings/SceneTemplateSettings.json": {
+    "mtime": 1776637301.9561503,
+    "seen": 1795341668.4286838,
+    "ast_hash": "a9cbf2bc7f7fcc734cc007e235c773f8",
+    "semantic_hash": "a9cbf2bc7f7fcc734cc007e235c773f8"
+  },
+  "Space Survival.slnx": {
+    "mtime": 1795209256.0624957,
+    "seen": 1795341668.4286854,
+    "ast_hash": "3721e7138e250f7349f31f9d55437c2c",
+    "semantic_hash": "3721e7138e250f7349f31f9d55437c2c"
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Anton OFL.txt": {
+    "mtime": 1776637301.035198,
+    "seen": 1795340960.4813077,
+    "ast_hash": "71e7741989ff63136a33245f41324aa5",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Bangers - OFL.txt": {
+    "mtime": 1776637301.0398853,
+    "seen": 1795340960.4813087,
+    "ast_hash": "2821c9cd02a5fbb8ea9478caa2bcc01c",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold - OFL.txt": {
+    "mtime": 1776637301.046819,
+    "seen": 1795340960.4813097,
+    "ast_hash": "d948b75f978acf84d0741b448c413cd3",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - AFL.txt": {
+    "mtime": 1776637301.0504255,
+    "seen": 1795340960.4813106,
+    "ast_hash": "175792518e4ac015ab6696d16c4f607e",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - License.txt": {
+    "mtime": 1776637301.0514257,
+    "seen": 1795340960.4813118,
+    "ast_hash": "fab738fdc2fd92eed39b5b169ddd1d82",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Fonts/Unity - OFL.txt": {
+    "mtime": 1776637301.05743,
+    "seen": 1795340960.4813125,
+    "ast_hash": "e62cc78eb651fcbca90f2111d186902d",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Fonts/LiberationSans - OFL.txt": {
+    "mtime": 1776637301.3430843,
+    "seen": 1795340960.4813135,
+    "ast_hash": "a4b00b7892bfb2fc9398e7f292af5b3d",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Resources/LineBreaking Following Characters.txt": {
+    "mtime": 1776637301.3658476,
+    "seen": 1795340960.4813147,
+    "ast_hash": "345c77ed32179f5f982dcf8e2b1d92af",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Resources/LineBreaking Leading Characters.txt": {
+    "mtime": 1776637301.367595,
+    "seen": 1795340960.4813156,
+    "ast_hash": "d52dd40acd32a62df3bc764b1e783ddf",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Sprites/EmojiOne Attribution.txt": {
+    "mtime": 1776637301.4242432,
+    "seen": 1795340960.4813166,
+    "ast_hash": "7590fa7ca767331d4e77ab3230efb933",
+    "semantic_hash": ""
+  },
+  "ProjectSettings/ProjectVersion.txt": {
+    "mtime": 1776637301.954165,
+    "seen": 1795340960.4813185,
+    "ast_hash": "e1f2694b3a46e5a97878a52b2aca7833",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf": {
+    "mtime": 1776637301.0317395,
+    "seen": 1795340960.4813201,
+    "ast_hash": "d5e461fcd15d946196ba95d7af5f22f7",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/backgrounds/bg_black_frame.png": {
+    "mtime": 1776637299.7495732,
+    "seen": 1795340960.4813213,
+    "ast_hash": "a9760feabc082bc19f133114f05ae450",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/backgrounds/bg_swhirl_yellow.png": {
+    "mtime": 1776637299.752937,
+    "seen": 1795340960.481322,
+    "ast_hash": "3eb740910b237860fa3329277e821e8a",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/arrow_basic.png": {
+    "mtime": 1776637299.7564356,
+    "seen": 1795340960.481323,
+    "ast_hash": "ab0cd194e45ffcd39248bc44e7d645a4",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bone_skull.png": {
+    "mtime": 1776637299.7595267,
+    "seen": 1795340960.481324,
+    "ast_hash": "c2b7ad9e6e6bab770683808b71a4d3df",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bone_white.png": {
+    "mtime": 1776637299.7624257,
+    "seen": 1795340960.4813251,
+    "ast_hash": "75b857f995eb9b3c02fc1f3240fa84f8",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/book_closed_red.png": {
+    "mtime": 1776637299.7659774,
+    "seen": 1795340960.481326,
+    "ast_hash": "7effb0084e3d5aa3535a50b4377fc870",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bottle_standard_blue.png": {
+    "mtime": 1776637299.769145,
+    "seen": 1795340960.481327,
+    "ast_hash": "eaa119d43f73fe826a9d76027c9e371d",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bottle_standard_empty.png": {
+    "mtime": 1776637299.7721722,
+    "seen": 1795340960.481328,
+    "ast_hash": "45b92a44ed3f3e5ecb8008e39e4f784e",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bottle_standard_green.png": {
+    "mtime": 1776637299.776413,
+    "seen": 1795340960.4813292,
+    "ast_hash": "cb0156cce456550c5945c4a9475180d3",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/bow_wood1.png": {
+    "mtime": 1776637299.7789257,
+    "seen": 1795340960.4813302,
+    "ast_hash": "b4cbbbccfb03e4d4765472cd574c5cb0",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/cape_hood_darkyellow.png": {
+    "mtime": 1776637299.7821267,
+    "seen": 1795340960.481331,
+    "ast_hash": "5de713608a201cf8da342cc0480fedf1",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/crown_gold.png": {
+    "mtime": 1776637299.7857707,
+    "seen": 1795340960.4813323,
+    "ast_hash": "2ccb7cae2e01269c1581240f68e2f1b6",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/fish_green.png": {
+    "mtime": 1776637299.7888443,
+    "seen": 1795340960.481333,
+    "ast_hash": "2eb7afa4340f1bda6fcabb83365454a6",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/gem_diamond_red.png": {
+    "mtime": 1776637299.7913709,
+    "seen": 1795340960.481334,
+    "ast_hash": "2e3045b3a43872f7d58034b3d5bd9cd8",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/gold_bars_three.png": {
+    "mtime": 1776637299.7949705,
+    "seen": 1795340960.481335,
+    "ast_hash": "54e19d14aa21f4ba5b1334018909e19f",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/gold_coins_many.png": {
+    "mtime": 1776637299.7985961,
+    "seen": 1795340960.4813364,
+    "ast_hash": "603e419b01043f8e71ba523c12ecaea5",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/key_silver.png": {
+    "mtime": 1776637299.8015528,
+    "seen": 1795340960.4813373,
+    "ast_hash": "55a1ec6477bdbfa89403b028c3f37322",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/leafs_long.png": {
+    "mtime": 1776637299.8042433,
+    "seen": 1795340960.4813383,
+    "ast_hash": "1a9ea608c579a0d9ff187f64c0070290",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/mushroom_big_red.png": {
+    "mtime": 1776637299.8074656,
+    "seen": 1795340960.4813395,
+    "ast_hash": "93f34fb98946f102b0dbc0f8cbaebd7a",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/necklace_silver_red.png": {
+    "mtime": 1776637299.8104846,
+    "seen": 1795340960.4813404,
+    "ast_hash": "efb11a00705ef2cc384e7d643db547dd",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/pickaxe_basic.png": {
+    "mtime": 1776637299.813696,
+    "seen": 1795340960.4813414,
+    "ast_hash": "d6d8bb6c0817dc098f3c56e75c151aef",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/pouch_leather_small.png": {
+    "mtime": 1776637299.816702,
+    "seen": 1795340960.4813426,
+    "ast_hash": "517b30258b54512c6929b294cc7a44e1",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/ring_gold_magic.png": {
+    "mtime": 1776637299.8197267,
+    "seen": 1795340960.4813435,
+    "ast_hash": "e50c296fe138119f9f5101bf22aed983",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/scroll_map2.png": {
+    "mtime": 1776637299.822496,
+    "seen": 1795340960.4813445,
+    "ast_hash": "68b1f61b9367dc2fa465a8f564eab908",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/shield_basic_metal.png": {
+    "mtime": 1776637299.825754,
+    "seen": 1795340960.4813464,
+    "ast_hash": "3396c6a5690262b23afaed1424a0e20b",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/silver_bars.png": {
+    "mtime": 1776637299.828412,
+    "seen": 1795340960.481347,
+    "ast_hash": "3528fe7c8912f32b801bee0b9c81bbcc",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/silver_coins_many.png": {
+    "mtime": 1776637299.8319232,
+    "seen": 1795340960.481348,
+    "ast_hash": "5d2997358dfe860cdd21fe1197eb7a07",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/stone_basic_grey.png": {
+    "mtime": 1776637299.8354344,
+    "seen": 1795340960.4813492,
+    "ast_hash": "4c03e8ecf3928d23d0242ecd96b3d9f4",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/stone_blocks_grey.png": {
+    "mtime": 1776637299.8380501,
+    "seen": 1795340960.4813502,
+    "ast_hash": "82b8e38ae0edaf94366c4e9de562c893",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/sword_basic4_blue.png": {
+    "mtime": 1776637299.8411999,
+    "seen": 1795340960.4813511,
+    "ast_hash": "d92d68df7c7a770cde3a1572d57ca380",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/sword_basic_blue.png": {
+    "mtime": 1776637299.8440351,
+    "seen": 1795340960.481352,
+    "ast_hash": "b435ee5e68040e77a573d95b1b9d399f",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/twig_green.png": {
+    "mtime": 1776637299.8461676,
+    "seen": 1795340960.4813533,
+    "ast_hash": "248727a9011e608c031a523719718916",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/wood_log.png": {
+    "mtime": 1776637299.849685,
+    "seen": 1795340960.4813542,
+    "ast_hash": "607177d5f40b6079bb56822830219dfb",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/wood_log_single_birch.png": {
+    "mtime": 1776637299.8521943,
+    "seen": 1795340960.4813552,
+    "ast_hash": "6249863c66c85f567587b9d84d53faa4",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/wood_logs_three.png": {
+    "mtime": 1776637299.8552325,
+    "seen": 1795340960.4813561,
+    "ast_hash": "20b2bc5325938cf8d87368526d37d011",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/RGP icons free start pack/items/wood_stick.png": {
+    "mtime": 1776637299.8585494,
+    "seen": 1795340960.4813573,
+    "ast_hash": "9739392175a0df7b9301c93b0d98d336",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png": {
+    "mtime": 1776637301.2272582,
+    "seen": 1795340960.481358,
+    "ast_hash": "c0835872f1061e68f125c1b9a7329cf6",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg": {
+    "mtime": 1776637301.2340121,
+    "seen": 1795340960.481359,
+    "ast_hash": "e2a48914a497be9f8a941e653d217c42",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg": {
+    "mtime": 1776637301.2468307,
+    "seen": 1795340960.4813602,
+    "ast_hash": "1e0edd414d33833c3914723d2c854e10",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg": {
+    "mtime": 1776637301.2660985,
+    "seen": 1795340960.4813612,
+    "ast_hash": "d8bf4cf68dac3a9d77bfe9350112ac42",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg": {
+    "mtime": 1776637301.279812,
+    "seen": 1795340960.481362,
+    "ast_hash": "08da843bb0c657ddc65837bedfad4282",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg": {
+    "mtime": 1776637301.28542,
+    "seen": 1795340960.4813633,
+    "ast_hash": "4d222a8923ee30482162bf5481148681",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg": {
+    "mtime": 1776637301.3076682,
+    "seen": 1795340960.4813643,
+    "ast_hash": "f92384c0b129979d168d3ec298b0f03d",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg": {
+    "mtime": 1776637301.3122938,
+    "seen": 1795340960.4813652,
+    "ast_hash": "fd5a4d4ca1c6293e163afc7dffc60592",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg": {
+    "mtime": 1776637301.3179872,
+    "seen": 1795340960.481366,
+    "ast_hash": "1167f1636b1eb54636d36fb1f935fb4c",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg": {
+    "mtime": 1776637301.3219688,
+    "seen": 1795340960.481367,
+    "ast_hash": "6b51a76c9f9863a54ed1fe81939a18cf",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg": {
+    "mtime": 1776637301.3266962,
+    "seen": 1795340960.481368,
+    "ast_hash": "046760a79f9f81611d82e06551eb2d86",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text Image 1.png": {
+    "mtime": 1776637301.328978,
+    "seen": 1795340960.481369,
+    "ast_hash": "b4077499505f2ab8d45966362a098f90",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text UI Screenshot.png": {
+    "mtime": 1776637301.3316603,
+    "seen": 1795340960.4813702,
+    "ast_hash": "c433e8a4de4438d13693ed173b0d2dab",
+    "semantic_hash": ""
+  },
+  "Assets/Packages/TextMesh Pro/Sprites/EmojiOne.png": {
+    "mtime": 1776637301.427884,
+    "seen": 1795340960.4813712,
+    "ast_hash": "abd61fb690e3df99b4cbd4f114afbd06",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/043af03a-cbce-462f-9537-43f343537e9d.png": {
+    "mtime": 1794914472.0259485,
+    "seen": 1795340960.4813719,
+    "ast_hash": "2d38fd0c9f32c6add2ebaa30b5f3a688",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/08af800d-e0ca-444d-97f0-7113b68c56bc.png": {
+    "mtime": 1794914000.0442684,
+    "seen": 1795340960.4813728,
+    "ast_hash": "e71d9ffdf887e0ea7abefdcc57d4537c",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/08af800d-e0ca-444d-97f0-7113b68c56bcee.png": {
+    "mtime": 1794914159.6517148,
+    "seen": 1795340960.481374,
+    "ast_hash": "c7037fc0751aef0a54c849b793d64beb",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/GPT image-2026-10-22-19-57-16.png": {
+    "mtime": 1794918318.5873573,
+    "seen": 1795340960.481375,
+    "ast_hash": "6f634c95a49bb0c4a6010f64d9d523c4",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/GPT image-2026-10-22-19-58-35.png": {
+    "mtime": 1794915215.6146955,
+    "seen": 1795340960.481376,
+    "ast_hash": "906de866b7e00d90616a93d1b105223f",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/GPT image-2026-10-22-20-00-03.png": {
+    "mtime": 1794914836.9739113,
+    "seen": 1795340960.4813771,
+    "ast_hash": "8513f7f72d2fcf12ba93af8725bcccde",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/df3f36a8-897e-4622-82f6-e79f0fef4cc5.png": {
+    "mtime": 1794918505.5860438,
+    "seen": 1795340960.481378,
+    "ast_hash": "1ec7f76d31eeb5b1c78154e039e06d4b",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/e43658dd-5f4d-4287-8b14-db7114702d01.png": {
+    "mtime": 1794918317.7918203,
+    "seen": 1795340960.481379,
+    "ast_hash": "7dca94626e5d12980878f11156a12d8f",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Sprites/e866d0e1-0f8c-4b97-af92-a2c708d53a22.png": {
+    "mtime": 1794918432.9730053,
+    "seen": 1795340960.48138,
+    "ast_hash": "1d836ec4212242497ac9eb41735ea066",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Textures/ground_1.png": {
+    "mtime": 1776637301.4816668,
+    "seen": 1795340960.4813812,
+    "ast_hash": "de70d6ec5f80744852bb28e9a36b718d",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/UI/IconCursor_1.png": {
+    "mtime": 1776637301.5036724,
+    "seen": 1795340960.4813821,
+    "ast_hash": "7f67e398ab51b8cbc96f53e9f96b388e",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1795341270.4766946,
+    "seen": 1795341668.4284184,
+    "ast_hash": "07edd72b005928f186688124cc721d39",
+    "semantic_hash": "07edd72b005928f186688124cc721d39"
+  },
+  "CLAUDE.md": {
+    "mtime": 1795388593.877285,
+    "seen": 1795388607.8322744,
+    "ast_hash": "f9a6bb6a39a6be04cc420db75dc52f64",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/cp_build.py": {
+    "mtime": 1795347286.2657669,
+    "seen": 1795356176.1015425,
+    "ast_hash": "e2b5ad1591b28023f14d72a96d816e66",
+    "semantic_hash": "e2b5ad1591b28023f14d72a96d816e66"
+  },
+  "ArtPipeline/Blender/ws_build.py": {
+    "mtime": 1795347125.514749,
+    "seen": 1795356176.10155,
+    "ast_hash": "5233a4a629e3126a5a5680c59b8f1ca6",
+    "semantic_hash": "5233a4a629e3126a5a5680c59b8f1ca6"
+  },
+  "Assets/Scripts/Behaviours/Animations/ControlPanelAnimator.cs": {
+    "mtime": 1795347320.4953794,
+    "seen": 1795356176.1015515,
+    "ast_hash": "1a04d95870b8352d585d9d67f35e97a5",
+    "semantic_hash": "1a04d95870b8352d585d9d67f35e97a5"
+  },
+  "Assets/Scripts/Behaviours/Animations/WallScreenAnimator.cs": {
+    "mtime": 1795347085.868477,
+    "seen": 1795356176.1015534,
+    "ast_hash": "b0bf7f0b0473ff367a1ae9a44c456ffb",
+    "semantic_hash": "b0bf7f0b0473ff367a1ae9a44c456ffb"
+  },
+  "ArtPipeline/Renders/ControlPanel_back.png": {
+    "mtime": 1795346782.755412,
+    "seen": 1795347235.357407,
+    "ast_hash": "af2c6e6d9be98c9995ca280a022a635b",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/ControlPanel_off.png": {
+    "mtime": 1795347301.1892593,
+    "seen": 1795349625.2862582,
+    "ast_hash": "90cf7dc6051516c837deeae06601820e",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/ControlPanel_on.png": {
+    "mtime": 1795347302.421332,
+    "seen": 1795349625.2862594,
+    "ast_hash": "4cf61ac69b51cc2c06bf996f9c37e7d6",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/WallScreen_front.png": {
+    "mtime": 1795346975.3433414,
+    "seen": 1795347235.357411,
+    "ast_hash": "49dfbf5cba3a54d02b149c1f465de227",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/WallScreen_side.png": {
+    "mtime": 1795346975.736702,
+    "seen": 1795347235.3574119,
+    "ast_hash": "e078e90d49b2aca1a6cf2919f8197698",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/ControlPanel_powering.png": {
+    "mtime": 1795347301.7946823,
+    "seen": 1795349625.2862608,
+    "ast_hash": "dc54a611e378b4b15142a63e6c18eba0",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/00 - Index \u00c0 faire.md": {
+    "mtime": 1795385984.885269,
+    "seen": 1795386356.8792872,
+    "ast_hash": "57486ead593b86ad9fb4fb749dd3163f",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/B03 - D\u00e9collage en haut des pentes.md": {
+    "mtime": 1795385967.563699,
+    "seen": 1795386356.8792896,
+    "ast_hash": "b3c4f77528e84565e0841b65f5dae628",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/B07 - Ressenti des d\u00e9placements.md": {
+    "mtime": 1795385967.563699,
+    "seen": 1795386356.879291,
+    "ast_hash": "d4a77e126cad3dd99d74955614d01216",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/B10 - Pivot de ReplaceObject trop haut.md": {
+    "mtime": 1795385967.5646994,
+    "seen": 1795386356.8792927,
+    "ast_hash": "d768abd45c92a7438813ecfe15c5416e",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/B21 - Curseur visible apr\u00e8s \u00c9chap.md": {
+    "mtime": 1795385967.5722034,
+    "seen": 1795386356.8792942,
+    "ast_hash": "5e99fdeecca168f28ef28034dd82be1a",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/B26 - Flag identified des objets ramassables.md": {
+    "mtime": 1795385967.5732088,
+    "seen": 1795386356.8792953,
+    "ast_hash": "47b7b02971ea819baf99f5c42411d800",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F03 - Accroupissement.md": {
+    "mtime": 1795385967.573712,
+    "seen": 1795386356.8792963,
+    "ast_hash": "01b8eba85281e620430faa9acd7c0ff7",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F06 - Vrai glisser-d\u00e9poser.md": {
+    "mtime": 1795385967.574216,
+    "seen": 1795386356.8792975,
+    "ast_hash": "8c6fd756138ff10ca051a921e5f32d17",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F11 - Donn\u00e9es propres \u00e0 chaque exemplaire.md": {
+    "mtime": 1795385967.574216,
+    "seen": 1795386356.8792992,
+    "ast_hash": "6cc6103aa6a2ac89f03d8a29f0a88288",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F17 - Contour masqu\u00e9 par les obstacles.md": {
+    "mtime": 1795385967.574216,
+    "seen": 1795386356.8793,
+    "ast_hash": "b837cada4457a64a01b40df4afe6647c",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F20 - Recettes \u00e0 plusieurs r\u00e9sultats.md": {
+    "mtime": 1795385967.574216,
+    "seen": 1795386356.8793015,
+    "ast_hash": "87ed41763dc9965bd1c4719dad0164d6",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F22 - Catalogue de constructions.md": {
+    "mtime": 1795385967.5757284,
+    "seen": 1795386356.879303,
+    "ast_hash": "2902a3c79f914da322f397bd0a2d3d10",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F27 - R\u00e9seau d'oxyg\u00e8ne.md": {
+    "mtime": 1795386328.9325008,
+    "seen": 1795386356.8793042,
+    "ast_hash": "905eed87d1c58837ee90717d42e59b4d",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F30 - Biomes.md": {
+    "mtime": 1795385967.578753,
+    "seen": 1795386356.8793051,
+    "ast_hash": "b926e19e31b264b66c036cb1235a6a1f",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F31 - Structures g\u00e9n\u00e9r\u00e9es.md": {
+    "mtime": 1795385967.578753,
+    "seen": 1795386356.8793066,
+    "ast_hash": "c30da3b9f4c58659aa9bee43636e2081",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F32 - Ressources g\u00e9n\u00e9r\u00e9es.md": {
+    "mtime": 1795385967.578753,
+    "seen": 1795386356.8793077,
+    "ast_hash": "420565a580a7fd7904b0fb7ebc4b60b2",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F37 - Oxyg\u00e8ne hors des zones respirables.md": {
+    "mtime": 1795385967.573712,
+    "seen": 1795386356.8793094,
+    "ast_hash": "d48b7d434aceb035534152ecec2d087f",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F38 - Position du sac de mort.md": {
+    "mtime": 1795385967.574216,
+    "seen": 1795386356.8793104,
+    "ast_hash": "c26be2133e0b68d490963a1c87ec6786",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F47 - Relais radio.md": {
+    "mtime": 1795385967.5757284,
+    "seen": 1795386356.8793116,
+    "ast_hash": "b684f10ca18c69e3965b9f20c194c0e3",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F48 - Crafter.md": {
+    "mtime": 1795385967.576244,
+    "seen": 1795386356.8793128,
+    "ast_hash": "7bcd732e69b9fda5bd49cfb7fb93e361",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F49 - G\u00e9n\u00e9ration d'\u00e9nergie.md": {
+    "mtime": 1795386328.933004,
+    "seen": 1795386356.8793142,
+    "ast_hash": "97cf66f3bd040ed9e302081ead19deb5",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F50 - R\u00e9seau \u00e9lectrique complet.md": {
+    "mtime": 1795386328.9340153,
+    "seen": 1795386356.8793154,
+    "ast_hash": "204269d283a7b3feaed369e9146e44f2",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F51 - Syst\u00e8me d'oxyg\u00e8ne.md": {
+    "mtime": 1795386328.9340153,
+    "seen": 1795386356.8793168,
+    "ast_hash": "eaae1ff6c73f54fcf6e12f606dca6179",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F52 - Machines consommatrices d'oxyg\u00e8ne.md": {
+    "mtime": 1795386328.9340153,
+    "seen": 1795386356.879318,
+    "ast_hash": "3ad512774dcc3d550dc4abf17adc0813",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F53 - Syst\u00e8me de plantation.md": {
+    "mtime": 1795386328.9350262,
+    "seen": 1795386356.8793197,
+    "ast_hash": "25b4a8303d28fe03b07121c5fa5c1539",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F54 - Cycle jour nuit et m\u00e9t\u00e9o.md": {
+    "mtime": 1795386328.9350262,
+    "seen": 1795386356.8793209,
+    "ast_hash": "e596ef20baa9cfa2395563786bbbf1bc",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F55 - Informations des r\u00e9seaux.md": {
+    "mtime": 1795386328.9350262,
+    "seen": 1795386356.879322,
+    "ast_hash": "c0dcfdbf9a07db7aded89748abd625c1",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F56 - Horaires du tableau de distribution.md": {
+    "mtime": 1795386328.9360318,
+    "seen": 1795386356.8793235,
+    "ast_hash": "b9faa26bb6319c32584a7349b7f48e1b",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F65 - Int\u00e9gration des mod\u00e8les 3D.md": {
+    "mtime": 1795385967.578753,
+    "seen": 1795386356.8793247,
+    "ast_hash": "24a854efc14cf0fb3b46fc79c1f45e13",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/Historique/Historique - Bugs.md": {
+    "mtime": 1795386328.9365456,
+    "seen": 1795386356.8793256,
+    "ast_hash": "8e8aba7db738ed0ab910a5deccad0839",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/Historique/Historique - Features.md": {
+    "mtime": 1795386328.9365456,
+    "seen": 1795386356.8793268,
+    "ast_hash": "aab33a81192fc38ac514bfd2e83bdbfb",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/Historique/Historique - Optimisations.md": {
+    "mtime": 1795385967.5854797,
+    "seen": 1795386356.879328,
+    "ast_hash": "ef8ea92baf13751a4c99f99219537063",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/Historique/Historique - Refontes.md": {
+    "mtime": 1795386328.9376059,
+    "seen": 1795386356.8793373,
+    "ast_hash": "cc9ccc5ebc2f0a5737488920b4d60b6a",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/O03 - Monde infini.md": {
+    "mtime": 1795385967.5803652,
+    "seen": 1795386356.8793383,
+    "ast_hash": "571077b7de132e90fa353a039ef2c416",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R01 - Refonte du chargement de sc\u00e8nes.md": {
+    "mtime": 1795385967.5803652,
+    "seen": 1795386356.8793395,
+    "ast_hash": "063f2de6b765eed7afeb218c5771703e",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R02 - Persistance entre sc\u00e8nes.md": {
+    "mtime": 1795385967.5803652,
+    "seen": 1795386356.8793411,
+    "ast_hash": "53e5df209122938b6125a5fb68bd7ec9",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R05 - Prefab asset modifi\u00e9 au runtime.md": {
+    "mtime": 1795385967.5803652,
+    "seen": 1795386356.8793423,
+    "ast_hash": "143fb30e304945bde0bf662dbbe1744d",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R06 - PlayerInputActions jamais lib\u00e9r\u00e9s.md": {
+    "mtime": 1795385967.5803652,
+    "seen": 1795386356.8793435,
+    "ast_hash": "f766015ae37c50782478e9c4912d1cb2",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R07 - CharacterController.md": {
+    "mtime": 1795385967.5818782,
+    "seen": 1795386356.8793447,
+    "ast_hash": "695920987eb1c77258cbb8ccbf6df8ea",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R08 - Refonte du HUD des stats.md": {
+    "mtime": 1795385967.5818782,
+    "seen": 1795386356.8793457,
+    "ast_hash": "142bf4fbbaf777f61fbf5ac52f20ca22",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R09 - Syst\u00e8me d'interaction extensible.md": {
+    "mtime": 1795385967.5818782,
+    "seen": 1795386356.8793468,
+    "ast_hash": "6716d9870d1e8a51679832e390b9a77f",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R10 - Ids d'items g\u00e9n\u00e9r\u00e9s.md": {
+    "mtime": 1795385967.5818782,
+    "seen": 1795386356.8793483,
+    "ast_hash": "9d3946cd9796fecac4a52bd6d7be0de7",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R11 - Direction.In de TryMerge.md": {
+    "mtime": 1795385967.5818782,
+    "seen": 1795386356.8793495,
+    "ast_hash": "e1cd8266a38a9f00c24c5ca97201d548",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R12 - Int\u00e9gration des constructions au terrain.md": {
+    "mtime": 1795385967.5834389,
+    "seen": 1795386356.879351,
+    "ast_hash": "9ae8429cdfc001499884a2961f121769",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R13 - Snapping entre points de connexion.md": {
+    "mtime": 1795386328.9391026,
+    "seen": 1795386356.879352,
+    "ast_hash": "3dcc8ab6618b4362227b7dec8dea4969",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R15 - Ids uniques des objets de sc\u00e8ne.md": {
+    "mtime": 1795385967.5839605,
+    "seen": 1795386356.8793533,
+    "ast_hash": "c0863ffd5a741c1f47124b67899cfbe0",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/00 - Index DA.md": {
+    "mtime": 1795386845.9855862,
+    "seen": 1795387728.5599608,
+    "ast_hash": "f5f36cd447ef3dac3cd81640e61b4212",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/01 - Fiche du jeu.md": {
+    "mtime": 1795384898.102204,
+    "seen": 1795386356.8793557,
+    "ast_hash": "b77937cc183f4ecb01dfa59f1d8827b8",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/02 - Intention et piliers du style.md": {
+    "mtime": 1795384898.1097178,
+    "seen": 1795386356.8793569,
+    "ast_hash": "b1ee9864cf8c2d2a12da19ad5d05d51e",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/03 - Formes et silhouettes.md": {
+    "mtime": 1795387393.7306304,
+    "seen": 1795387728.5599651,
+    "ast_hash": "dd1b65e2965f018de7a2e511bab8edac",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/04 - Couleur et lumi\u00e8re.md": {
+    "mtime": 1795387153.1479778,
+    "seen": 1795387728.5599668,
+    "ast_hash": "fb5afa672f5d1fc614e1b62a10ecc6c4",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/05 - Mat\u00e9riaux et textures.md": {
+    "mtime": 1795387153.2468226,
+    "seen": 1795387728.5599682,
+    "ast_hash": "dea795013730a7c92583e7086c7c543b",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/06 - Environnement.md": {
+    "mtime": 1795384898.1491067,
+    "seen": 1795386356.8793619,
+    "ast_hash": "39562dcdcd75f3f85a6c0d58da37b338",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/07 - Traces de vie ancienne.md": {
+    "mtime": 1795384898.1562762,
+    "seen": 1795386356.879363,
+    "ast_hash": "ff89133ce82ffb29e5ad1f4afde6ccac",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/08 - Technologie humaine.md": {
+    "mtime": 1795387153.024286,
+    "seen": 1795387728.5599718,
+    "ast_hash": "860de7ee391b6fdd2c5d99b169f5382e",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/09 - Colons.md": {
+    "mtime": 1795384898.1718762,
+    "seen": 1795386356.8793654,
+    "ast_hash": "58c8d1c2db534125b193e2ba3daaf657",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/10 - Menaces et lisibilit\u00e9.md": {
+    "mtime": 1795384898.181086,
+    "seen": 1795386356.8793664,
+    "ast_hash": "7290f06892a3655e92748688e72b2725",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/11 - La chaleur qui s'installe.md": {
+    "mtime": 1795384898.188935,
+    "seen": 1795386356.8793676,
+    "ast_hash": "7d978630793f9f1ce106e06628b72a6a",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/12 - Points ouverts.md": {
+    "mtime": 1795384898.1958506,
+    "seen": 1795386356.8793688,
+    "ast_hash": "7582cb6a1f88fab06ca00d2c8601b7f4",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/13 - \u00c0 \u00e9viter et check-list.md": {
+    "mtime": 1795384898.2019458,
+    "seen": 1795386356.87937,
+    "ast_hash": "63a8beafd6a0afbe3f354a1768df12f6",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/14 - Production Unity.md": {
+    "mtime": 1795387323.1857512,
+    "seen": 1795387728.5599794,
+    "ast_hash": "2d2c50a3c1566ba02215221ede9cec6b",
+    "semantic_hash": ""
+  },
+  "obsidian/Direction Artistique/15 - Prompts IA.md": {
+    "mtime": 1795384898.2154925,
+    "seen": 1795386356.8793721,
+    "ast_hash": "bdf9ee60f62d394174acac9c7e87873a",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/00 - Index Fonctionnalit\u00e9s.md": {
+    "mtime": 1795386322.374717,
+    "seen": 1795386356.8793733,
+    "ast_hash": "6574a753973822102a8715587f9ae3cc",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Bootstrap/Sauvegarde.md": {
+    "mtime": 1795386328.9396064,
+    "seen": 1795386356.8793745,
+    "ast_hash": "eca544cb73f40f44a4f33b92b56e8734",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Bootstrap/Sc\u00e8nes et chargement.md": {
+    "mtime": 1795386035.9806004,
+    "seen": 1795386356.8793762,
+    "ast_hash": "ba4287d097117fa5fee7ff99394da1bf",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Connecteurs de d\u00f4me.md": {
+    "mtime": 1795386199.6166677,
+    "seen": 1795386356.8793776,
+    "ast_hash": "d4c9ea8dde7a094e5bbca0093b46fb13",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Couloir.md": {
+    "mtime": 1795386199.8408084,
+    "seen": 1795386356.879379,
+    "ast_hash": "820eb916365d1164bdf19490da9e38b8",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/D\u00f4mes.md": {
+    "mtime": 1795386199.5103557,
+    "seen": 1795386356.8793802,
+    "ast_hash": "fdb39cf42ef8fbbfbec6929f76e09ff2",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Int\u00e9rieur des b\u00e2timents.md": {
+    "mtime": 1795386328.9407797,
+    "seen": 1795386356.8793814,
+    "ast_hash": "9a52e26aacb64fafe832a32572e732b2",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Objets pos\u00e9s.md": {
+    "mtime": 1795386200.046741,
+    "seen": 1795386356.8793828,
+    "ast_hash": "d5c31f7c5e080b43bbf300da1bed6869",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Plans de construction.md": {
+    "mtime": 1795386199.3062787,
+    "seen": 1795386356.8793843,
+    "ast_hash": "eced2b61de864ecfa2ee9dfde569ae2e",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Pose et destruction.md": {
+    "mtime": 1795386198.9787464,
+    "seen": 1795386356.8793857,
+    "ast_hash": "bb57e02cc5cdf3e5dde08e73ba6aeccf",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Rangements.md": {
+    "mtime": 1795386200.145888,
+    "seen": 1795386356.879387,
+    "ast_hash": "d2650e57fcf2e511954829d16b346ae8",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Roue de construction.md": {
+    "mtime": 1795386199.0965295,
+    "seen": 1795386356.8793883,
+    "ast_hash": "ff9e79057b1df47bd6cd90b4b73a26d6",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Sas.md": {
+    "mtime": 1795386199.734675,
+    "seen": 1795386356.8793898,
+    "ast_hash": "93e9a5d4c6a0c8e5e7feb284ccfb7744",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Structures et catalogue.md": {
+    "mtime": 1795386199.194416,
+    "seen": 1795386356.879391,
+    "ast_hash": "b2186c281be0ff43c762b4d82b87b6f6",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Construction/Terrain sous les constructions.md": {
+    "mtime": 1795386199.405277,
+    "seen": 1795386356.8793921,
+    "ast_hash": "973a14adf7f87a89012f58462fd50960",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Crafting/Station de craft.md": {
+    "mtime": 1795386198.875468,
+    "seen": 1795386356.8793936,
+    "ast_hash": "1b584f245b3ab88ede201ae999451929",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interaction/Contour de l'objet point\u00e9.md": {
+    "mtime": 1795386328.9407797,
+    "seen": 1795386356.8793948,
+    "ast_hash": "66f162f182007ac653957e2d6713485a",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interaction/Pointeur et interactables.md": {
+    "mtime": 1795386198.6026826,
+    "seen": 1795386356.8793962,
+    "ast_hash": "46540ea22541460f4c6fcf3b7fa532db",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Horloge.md": {
+    "mtime": 1795386036.9355245,
+    "seen": 1795386356.8793974,
+    "ast_hash": "860b6709022f27f56a8860f33c33a92f",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Interfaces UI Toolkit.md": {
+    "mtime": 1795386036.2222934,
+    "seen": 1795386356.8793988,
+    "ast_hash": "d2a2331348698938f344ffedd4bd20f0",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Menu pause.md": {
+    "mtime": 1795386036.4670136,
+    "seen": 1795386356.8794005,
+    "ast_hash": "18bc5d9650609d02409abc314df31c19",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Menu principal.md": {
+    "mtime": 1795386036.3316245,
+    "seen": 1795386356.8794017,
+    "ast_hash": "f130a8085b99391786d992862c3903a3",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Messages au joueur.md": {
+    "mtime": 1795386036.6907358,
+    "seen": 1795386356.879403,
+    "ast_hash": "5f76f7a235fbdc9ef505cdcd8e8dd407",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Minimap.md": {
+    "mtime": 1795386036.8021722,
+    "seen": 1795386356.8794043,
+    "ast_hash": "c7eb897816409dbfccac9a57064e707f",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/Modes de jeu et interfaces.md": {
+    "mtime": 1795386037.0442557,
+    "seen": 1795386356.8794057,
+    "ast_hash": "be553fd8b3c6975f6e1ea1b2431ef476",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Interfaces/\u00c9cran de mort.md": {
+    "mtime": 1795386036.57132,
+    "seen": 1795386356.8794072,
+    "ast_hash": "c850dcf52b5d73338d8641bd93620d81",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Barre des objets.md": {
+    "mtime": 1795386328.9422853,
+    "seen": 1795386356.8794084,
+    "ast_hash": "acf85580ec6523df217c87fabb74289d",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Clics de l'inventaire.md": {
+    "mtime": 1795386328.9433064,
+    "seen": 1795386356.8794096,
+    "ast_hash": "1733343f5a3aee9b7f3fda4015c03340",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Donn\u00e9es des items.md": {
+    "mtime": 1795386109.507025,
+    "seen": 1795386356.879411,
+    "ast_hash": "7f38772d8c51ec54c0f207b7355bbe63",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Inventaire du joueur.md": {
+    "mtime": 1795386109.719388,
+    "seen": 1795386356.8794122,
+    "ast_hash": "9704f7205578b6e6d83ca99cfe526da4",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Lampe torche.md": {
+    "mtime": 1795386110.0346353,
+    "seen": 1795386356.8794136,
+    "ast_hash": "99d674677ae6210205ec4099a1367df1",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/Utilisation des objets en main.md": {
+    "mtime": 1795386109.9276502,
+    "seen": 1795386356.8794158,
+    "ast_hash": "9282be777eb72f6f3ed47d25ab0f5a8a",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Inventaire/\u00c9quipement et jetpack.md": {
+    "mtime": 1795386328.9433064,
+    "seen": 1795386356.8794181,
+    "ast_hash": "9442bfcdacb20ec286e43cb62bb5b5f9",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Joueur/Cam\u00e9ra.md": {
+    "mtime": 1795386109.071483,
+    "seen": 1795386356.8794205,
+    "ast_hash": "e8c3f8612ede92fd7aeb371fd44c0056",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Joueur/D\u00e9placement du joueur.md": {
+    "mtime": 1795386108.933305,
+    "seen": 1795386356.8794224,
+    "ast_hash": "8ca1075455b66bb1677564a862c12870",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Joueur/Modificateurs et consommables.md": {
+    "mtime": 1795386109.4083548,
+    "seen": 1795386356.8794246,
+    "ast_hash": "c20987155b94ca6eb396cf8e0fa8e344",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Joueur/Mort et r\u00e9apparition.md": {
+    "mtime": 1795386109.297652,
+    "seen": 1795386356.8794265,
+    "ast_hash": "31b8b78a1a6ee57fd4a4bf10e54c5139",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Joueur/Stats du joueur.md": {
+    "mtime": 1795386328.9443054,
+    "seen": 1795386356.8794284,
+    "ast_hash": "82a089eaac54b36ef2309017fcc6bb24",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Monde/Capsule de d\u00e9part.md": {
+    "mtime": 1795386301.9291728,
+    "seen": 1795386356.8794308,
+    "ast_hash": "6573cefbb3734b9b467c291977eb603e",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Monde/Cycle jour et nuit.md": {
+    "mtime": 1795386301.8326602,
+    "seen": 1795386356.8794324,
+    "ast_hash": "efecf2b43bec961870ef63da62df58f5",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Monde/Objets du d\u00e9cor.md": {
+    "mtime": 1795386301.7256792,
+    "seen": 1795386356.8794346,
+    "ast_hash": "aa652374348a7d4722788750a4ebb1eb",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/Monde/Terrain proc\u00e9dural.md": {
+    "mtime": 1795386301.6088133,
+    "seen": 1795386356.8794367,
+    "ast_hash": "2b2f3bf50857c507fdeee6b731d5e7f5",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Appareils \u00e9lectriques.md": {
+    "mtime": 1795386302.138585,
+    "seen": 1795386356.879439,
+    "ast_hash": "e7772b20baaf636d112565beb423016b",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/C\u00e2ble \u00e9lectrique.md": {
+    "mtime": 1795386302.4639425,
+    "seen": 1795386356.8794413,
+    "ast_hash": "0a1060fa1013ccf1b622f54cf7eb279c",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/G\u00e9n\u00e9rateur \u00e0 charbon.md": {
+    "mtime": 1795386328.9448097,
+    "seen": 1795386356.8794434,
+    "ast_hash": "5ec4d319d9f9a77f2b35cfe4b91c07e5",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Objets du r\u00e9seau \u00e9lectrique.md": {
+    "mtime": 1795386302.995556,
+    "seen": 1795386356.8794456,
+    "ast_hash": "d5628c48dceea5fc8aa4041548bfa2a3",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Panneau de contr\u00f4le.md": {
+    "mtime": 1795386328.9463243,
+    "seen": 1795386356.8794475,
+    "ast_hash": "b525a973036f71dde4075a34ce346faa",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Panneau solaire.md": {
+    "mtime": 1795386302.2492568,
+    "seen": 1795386356.87945,
+    "ast_hash": "943c1fb5ffac72745237fade19bf5cf5",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/R\u00e9seau \u00e9lectrique.md": {
+    "mtime": 1795386302.041123,
+    "seen": 1795386356.8794525,
+    "ast_hash": "a26de942429861e1bf61f5ec9f946c24",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Station de recharge.md": {
+    "mtime": 1795386302.8840926,
+    "seen": 1795386356.879455,
+    "ast_hash": "bc98bda2566d7a5809b66a208b928ac6",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Tableau de distribution.md": {
+    "mtime": 1795386302.5751562,
+    "seen": 1795386356.8794572,
+    "ast_hash": "f25fcaee2cfbdceb22bd9499354c30ce",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/\u00c9lectricit\u00e9 des b\u00e2timents.md": {
+    "mtime": 1795386302.679982,
+    "seen": 1795386356.8794596,
+    "ast_hash": "4e7fa6a7bffa981b04b7361e6bd8a04a",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/00 - Index Instructions.md": {
+    "mtime": 1795388593.6744325,
+    "seen": 1795388607.8324585,
+    "ast_hash": "b930c6bc5134d40e96ce5a05c234d219",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/00 - Index Pipeline 3D.md": {
+    "mtime": 1795388050.881408,
+    "seen": 1795388083.144605,
+    "ast_hash": "93763dbcfaf5acd80b38ccb0aac5fdc9",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/01 - Fa\u00e7on de travailler.md": {
+    "mtime": 1795387136.4272158,
+    "seen": 1795388083.1446064,
+    "ast_hash": "528be4d8aac3ae39667917833be04887",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/02 - Palette des mat\u00e9riaux.md": {
+    "mtime": 1795387136.4282305,
+    "seen": 1795388083.144608,
+    "ast_hash": "470e508ef4565caa8e006993779757cb",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/03 - G\u00e9om\u00e9trie des mod\u00e8les.md": {
+    "mtime": 1795387415.628905,
+    "seen": 1795388083.1446092,
+    "ast_hash": "507eeb17970924c7f9fd16ffee74d7e6",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/04 - Dimensions de r\u00e9f\u00e9rence.md": {
+    "mtime": 1795387136.4292364,
+    "seen": 1795388083.1446173,
+    "ast_hash": "581860d053fc4166ef798f39a58164d9",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/05 - Mod\u00e8les habitables.md": {
+    "mtime": 1795387136.4292364,
+    "seen": 1795388083.1446185,
+    "ast_hash": "0679e1e7e45de52e0a6d9a35534b1878",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/06 - Stockage et empilage.md": {
+    "mtime": 1795387136.4302368,
+    "seen": 1795388083.1446195,
+    "ast_hash": "61255f1f4e4b6a87992eb18244b18c66",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/07 - Objets muraux.md": {
+    "mtime": 1795387323.6114182,
+    "seen": 1795388083.144621,
+    "ast_hash": "507bcabffd0463fa9df23a1104e7fd13",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/08 - Vitres.md": {
+    "mtime": 1795387136.431741,
+    "seen": 1795388083.1446218,
+    "ast_hash": "9a5f4c347fb4d0472b3b2bee5b251199",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/09 - Textures.md": {
+    "mtime": 1795387161.0219946,
+    "seen": 1795388083.1446228,
+    "ast_hash": "a4a4353aa282480d6b2e5837f3f7375b",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/10 - Mod\u00e9lisation Blender.md": {
+    "mtime": 1795387415.7410038,
+    "seen": 1795388083.1446245,
+    "ast_hash": "755376e00d0a44e915c8f55265aac271",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/11 - Export FBX.md": {
+    "mtime": 1795387136.433829,
+    "seen": 1795388083.1446257,
+    "ast_hash": "d9155834c84035375f2757fd48a93d7b",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/12 - Import Unity.md": {
+    "mtime": 1795387136.433829,
+    "seen": 1795388083.1446269,
+    "ast_hash": "c85abaf90b22958f247bb80722027b1b",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/13 - Animations Blender.md": {
+    "mtime": 1795387136.434842,
+    "seen": 1795388083.1446283,
+    "ast_hash": "8074de235236c6cf34ad2a424642340c",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/14 - Animator Unity.md": {
+    "mtime": 1795387136.434842,
+    "seen": 1795388083.1446292,
+    "ast_hash": "44066522444252df4746ce42cafdf105",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/15 - Scripts d'animation Unity.md": {
+    "mtime": 1795387160.835158,
+    "seen": 1795388083.1446302,
+    "ast_hash": "75119f0bc401ea43ab8a8e8b9fd6c5c5",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/16 - Erreurs \u00e0 ne pas refaire.md": {
+    "mtime": 1795387136.436862,
+    "seen": 1795388083.1446319,
+    "ast_hash": "75ca30be62b53d247c87bfb8b6e770f8",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Pipeline 3D/17 - Scripts de r\u00e9f\u00e9rence.md": {
+    "mtime": 1795387415.8691301,
+    "seen": 1795388083.144633,
+    "ast_hash": "537d546b63bfa87d0e3639bd03b6d38f",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/00 - Index Code.md": {
+    "mtime": 1795388593.5670576,
+    "seen": 1795388607.8324604,
+    "ast_hash": "017b5eb12d5d2c383f69a7f7d268ee74",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/01 - Organisation des dossiers.md": {
+    "mtime": 1795388571.1090949,
+    "seen": 1795388607.8324618,
+    "ast_hash": "42783bee6239348c82212af8dedc1b96",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/02 - Conventions de code.md": {
+    "mtime": 1795388571.2409022,
+    "seen": 1795388607.8324633,
+    "ast_hash": "6f039b104bce06498534224e385f837b",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/03 - Managers et cycle de vie.md": {
+    "mtime": 1795388571.3472517,
+    "seen": 1795388607.8324647,
+    "ast_hash": "aee0c0f5675f41ec85b22b95946ca06c",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/04 - Rendre un objet sauvegardable.md": {
+    "mtime": 1795388571.4442554,
+    "seen": 1795388607.8324656,
+    "ast_hash": "16c6afebb1f252601dec2a0e38023f99",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/05 - Ajouter un item.md": {
+    "mtime": 1795388571.5558324,
+    "seen": 1795388607.8324666,
+    "ast_hash": "6e1fbe3668ab7ff036f4c963e817db48",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/06 - Interactions.md": {
+    "mtime": 1795388571.653221,
+    "seen": 1795388607.8324678,
+    "ast_hash": "49368c91ff2e0e926a5403afdf589782",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/07 - Cr\u00e9er une interface.md": {
+    "mtime": 1795388571.7599125,
+    "seen": 1795388607.832469,
+    "ast_hash": "88357ca3478a9e7cc78e8d26cabece2c",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/08 - Constructions et objets pos\u00e9s.md": {
+    "mtime": 1795388571.8657856,
+    "seen": 1795388607.8324704,
+    "ast_hash": "1e6415c8472bfce089df20cb9f817bda",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/09 - Ajouter un appareil \u00e9lectrique.md": {
+    "mtime": 1795388571.9743593,
+    "seen": 1795388607.8324718,
+    "ast_hash": "12643549d9943c45c175690e1dc86bb2",
+    "semantic_hash": ""
+  },
+  "obsidian/Instructions/Code/10 - V\u00e9rifier son travail.md": {
+    "mtime": 1795388572.08316,
+    "seen": 1795388607.832473,
+    "ast_hash": "1db3e137d13bc7ba6f695924a9944c5d",
+    "semantic_hash": ""
+  }
+}

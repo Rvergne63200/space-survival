@@ -90,11 +90,16 @@ public class ModelImportSetup : AssetPostprocessor
             ("Doors_Open",  1,  30, false),
             ("Doors_Close", 42, 72, false),
         },
+        ["ControlPanel"] = new (string, float, float, bool)[]
+        {
+            ("Power_On",  1,  24, false),
+            ("Power_Off", 36, 60, false),
+        },
     };
     // état par défaut de l'Animator Controller et transitions automatiques (from -> to, sur fin de clip)
     static readonly System.Collections.Generic.Dictionary<string, string> DefaultState =
         new System.Collections.Generic.Dictionary<string, string> { ["CraftStation"] = "Power_Off", ["Airlock"] = "Inner_Close", ["SolarPanel"] = "Panel_Fold", ["LandingCapsule"] = "Door_Close",
-                                                                    ["Crate_Small"] = "Lid_Close", ["Crate_Large"] = "Lid_Close", ["Cabinet"] = "Doors_Close" };
+                                                                    ["Crate_Small"] = "Lid_Close", ["Crate_Large"] = "Lid_Close", ["Cabinet"] = "Doors_Close", ["ControlPanel"] = "Power_Off" };
     static readonly (string model, string from, string to)[] AutoTransitions = { ("CraftStation", "Print_Start", "Print_Loop") };
 
     // Modèles à mouvements indépendants : chaque clip ne garde que les courbes de ses objets,
@@ -132,7 +137,7 @@ public class ModelImportSetup : AssetPostprocessor
     };
 
     // à incrémenter quand les réglages d'import changent : Unity réimporte alors les modèles concernés
-    public override uint GetVersion() => 7;
+    public override uint GetVersion() => 8;
 
     static bool InRoot(string p) => p.Replace('\\', '/').StartsWith(Root);
     static bool IsModelFolder(string dir) => dir.Replace('\\', '/').TrimEnd('/') + "/" != Root;   // pas la racine Models/

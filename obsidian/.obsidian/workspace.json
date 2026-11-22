@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "64a4fd6b39fed2b3",
+    "type": "split",
+    "children": [
+      {
+        "id": "75f8ed2e26b81f38",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d692f96d9c5d90bf",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Vue graphique"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "16a3558568b09916",
+    "type": "split",
+    "children": [
+      {
+        "id": "a68e402fdfde56f7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "561c4a831eda0d6e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorateur de fichiers"
+            }
+          },
+          {
+            "id": "2973967b7fb2571d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Rechercher"
+            }
+          },
+          {
+            "id": "3aa5d905fcc24637",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Signets"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "db09438cf38ef246",
+    "type": "split",
+    "children": [
+      {
+        "id": "3951f3d7f8cfd128",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "57e8f76e0cb66f4c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Rétroliens"
+            }
+          },
+          {
+            "id": "f757ab7d2277cc1c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Liens sortants"
+            }
+          },
+          {
+            "id": "be1528194e5caf79",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Mots-clés"
+            }
+          },
+          {
+            "id": "1fa5adeb8b6ef261",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Toutes les propriétés"
+            }
+          },
+          {
+            "id": "c6bd173041b4a9ff",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Plan"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Ouvrir le sélecteur rapide": false,
+      "graph:Ouvrir la vue graphique": false,
+      "canvas:Créer un nouveau canvas": false,
+      "daily-notes:Ouvrir la note quotidienne": false,
+      "templates:Insérer le modèle": false,
+      "command-palette:Ouvrir la palette de commandes": false,
+      "bases:Créer une nouvelle base": false
+    }
+  },
+  "active": "d692f96d9c5d90bf",
+  "lastOpenFiles": [
+    "A faire/00 - Index À faire.md",
+    "Instructions/Code/02 - Conventions de code.md",
+    "Instructions/Code/10 - Vérifier son travail.md.tmp.11168.6a23c480acf7",
+    "A faire/R11 - Direction.In de TryMerge.md",
+    "A faire/R10 - Ids d'items générés.md",
+    "A faire/R09 - Système d'interaction extensible.md",
+    "A faire/R08 - Refonte du HUD des stats.md",
+    "A faire/R07 - CharacterController.md",
+    "A faire/R06 - PlayerInputActions jamais libérés.md",
+    "A faire/R05 - Prefab asset modifié au runtime.md",
+    "A faire/R02 - Persistance entre scènes.md",
+    "A faire/R01 - Refonte du chargement de scènes.md",
+    "A faire/O03 - Monde infini.md",
+    "A faire/F65 - Intégration des modèles 3D.md",
+    "A faire/F48 - Crafter.md",
+    "A faire/F47 - Relais radio.md",
+    "A faire/F32 - Ressources générées.md",
+    "A faire/F31 - Structures générées.md",
+    "A faire/F30 - Biomes.md",
+    "Instructions/Code/00 - Index Code.md",
+    "Instructions/Code/00 - Index Code.md.tmp.22752.10792e21a903",
+    "Instructions/Code/10 - Vérifier son travail.md",
+    "Instructions/Code/09 - Ajouter un appareil électrique.md",
+    "Instructions/Code/08 - Constructions et objets posés.md",
+    "Instructions/Code/07 - Créer une interface.md",
+    "Instructions/Code/06 - Interactions.md",
+    "Instructions/Code/05 - Ajouter un item.md",
+    "Instructions/Code/04 - Rendre un objet sauvegardable.md",
+    "Instructions/Code/01 - Organisation des dossiers.md.tmp.22752.069372bcb5c2",
+    "Instructions/Code",
+    "Instructions/Pipeline 3D/00 - Index Pipeline 3D.md.tmp.22752.ba4b753eda83",
+    "Instructions/00 - Index Instructions.md.tmp.22752.de1341bffc36",
+    "Instructions/Pipeline 3D",
+    "Instructions",
+    "Sans titre",
+    "Pipeline 3D/03 - Géométrie des modèles.md.tmp.22752.dcaf037e869f"
+  ]
+}

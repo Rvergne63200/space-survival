@@ -1,0 +1,110 @@
+---
+tags: [jeu-colonie, a-faire, historique, feature]
+---
+
+# Historique - Features
+
+Tâches de la catégorie Feature terminées (ou abandonnées), reprises telles quelles de l'ancien TODO.md. Retour à [[00 - Index À faire]].
+
+- [x] **F01** **[Bootstrap]** Système de sauvegarde (`SaveManager`, fichier JSON dans `Application.persistentDataPath`). Le monde et le joueur sont sauvegardés à la fermeture du jeu, avant un changement de scène (`SceneLoader`) et toutes les 120 s, puis restaurés au chargement du monde. Voir `CONTENT.md`. ^F01
+- [x] **F02** **[Bootstrap]** (Abandonné) Scène `0_Capsule` pour l'intérieur de la capsule. Les capsules sont des prefabs avec leur intérieur, posés dans le monde : on voit l'extérieur depuis l'intérieur, et chaque capsule a son propre intérieur. La scène et `TriggerSceneLoader` sont supprimés. ^F02
+- [x] **F04** **[Stats]** Stats Faim (jauge pleine ≈ 40 min), Soif (≈ 25 min) et Oxygène (reste au maximum pour l'instant), avec leurs barres dans le HUD (icônes provisoires du pack RGP). Modifier générique `StatModifier` (stat, quantité, durée) et consommables de test `6_Ration` et `7_Water`, présents dans l'inventaire de départ. ^F04
+- [x] **F05** **[Stats]** Conséquences d'une stat à 0 : la vie baisse de 1/s par stat vitale vide (faim, soif, oxygène). À la mort, l'inventaire reste dans un sac (`DeathBag`) au sol, qui disparaît une fois vidé. Un écran de mort s'affiche (`DeathScreenUI`, filtre rouge) avec « Réapparaître », disponible après 25 s, et « Menu principal ». Le joueur réapparaît au point de spawn avec ses stats au maximum. ^F05
+- [x] **F07** **[Inventaire]** Clic droit (`PlayerInventory.SplitOrPlaceOne`) : avec un slot en main, dépose une unité sur le slot visé (vide ou même item). Main vide : prend la moitié du slot visé (arrondie au supérieur). ^F07
+- [x] **F08** **[Inventaire]** Shift-clic (`PlayerInventory.QuickTransfer`) : transfert du slot entier. Avec un conteneur fouillé : conteneur → barre d'outils (puis inventaire si elle est pleine), barre d'outils → conteneur, inventaire → conteneur. Sans conteneur : inventaire ↔ barre d'outils. Ce qui ne rentre pas reste dans le slot d'origine. ^F08
+  - Le split ne retire du slot que ce que le curseur a réellement pris.
+  - Les clics sont gérés par `ItemSlotUI.OnPointerClick` (`IPointerClickHandler`). L'appel `onClick` du Button a été retiré du prefab `InventorySlot`, mais le Button reste pour les couleurs de survol.
+- [x] **F09** **[Inventaire]** Base des items utilisables : chaque `ItemData` a des actions principales (`Use1`, clic gauche) et secondaires (`Use2`, clic droit), des `ItemAction` choisies dans l'inspecteur (`SubclassPicker`). Action fournie : `ApplyModifiersAction` (modifiers sur les stats, puis consomme l'item). Les `ConsummableData` restent consommés au clic droit s'ils n'ont pas d'action secondaire. Outils et armes à ajouter comme nouvelles `ItemAction`. ^F09
+- [x] **F10** **[Inventaire]** Ordre de remplissage : un slot qui contient déjà le même item est prioritaire (barre d'outils, puis inventaire), puis les slots vides de la barre d'outils, puis ceux de l'inventaire (`ItemCollection.AddToStacks` / `AddToEmptySlots`). Même logique pour le shift-clic depuis un conteneur. ^F10
+- [x] **F12** **[Interaction]** Portée d'interaction réduite à **3 m** (`PlayerPointer.range`). ^F12
+- [x] **F13** **[Interaction]** Le conteneur fouillé se ferme quand le joueur s'en éloigne de plus de `Searcher.maxDistance` (4,5 m, mesuré jusqu'à ses colliders) ou quand il est détruit. ^F13
+- [x] **F14** **[Interaction]** Message « Inventaire plein » (`NotificationUI`) quand un ramassage est partiel ou impossible, et quand un craft ou des ressources rendues ne rentrent pas (posés au sol). ^F14
+- [x] **F15** **[Interaction]** `PickupInfoGroupUI` : les ramassages d'un même item sont cumulés dans sa notification (« +8 Rock »), même si un autre item a été ramassé entre-temps, tant qu'ils se suivent à moins de `groupDuration` (10 s). Si la notification a déjà disparu, la nouvelle reprend le total. Branche « - » retirée. ^F15
+- [x] **F16** **[Interaction]** Contour blanc autour de l'objet interactable pointé (`InteractableOutline` + shader `Hidden/InteractableOutline`). ^F16
+- [x] **F18** **[Crafting]** L'UI de craft se ferme quand le joueur s'éloigne de la station de plus de `Crafter.maxDistance` (4,5 m) ou quand elle est détruite. ^F18
+- [x] **F19** **[Crafting]** UI : chaque ingrédient affiche possédé/requis (en rouge s'il manque), et la recette est grisée avec son bouton désactivé si elle n'est pas réalisable (rafraîchi toutes les 0,25 s). ^F19
+- [x] **F21** **[Crafting]** Les `Debug.Log` d'échec du `Crafter` sont remplacés par des messages au joueur (`NotificationUI`). ^F21
+- [x] **F23** **[Construction]** **Coût en ressources** : la structure choisie dans la roue est posée comme un **plan** (`StructureBlueprint`) : un hologramme bleu que le joueur peut traverser. Interagir avec lui y dépose les ressources manquantes présentes dans l'inventaire (le texte affiche « Fer 12/20, Bois 4/30 »), et la structure devient réelle une fois tout apporté. ^F23
+- [x] **F24** **[Construction]** **Déconstruction** (« Détruire » dans la roue, puis clic sur la cible, surlignée en rouge). Une structure rend son `Refund` (n'importe quels items, défini par structure). Un plan inachevé rend tout ce qui lui a été apporté. Un item posé rend son `Refund` (par défaut l'item lui-même) et le contenu de ses conteneurs. ^F24
+- [x] **F25** **[Construction]** **Rotation** pendant le placement et le build : R maintenu (90°/s), Shift + R par pas de 45°. ^F25
+- [x] **F39** **[Construction]** **Placement** d'items (`PlaceableItemData`, avec un `placedPrefab`), distinct du build. Avec un item plaçable en main, un fantôme vert/rouge apparaît : clic gauche pour poser (l'item est retiré de l'inventaire), clic droit pour annuler (jusqu'au prochain changement d'item en main). Item de test : `8_Crate` (caisse de 20 slots), 2 dans la barre d'outils de départ. ^F39
+- [x] **F40** **[Construction]** Indicateur du mode de construction (bandeau en bas de l'écran, `BuildModeUI`) avec ses commandes. Échap quitte le placement, le build ou la destruction (avant d'ouvrir le menu pause), comme le clic droit. ^F40
+- [x] **F41** **[Inventaire]** Double-clic : rassemble au curseur les items du même type (inventaire, barre d'outils, conteneur ouvert), dans la limite d'une pile, en prenant d'abord les plus petites piles (`PlayerInventory.GatherToCursor`). ^F41
+- [x] **F42** **[Crafting]** Nouvelle interface de craft : liste des recettes (icônes) et détail de la recette sélectionnée (nom, description, ingrédients possédés/requis), quantité à fabriquer (−, +, Max, via `Crafter.MaxCraftable`) et filtre « Fabricables uniquement ». ^F42
+- [x] **F43** **[Interfaces]** L'inventaire du joueur s'ouvre avec la station de craft et avec un conteneur fouillé, et se referme avec eux sauf si le joueur l'avait ouvert lui-même (`PlayerInventory.OpenWith` / `CloseWith`). ^F43
+- [x] **F44** **[Inventaire]** Nouveaux objets (`ScriptableObjects/Items`, ids 9 à 24, sans sprite pour l'instant). Ressources : `Coal`, `Copper Ore`, `Titanium Ore`, `Titanium`, `Ice`, `String`, `Circuit Board`, `Microchip`, `Glass`, `Glue`. Consommable : `First Aid Kit` (vie +50). Équipements, outil et plaçables encore sans effet : `Oxygen Tank`, `Jetpack`, `Flashlight`, `Radio Relay`, `Crafter` (voir [[Historique - Features#^F45|F45]] à [[F48 - Crafter|F48]]). Ajoutés à l'inventaire de départ (les plaçables dans la barre d'outils) et à la liste `items` du SaveManager. ^F44
+- [x] **F45** **[Inventaire]** **Système d'équipement** : slots d'équipement pour l'`Oxygen Tank` (réserve d'oxygène pour respirer dehors, lien avec [[F27 - Réseau d'oxygène|F27]] et la stat Oxygène) et le `Jetpack` (vol sur de courtes distances). Menu des équipements ouvert avec la touche **Tab**. ^F45
+  - Fait : 7 emplacements (tête, corps, dos, mains, pieds, deux bouteilles d'oxygène), affichés sous l'inventaire (I ou Tab). Les bouteilles ont leurs emplacements à part du dos : jetpack et oxygène se portent ensemble.
+  - Jetpack (`JetpackData`) : la touche Saut maintenue en l'air pousse vers le haut, 2000 W de sa barre de 50 Wh (90 s de vol), rechargeable à la station.
+  - Reste : la consommation d'oxygène des bouteilles (avec le réseau d'oxygène, [[F27 - Réseau d'oxygène|F27]] / [[F51 - Système d'oxygène|F51]]), et les items des autres emplacements (casque, combinaison, gants, sur-chaussures).
+- [x] **F46** **[Inventaire]** **Lampe torche** (`Flashlight`) : au clic gauche en main, allume ou éteint un spot devant la caméra (`FlashlightAction`). Elle s'éteint quand elle quitte la main. Les actions des outils ont maintenant trois modes (`ItemActionMode`) : `Press` (un clic = une utilisation, ex. arme), `Toggle` (`ToggleItemAction`, activer / désactiver) et `Hold` (`HoldItemAction`, tant que le bouton est maintenu, ex. pioche). ^F46
+- [x] **F57** **[Énergie]** **Panneau de contrôle** (plaçable) : il pilote à distance les tableaux de distribution ([[F56 - Horaires du tableau de distribution|F56]]) et affiche les informations des réseaux ([[F55 - Informations des réseaux|F55]]). ^F57
+  - **Branchement** : il se relie par câble à un réseau et consomme un peu d'énergie. Il ne fonctionne que s'il est alimenté.
+  - **Portée** : tous les appareils atteignables depuis son réseau, sous-tableaux compris.
+  - **Cartographie** : une carte stylisée, à l'aspect futuriste, qui ne reprend pas les couleurs réelles du terrain.
+    - Elle montre la topographie du terrain, les bâtiments, et une icône par élément du réseau à sa position.
+    - Les câbles sont tracés en lignes lumineuses, colorées selon l'état du réseau (alimenté ou disjoncté).
+    - Un indicateur montre le panneau de contrôle en cours d'utilisation.
+  - **Gestion** : un clic sur un élément affiche ses informations (état, puissance, charge) et un bouton on/off ([[Historique - Features#^F61|F61]]). Pour un tableau de distribution, tous ses réglages sont disponibles, comme dans son interface.
+  - Fait : prefab `ControlPanel` (20 W, item `27_ControlPanel`), `ControlPanelUI` et `NetworkMapElement` (relief calculé depuis la seed, zoom à la molette, déplacement en glissant). La partie « Interface du bâtiment » de [[F55 - Informations des réseaux|F55]] attend les bâtiments dans le réseau ([[F50 - Réseau électrique complet|F50]]).
+  - Les bâtiments sont dessinés selon leur forme vue de dessus (enveloppe convexe de leurs meshes), et non plus par leur rectangle englobant.
+  - Icônes : carré (machine), rond (générateur), rectangle plat (batterie), triangle (panneau de contrôle), losange (tableau). Trois couleurs : bleu en marche, rouge disjoncté, gris éteint. Pas d'icône pour le tableau d'un bâtiment : le bâtiment est surligné au survol et se sélectionne d'un clic.
+- [x] **F60** **[Interfaces]** **Minimap** : ^F60
+  - Ronde, en haut à droite du HUD, elle tourne avec le joueur.
+  - **Rendu** : une caméra vue de dessus qui ne rend que le terrain et les bâtiments, sans les objets placés, le décor ni les entités.
+  - Le joueur n'est pas rendu : une petite flèche le remplace.
+  - Zoom fixe (rayon réglable dans l'Inspector), toujours affichée.
+  - Revue : rendu stylisé comme la carte du panneau de contrôle (`MapUtility` : relief, courbes de niveau, grille), sans le réseau électrique, avec les contours des bâtiments, des couloirs et des objets posés. La caméra et sa texture sont supprimées.
+  - Courbes de niveau tracées en vectoriel (plus de pixélisation, minimap et panneau de contrôle), minimap légèrement transparente, rayon 60 → 50 m. Fond de la minimap plus clair et plus transparent (réglable sur `MinimapUI`).
+  - Fait : `MinimapUI` sur le HUD, layer `Building` donné aux structures terminées. Sous un dôme, la minimap montre son toit (vue de dessus).
+- [x] **F61** **[Énergie]** **On / off de chaque appareil** (machine, générateur, batterie) : ^F61
+  - Un appareil sur off s'arrête : une machine ne consomme plus, un générateur ne produit plus, une batterie ne charge ni ne décharge.
+  - Le câble passe toujours : une machine sur off relie toujours les réseaux.
+  - Les tableaux de distribution ont déjà leur coupure ([[Historique - Features#^F59|F59]]).
+  - En jeu : touche d'interaction sur l'appareil (`EnergyDeviceInfo`), ou bouton dans le panneau de contrôle ([[Historique - Features#^F57|F57]]).
+- [x] **F62** **[Énergie]** **On / off des tableaux de distribution**, à la place du bouton « Couper » (couper revient à mettre la limite de puissance à 0 W) : ^F62
+  - Éteint, un tableau ne transmet plus rien et éteint tout son sous-réseau, circuits des tableaux imbriqués compris.
+  - Chaque appareil garde son propre réglage : au rallumage du tableau, il retrouve son état (une batterie éteinte avant reste éteinte).
+  - Un appareil dans plusieurs sous-réseaux ne marche que si tous leurs tableaux sont allumés (ET logique).
+  - Tant que le tableau est éteint, le on/off des appareils de son sous-réseau est bloqué (« éteint par le tableau »).
+- [x] **F63** **[Inventaire]** **Barre de charge ou d'usure** des outils et équipements (`ItemGauge`) : ^F63
+  - **Rechargeable** (lampe torche, jetpack) : barre bleue, capacité en Wh, consommation en W pendant l'activité et/ou en Wh par utilisation. Neuf : vide. À 0 : inutilisable jusqu'à la recharge.
+  - **Usure** (une future pioche, par exemple) : barre verte, puis orange sous 50 %, puis rouge sous 20 %. Capacité en unités, usure en unités/s et/ou par utilisation. Neuf : plein. À 0 : détruit.
+  - Ces objets ne s'empilent pas, chacun garde sa valeur (sauvegardée). Infobulle au survol des slots : nom, description et valeur.
+  - **Station de recharge** (item 28) : branchée au réseau, 1 slot, elle recharge l'objet déposé à 100 W, et ne consomme que pendant la charge.
+  - Valeurs : lampe 10 Wh et 5 W, jetpack 50 Wh et 2000 W (sa consommation attend le vol, [[Historique - Features#^F45|F45]]).
+  - Revu par [[Historique - Refontes#^R18|R18]] : la barre est sur `UsableItemData`, avec une unité (usure, Wh ou litres d'oxygène), et la consommation est sur `ToolData`.
+- [x] **F58** **[Énergie]** **Première version du réseau électrique** (une partie de [[F50 - Réseau électrique complet|F50]], sans les bâtiments ni les horaires) : ^F58
+  - Composants `EnergyConsumer` (W), `EnergyGenerator` (W) et `EnergyStorage` (capacité et stock en Wh, débits entrant et sortant en W). Chaque valeur peut être infinie (`EnergyValue`, case « ∞ » dans l'Inspector).
+  - `EnergyNetworkManager` : réseaux reliés par câbles, générateurs et batteries qui ne relient pas les réseaux, répartition des générateurs partagés, disjonction et réarmement automatique.
+    - Revu par [[Historique - Refontes#^R19|R19]] : générateurs et batteries relient maintenant les réseaux, il n'y a plus de partage entre réseaux.
+  - **Câble électrique** (`Electric Cable`, `CablePlacer`) : pose par clics successifs, tracé arrondi, 1 câble par mètre. Il est détruit avec la roue de construction et rendu.
+  - **Objets de test** (plaçables) : `Infinite Generator`, `Test Machine` (rouge quand elle est alimentée, blanche sinon) et `Test Battery`. Leur état s'affiche en les visant.
+- [x] **F59** **[Énergie]** **Tableau de distribution** ([[F56 - Horaires du tableau de distribution|F56]] sans les horaires, ni le tableau intégré aux bâtiments) : ^F59
+  - Plaçable `Distribution Panel`, avec une entrée (verte) et une sortie (orange). Le câble se branche sur la plus proche de la visée, et l'entrée et la sortie d'un même tableau ne peuvent pas être reliées.
+  - Coupure, limite de puissance (fusible), délestage (sur manque d'énergie en amont, par priorité, ou sur batteries amont sous un seuil), démarrage différé.
+  - Interface (`DistributionPanelUI`, touche d'interaction) : état, demande du circuit, puissance transmise, énergie transmise au total, et réglages.
+- [x] **F64** **[Énergie]** **Électricité des bâtiments** (la partie bâtiments de [[F50 - Réseau électrique complet|F50]] et le tableau intégré de [[F56 - Horaires du tableau de distribution|F56]], sans les horaires ni les couloirs) : ^F64
+  - Intérieur du bâtiment (`BuildingInterior`, trigger sur l'enfant `Interior` du dôme) : il sert à savoir ce qui est posé dedans, et servira à l'oxygène ([[F51 - Système d'oxygène|F51]]) et au HUD ([[F55 - Informations des réseaux|F55]]).
+  - Tableau intégré (`BuildingPowerPanel`, hérite de `DistributionPanel`) : une prise au bord du dôme, avec une entrée (à câbler depuis l'extérieur) et une sortie (vers un autre bâtiment ou une machine dehors, dans le circuit du bâtiment). Tout ce qui est posé dans le bâtiment est alimenté sans câble. Mêmes réglages et même interface qu'un tableau de distribution, sur la prise et depuis le panneau de contrôle.
+  - Chaînage par câble : de la sortie d'un bâtiment à l'entrée d'un autre, comme un tableau de distribution (sens unique), mais couper le premier ne fait que priver le second d'alimentation ([[Historique - Bugs#^B51|B51]]). Relier les entrées de deux bâtiments est refusé. Les couloirs ([[Historique - Features#^F26|F26]]) auront leurs propres règles.
+- [x] **F26** **[Construction]** **Liaison des bâtiments** : relier deux dômes proches par un tunnel, avec des points de connexion sur les modules. ^F26
+  - **Fait** : structure `Couloir` (`CorridorData`, `Corridor`) dans la roue de construction. On clique un premier dôme puis un second : un couloir droit (2 à 20 m, 2 fer + 1 bois par mètre) est tracé entre leurs bords, n'importe où sur le pourtour, puis passe par l'étape plan. Détruit et remboursé avec un de ses dômes. Électricité et portée du panneau de contrôle selon les règles ci-dessous. Modèle provisoire (sol, murs, toit en cubes), terrain non aplani sous le couloir.
+  - Portée du panneau de contrôle avec un simple câble entre bâtiments : faite, voir le dernier point ci-dessous.
+  - **Électricité à travers un couloir** : un bâtiment ne se comporte pas tout à fait comme un tableau de distribution. Exemple : `G1 ---- Bât1 ==== Bât2` (`----` câble, `====` couloir).
+    - Bât1 et Bât2 sont tous deux alimentés.
+    - Couper Bât1 ne coupe pas Bât2. Réduire la limite de puissance de Bât1 ne change rien pour Bât2 : c'est comme si un câble faisait `G1 ---- Bât2`. Les deux bâtiments forment en gros deux sous-réseaux, chacun derrière son propre tableau intégré.
+    - Mais un panneau de contrôle posé dans Bât1 est vu dans le réseau {G1, Bât1, Bât2}, et non dans le seul sous-réseau de Bât1 : les bâtiments reliés par couloir ne sont pas des sous-réseaux pour lui.
+    - Couper Bât1 depuis ce panneau de contrôle ne coupe pas Bât2, exactement comme depuis la prise du bâtiment. Et le panneau de contrôle, posé dans Bât1, se coupe avec lui.
+    - Cette règle ne vaut que pour les couloirs. Deux bâtiments reliés par un simple câble se comportent comme des tableaux de distribution : `G1 ---> Bât1 ---> Bât2`, de la **prise de sortie** de Bât1 (faite, [[Historique - Features#^F64|F64]]) à la prise d'entrée de Bât2. Couper Bât1 prive alors Bât2 d'alimentation, sans l'éteindre ([[Historique - Bugs#^B51|B51]]). Le câble de prise d'entrée à prise d'entrée reste interdit.
+    - Le couloir marche dans les deux sens, comme un câble : si seule la prise de Bât2 est câblée, Bât1 est alimenté par le couloir.
+    - Deux sources : `G1 ---- Bât1 ==== Bât2 ---- G2` fusionne a priori G1 et G2 en un seul réseau, comme un câble direct. À tester en jeu pour valider.
+    - **Portée du panneau de contrôle** :
+      - `G2 --- PD1 --- G1 --- Bât1 ==== Bât2`, panneau dans Bât1 : il voit G1, Bât1 et Bât2, mais pas G2 (en amont du tableau PD1, règle habituelle).
+      - `G1 ---> Bât1 ---> Bât2` (simple câble), panneau dans Bât2 : il voit Bât1, mais pas son contenu, ni G1. Règle propre aux bâtiments : un panneau dans le circuit d'un tableau de distribution ne voit toujours rien de ce qui alimente ce tableau.
+- [x] **F28** **[Construction]** **Sauvegarde** des constructions posées : ce sont des objets « runtime », recréés depuis leur prefab (`SaveManager.buildPrefabs`, trouvé par nom) au chargement du monde. ^F28
+- [x] **F29** **[Construction]** Portée de placement, de build et de destruction réduite à 8 m (`Builder.range`, au lieu de 300 m). Pour une structure, la portée s'ajoute au rayon de son emprise, et son centre reste à au moins « rayon + 1 m » du joueur : sinon, le joueur serait toujours à l'intérieur d'un grand dôme (fantôme invalide). ^F29
+- [x] **F33** **[Terrain]** Sauvegarde des modifications du terrain (aplanissements, rejoués à la génération des chunks) et de ce qu'il y a dans le monde : constructions, objets jetés, objets ramassés ou entamés, contenu des coffres. ^F33
+- [x] **F34** **[Interfaces]** Menu pause (`PauseMenuUI`, dans `Bootstrap`) : Échap ferme les interfaces ouvertes, ou ouvre le menu pause s'il n'y en a aucune (en jeu). Il propose Reprendre, Retour au menu principal (après sauvegarde) et Quitter, et met le jeu en pause (`timeScale` 0). Échap le ferme aussi. ^F34
+- [x] **F35** **[Interfaces]** Menu principal (`MainMenuUI`, UI Toolkit, mise en page modifiable dans le UI Builder : `Assets/UI/Menus`) : Nouvelle partie (nom et seed pré-remplie aléatoire, bouton Aléatoire, texte converti en nombre), Charger une partie (liste des sauvegardes avec nom, seed et date ; Charger, Supprimer avec confirmation), Quitter. ^F35
+- [x] **F36** **[Bootstrap]** Plusieurs sauvegardes : un fichier par partie dans `Application.persistentDataPath/Saves`. L'ancienne sauvegarde unique (`save.json`) est convertie en « Partie sauvegardée ». Une partie lancée directement depuis `0_World` dans l'éditeur crée une sauvegarde « Partie éditeur ». ^F36
