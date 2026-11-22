@@ -41,22 +41,37 @@ public static class DomeConnection
         rotation = Quaternion.LookRotation(direction, Vector3.up);
     }
 
-    // No other connector too close on the wall (ignored: the connectors of "owner")
-    public static bool IsFree(Dome dome, Vector3 direction, Component owner = null)
+    // Min distance between a connector and the power socket of the dome (along the wall): the shell of the connector
+    // (half of MinSpacing) does not cover the socket (half width 0.2 m), with a margin for the cables plugged in
+    public const float PowerSocketSpacing = 1.8f;
+
+    // No other connector nor the power socket too close on the wall (ignored: the connectors of "owner")
+    public static bool IsFree(Dome dome, Vector3 direction, Component owner = null) => Problem(dome, direction, owner) == null;
+
+    // Why a connector cannot be placed on the wall toward the direction ("... occupe déjà cet endroit du dôme"), null
+    // if it can
+    public static string Problem(Dome dome, Vector3 direction, Component owner = null)
     {
         Vector3 wallPoint = dome.transform.position + Horizontal(direction) * dome.Radius;
 
         foreach (DomeConnector connector in dome.Connectors)
         {
             if (owner != null && connector.Owner == owner) continue;
-
-            Vector3 other = connector.transform.position;
-            other.y = wallPoint.y;
-
-            if ((other - wallPoint).magnitude < MinSpacing) return false;
+            if (HorizontalDistance(connector.transform.position, wallPoint) < MinSpacing) return "un connecteur";
         }
 
-        return true;
+        foreach (BuildingPowerPanel socket in dome.GetComponentsInChildren<BuildingPowerPanel>())
+        {
+            if (HorizontalDistance(socket.transform.position, wallPoint) < PowerSocketSpacing) return "la borne électrique";
+        }
+
+        return null;
+    }
+
+    private static float HorizontalDistance(Vector3 a, Vector3 b)
+    {
+        a.y = b.y;
+        return (a - b).magnitude;
     }
 
     // Finished dome whose wall is the closest to the point, within maxDistance of the wall (horizontally). Direction:

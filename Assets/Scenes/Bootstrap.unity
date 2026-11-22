@@ -890,6 +890,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8146dd158bb84285b2c009172c088aa0, type: 2}
   - {fileID: 11400000, guid: d82e2f4e925d2a2e5bbdced84d70fe32, type: 2}
   - {fileID: 11400000, guid: 3fd711770735997f908de8ae98c20f81, type: 2}
+  - {fileID: 11400000, guid: e76ab3309165677e204e0a06a5c3c216, type: 2}
+  - {fileID: 11400000, guid: 934a7b10b1af82ced6c8affcb3b32e4e, type: 2}
   structureCatalog: {fileID: 11400000, guid: 4d4be868b39c4f598490ac65ced4af44, type: 2}
   runtimePrefabs:
   - {fileID: 4101000000000000001, guid: 09acd80faf5b47489a7ab1f665f5db26, type: 3}

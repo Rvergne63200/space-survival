@@ -37,6 +37,9 @@ public class Builder : MonoBehaviour
     private IPlacementPreview placementPreview;
 
     private PlaceableItemData placingItem;
+
+    // Crate the ghost is stacked on, null otherwise
+    private StorageContainer stackTarget;
     private StructureData buildingStructure;
 
     // Corridor: first building clicked, and the corridor towards the aimed building
@@ -388,6 +391,16 @@ public class Builder : MonoBehaviour
 
         if (mode == Mode.Placing) placementPreview?.UpdatePreview(ghost);
 
+        // A crate aimed at another one that can carry it: on its StackPoint, turned like it (the StackPoint keeps the axes of
+        // the model file, not those of the crate)
+        stackTarget = mode == Mode.Placing ? AimedStack() : null;
+
+        if (stackTarget != null)
+        {
+            ghost.transform.SetPositionAndRotation(stackTarget.StackPoint.position, stackTarget.transform.rotation);
+            normal = Vector3.up;
+        }
+
         bool valid = normal.y > 0.6f && !Overlaps();
 
         if (mode == Mode.Building && buildingStructure != null)
@@ -419,6 +432,21 @@ public class Builder : MonoBehaviour
             ghostValid = valid;
             SetGhostMaterial(valid ? validMaterial : invalidMaterial);
         }
+    }
+
+    // Stackable crate in hand aimed at a crate that can carry it (StorageContainer)
+    private StorageContainer AimedStack()
+    {
+        StorageContainer held = placingItem != null && placingItem.PlacedPrefab != null ? placingItem.PlacedPrefab.GetComponent<StorageContainer>() : null;
+
+        if (held == null || !held.Stackable) return null;
+
+        int layerMask = ~(1 << gameObject.layer);
+
+        if (!Physics.Raycast(Source.position, Source.forward, out RaycastHit hit, range, layerMask, QueryTriggerInteraction.Ignore)) return null;
+
+        StorageContainer target = hit.collider.GetComponentInParent<StorageContainer>();
+        return target != null && target.CanCarry(held) ? target : null;
     }
 
     // Inside a dome, an airlock or a corridor
@@ -562,7 +590,11 @@ public class Builder : MonoBehaviour
     {
         if (ghost == null || !ghost.activeSelf || !ghostValid || placingItem == null || Inventory == null) return;
 
-        BuildUtility.InstantiatePlaced(placingItem, ghost.transform.position, ghost.transform.rotation);
+        GameObject placed = BuildUtility.InstantiatePlaced(placingItem, ghost.transform.position, ghost.transform.rotation);
+
+        StorageContainer placedContainer = stackTarget != null ? placed.GetComponent<StorageContainer>() : null;
+        if (placedContainer != null) placedContainer.StackOn(stackTarget);
+
         Inventory.HandedSlot.Remove(1);
     }
 
@@ -643,9 +675,9 @@ public class Builder : MonoBehaviour
             }
 
             Vector3 toPoint = point - aimed.transform.position;
-            bool free = DomeConnection.IsFree(aimedDome, toPoint);
-            startPreview.Show(aimedDome, toPoint, free ? validMaterial : invalidMaterial);
-            ShowCorridorHint("Couloir : " + (free ? "clic gauche pour partir de ce dôme" : "un connecteur occupe déjà cet endroit du dôme") + controls);
+            string occupied = DomeConnection.Problem(aimedDome, toPoint);
+            startPreview.Show(aimedDome, toPoint, occupied == null ? validMaterial : invalidMaterial);
+            ShowCorridorHint("Couloir : " + (occupied == null ? "clic gauche pour partir de ce dôme" : occupied + " occupe déjà cet endroit du dôme") + controls);
             return;
         }
 
@@ -734,8 +766,10 @@ public class Builder : MonoBehaviour
     private string CorridorProblem(CorridorData data, BuiltStructure start, BuiltStructure end, float length)
     {
         if (Corridor.AreLinked(start, end)) return "ces bâtiments sont déjà reliés";
-        if (!DomeConnection.IsFree(DomeConnection.DomeOf(start), end.transform.position - start.transform.position)) return "un connecteur occupe déjà cet endroit du premier dôme";
-        if (!DomeConnection.IsFree(DomeConnection.DomeOf(end), start.transform.position - end.transform.position)) return "un connecteur occupe déjà cet endroit du second dôme";
+        string occupied = DomeConnection.Problem(DomeConnection.DomeOf(start), end.transform.position - start.transform.position);
+        if (occupied != null) return occupied + " occupe déjà cet endroit du premier dôme";
+        occupied = DomeConnection.Problem(DomeConnection.DomeOf(end), start.transform.position - end.transform.position);
+        if (occupied != null) return occupied + " occupe déjà cet endroit du second dôme";
         if (length < data.MinLength) return "trop court (min " + data.MinLength.ToString("0.#") + " m)";
         if (length > data.MaxLength) return "trop long (max " + data.MaxLength.ToString("0.#") + " m)";
         if (Mathf.Abs(start.transform.position.y - end.transform.position.y) > data.MaxSlope) return "dénivelé trop fort (max " + data.MaxSlope.ToString("0.#") + " m)";
@@ -834,7 +868,9 @@ public class Builder : MonoBehaviour
             DomeConnection.FlangePose(dome, direction, out Vector3 position, out Quaternion flangeRotation);
             ghost.transform.SetPositionAndRotation(position, flangeRotation);
 
-            if (!DomeConnection.IsFree(dome, direction)) problem = "un connecteur occupe déjà cet endroit du dôme";
+            string occupied = DomeConnection.Problem(dome, direction);
+
+            if (occupied != null) problem = occupied + " occupe déjà cet endroit du dôme";
             else if (AirlockBlocked(dome.Structure)) problem = "obstacle sur le passage";
             else
             {
@@ -999,6 +1035,14 @@ public class Builder : MonoBehaviour
                 structure.Deconstruct();
                 break;
             case PlacedObject placed:
+                StorageContainer container = placed.GetComponent<StorageContainer>();
+
+                if (container != null && container.Above != null)
+                {
+                    NotificationUI.Show("Enlevez d'abord la caisse posée dessus.", NotificationType.Warning);
+                    break;
+                }
+
                 placed.Deconstruct();
                 break;
             case ElectricCable cable:
