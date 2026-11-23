@@ -1,0 +1,237 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1514875768179471986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3077572965565904788}
+  - component: {fileID: 5477199854793838443}
+  - component: {fileID: 1954077836164139408}
+  m_Layer: 0
+  m_Name: Drill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3077572965565904788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514875768179471986}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2635791845459343575}
+  - {fileID: 1155652679627801664}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5477199854793838443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514875768179471986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd17d8e016fbba4ba1036937220dd67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemStorage
+  _content:
+    ev_Update:
+      m_PersistentCalls:
+        m_Calls: []
+    _slots: []
+    _maxSize: 0
+  size: 6
+--- !u!114 &1954077836164139408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514875768179471986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf93f1c8d3b2344bb302e8f4fd27dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Drill
+  switchedOn: 1
+  connector: {fileID: 1155652679627801664}
+  consumption:
+    value: 500
+    infinite: 0
+  ev_OnPoweredChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  extractionTime: 20
+  outputs:
+  - item: {fileID: 11400000, guid: 4e871ee52b198cd41b66388d64c080f3, type: 2}
+    weight: 40
+  - item: {fileID: 11400000, guid: 90c0cee54ac70494f9a6dcb0b5c909c0, type: 2}
+    weight: 20
+  - item: {fileID: 11400000, guid: a65339de25e94b329b773f77db2998dd, type: 2}
+    weight: 15
+  - item: {fileID: 11400000, guid: be308f5f71f04106a9151cb9eb34c8b8, type: 2}
+    weight: 15
+  - item: {fileID: 11400000, guid: 0aefd8b7764d454bb64292dd8d85719c, type: 2}
+    weight: 7
+  - item: {fileID: 11400000, guid: d4c5fa127ac5429fbdd25ae757e6ee06, type: 2}
+    weight: 3
+--- !u!1 &2456639829419514284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1155652679627801664}
+  m_Layer: 0
+  m_Name: Connector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1155652679627801664
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2456639829419514284}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.35, y: 0.3, z: -0.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3077572965565904788}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2530618140870893372
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3077572965565904788}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      propertyPath: m_Name
+      value: Model
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1760302387695703115}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1608862570336895444}
+  m_SourcePrefab: {fileID: 100100000, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+--- !u!4 &2635791845459343575 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+  m_PrefabInstance: {fileID: 2530618140870893372}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3449728845119873645 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3472928951af20143bed7f72ea2ef3d0, type: 3}
+  m_PrefabInstance: {fileID: 2530618140870893372}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1760302387695703115
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3449728845119873645}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 95076c51d2f48df458ffdfa8ee7734c1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1608862570336895444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3449728845119873645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7712fc6d55223344c8585ed39bd845c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DrillAnimator
+  drillOnStart: 0
+  spinSpeed: 3
+  spinAcceleration: 2
+  powered: 1
+  stoppedColor: {r: 1, g: 0.3, b: 0, a: 1}
+  drillingColor: {r: 0.05, g: 0.6, b: 1, a: 1}
+  statusIntensity: 2.5
+  blinkSpeed: 4
+  dust: {fileID: 0}

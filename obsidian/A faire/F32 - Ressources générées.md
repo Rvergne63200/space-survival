@@ -10,4 +10,6 @@ statut: à faire
 
 **Ressources** générées (minerais, plantes, débris…), certaines réapparaissant avec le temps, d'autres non.
 
+La [[Foreuse]] tire ses minerais au hasard, partout : avec des gisements, elle devra extraire celui sur lequel elle est posée.
+
 Voir aussi : [[Objets du décor]]

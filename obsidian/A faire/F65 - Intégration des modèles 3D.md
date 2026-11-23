@@ -21,6 +21,7 @@ statut: en cours
   - `WallScreen` : télévision incurvée (1,10 × 0,62 m) à accrocher au mur plein des dômes, statique. Origine au contact du mur, au milieu de l'écran. Dalle `Screen` (UV 0..1) et voyant pilotés par `WallScreenAnimator` (`PowerOn`, `PowerOff`, `SetPowered`, `ScreenSurface`). Son rôle en jeu reste à définir (panneau de contrôle mural ?). La pose murale existe maintenant (`PlaceableItemData.WallMounted`).
 - [x] Éolienne : modèle `WindTurbine` intégré au prefab `WindTurbine` (voir [[Éolienne]]). Il manque une icône d'item, et une pose déployée sans animation dans `WindTurbineAnimator` (pour le chargement d'une sauvegarde, comme `SolarPanelAnimator.SetDeployedImmediate`).
 - [x] Batteries : modèles statiques `Battery_Wall`, `Battery_Cabinet` et `Battery_Bank` (jauge néon à 5 segments et voyant, `BatteryAnimator`), prefabs `WallBattery`, `BatteryCabinet`, `BatteryBank` (voir [[Batteries]]), pose murale sur les dômes. Il manque leurs icônes d'item.
-- Reste : coudes, T et croix des tunnels (`Tunnel_Elbow45`, `Tunnel_Elbow90`, `Tunnel_T`, `Tunnel_Cross`), les autres modèles (générateurs, foreuse, antenne, coffres, station de craft…).
+- [x] Foreuse : modèle `Drill` intégré au prefab `Drill` (voir [[Foreuse]]), tête qui tourne et descend pendant le forage, écran holographique quand elle est alimentée. Il manque une icône d’item, la poussière de forage (`ParticleSystem` sous `DrillDust`) et l’affichage d’une interface sur `Hologram_Screen`.
+- Reste : coudes, T et croix des tunnels (`Tunnel_Elbow45`, `Tunnel_Elbow90`, `Tunnel_T`, `Tunnel_Cross`), les autres modèles (générateurs, antenne, coffres, station de craft…).
 
 Voir aussi : [[Capsule de départ]] · [[Dômes]] · [[Couloir]] · [[Panneau de contrôle]]

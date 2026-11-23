@@ -14,6 +14,7 @@ tags: [jeu-colonie, fonctionnalite, energie, items]
 - `30_CoalGenerator` : le [[Générateur à charbon]].
 - `33_WindTurbine` : l'[[Éolienne]].
 - `34_WallBattery`, `35_BatteryCabinet`, `36_BatteryBank` : les [[Batteries]] (murale, armoire, banc extérieur).
+- `37_Drill` : la [[Foreuse]].
 
 ## Objets de test
 `ScriptableObjects/TestItems` ; prefabs dans `Prefabs/Environment/Energy`, matériau `Materials/EnergyTest` :
