@@ -34,5 +34,11 @@ tags: [jeu-colonie, pipeline-3d, methode]
 24. **Caméra de rendu qui ne bouge pas** : `_Cam` est en `rotation_mode = 'QUATERNION'` dans certains `.blend`, et `rotation_euler` est alors ignoré. → passer en `'XYZ'` avant de la viser.
 25. **Pièce décalée avec `finish2(..., origin=c)`** (segments de jauge des batteries absents du rendu) : `finish2` translate la géométrie de `-origin`. Il faut donc construire la pièce **à sa place finale** (`pill(g, size, c, ...)`), pas autour de l'origine.
 26. **Faux z-fighting entre pièces identiques** : `zfight.check2` compare les coordonnées locales des meshes. Des pièces au même mesh local, mais d'origines différentes (segments `Gauge_N`), sont signalées entre elles : ignore ces paires.
+27. **Textures peintes au bruit** (gisement de charbon, 4 versions refusées) : seuils de bruit doux, flous ou en blocs de Voronoï, minerai peint comme une tache « au marqueur » ou « liquide ». Jugé amateur. → modèle détaillé + matériau en nœuds + cuisson ([[09 - Textures]]), et le minerai en vraie géométrie.
+28. **Projection plane des UV sur un relief à parois raides** : texture étirée, effet pixelisé. → UV dépliées.
+29. **Escalier sur les bords raides** : un relief échantillonné sur une grille fait des marches là où un bord raide la coupe en biais (dents sur la silhouette ou dans la couleur). → flouter le relief du modèle du jeu, et ne pas stocker par sommet une valeur qui varie vite sur une paroi (la profondeur se calcule au pixel dans le shader).
+30. **Facettes retournées après la décimation** (taches noires à la cuisson). → retrianguler un relief en Delaunay 2D ; ajouter des sommets réguliers sinon les grands triangles passent sous le modèle détaillé et la cuisson les manque.
+31. **Frontière de couleur sur une arête** entre le modèle du jeu et le modèle détaillé : les rayons de cuisson touchent tantôt un côté, tantôt l'autre. → ne pas faire changer de matière sur une arête vive ; mettre le changement de matière dans la géométrie (objet séparé).
+32. **Ambient Occlusion du modèle détaillé gêné par le modèle du jeu** (présent au même endroit pendant la cuisson). → `only_local` sur le nœud AO.
 
 [[00 - Index Pipeline 3D|Index]] · ← [[15 - Scripts d'animation Unity]] · [[17 - Scripts de référence]] →

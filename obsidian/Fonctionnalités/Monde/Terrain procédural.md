@@ -15,6 +15,7 @@ tags: [jeu-colonie, fonctionnalite, monde, terrain]
 
 ## TerrainGenerator (sur le prefab `Chunk`)
 - Duplique le `TerrainData`. Le terrain utilise le shader `Terrain/World UV Standard` : les textures sont positionnées depuis la position monde, donc continues entre les chunks.
+- Le `TerrainData` dupliqué est `Assets/Terrain/0_TestTerrain.asset` (prefab `Chunk`). Son calque principal (emplacement 0, environ 90 % du sol) est `Ground_Rust.terrainlayer` : le sol orange des gisements en texture raccordable (tuile de 8 m, couleur et normal map dans `Assets/Terrain/Textures/`, généré par `ArtPipeline/Blender/ground_rust.py`). Les emplacements 1 et 2 gardent `NewLayer 1` et `NewLayer 2`.
 - Il calcule la heightmap (résolution `size+1`, hauteur max 1024) **en asynchrone** (`Task.Run`). Le bruit combine plusieurs couches de Perlin : variation locale, variation globale, montagnes et creux.
 - Émet `ev_OnTerminateGeneration` à la fin.
 - `HeightAt` donne la hauteur générée en un point du bruit, et `ChunkManager.GeneratedHeightAt(x, z)` en une position du monde, chargée ou non (sans les aplanissements). La carte du [[Panneau de contrôle]] et la [[Minimap]] s'en servent pour le relief.

@@ -978,9 +978,9 @@
     "semantic_hash": "1e745353b98c7ce0cdfe4abfab20df42"
   },
   "Assets/Scripts/Editor/ModelImportSetup.cs": {
-    "mtime": 1795382049.2913537,
-    "seen": 1795382151.8071234,
-    "ast_hash": "4dfb05a60c81bb5c89f25a58c9602fc7",
+    "mtime": 1795450896.672504,
+    "seen": 1795451823.4627812,
+    "ast_hash": "178e18f16cf556b7ff568c3576ed76fc",
     "semantic_hash": ""
   },
   "Assets/Scripts/Enum/Direction.cs": {
@@ -1866,9 +1866,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/F32 - Ressources g\u00e9n\u00e9r\u00e9es.md": {
-    "mtime": 1795445495.2447107,
-    "seen": 1795445510.445326,
-    "ast_hash": "8c70d2092fabedaacd2f0d4e8e7e0791",
+    "mtime": 1795451806.3077593,
+    "seen": 1795451823.4628851,
+    "ast_hash": "faa2fac20120565e06b2b34d3e07a8f0",
     "semantic_hash": ""
   },
   "obsidian/A faire/F37 - Oxyg\u00e8ne hors des zones respirables.md": {
@@ -1944,9 +1944,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/F65 - Int\u00e9gration des mod\u00e8les 3D.md": {
-    "mtime": 1795445495.2447107,
-    "seen": 1795445510.4453444,
-    "ast_hash": "1dbb13ae3852b55815431f78ed3c2e2b",
+    "mtime": 1795451806.1622336,
+    "seen": 1795451823.4629042,
+    "ast_hash": "38c3b9516bf2624808f1c09328757e21",
     "semantic_hash": ""
   },
   "obsidian/A faire/Historique/Historique - Bugs.md": {
@@ -2388,9 +2388,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Monde/Terrain proc\u00e9dural.md": {
-    "mtime": 1795386301.6088133,
-    "seen": 1795386356.8794367,
-    "ast_hash": "2b2f3bf50857c507fdeee6b731d5e7f5",
+    "mtime": 1795453821.76971,
+    "seen": 1795453827.8996475,
+    "ast_hash": "31a614c0a45b22ac2c2327e8d4b1bc11",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Appareils \u00e9lectriques.md": {
@@ -2514,9 +2514,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/09 - Textures.md": {
-    "mtime": 1795387161.0219946,
-    "seen": 1795388083.1446228,
-    "ast_hash": "a4a4353aa282480d6b2e5837f3f7375b",
+    "mtime": 1795451780.5499413,
+    "seen": 1795451823.4631019,
+    "ast_hash": "84ff778b59345594ea2e62eb1e9f4ed0",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/10 - Mod\u00e9lisation Blender.md": {
@@ -2532,9 +2532,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/12 - Import Unity.md": {
-    "mtime": 1795387136.433829,
-    "seen": 1795388083.1446269,
-    "ast_hash": "c85abaf90b22958f247bb80722027b1b",
+    "mtime": 1795451805.7316554,
+    "seen": 1795451823.4631062,
+    "ast_hash": "b8de6759961bf5dd1b825701f72957ab",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/13 - Animations Blender.md": {
@@ -2556,15 +2556,15 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/16 - Erreurs \u00e0 ne pas refaire.md": {
-    "mtime": 1795393074.5249107,
-    "seen": 1795393087.9022229,
-    "ast_hash": "bcc7d7a401468dd957a759c985dbea07",
+    "mtime": 1795451805.881592,
+    "seen": 1795451823.4631114,
+    "ast_hash": "ca151fda5fe3859a08123c99577b8519",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/17 - Scripts de r\u00e9f\u00e9rence.md": {
-    "mtime": 1795393067.4530437,
-    "seen": 1795393087.9022243,
-    "ast_hash": "6ed1f7c4f1883914131ad455142ea1a0",
+    "mtime": 1795451806.02651,
+    "seen": 1795451823.4631126,
+    "ast_hash": "a3e5e35f4090a1f4a8bd1e20e351da84",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/00 - Index Code.md": {
@@ -2847,6 +2847,234 @@
     "mtime": 1795445485.5193663,
     "seen": 1795445510.445464,
     "ast_hash": "9e1726d24f764bf4c59ac5b9b4038e48",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/dp_build.py": {
+    "mtime": 1795451531.8051403,
+    "seen": 1795451823.462557,
+    "ast_hash": "9d461880bd60922b4d5abb0243a07629",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/dp_hd.py": {
+    "mtime": 1795451319.0261433,
+    "seen": 1795451823.4625592,
+    "ast_hash": "c8df4708f3e725d8e73c832f165072b4",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/dp_v3.py": {
+    "mtime": 1795451058.7643476,
+    "seen": 1795451823.4625623,
+    "ast_hash": "8e67980785f29c520f4773f11bff98d6",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/ground_rust.py": {
+    "mtime": 1795448975.2056797,
+    "seen": 1795451823.4625664,
+    "ast_hash": "c51ee5bf26313ddc2fc7c8b96f35c4b1",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/_run.txt": {
+    "mtime": 1795451741.9419906,
+    "seen": 1795451823.4628432,
+    "ast_hash": "3737a78e5f86b9f5ad982eab10f3d7a9",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Coal_34.png": {
+    "mtime": 1795451403.0466285,
+    "seen": 1795451823.4631255,
+    "ast_hash": "60abcf72322436429757bcd8f4561a73",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Coal_bottom.png": {
+    "mtime": 1795451404.4267893,
+    "seen": 1795451823.4631271,
+    "ast_hash": "96f6fc2a453226e867a12db7d57de53e",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Coal_close.png": {
+    "mtime": 1795451403.4610548,
+    "seen": 1795451823.4631283,
+    "ast_hash": "81039126e92fae37b0ce3a4faae7c952",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Coal_drill.png": {
+    "mtime": 1795451405.557755,
+    "seen": 1795451823.463129,
+    "ast_hash": "d5543f8642397d7a5a806d14bbbad36d",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Coal_tips.png": {
+    "mtime": 1795451403.922868,
+    "seen": 1795451823.4631305,
+    "ast_hash": "4a65af4767366a815f0067c777e05ee2",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Copper_34.png": {
+    "mtime": 1795451739.5876317,
+    "seen": 1795451823.4631314,
+    "ast_hash": "72edbf4f7f837155c8af6073d5accf9f",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Copper_bottom.png": {
+    "mtime": 1795451740.819472,
+    "seen": 1795451823.4631324,
+    "ast_hash": "9266158ff66b7473083c4e1dd83ffd46",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Copper_close.png": {
+    "mtime": 1795451740.2642791,
+    "seen": 1795451823.4631333,
+    "ast_hash": "7bfd150ba73583b266363d40cd12a309",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Copper_top.png": {
+    "mtime": 1795451741.374756,
+    "seen": 1795451823.4631345,
+    "ast_hash": "df2db33a94659b4a4d4db5e955e34d96",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Iron_34.png": {
+    "mtime": 1795451625.4171164,
+    "seen": 1795451823.4631355,
+    "ast_hash": "63d8d862171c73f2b4396b2f3be6a4d9",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Iron_bottom.png": {
+    "mtime": 1795451626.5264916,
+    "seen": 1795451823.4631364,
+    "ast_hash": "c2187ecdf193fadcafd0764efcddd848",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Iron_close.png": {
+    "mtime": 1795451625.9287944,
+    "seen": 1795451823.4631376,
+    "ast_hash": "dabbe8a215a324a328f282de50ba9044",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Deposit_Iron_top.png": {
+    "mtime": 1795451627.1160228,
+    "seen": 1795451823.4631388,
+    "ast_hash": "a391813671427f0ebb785fe1d8474f10",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_BaseColor.png": {
+    "mtime": 1795451401.988492,
+    "seen": 1795451823.4632072,
+    "ast_hash": "38580e1b6b2e77984f82554d03b093d0",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_MetallicSmoothness.png": {
+    "mtime": 1795451402.519209,
+    "seen": 1795451823.4632084,
+    "ast_hash": "f4e86ae9f2a02958fb2f3b83a4ae065e",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_Normal.png": {
+    "mtime": 1795451402.296463,
+    "seen": 1795451823.4632094,
+    "ast_hash": "f98c6dd2b5b130e3dd753fb83722b1a8",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_Ore_BaseColor.png": {
+    "mtime": 1795451338.9333243,
+    "seen": 1795451823.4632106,
+    "ast_hash": "7e7d50edea8177bdc52d0d5e6185f2ad",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_Ore_MetallicSmoothness.png": {
+    "mtime": 1795451339.036328,
+    "seen": 1795451823.4632118,
+    "ast_hash": "82890d00a5cc982926b69a197cb36a10",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Coal/Deposit_Coal_Ore_Normal.png": {
+    "mtime": 1795451338.9895651,
+    "seen": 1795451823.4632127,
+    "ast_hash": "5ae45b535aa48d67a93c6715defba126",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_BaseColor.png": {
+    "mtime": 1795451736.5869474,
+    "seen": 1795451823.463214,
+    "ast_hash": "c2affc9190c5cbbe1223d362ee02065e",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_MetallicSmoothness.png": {
+    "mtime": 1795451738.244401,
+    "seen": 1795451823.463215,
+    "ast_hash": "cbb7f1c53fa33bab5caa592cb403707e",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_Normal.png": {
+    "mtime": 1795451737.4585962,
+    "seen": 1795451823.463216,
+    "ast_hash": "52a2e43865ed203f967144578811951d",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_Ore_BaseColor.png": {
+    "mtime": 1795451652.0368705,
+    "seen": 1795451823.4632173,
+    "ast_hash": "d257a44c77a0652db901f459aebd81e3",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_Ore_MetallicSmoothness.png": {
+    "mtime": 1795451652.20951,
+    "seen": 1795451823.4632182,
+    "ast_hash": "65c4380dfc1179421a5f29f49a2c7366",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Copper/Deposit_Copper_Ore_Normal.png": {
+    "mtime": 1795451652.1385932,
+    "seen": 1795451823.4632192,
+    "ast_hash": "fee690a5a05d5d0e2a9586a8a7233907",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_BaseColor.png": {
+    "mtime": 1795451623.4710474,
+    "seen": 1795451823.4632201,
+    "ast_hash": "3900655c27878e5a0f465ea4b50a911b",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_MetallicSmoothness.png": {
+    "mtime": 1795451624.4294653,
+    "seen": 1795451823.4632215,
+    "ast_hash": "e5cc7be84b0b1ffb837ef8386b72f5ce",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_Normal.png": {
+    "mtime": 1795451623.986226,
+    "seen": 1795451823.4632223,
+    "ast_hash": "d97fad57c36aa11df5f71c0828a8b870",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_Ore_BaseColor.png": {
+    "mtime": 1795451545.954952,
+    "seen": 1795451823.4632235,
+    "ast_hash": "500602e005eb4c2d8c8b93d78e919f24",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_Ore_MetallicSmoothness.png": {
+    "mtime": 1795451546.0719535,
+    "seen": 1795451823.463225,
+    "ast_hash": "db03a9d1aa0f18348cb56e1d3be34379",
+    "semantic_hash": ""
+  },
+  "Assets/Resources/Models/Deposit_Iron/Deposit_Iron_Ore_Normal.png": {
+    "mtime": 1795451546.017664,
+    "seen": 1795451823.4632258,
+    "ast_hash": "c0b4e7f576999822a85c0670885aefa6",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Rust_BaseColor.png": {
+    "mtime": 1795448980.868268,
+    "seen": 1795451823.4632416,
+    "ast_hash": "97fe1632d0316559dce4529cc6396ae4",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Rust_Normal.png": {
+    "mtime": 1795448981.1399736,
+    "seen": 1795451823.4632428,
+    "ast_hash": "232b30eb0c02e54ea6073b37c52f1878",
     "semantic_hash": ""
   }
 }

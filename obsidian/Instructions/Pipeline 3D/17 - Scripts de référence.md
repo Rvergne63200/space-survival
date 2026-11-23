@@ -26,6 +26,10 @@ Ces scripts sont exécutés dans Blender via MCP. La variable `SP` en tête de c
 | `cp_build.py` | Panneau de contrôle (pupitre holographique) : bureau en `prism_x` à profil concave, logement ouvert (`hollow_z`) d'où sort la barre `Projector` (clips Power_On / Power_Off), hologramme vertical (`build_hologram`), `collisions()`, `tri_ngons()` |
 | `ws_build.py` | Écran mural (TV incurvée lisse) : `sweep()` (profil balayé sur un arc), `screen_uv()` (UV 0..1 sur la face avant courbe), `wall_clearance()` (marge contre les murs des dômes 8 / 12 / 16 m), `tri_ngons()` |
 | `bt_build.py` | Batteries statiques : `build("Battery_Wall" / "Battery_Cabinet" / "Battery_Bank")`, un `.blend` chacun ; jauge en objets séparés `Gauge_1..5` (néon), `belt()` (bande décalée autour d'une coque chanfreinée), `louvers()`, `boss()` (prise de câble), `wall_clearance()`, `preview_rig()` / `aim()` / `set_gauge()` pour les rendus, `export()` |
+| `dp_build.py` | Gisements, base : `ORES` (couleurs par minerai), fissures (`make_cracks`, progression `T` du centre vers les bouts), champs du relief (`fields`), modèle du jeu (`build_mesh` : décimation pondérée, Delaunay 2D, UV dépliées, normales du relief lissé), `bilinear`, `blur`, `save_png`, `make_material` |
+| `dp_hd.py` | Gisements, cuisson : `grid_mesh` (modèle détaillé avec attributs), `hp_material` (nœuds Cycles : rampes, AO, Bevel, profondeur au pixel), `bake`, `new_img`, `pixels` |
+| `dp_v3.py` | Gisements, version retenue : `build_v3("Coal" / "Iron" / "Copper")` ; dalle en roche cuite, minerai en géométrie (`build_ore_geo` : couche coupée par les fissures, masses incrustées, éclats ; `chunk`, `box_uv`), texture raccordable du minerai (`ore_textures`) |
+| `ground_rust.py` | Texture raccordable du sol orange pour le terrain (`TileNoise`, tuile de 8 m) |
 | `zfight.py` | Détecteur de z-fighting (`check2`) |
 
 Pour un nouveau modèle :

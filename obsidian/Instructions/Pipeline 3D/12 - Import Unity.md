@@ -14,6 +14,7 @@ Cet `AssetPostprocessor` s'applique automatiquement à tout ce qui est sous `Ass
 - Les modèles **sans table de clips** sont importés avec `animationType = None` et `importAnimation = false`.
 - **Matériaux :**
   - pour chaque matériau FBX nommé `M_*_<Suffixe>` connu, un `.mat` Standard est créé dans **le même dossier** ;
+  - pour chaque jeu de textures `<Prefix>_BaseColor.png` du dossier, un `M_<Prefix>.mat` texturé est créé (voir [[09 - Textures]]) ; si le jeu de textures arrive avant une modification du script, réimporte le dossier ;
   - le remap se fait uniquement sur ce dossier, car `FindAssets` est récursif et doit être filtré ;
   - `_Glass` passe en Standard Transparent, `_Hologram` utilise `Custom/Hologram` ou un fallback en mode Fade.
 - **Clips :**

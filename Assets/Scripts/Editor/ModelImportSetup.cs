@@ -242,6 +242,13 @@ public class ModelImportSetup : AssetPostprocessor
         if (fbxs.Length == 0) return;
 
         bool created = CreateLitMaterial(dir, folder);
+        // autres jeux de textures du dossier (<Prefix>_BaseColor.png -> M_<Prefix>.mat), ex. Deposit_Coal_Ore
+        foreach (var png in Directory.GetFiles(dir, "*_BaseColor.png"))
+        {
+            string prefix = Path.GetFileNameWithoutExtension(png);
+            prefix = prefix.Substring(0, prefix.Length - "_BaseColor".Length);
+            if (prefix != folder) created |= CreateLitMaterial(dir, prefix);
+        }
         foreach (var fbx in fbxs) created |= CreateFlatMaterials(dir, fbx);
         if (created)
             foreach (var fbx in fbxs) AssetDatabase.ImportAsset(fbx, ImportAssetOptions.ForceUpdate); // applique le remap
