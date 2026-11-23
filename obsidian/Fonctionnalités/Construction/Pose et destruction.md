@@ -16,6 +16,7 @@ Pendant le placement, le build ou la destruction, le mode `PlayingMode.Build` d�
 - **Validité** : surface d'appui assez horizontale, aucun objet dans la boîte englobante (le terrain excepté, avec une boîte réduite de 10 % pour ne pas compter le sol). Pour une structure, s'y ajoute un écart de hauteur du terrain sous les 4 coins ≤ `MaxSlope`.
 - **Placement** : démarre tout seul quand l'item en main est un `PlaceableItemData`. La pose instancie son `placedPrefab` (`PlacedObject`) et retire un item du slot en main. Après un clic droit, le fantôme ne revient qu'au prochain changement d'item en main.
 - **Build** : la pose crée le plan, après avoir aplani le terrain dessous (si `FlattenTerrain`, voir [[Terrain sous les constructions]]).
+- Objet mural (`WallMounted`) : le fantôme se colle au mur plein du dôme visé (voir [[Batteries]]).
 - Modes particuliers : pose du [[Sas]] et du [[Couloir]], pose des câbles ([[Câble électrique]]).
 
 ## Destruction

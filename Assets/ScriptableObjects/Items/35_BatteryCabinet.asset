@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
+  m_Name: 35_BatteryCabinet
+  m_EditorClassIdentifier: 
+  _id: 35
+  _stackMax: 5
+  _name: Battery Cabinet
+  _description: Stores up to 5 kWh. Placed on the ground, inside or outside, it takes
+    the surplus of its network and gives it back when power is lacking.
+  _sprite: {fileID: 1053572825, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _placedPrefab: {fileID: 8283846086314465995, guid: aece91076f566e34384da0b51e008a4f, type: 3}
+  _refund: []
+  _outdoorOnly: 0
+  _notInCorridors: 0
+  _wallMounted: 0

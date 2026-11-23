@@ -25,6 +25,7 @@ Ces scripts sont exécutés dans Blender via MCP. La variable `SP` en tête de c
 | `st_build.py` | Stockage famille A : `build("Crate_Small" / "Crate_Large" / "Cabinet")`, un modèle et un `.blend` chacun ; helpers `hollow_z`, `solid` (polygones non convexes), charnières en équerre, `StackPoint` ; `collisions(model)` teste toutes les paires de pièces mobiles |
 | `cp_build.py` | Panneau de contrôle (pupitre holographique) : bureau en `prism_x` à profil concave, logement ouvert (`hollow_z`) d'où sort la barre `Projector` (clips Power_On / Power_Off), hologramme vertical (`build_hologram`), `collisions()`, `tri_ngons()` |
 | `ws_build.py` | Écran mural (TV incurvée lisse) : `sweep()` (profil balayé sur un arc), `screen_uv()` (UV 0..1 sur la face avant courbe), `wall_clearance()` (marge contre les murs des dômes 8 / 12 / 16 m), `tri_ngons()` |
+| `bt_build.py` | Batteries statiques : `build("Battery_Wall" / "Battery_Cabinet" / "Battery_Bank")`, un `.blend` chacun ; jauge en objets séparés `Gauge_1..5` (néon), `belt()` (bande décalée autour d'une coque chanfreinée), `louvers()`, `boss()` (prise de câble), `wall_clearance()`, `preview_rig()` / `aim()` / `set_gauge()` pour les rendus, `export()` |
 | `zfight.py` | Détecteur de z-fighting (`check2`) |
 
 Pour un nouveau modèle :

@@ -14,7 +14,7 @@ Le fonctionnement est décrit dans [[Pose et destruction]], [[Structures et cata
 - Si la pose est particulière (accroche à un dôme…), elle a son mode dans le `Builder` : réutilise `DomeConnection` pour tout ce qui se fixe au mur d'un dôme.
 
 ## Objet posé (depuis l'inventaire)
-- Un item `PlaceableItemData` avec son `placedPrefab` (voir [[05 - Ajouter un item]]), et si besoin `OutdoorOnly` / `NotInCorridors`, et son `Refund`.
+- Un item `PlaceableItemData` avec son `placedPrefab` (voir [[05 - Ajouter un item]]), et si besoin `OutdoorOnly` / `NotInCorridors` / `WallMounted` (accroché au mur plein d'un dôme : origine du prefab au contact du mur, avant en +Z), et son `Refund`.
 - Instancie-le toujours par `BuildUtility.InstantiatePlaced` (pose du `PlacedObject` et de la clé de sauvegarde).
 - Si son fantôme doit montrer l'objet tel qu'il sera posé (pièce réglée selon l'endroit), implémente `IPlacementPreview` sur la racine du prefab : `PreviewModel` (enfant copié comme fantôme) et `UpdatePreview(ghost)`, appelé à chaque frame.
 

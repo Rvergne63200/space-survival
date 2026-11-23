@@ -20,4 +20,9 @@ public class PlaceableItemData : ItemData
     // Not in a corridor (too low: coal generator). Nothing is ever placed in an airlock
     [SerializeField] private bool _notInCorridors;
     public bool NotInCorridors => _notInCorridors;
+
+    // Hung on the solid part of the wall of a dome (wall battery): the origin of the prefab is the contact point with the
+    // wall, its front is +Z (Builder)
+    [SerializeField] private bool _wallMounted;
+    public bool WallMounted => _wallMounted;
 }

@@ -73,6 +73,7 @@ Ce qui existe dans le jeu aujourd'hui, une note par feature. Ce qui reste à fai
 - [[Panneau de contrôle]]
 - [[Panneau solaire]]
 - [[Éolienne]]
+- [[Batteries]]
 - [[Générateur à charbon]]
 - [[Station de recharge]]
 - [[Objets du réseau électrique]]

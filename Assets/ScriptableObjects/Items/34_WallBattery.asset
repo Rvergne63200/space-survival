@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
+  m_Name: 34_WallBattery
+  m_EditorClassIdentifier: 
+  _id: 34
+  _stackMax: 10
+  _name: Wall Battery
+  _description: Stores up to 2 kWh. Hung on the solid wall of a dome, it takes the
+    surplus of the building network and gives it back when power is lacking.
+  _sprite: {fileID: 1053572825, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _placedPrefab: {fileID: 7499348400138450970, guid: 3278886ea057eb34883e587476a506e1, type: 3}
+  _refund: []
+  _outdoorOnly: 0
+  _notInCorridors: 0
+  _wallMounted: 1

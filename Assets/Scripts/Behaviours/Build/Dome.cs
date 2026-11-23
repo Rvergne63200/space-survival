@@ -22,6 +22,15 @@ public class Dome : MonoBehaviour
     private readonly List<Mesh> cutMeshes = new List<Mesh>();
 
     public float Radius => radius;
+
+    // Radius of the inner face of the solid wall (m), where wall mounted objects are hung
+    public float InnerWallRadius => radius - 0.25f;
+
+    // Top of the solid wall above the origin of the dome (m): glass above
+    public const float SolidWallTop = 1.2f;
+
+    // The collider is one of the meshes of the dome itself (floor, wall, glass), not a connector or the power socket
+    public bool IsOwnCollider(Collider other) => other != null && other.transform.IsChildOf(Model);
     public DomeConnector ConnectorPrefab => connectorPrefab;
 
     public BuiltStructure Structure => GetComponent<BuiltStructure>();

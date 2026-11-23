@@ -27,6 +27,7 @@ statut: en cours
 - **Batteries** :
   - Elles absorbent les surplus et fournissent ce qui manque. Une batterie partagée fait passer de l'énergie d'un réseau à l'autre sans les relier.
   - Exemple : `G1 - A1 - B1 - A2 - G2`. G1 ne fournit que A1 + la charge de B1. G2 ne fournit que A2 + ce que B1 peut encore recevoir. Si G1 ou G2 ne produit pas assez, B1 fournit ce qui manque.
+  - Fait : trois batteries ([[Batteries]] : murale 2 kWh, armoire 5 kWh, banc extérieur 20 kWh), débits infinis.
   - **Pas de débit maximum** de charge ou de décharge. Plus tard, peut-être certaines batteries avec un débit, à côté de batteries à débit infini.
 - **Manque d'énergie** : si la production et les batteries ne suffisent pas, le réseau **disjoncte** et tout ce qu'il alimente s'arrête. Il se **réarme automatiquement** (après quelques secondes) quand la production et les batteries couvrent la demande de tout ce qui est allumé.
 - **Contrôle des bâtiments** : on peut couper l'alimentation d'un bâtiment et programmer ses heures d'alimentation ([[F54 - Cycle jour nuit et météo|F54]]). Ces réglages sont ceux du tableau de distribution intégré au bâtiment ([[F56 - Horaires du tableau de distribution|F56]]). Un bâtiment coupé arrête ses machines, qui ne consomment plus, mais le courant le traverse toujours vers ce qui est relié derrière lui.

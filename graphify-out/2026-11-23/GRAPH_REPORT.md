@@ -1,18 +1,18 @@
 # Graph Report - Space Survival  (2026-11-23)
 
 ## Corpus Check
-- 361 files · ~168,183 words
+- 366 files · ~172,194 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 1493 file(s) not represented in the graph (top: .meta 926, .mat 186, .asset 89)
-- WARNING: 1493 of 1933 files seen (77%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
+- Unclassified: 1499 file(s) not represented in the graph (top: .meta 930, .mat 186, .asset 90)
+- WARNING: 1499 of 1944 files seen (77%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 3435 nodes · 8551 edges · 204 communities (140 shown, 64 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 1262 edges (avg confidence: 0.89)
+- 3499 nodes · 8681 edges · 214 communities (148 shown, 66 thin omitted)
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 1280 edges (avg confidence: 0.89)
 - Token cost: 497,038 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7dc96162`
+- Built from commit: `8a76b4fe`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,9 +20,9 @@
 - 00 - Index À faire.md
 - PlayerInventory
 - Coal Generator Animator
-- TMP_Text
+- MonoBehaviour
 - Builder Placement
-- Historique - Refontes
+- GameObject
 - ItemSlot
 - Vector3
 - BuiltStructure
@@ -37,7 +37,6 @@
 - system_collections
 - oct_cyl
 - Landing Capsule Blender Build
-- ConnectorPreview.Destroy
 - Package Lock A
 - Terrain procédural.md
 - Interfaces UI Toolkit.md
@@ -48,7 +47,7 @@
 - Electric Cables
 - Package Lock D
 - Input Actions
-- ItemStorage
+- Searcher
 - ModelImportSetup
 - IInterractable.GetInfo
 - EnergyDevice
@@ -59,7 +58,6 @@
 - Distribution Panel UI
 - st_build
 - TextMeshProFloatingText
-- Appareils électriques.md
 - Airlock Blender Build
 - TMP Text Event Handler
 - UI Manager
@@ -86,28 +84,28 @@
 - Pose et destruction.md
 - BuildingPowerPanel
 - PlayerMovement
-- dome_build.py
+- WeatherSystem
 - ItemCollectionUI
 - ws_build.py
 - PlayerModeOptions
 - RelayAntennaAnimator
 - PlayerManager
-- Material
+- TerrainMask
 - ParentedUI
 - packages-lock (2)
 - UnityEventRuntimeDebugger
 - TMP_TextInfoDebugTool
-- VisualElement
+- HeldItemUI
 - WindTurbineAnimator
-- Crafter
+- CraftingStation
 - cs_anim
 - dr_build
-- SaveManager.RestoreWorld
+- VertexJitter
 - PlayerInputActions (3)
 - ControlPanelUI
 - EnergyConsumer
 - StorageContainer
-- CraftingStation
+- ItemStorage
 - Stat (2)
 - 00 - Index DA.md
 - packages-lock (3)
@@ -116,7 +114,7 @@
 - SkewTextExample
 - ControlPanelAnimator
 - DeathScreenUI
-- UIDocument
+- PlaceableItemData
 - StructureData
 - Historique - Refontes
 - TerrainEditSaveData
@@ -124,14 +122,15 @@
 - SubclassPicker
 - PlayerInputActions (4)
 - Déplacement du joueur.md
-- EnergyGenerator
+- EnergyStorage
 - StatBarUI
 - com.unity.performance.profile-analyzer@1.3.3
 - packages-lock (7)
 - InterfaceManager
 - LandingCapsuleAnimator
 - Intention et piliers du style
-- PlayerSpawnPoint
+- EnergyValue
+- Pickupable
 - Technologie humaine
 - wt_build
 - TMPro
@@ -139,13 +138,14 @@
 - StorageAnimator
 - Label
 - Fonctionnalités implémentées
-- BuildingInterior
+- WallScreenAnimator
 - com.unity.modules.adaptiveperformance@1.0.0
 - dependencies
 - packages-lock (8)
 - al_anim
-- SolarPanel
-- PlayerStats
+- EnergyGenerator
+- StatName
+- F65 - Intégration des modèles 3D
 - PickupInfoUI
 - ObjectSpin
 - dependencies
@@ -157,7 +157,7 @@
 - NotificationUI
 - PauseMenuUI
 - À faire
-- ItemStorageUI
+- SaveData.cs
 - Couleur et lumière
 - À éviter et check-list
 - Prompts IA
@@ -167,7 +167,7 @@
 - Menaces et lisibilité
 - 14 - Production Unity.md
 - PlayerInventory
-- Builder
+- F54 - Cycle jour nuit et météo.md
 - com.unity.modules.ai
 - BenchmarkType
 - com.unity.modules.androidjni
@@ -199,17 +199,27 @@
 - com.unity.modules.screencapture@1.0.0
 - manifest (17)
 - manifest (18)
+- TMPro_InstructionOverlay
 - manifest (20)
+- IStorageMachine
 - manifest (22)
+- DeathBag
 - manifest (24)
 - manifest (25)
+- PointedInterractorInformationUI
 - manifest (27)
 - manifest (28)
+- InterfaceManager
 - manifest (30)
 - manifest (31)
 - manifest (32)
-- SheddingMode
+- VertexShakeB
+- VertexZoom
+- Objets persistants
 - Sommaire
+- ChatController
+- TMP_ExampleScript_01
+- FpsCounterAnchorPositions
 - CLAUDE
 
 ## God Nodes (most connected - your core abstractions)
@@ -222,7 +232,7 @@
 7. `Historique - Features` - 53 edges
 8. `Item` - 52 edges
 9. `CoalGeneratorAnimator` - 51 edges
-10. `BuiltStructure` - 47 edges
+10. `WeatherSystem` - 48 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Inventaire du joueur` --references--> `PlayerInventory`  [INFERRED]
@@ -231,94 +241,94 @@
   obsidian/Instructions/Pipeline 3D/09 - Textures.md → Assets/Scripts/Editor/ModelImportSetup.cs
 - `DistributionPanelUI` --references--> `DistributionPanelSettingsView`  [INFERRED]
   obsidian/Fonctionnalités/Énergie/Tableau de distribution.md → Assets/Scripts/Behaviours/UI/Energy/DistributionPanelSettingsView.cs
-- `R13 - Snapping entre points de connexion` --references--> `Builder`  [INFERRED]
-  obsidian/A faire/R13 - Snapping entre points de connexion.md → Assets/Scripts/Behaviours/Entities/Player/Builder.cs
 - `ElectricCable` --references--> `Builder`  [INFERRED]
   obsidian/Fonctionnalités/Énergie/Câble électrique.md → Assets/Scripts/Behaviours/Entities/Player/Builder.cs
+- `Modélisation Blender` --references--> `SolarPanel`  [INFERRED]
+  obsidian/Instructions/Pipeline 3D/10 - Modélisation Blender.md → Assets/Scripts/Behaviours/Energy/SolarPanel.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (204 total, 64 thin omitted)
+## Communities (214 total, 66 thin omitted)
 
 ### Community 0 - "00 - Index À faire.md"
 Cohesion: 0.10
-Nodes (13): B26 - Flag identified des objets ramassables, F06 - Vrai glisser-déposer, F27 - Réseau d'oxygène, F38 - Position du sac de mort, F50 - Réseau électrique complet, F51 - Système d'oxygène, F52 - Machines consommatrices d'oxygène, F53 - Système de plantation (+5 more)
+Nodes (13): B26 - Flag identified des objets ramassables, F06 - Vrai glisser-déposer, F20 - Recettes à plusieurs résultats, F27 - Réseau d'oxygène, F38 - Position du sac de mort, F50 - Réseau électrique complet, F51 - Système d'oxygène, F52 - Machines consommatrices d'oxygène (+5 more)
 
 ### Community 2 - "PlayerInventory"
 Cohesion: 0.09
 Nodes (29): SubclassPicker, HeldAction, AbstractModifier, EnduranceModifier, LifeModifier, StatModifier, ConsummableData, ApplyModifiersAction (+21 more)
 
 ### Community 3 - "Coal Generator Animator"
-Cohesion: 0.05
-Nodes (27): CoalGeneratorAnimator, ChimneyHeight, CollarRotation, IsBusy, IsHatchOpen, IsRunning, MinChimneyHeight, SmokePoint (+19 more)
+Cohesion: 0.07
+Nodes (20): CoalGeneratorAnimator, ChimneyHeight, CollarRotation, IsBusy, IsHatchOpen, IsRunning, MinChimneyHeight, SmokePoint (+12 more)
 
-### Community 4 - "TMP_Text"
-Cohesion: 0.04
-Nodes (11): ChatController, EnvMapAnimator, TeleType, TextConsoleSimulator, TMP_TextEventCheck, VertexColorCycler, VertexJitter, VertexAnim (+3 more)
+### Community 4 - "MonoBehaviour"
+Cohesion: 0.10
+Nodes (6): EnvMapAnimator, TeleType, TextConsoleSimulator, TMP_TextEventCheck, VertexColorCycler, Bootstrapper
 
 ### Community 5 - "Builder Placement"
-Cohesion: 0.10
-Nodes (7): Builder, CorridorStructure, Inventory, IsActive, Source, BuildModeUI, Instance
+Cohesion: 0.08
+Nodes (13): Builder, CorridorStructure, Inventory, IsActive, Mode, Airlock, Building, Corridor (+5 more)
 
-### Community 6 - "Historique - Refontes"
-Cohesion: 0.06
-Nodes (23): Socket, TerrainMask, Matrix, Shape, Box, Cylinder, InteractionDistance, CorridorData (+15 more)
+### Community 6 - "GameObject"
+Cohesion: 0.11
+Nodes (8): ShaderPropAnimator, BuildUtility, CorridorPieces, Piece, Historique - Refontes, Structures et catalogue, L'objet, Règles communes
 
 ### Community 7 - "ItemSlot"
-Cohesion: 0.21
-Nodes (5): Slots, ItemSlot, ev_update, Item, Quantity
+Cohesion: 0.15
+Nodes (8): ItemCollection, MaxSize, Slots, ItemSlot, ev_update, Item, Quantity, Historique - Bugs
 
 ### Community 8 - "Vector3"
-Cohesion: 0.10
-Nodes (12): Dome, ConnectorPrefab, Connectors, Model, Radius, ConnectorPreview, DomeConnection, DomeConnector (+4 more)
+Cohesion: 0.11
+Nodes (11): BlueprintMaterial, Dome, ConnectorPrefab, Connectors, Model, Radius, DomeConnection, DomeConnector (+3 more)
 
 ### Community 9 - "BuiltStructure"
 Cohesion: 0.06
 Nodes (28): Airlock, All, DoorsBusy, IsBuilt, SaveKey, State, BuiltStructure, CostMultiplier (+20 more)
 
 ### Community 10 - "Item"
-Cohesion: 0.08
-Nodes (18): ChargingStation, Consumption, Storage, DeathBag, ItemSlotSaveData, Item, Data, Gauge (+10 more)
+Cohesion: 0.13
+Nodes (10): ItemSlotUI, Element, Item, Data, Gauge, GaugeRatio, GaugeSettings, HasGauge (+2 more)
 
 ### Community 11 - "Distribution Panel Core"
-Cohesion: 0.05
-Nodes (43): DistributionPanel, BatteryChargeSupplied, BatteryThreshold, Building, ChargeRequest, ChargeRoom, ChargeSupplied, ConsumedEnergy (+35 more)
+Cohesion: 0.04
+Nodes (47): DistributionPanel, BatteryChargeSupplied, BatteryThreshold, Building, ChargeRequest, ChargeRoom, ChargeSupplied, ConsumedEnergy (+39 more)
 
 ### Community 12 - "InteractableOutline"
-Cohesion: 0.10
-Nodes (8): CameraManager, Camera, Instance, Target, CameraContext, CameraManager, InteractableOutline, Contour de l'objet pointé
+Cohesion: 0.13
+Nodes (4): CameraContext, CameraManager, InteractableOutline, Contour de l'objet pointé
 
 ### Community 13 - "Save System"
-Cohesion: 0.08
-Nodes (14): PlayerSaveData, SaveData, SaveSlotInfo, WorldTimeSaveData, SaveManager, HasSave, Instance, IsUnloading (+6 more)
+Cohesion: 0.10
+Nodes (10): SaveManager, HasSave, Instance, IsUnloading, LiveObjects, SavedTerrainEdits, SavesFolder, WorldLoaded (+2 more)
 
 ### Community 14 - "ISaveableComponent"
 Cohesion: 0.24
 Nodes (3): EnvironmentSpawner, F31 - Structures générées, Objets du décor
 
 ### Community 15 - "add_revolve"
-Cohesion: 0.16
-Nodes (20): prism_y(), prof6(), add_box(), add_cyl(), add_revolve(), add_screw(), _copy_into(), finish() (+12 more)
+Cohesion: 0.12
+Nodes (29): add_box(), add_cyl(), add_revolve(), add_screw(), _copy_into(), finish(), zone_mats(), build_holo() (+21 more)
 
 ### Community 16 - "Energy Network Manager"
-Cohesion: 0.12
-Nodes (4): EnergyNetworkManager, HasInstance, Instance, Network
+Cohesion: 0.16
+Nodes (3): EnergyNetworkManager, HasInstance, Instance
 
 ### Community 19 - "oct_cyl"
 Cohesion: 0.14
-Nodes (26): beam(), oct_cyl(), pill(), animate(), arm_k(), mast_k(), build_arm(), build_base() (+18 more)
+Nodes (25): beam(), pill(), animate(), arm_k(), mast_k(), build_arm(), build_base(), build_dish() (+17 more)
 
 ### Community 20 - "Landing Capsule Blender Build"
-Cohesion: 0.12
-Nodes (25): _bevel_tmp(), animate(), build_body(), build_door(), build_door_frames(), build_exterior(), q(), build_interior() (+17 more)
+Cohesion: 0.13
+Nodes (24): animate(), build_body(), build_door(), build_door_frames(), build_exterior(), q(), build_interior(), q() (+16 more)
 
 ### Community 22 - "Package Lock A"
 Cohesion: 0.08
 Nodes (28): dependencies, depth, source, version, dependencies, depth, source, version (+20 more)
 
 ### Community 23 - "Terrain procédural.md"
-Cohesion: 0.15
+Cohesion: 0.14
 Nodes (5): B10 - Pivot de ReplaceObject trop haut, F30 - Biomes, F32 - Ressources générées, O03 - Monde infini, R15 - Ids uniques des objets de scène
 
 ### Community 24 - "Interfaces UI Toolkit.md"
@@ -326,7 +336,7 @@ Cohesion: 0.11
 Nodes (11): R01 - Refonte du chargement de scènes, R02 - Persistance entre scènes, R09 - Système d'interaction extensible, Domaines, Instructions, Règles communes, Code Unity, Point ouvert (+3 more)
 
 ### Community 25 - "Map Utility & Minimap"
-Cohesion: 0.17
+Cohesion: 0.16
 Nodes (4): MapUtility, ContourSegment, MinimapUI, Minimap
 
 ### Community 26 - "Package Lock B"
@@ -353,17 +363,17 @@ Nodes (34): dependencies, depth, source, version, dependencies, depth, source, v
 Cohesion: 0.08
 Nodes (8): @PlayerInputActions, asset, bindingMask, bindings, controlSchemes, devices, ICameraActions, R06 - PlayerInputActions jamais libérés
 
-### Community 32 - "ItemStorage"
-Cohesion: 0.14
-Nodes (13): AirlockDoor, Airlock, Outer, EnergyDeviceInfo, Interractable, Searcher, CurrentSearchedStorage, IInterractable (+5 more)
+### Community 32 - "Searcher"
+Cohesion: 0.15
+Nodes (6): AirlockDoor, Airlock, Outer, Searcher, CurrentSearchedStorage, Pointeur et interactables
 
 ### Community 35 - "EnergyDevice"
-Cohesion: 0.18
+Cohesion: 0.19
 Nodes (3): CablePlacer, Inventory, Source
 
 ### Community 36 - "ItemData"
-Cohesion: 0.11
-Nodes (10): Equipment, ItemCollection, MaxSize, ItemData, Description, Id, Model, Name (+2 more)
+Cohesion: 0.15
+Nodes (7): ItemData, Description, Id, Model, Name, Sprite, StackMax
 
 ### Community 37 - "Terrain Chunks"
 Cohesion: 0.19
@@ -371,35 +381,39 @@ Nodes (4): ChunkManager, Instance, Seed, TerrainEdits
 
 ### Community 39 - "Airlock Animator"
 Cohesion: 0.19
-Nodes (6): AirlockAnimator, InnerOpen, IsBusy, OuterOpen, Pressurized, Scripts d'animation C# (runtime)
+Nodes (5): AirlockAnimator, InnerOpen, IsBusy, OuterOpen, Pressurized
+
+### Community 40 - "Distribution Panel UI"
+Cohesion: 0.13
+Nodes (4): DistributionPanelSettingsView, Target, DistributionPanelUI, Instance
 
 ### Community 41 - "st_build"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (18): animate(), build_body(), build_chimney_base(), build_collar(), build_fan(), build_hatch(), build_head(), build_hopper() (+10 more)
 
 ### Community 42 - "TextMeshProFloatingText"
-Cohesion: 0.12
-Nodes (9): Benchmark01, Benchmark02, Benchmark03, Benchmark04, ShaderPropAnimator, SimpleScript, TextMeshProFloatingText, TextMeshSpawner (+1 more)
+Cohesion: 0.16
+Nodes (6): Benchmark01, Benchmark02, Benchmark04, SimpleScript, TextMeshProFloatingText, TextMeshSpawner
 
 ### Community 44 - "Airlock Blender Build"
-Cohesion: 0.19
-Nodes (14): build_airlock_body(), build_connector(), build_fan(), build_leaf(), densify(), dome_surface_y(), door_leaf_poly(), finish2() (+6 more)
+Cohesion: 0.16
+Nodes (17): build_airlock_body(), build_connector(), build_fan(), build_leaf(), densify(), dome_surface_y(), door_leaf_poly(), finish2() (+9 more)
 
 ### Community 46 - "TMP Text Event Handler"
 Cohesion: 0.12
 Nodes (11): TMP_TextEventHandler, CharacterSelectionEvent, LineSelectionEvent, LinkSelectionEvent, onCharacterSelection, onLineSelection, onLinkSelection, onSpriteSelection (+3 more)
 
 ### Community 47 - "UI Manager"
-Cohesion: 0.12
-Nodes (14): UIManager, ev_updatePlayerContext, Instance, PlayerInventory, PlayerStats, UI, ParentUI, CraftingStationUI (+6 more)
+Cohesion: 0.11
+Nodes (15): UIManager, ev_updatePlayerContext, Instance, PlayerContext, PlayerInventory, PlayerStats, UI, ParentUI (+7 more)
 
 ### Community 48 - "EnergyDevice"
-Cohesion: 0.12
-Nodes (11): EnergyDevice, Cables, CanSwitch, ConnectionPoint, DeviceState, ForcedOff, IsOn, Panel (+3 more)
+Cohesion: 0.11
+Nodes (16): DisplayName, EnergyDevice, Cables, CanSwitch, ConnectionPoint, DeviceState, DisplayName, ForcedOff (+8 more)
 
 ### Community 49 - "PlayingMode"
-Cohesion: 0.14
-Nodes (9): ModeManager, Instance, Mode, PlayingMode, Build, Default, Interface, Menu (+1 more)
+Cohesion: 0.11
+Nodes (15): ModeManager, Instance, Mode, PlayingMode, Build, Default, Interface, Menu (+7 more)
 
 ### Community 50 - "cp_build.py"
 Cohesion: 0.14
@@ -414,8 +428,12 @@ Cohesion: 0.14
 Nodes (11): @Actions, ActionsActions, @Build, @ChangeHandedItem, @CloseInterfaces, @Drop, enabled, @Interract (+3 more)
 
 ### Community 54 - "SolarPanelAnimator"
-Cohesion: 0.13
-Nodes (7): SolarPanelAnimator, DeployProgress, HeadingAngle, IsDeployed, IsRotating, PanelFront, PanelUp
+Cohesion: 0.07
+Nodes (14): SolarPanelAnimator, DeployProgress, HeadingAngle, IsDeployed, IsRotating, PanelFront, PanelUp, BuildingInterior (+6 more)
+
+### Community 55 - "Main Menu UI"
+Cohesion: 0.16
+Nodes (3): MainMenuUI, SaveSlotInfo, Menu principal
 
 ### Community 56 - "00 - Index Pipeline 3D.md"
 Cohesion: 0.15
@@ -423,7 +441,7 @@ Nodes (8): Façon de travailler, Palette des matériaux, Dimensions de référen
 
 ### Community 57 - "st_build (2)"
 Cohesion: 0.19
-Nodes (14): build(), cabinet_body(), cabinet_doors(), cham(), clear(), collisions(), crate_body(), crate_lids() (+6 more)
+Nodes (16): _bevel_tmp(), cbox(), build(), cabinet_body(), cabinet_doors(), cham(), clear(), collisions() (+8 more)
 
 ### Community 58 - "DrillAnimator"
 Cohesion: 0.20
@@ -431,10 +449,10 @@ Nodes (5): DrillAnimator, DustPoint, IsBusy, IsDrilling, Powered
 
 ### Community 59 - "SaveableObject"
 Cohesion: 0.12
-Nodes (11): SaveId, SaveableObject, Id, IsRegistered, IsRuntime, PrefabKey, ComponentSaveData, ObjectSaveData (+3 more)
+Nodes (9): SaveId, SaveableObject, Id, IsRegistered, IsRuntime, PrefabKey, ChunkManager (singleton, scène Monde), Terrain procédural (+1 more)
 
 ### Community 60 - "CraftingStationUI"
-Cohesion: 0.20
+Cohesion: 0.19
 Nodes (4): CraftingStationUI, RecipeSlotUI, Element, Recipe
 
 ### Community 61 - "dependencies"
@@ -446,80 +464,76 @@ Cohesion: 0.22
 Nodes (8): build_all(), build_size(), check(), check2(), faces_of(), islands_of(), overlap_area(), Erreurs à ne pas refaire
 
 ### Community 63 - "TMP_UiFrameRateCounter"
-Cohesion: 0.09
-Nodes (12): Benchmark01_UGUI, DropdownSample, TMP_ExampleScript_01, objectType, TextMeshPro, TextMeshProUGUI, TMP_UiFrameRateCounter, FpsCounterAnchorPositions (+4 more)
+Cohesion: 0.17
+Nodes (3): Benchmark01_UGUI, DropdownSample, TMP_UiFrameRateCounter
 
 ### Community 64 - "TMP_FrameRateCounter"
-Cohesion: 0.13
-Nodes (12): TMP_FrameRateCounter, FpsCounterAnchorPositions, BottomLeft, BottomRight, TopLeft, TopRight, TMPro_InstructionOverlay, FpsCounterAnchorPositions (+4 more)
+Cohesion: 0.24
+Nodes (6): TMP_FrameRateCounter, FpsCounterAnchorPositions, BottomLeft, BottomRight, TopLeft, TopRight
 
 ### Community 65 - "PlayerContext"
-Cohesion: 0.11
-Nodes (9): PlayerContext, Pickuper, PlayerContext, PlayerManager, PointedObject, PlayerInterractor, PlayerPointer, Source (+1 more)
+Cohesion: 0.12
+Nodes (9): PlayerContext, Interractable, PlayerManager, PointedObject, PlayerInterractor, PlayerPointer, Source, IInterractable (+1 more)
 
 ### Community 66 - "DayNightCycle"
-Cohesion: 0.09
-Nodes (18): Root, SceneContext, DayNightCycle, Day, Hour, Instance, IsDay, NightBrightness (+10 more)
+Cohesion: 0.11
+Nodes (13): DayNightCycle, Day, Hour, Instance, IsDay, LightLevel, NightBrightness, NoonSunHeight (+5 more)
 
 ### Community 67 - "CameraMovement"
 Cohesion: 0.18
 Nodes (5): CameraMovement, Pitch, Target, Yaw, Caméra
 
 ### Community 68 - "Pose et destruction.md"
-Cohesion: 0.17
-Nodes (6): F47 - Relais radio, R12 - Intégration des constructions au terrain, R13 - Snapping entre points de connexion, Objets posés, Destruction, Pose et destruction
+Cohesion: 0.18
+Nodes (5): F47 - Relais radio, R12 - Intégration des constructions au terrain, Objets posés, Destruction, Pose et destruction
 
 ### Community 69 - "BuildingPowerPanel"
 Cohesion: 0.10
 Nodes (16): BuildingOutlet, Building, OptionalDemand, SaveKey, BuildingPanelTerminal, Panel, BuildingPowerPanel, Building (+8 more)
 
 ### Community 70 - "PlayerMovement"
-Cohesion: 0.16
+Cohesion: 0.12
 Nodes (5): PlayerMovement, forwardDirection, IsSprinting, Stats, Déplacement du joueur
 
-### Community 71 - "dome_build.py"
-Cohesion: 0.26
-Nodes (12): build_base(), build_frame(), build_glass(), build_wall(), curved_slab(), dome_sphere(), make_mats(), node() (+4 more)
+### Community 71 - "WeatherSystem"
+Cohesion: 0.07
+Nodes (19): WeatherSystem, AmbientFactor, Instance, IsStorm, IsStormComing, Seed, SkyFactor, SolarFactor (+11 more)
 
 ### Community 72 - "ItemCollectionUI"
-Cohesion: 0.15
-Nodes (8): ItemCollectionUI, SlotsUI, ItemSlotUI, Element, PlayerInventoryContentUI, PlayerToolBarUI, R05 - Prefab asset modifié au runtime, Clics de l'inventaire
+Cohesion: 0.14
+Nodes (6): ItemCollectionUI, SlotsUI, ItemStorageUI, PlayerInventoryContentUI, PlayerToolBarUI, Clics de l'inventaire
 
 ### Community 73 - "ws_build.py"
 Cohesion: 0.18
 Nodes (12): arc_pt(), build_body(), build_screen(), clear(), rect(), rho(), screen_uv(), setup() (+4 more)
 
 ### Community 74 - "PlayerModeOptions"
-Cohesion: 0.17
-Nodes (11): PlayerModeOptions, Options, Commentaires, Composants, Conventions de code, Gameplay et modèles, Nommage, Robustesse (+3 more)
+Cohesion: 0.22
+Nodes (8): PlayerModeOptions, Options, Commentaires, Composants, Conventions de code, Gameplay et modèles, Nommage, Robustesse
 
 ### Community 75 - "RelayAntennaAnimator"
-Cohesion: 0.18
+Cohesion: 0.20
 Nodes (4): RelayAntennaAnimator, IsAntennaExtended, IsDishDeployed, IsRotating
 
 ### Community 76 - "PlayerManager"
-Cohesion: 0.16
-Nodes (8): PlayerManager, Instance, Inventory, IsDead, Player, SpawnedFromSave, Stats, ViewSource
+Cohesion: 0.11
+Nodes (12): CameraManager, Camera, Instance, Target, PlayerManager, Instance, Inventory, IsDead (+4 more)
 
-### Community 77 - "Material"
-Cohesion: 0.24
-Nodes (4): BuildUtility, BlueprintMaterial, Structures et catalogue, L'objet
+### Community 77 - "TerrainMask"
+Cohesion: 0.12
+Nodes (9): TerrainMask, Matrix, Shape, Box, Cylinder, MeshCutter, OwnedMeshes, Dômes (+1 more)
 
 ### Community 79 - "packages-lock (2)"
 Cohesion: 0.11
 Nodes (18): dependencies, depth, source, version, dependencies, depth, source, version (+10 more)
 
-### Community 82 - "VisualElement"
-Cohesion: 0.21
-Nodes (4): DistributionPanelUI, Instance, HeldItemUI, HeldItem
-
 ### Community 83 - "WindTurbineAnimator"
-Cohesion: 0.17
-Nodes (3): WindTurbineAnimator, IsDeployed, WindStrength
+Cohesion: 0.18
+Nodes (4): WindTurbineAnimator, IsDeployed, WindStrength, Scripts d'animation C# (runtime)
 
-### Community 85 - "Crafter"
-Cohesion: 0.24
-Nodes (8): Crafter, RecipeData, Ingredients, ItemBlock, Item, Quantity, Results, Station de craft
+### Community 85 - "CraftingStation"
+Cohesion: 0.09
+Nodes (19): Crafter, CraftingStation, Current, IsUsable, Output, Power, Progress, Queue (+11 more)
 
 ### Community 86 - "cs_anim"
 Cohesion: 0.33
@@ -529,12 +543,16 @@ Nodes (13): build_anim(), clear(), head_clearance(), ik(), k_arm(), k_head(), k_
 Cohesion: 0.19
 Nodes (14): animate(), build_body(), build_carriage(), build_head(), build_hologram(), sbox(), sp(), collisions() (+6 more)
 
+### Community 88 - "VertexJitter"
+Cohesion: 0.12
+Nodes (3): VertexJitter, VertexAnim, VertexShakeA
+
 ### Community 89 - "PlayerInputActions (3)"
 Cohesion: 0.22
 Nodes (6): @Movement, MovementActions, enabled, @Jump, @Move, @Sprint
 
 ### Community 90 - "ControlPanelUI"
-Cohesion: 0.14
+Cohesion: 0.13
 Nodes (12): ControlPanel, Consumer, DisplayName, IsPowered, ControlPanelUI, Instance, Carte, ControlPanelUI (+4 more)
 
 ### Community 91 - "EnergyConsumer"
@@ -542,16 +560,16 @@ Cohesion: 0.12
 Nodes (9): EnergyConsumer, Consumption, Demand, IsPowered, State, TestMachine, Items du réseau, Objets de test (+1 more)
 
 ### Community 92 - "StorageContainer"
-Cohesion: 0.12
-Nodes (12): StorageContainer, Above, Below, SaveKey, Stackable, StackPoint, StackSize, State (+4 more)
-
-### Community 93 - "CraftingStation"
 Cohesion: 0.15
-Nodes (11): CraftingStation, Current, IsUsable, Output, Power, Progress, Queue, Recipes (+3 more)
+Nodes (9): StorageContainer, Above, Below, SaveKey, Stackable, StackPoint, StackSize, State (+1 more)
+
+### Community 93 - "ItemStorage"
+Cohesion: 0.16
+Nodes (10): ChargingStation, Consumption, Storage, Searchable, ItemStorage, Content, SaveKey, Rangements (+2 more)
 
 ### Community 94 - "Stat (2)"
-Cohesion: 0.15
-Nodes (6): Stat, MaxValue, Value, StatMarker, Duration, Modifier
+Cohesion: 0.12
+Nodes (10): PlayerStats, SerializableKeyValuePair, Key, Value, Stat, MaxValue, Value, StatMarker (+2 more)
 
 ### Community 95 - "00 - Index DA.md"
 Cohesion: 0.17
@@ -570,48 +588,44 @@ Cohesion: 0.12
 Nodes (17): dependencies, depth, source, version, dependencies, depth, source, version (+9 more)
 
 ### Community 100 - "ControlPanelAnimator"
-Cohesion: 0.13
-Nodes (7): ControlPanelAnimator, HologramScreen, IsBusy, IsPowered, WallScreenAnimator, IsPowered, ScreenSurface
+Cohesion: 0.23
+Nodes (4): ControlPanelAnimator, HologramScreen, IsBusy, IsPowered
 
 ### Community 101 - "DeathScreenUI"
-Cohesion: 0.23
-Nodes (4): DeathScreenUI, Instance, IsOpen, Écran de mort
+Cohesion: 0.08
+Nodes (11): SceneLoadingManager, PlayerSpawnPoint, SceneLoader, DeathScreenUI, Instance, IsOpen, Fonctionnement actuel, Scènes (+3 more)
 
-### Community 102 - "UIDocument"
-Cohesion: 0.18
-Nodes (4): ClockUI, HandedCursorUI, F54 - Cycle jour nuit et météo, Horloge
+### Community 102 - "PlaceableItemData"
+Cohesion: 0.15
+Nodes (13): PlacedObject, Data, BuildModeUI, Instance, IPlacementPreview, PreviewModel, PlaceableItemData, NotInCorridors (+5 more)
 
 ### Community 103 - "StructureData"
 Cohesion: 0.06
-Nodes (34): PlacedObject, Data, DisplayName, DisplayName, BuildWheelUI, Instance, IsOpen, AirlockData (+26 more)
+Nodes (30): BuildWheelUI, Instance, IsOpen, AirlockData, SnapDistance, CorridorData, ExtensionLength, ExtensionPiece (+22 more)
 
 ### Community 104 - "Historique - Refontes"
-Cohesion: 0.07
-Nodes (27): Pickupable, SaveKey, SaveState, EquipmentData, Slot, EquipmentSlot, Back, Body (+19 more)
-
-### Community 105 - "TerrainEditSaveData"
-Cohesion: 0.33
-Nodes (3): TerrainEditSaveData, TerrainFlattening, Terrain sous les constructions
+Cohesion: 0.10
+Nodes (19): EquipmentData, Slot, EquipmentSlot, Back, Body, Feet, Hands, Head (+11 more)
 
 ### Community 107 - "00 - Index Fonctionnalités.md"
-Cohesion: 0.16
-Nodes (4): B21 - Curseur visible après Échap, F11 - Données propres à chaque exemplaire, F37 - Oxygène hors des zones respirables, Inventaire du joueur
+Cohesion: 0.17
+Nodes (4): F11 - Données propres à chaque exemplaire, F17 - Contour masqué par les obstacles, F37 - Oxygène hors des zones respirables, Inventaire du joueur
 
 ### Community 109 - "PlayerInputActions (4)"
 Cohesion: 0.26
 Nodes (4): @Camera, CameraActions, enabled, @Rotation
 
 ### Community 110 - "Déplacement du joueur.md"
-Cohesion: 0.20
-Nodes (4): B03 - Décollage en haut des pentes, B07 - Ressenti des déplacements, F03 - Accroupissement, R07 - CharacterController
+Cohesion: 0.14
+Nodes (5): B03 - Décollage en haut des pentes, B07 - Ressenti des déplacements, B21 - Curseur visible après Échap, F03 - Accroupissement, R07 - CharacterController
 
-### Community 111 - "EnergyGenerator"
-Cohesion: 0.10
-Nodes (18): EnergyGenerator, Generation, Output, Production, EnergyStorage, Capacity, Charge, Discharge (+10 more)
+### Community 111 - "EnergyStorage"
+Cohesion: 0.15
+Nodes (9): EnergyStorage, Capacity, Charge, Discharge, InputRate, OutputRate, SaveKey, State (+1 more)
 
 ### Community 112 - "StatBarUI"
-Cohesion: 0.25
-Nodes (4): PlayerStatsUI, StatBarUI, StatUIData, Stats du joueur
+Cohesion: 0.24
+Nodes (5): PlayerStatsUI, StatBarUI, StatUIData, R05 - Prefab asset modifié au runtime, Stats du joueur
 
 ### Community 113 - "com.unity.performance.profile-analyzer@1.3.3"
 Cohesion: 0.29
@@ -622,20 +636,20 @@ Cohesion: 0.14
 Nodes (14): dependencies, depth, source, version, dependencies, depth, source, url (+6 more)
 
 ### Community 115 - "InterfaceManager"
-Cohesion: 0.20
-Nodes (8): InterfaceManager, HasOpenInterface, Modes de jeu et interfaces, Créer une interface, Interface du jeu (fenêtre qu'on ouvre), Mise en page, Textes, Éléments du HUD
+Cohesion: 0.29
+Nodes (6): Modes de jeu et interfaces, Créer une interface, Interface du jeu (fenêtre qu'on ouvre), Mise en page, Textes, Éléments du HUD
 
 ### Community 116 - "LandingCapsuleAnimator"
-Cohesion: 0.13
-Nodes (10): LandingCapsuleAnimator, IsBusy, IsOpen, LandingCapsule, IsOpen, SaveKey, SaveState, LandingCapsuleDoor (+2 more)
+Cohesion: 0.18
+Nodes (4): LandingCapsuleAnimator, IsBusy, IsOpen, Capsule de départ
 
 ### Community 117 - "Intention et piliers du style"
 Cohesion: 0.67
 Nodes (3): Intention, Intention et piliers du style, Les piliers du style
 
-### Community 119 - "PlayerSpawnPoint"
-Cohesion: 0.24
-Nodes (6): PlayerSpawnPoint, SceneLoader, Fonctionnement actuel, Scènes, Scènes et chargement, Mort et réapparition
+### Community 119 - "Pickupable"
+Cohesion: 0.15
+Nodes (9): Pickuper, Pickupable, SaveKey, SaveState, ItemGauge, EmptyText, Label, Rechargeable (+1 more)
 
 ### Community 120 - "Technologie humaine"
 Cohesion: 0.20
@@ -650,20 +664,24 @@ Cohesion: 0.18
 Nodes (3): TMP_DigitValidator, TMP_PhoneNumberValidator, TMPro
 
 ### Community 123 - "FlashlightBeam"
-Cohesion: 0.31
+Cohesion: 0.27
 Nodes (3): FlashlightBeam, FlashlightAction, Lampe torche
 
 ### Community 124 - "StorageAnimator"
-Cohesion: 0.17
+Cohesion: 0.31
 Nodes (5): StorageAnimator, CanOpen, IsBusy, IsOpen, StackPoint
+
+### Community 125 - "Label"
+Cohesion: 0.29
+Nodes (4): ClockUI, ItemTooltip, F54 - Cycle jour nuit et météo, Horloge
 
 ### Community 126 - "Fonctionnalités implémentées"
 Cohesion: 0.20
 Nodes (10): Bootstrap, Construction, Crafting, Fonctionnalités implémentées, Interaction, Interfaces, Inventaire, Joueur (+2 more)
 
-### Community 127 - "BuildingInterior"
-Cohesion: 0.25
-Nodes (4): BuildingInterior, Radius, Zone, Intérieur des bâtiments
+### Community 127 - "WallScreenAnimator"
+Cohesion: 0.30
+Nodes (3): WallScreenAnimator, IsPowered, ScreenSurface
 
 ### Community 129 - "dependencies"
 Cohesion: 0.17
@@ -677,20 +695,24 @@ Nodes (18): dependencies, depth, source, version, dependencies, depth, source, v
 Cohesion: 0.62
 Nodes (5): build(), doors(), fans(), key(), state()
 
-### Community 132 - "SolarPanel"
-Cohesion: 0.20
-Nodes (3): SolarPanel, Generation, F49 - Génération d'énergie
+### Community 132 - "EnergyGenerator"
+Cohesion: 0.09
+Nodes (18): EnergyDeviceInfo, EnergyGenerator, Generation, Output, Production, Network, SolarPanel, Generation (+10 more)
 
-### Community 133 - "PlayerStats"
-Cohesion: 0.14
-Nodes (11): PlayerStats, StatName, Endurance, Health, Hunger, Oxygen, Thirst, StatSaveData (+3 more)
+### Community 133 - "StatName"
+Cohesion: 0.29
+Nodes (6): StatName, Endurance, Health, Hunger, Oxygen, Thirst
+
+### Community 134 - "F65 - Intégration des modèles 3D"
+Cohesion: 0.18
+Nodes (7): LandingCapsule, IsOpen, SaveKey, SaveState, LandingCapsuleDoor, Capsule, F65 - Intégration des modèles 3D
 
 ### Community 135 - "PickupInfoUI"
 Cohesion: 0.31
 Nodes (3): PickupInfoGroupUI, Group, PickupInfoUI
 
 ### Community 136 - "ObjectSpin"
-Cohesion: 0.22
+Cohesion: 0.25
 Nodes (5): ObjectSpin, MotionType, Rotation, SearchLight, Translation
 
 ### Community 137 - "dependencies"
@@ -725,6 +747,10 @@ Nodes (5): Blocked, PauseMenuUI, Instance, IsOpen, Menu pause
 Cohesion: 0.25
 Nodes (8): Bugs, Features, Historique, Identifiants, Optimisations, Prochains numéros libres, Refontes, À faire
 
+### Community 147 - "SaveData.cs"
+Cohesion: 0.29
+Nodes (8): ComponentSaveData, ItemSlotSaveData, ObjectSaveData, PlayerSaveData, SaveData, StatSaveData, WorldTimeSaveData, SaveState
+
 ### Community 148 - "Couleur et lumière"
 Cohesion: 0.50
 Nodes (4): Couleur et lumière, Extérieur, par zone, Intérieur des dômes, Le cycle jour / nuit est un outil émotionnel
@@ -754,20 +780,16 @@ Cohesion: 0.67
 Nodes (3): Les menaces, Menaces et lisibilité, Règles de lisibilité
 
 ### Community 157 - "PlayerInventory"
-Cohesion: 0.11
-Nodes (7): PlayerInventory, HandedIndex, HandedSlot, HasPlayer, IsOpen, ToolBar, Historique - Bugs
-
-### Community 158 - "Builder"
-Cohesion: 0.29
-Nodes (7): Mode, Airlock, Building, Corridor, Destroying, None, Placing
+Cohesion: 0.12
+Nodes (6): PlayerInventory, HandedIndex, HandedSlot, HasPlayer, IsOpen, ToolBar
 
 ### Community 159 - "com.unity.modules.ai"
 Cohesion: 0.40
 Nodes (5): dependencies, depth, source, version, com.unity.modules.ai
 
 ### Community 160 - "BenchmarkType"
-Cohesion: 0.33
-Nodes (6): BenchmarkType, TEXTMESH_BITMAP, TMP_BITMAP_MOBILE, TMP_SDF, TMP_SDF_MOBILE, TMP_SDF__MOBILE_SSD
+Cohesion: 0.22
+Nodes (7): Benchmark03, BenchmarkType, TEXTMESH_BITMAP, TMP_BITMAP_MOBILE, TMP_SDF, TMP_SDF_MOBILE, TMP_SDF__MOBILE_SSD
 
 ### Community 161 - "com.unity.modules.androidjni"
 Cohesion: 0.40
@@ -793,33 +815,53 @@ Nodes (3): Direction, In, Out
 Cohesion: 0.17
 Nodes (11): com.unity.modules.androidjni@1.0.0, com.unity.modules.audio@1.0.0, com.unity.modules.particlesystem@1.0.0, com.unity.modules.wind@1.0.0, com.unity.visualscripting@1.9.11, com.unity.modules.audio, com.unity.modules.particlesystem, com.unity.modules.androidjni (+3 more)
 
-### Community 207 - "SheddingMode"
-Cohesion: 0.50
-Nodes (4): SheddingMode, BatteryBelow, None, Shortage
+### Community 192 - "TMPro_InstructionOverlay"
+Cohesion: 0.27
+Nodes (6): TMPro_InstructionOverlay, FpsCounterAnchorPositions, BottomLeft, BottomRight, TopLeft, TopRight
+
+### Community 194 - "IStorageMachine"
+Cohesion: 0.20
+Nodes (7): IStorageMachine, CanSwitchMachine, Gauge, GaugeText, MachineName, MachineOn, MachineState
+
+### Community 202 - "InterfaceManager"
+Cohesion: 0.32
+Nodes (5): InterfaceManager, HasOpenInterface, Le joueur, Managers et cycle de vie, Modes
+
+### Community 208 - "Objets persistants"
+Cohesion: 0.33
+Nodes (4): Root, SceneContext, Objets persistants, Outils de test
 
 ### Community 209 - "Sommaire"
 Cohesion: 0.50
 Nodes (4): Construction des modèles, Méthode technique, Pipeline 3D (Blender → Unity), Sommaire
 
+### Community 211 - "TMP_ExampleScript_01"
+Cohesion: 0.33
+Nodes (4): TMP_ExampleScript_01, objectType, TextMeshPro, TextMeshProUGUI
+
+### Community 212 - "FpsCounterAnchorPositions"
+Cohesion: 0.40
+Nodes (5): FpsCounterAnchorPositions, BottomLeft, BottomRight, TopLeft, TopRight
+
 ## Knowledge Gaps
-- **421 isolated node(s):** `Data`, `Gauge`, `GaugeRatio`, `GaugeSettings`, `HasGauge` (+416 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 941 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **64 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **442 isolated node(s):** `Generation`, `Generation`, `Protecting`, `Wind`, `Instance` (+437 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 970 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Modélisation Blender` connect `add_revolve` to `SolarPanel`, `BuiltStructure`, `Airlock Blender Build`, `oct_cyl`, `00 - Index Pipeline 3D.md`, `Tunnel Blender Build`?**
-  _High betweenness centrality (0.130) - this node is a cross-community bridge._
+- **Why does `Modélisation Blender` connect `Airlock Blender Build` to `EnergyGenerator`, `st_build`, `BuiltStructure`, `add_revolve`, `oct_cyl`, `00 - Index Pipeline 3D.md`, `Tunnel Blender Build`?**
+  _High betweenness centrality (0.116) - this node is a cross-community bridge._
 - **Are the 10 inferred relationships involving `Builder` (e.g. with `Historique - Bugs` and `Historique - Optimisations`) actually correct?**
   _`Builder` has 10 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Data`, `Gauge`, `GaugeRatio` to the rest of the system?**
-  _421 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Generation`, `Generation`, `Protecting` to the rest of the system?**
+  _442 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `00 - Index À faire.md` be split into smaller, more focused modules?**
-  _Cohesion score 0.10317460317460317 - nodes in this community are weakly interconnected._
-- **Why does `Airlock` connect `BuiltStructure` to `ItemStorage`, `IInterractable.GetInfo`, `Builder Placement`, `Historique - Refontes`, `Airlock Animator`, `Vector3`, `StructureData`, `TextMeshProFloatingText`, `system`, `Material`, `add_revolve`, `ConnectorPreview.Destroy`, `ISaveableComponent.RestoreState`, `Map Utility & Minimap`?**
-  _High betweenness centrality (0.122) - this node is a cross-community bridge._
+  _Cohesion score 0.1028225806451613 - nodes in this community are weakly interconnected._
+- **Why does `Airlock` connect `BuiltStructure` to `Searcher`, `IInterractable.GetInfo`, `MonoBehaviour`, `GameObject`, `Airlock Animator`, `Vector3`, `F65 - Intégration des modèles 3D`, `StructureData`, `Airlock Blender Build`, `system`, `PlayingMode`, `ConnectorPreview.Destroy`, `SolarPanelAnimator`, `EnergyValue`, `Map Utility & Minimap`?**
+  _High betweenness centrality (0.110) - this node is a cross-community bridge._
 - **Should `system_collections_generic` be split into smaller, more focused modules?**
   _Cohesion score 0.06653225806451613 - nodes in this community are weakly interconnected._
-- **Why does `add_revolve()` connect `add_revolve` to `wt_build`, `dome_build.py`, `st_build`, `Airlock Blender Build`, `oct_cyl`, `Landing Capsule Blender Build`, `dr_build`, `st_build (2)`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `add_revolve()` connect `add_revolve` to `wt_build`, `st_build`, `Airlock Blender Build`, `oct_cyl`, `Landing Capsule Blender Build`, `dr_build`, `st_build (2)`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._

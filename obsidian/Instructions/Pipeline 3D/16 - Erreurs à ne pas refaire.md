@@ -32,5 +32,7 @@ tags: [jeu-colonie, pipeline-3d, methode]
 22. **Bandeau décoratif sous une charnière** : un bandeau saillant en bas de coque était balayé par la charnière de la porte. Garder les bandeaux hors du cercle de rotation des pièces mobiles.
 23. **N-gones concaves écartés par Unity** (« A polygon of Mesh 'Body' ... is self-intersecting and has been discarded », donc un trou dans le mesh) : les bouts d'un `prism_x` à profil concave, les flancs décalés, les bouts d'un `sweep`. → `tri_ngons(ob)` (triangulation BEAUTY des faces de plus de 4 côtés) après `finish2`, comme dans `cp_build.py` et `ws_build.py`. Après un import, chercher « self-intersecting » dans `Editor.log`.
 24. **Caméra de rendu qui ne bouge pas** : `_Cam` est en `rotation_mode = 'QUATERNION'` dans certains `.blend`, et `rotation_euler` est alors ignoré. → passer en `'XYZ'` avant de la viser.
+25. **Pièce décalée avec `finish2(..., origin=c)`** (segments de jauge des batteries absents du rendu) : `finish2` translate la géométrie de `-origin`. Il faut donc construire la pièce **à sa place finale** (`pill(g, size, c, ...)`), pas autour de l'origine.
+26. **Faux z-fighting entre pièces identiques** : `zfight.check2` compare les coordonnées locales des meshes. Des pièces au même mesh local, mais d'origines différentes (segments `Gauge_N`), sont signalées entre elles : ignore ces paires.
 
 [[00 - Index Pipeline 3D|Index]] · ← [[15 - Scripts d'animation Unity]] · [[17 - Scripts de référence]] →

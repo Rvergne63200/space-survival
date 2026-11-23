@@ -20,6 +20,10 @@ public class Builder : MonoBehaviour
     public float rotationSpeed = 90f;
     public float rotationStep = 45f;
 
+    // Center height of wall mounted objects above the origin of the dome (m): on the solid wall (floor 0.2, top 0.95
+    // before the belt)
+    public float wallMountHeight = 0.58f;
+
     private PlayerContext playerContext;
     private PlayerInputActions inputActions;
 
@@ -368,6 +372,12 @@ public class Builder : MonoBehaviour
     {
         if (ghost == null) return;
 
+        if (mode == Mode.Placing && placingItem != null && placingItem.WallMounted)
+        {
+            UpdateWallGhost();
+            return;
+        }
+
         // A structure can be larger than the range: its center is kept out of reach of the player,
         // at least its radius + 1 m away, otherwise the player would always be inside it (invalid)
         float footprintRadius = 0f;
@@ -432,6 +442,93 @@ public class Builder : MonoBehaviour
             ghostValid = valid;
             SetGhostMaterial(valid ? validMaterial : invalidMaterial);
         }
+    }
+
+    // Wall mounted object (PlaceableItemData.WallMounted): hung on the solid wall of the aimed dome, its back against the
+    // wall, facing the center, at wallMountHeight. Elsewhere, shown red at the aimed point
+    private void UpdateWallGhost()
+    {
+        stackTarget = null;
+
+        bool valid = TryGetWallPoint(out Dome dome, out Vector3 position, out Quaternion wallRotation);
+        string problem = valid ? null : "Se pose sur le mur plein d'un dôme";
+
+        if (valid)
+        {
+            ghost.SetActive(true);
+            ghost.transform.SetPositionAndRotation(position, wallRotation);
+            valid = !OverlapsExcept(dome);
+            placementPreview?.UpdatePreview(ghost);
+        }
+        else if (TryGetGhostPoint(range, 0f, out Vector3 point, out _))
+        {
+            Vector3 toPlayer = Vector3.ProjectOnPlane(transform.position - point, Vector3.up);
+            ghost.SetActive(true);
+            ghost.transform.SetPositionAndRotation(point, toPlayer.sqrMagnitude > 0.01f ? Quaternion.LookRotation(toPlayer) : Quaternion.identity);
+        }
+        else
+        {
+            ghost.SetActive(false);
+        }
+
+        if (problem != placingProblem)
+        {
+            placingProblem = problem;
+            UpdateHint();
+        }
+
+        if (valid != ghostValid)
+        {
+            ghostValid = valid;
+            SetGhostMaterial(valid ? validMaterial : invalidMaterial);
+        }
+    }
+
+    // The aimed point is on the solid wall of a dome, seen from inside: where and how a wall mounted object is hung
+    private bool TryGetWallPoint(out Dome dome, out Vector3 position, out Quaternion wallRotation)
+    {
+        dome = null;
+        position = Vector3.zero;
+        wallRotation = Quaternion.identity;
+
+        int layerMask = ~(1 << gameObject.layer);
+
+        if (!Physics.Raycast(Source.position, Source.forward, out RaycastHit hit, range, layerMask, QueryTriggerInteraction.Ignore)) return false;
+
+        dome = hit.collider.GetComponentInParent<Dome>();
+
+        if (dome == null || !dome.IsOwnCollider(hit.collider)) return false;
+
+        Vector3 center = dome.transform.position;
+        Vector3 outward = Vector3.ProjectOnPlane(hit.point - center, Vector3.up);
+        float height = hit.point.y - center.y;
+
+        // The solid wall only (not the floor, the glass or the outside of the wall), seen from inside
+        if (outward.sqrMagnitude < 0.01f || height > Dome.SolidWallTop || outward.magnitude < dome.InnerWallRadius - 0.3f
+            || outward.magnitude > dome.InnerWallRadius + 0.1f || Vector3.Dot(hit.normal, -outward.normalized) < 0.7f)
+        {
+            return false;
+        }
+
+        outward.Normalize();
+        position = center + outward * dome.InnerWallRadius + Vector3.up * wallMountHeight;
+        wallRotation = Quaternion.LookRotation(-outward, Vector3.up);
+        return true;
+    }
+
+    // Anything in the ghost box (the terrain excepted) that is not the dome it hangs on
+    private bool OverlapsExcept(Dome dome)
+    {
+        GetGhostBox(out Vector3 center, out Vector3 halfExtents);
+
+        int layerMask = ~LayerMask.GetMask("Terrain");
+
+        foreach (Collider other in Physics.OverlapBox(center, halfExtents * 0.9f, ghost.transform.rotation, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            if (!dome.IsOwnCollider(other)) return true;
+        }
+
+        return false;
     }
 
     // Stackable crate in hand aimed at a crate that can carry it (StorageContainer)
