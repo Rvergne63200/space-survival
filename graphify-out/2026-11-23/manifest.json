@@ -456,10 +456,10 @@
     "semantic_hash": "bdb310ccea7871b5cc1eea536773178b"
   },
   "Assets/Scripts/Behaviours/Build/Dome.cs": {
-    "mtime": 1795283343.015949,
-    "seen": 1795341668.4285245,
-    "ast_hash": "c2be52f568c0a46b2ac26f0a12abb6e9",
-    "semantic_hash": "c2be52f568c0a46b2ac26f0a12abb6e9"
+    "mtime": 1795392807.7632685,
+    "seen": 1795393087.9018025,
+    "ast_hash": "91fc61e3c97be0116221f0efd780646c",
+    "semantic_hash": ""
   },
   "Assets/Scripts/Behaviours/Build/DomeConnection.cs": {
     "mtime": 1795340015.8491018,
@@ -624,10 +624,10 @@
     "semantic_hash": "5f0c730af647a4860024faab51d4dd3a"
   },
   "Assets/Scripts/Behaviours/Entities/Player/Builder.cs": {
-    "mtime": 1795340035.66767,
-    "seen": 1795341668.4285579,
-    "ast_hash": "b6e83c54c63e5dfbfefc7021c303efab",
-    "semantic_hash": "b6e83c54c63e5dfbfefc7021c303efab"
+    "mtime": 1795392833.4117866,
+    "seen": 1795393087.901842,
+    "ast_hash": "35d97738515c793fd6c6d6828eef1f7c",
+    "semantic_hash": ""
   },
   "Assets/Scripts/Behaviours/Entities/Player/CablePlacer.cs": {
     "mtime": 1795045255.1672144,
@@ -1200,10 +1200,10 @@
     "semantic_hash": "cdb866776fbc1284e63689b0d7b29199"
   },
   "Assets/Scripts/Utilities/Item/PlaceableItemData.cs": {
-    "mtime": 1795301680.2315814,
-    "seen": 1795341668.428673,
-    "ast_hash": "f1bbd100079fca031bfab47d79471828",
-    "semantic_hash": "f1bbd100079fca031bfab47d79471828"
+    "mtime": 1795392807.585695,
+    "seen": 1795393087.9019697,
+    "ast_hash": "01b8262441812fed9c74e80ee2b99cee",
+    "semantic_hash": ""
   },
   "Assets/Scripts/Utilities/Item/ToolData.cs": {
     "mtime": 1795024833.9358096,
@@ -1902,9 +1902,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/F50 - R\u00e9seau \u00e9lectrique complet.md": {
-    "mtime": 1795386328.9340153,
-    "seen": 1795386356.8793154,
-    "ast_hash": "204269d283a7b3feaed369e9146e44f2",
+    "mtime": 1795393067.4517143,
+    "seen": 1795393087.9020336,
+    "ast_hash": "c085dc9820314b5bbaa19dc80c5251e0",
     "semantic_hash": ""
   },
   "obsidian/A faire/F51 - Syst\u00e8me d'oxyg\u00e8ne.md": {
@@ -1944,9 +1944,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/F65 - Int\u00e9gration des mod\u00e8les 3D.md": {
-    "mtime": 1795391144.2283964,
-    "seen": 1795391163.7580438,
-    "ast_hash": "0a9c6a9904c442419b1e7869560b4a05",
+    "mtime": 1795393067.4517143,
+    "seen": 1795393087.9020445,
+    "ast_hash": "4a6fed67aeab15bfe4724603781d899d",
     "semantic_hash": ""
   },
   "obsidian/A faire/Historique/Historique - Bugs.md": {
@@ -2148,9 +2148,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/00 - Index Fonctionnalit\u00e9s.md": {
-    "mtime": 1795391125.240416,
-    "seen": 1795391163.758095,
-    "ast_hash": "b1a3262430e7466ebe98468b148e5d3f",
+    "mtime": 1795393067.4482033,
+    "seen": 1795393087.9020956,
+    "ast_hash": "2ae13616e17277542bd673448eec5c8a",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Bootstrap/Sauvegarde.md": {
@@ -2190,9 +2190,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Construction/Objets pos\u00e9s.md": {
-    "mtime": 1795391125.240416,
-    "seen": 1795391163.7581067,
-    "ast_hash": "c2bd542febbd97e8215fdcef9340b1f1",
+    "mtime": 1795393067.449214,
+    "seen": 1795393087.9021068,
+    "ast_hash": "1e51b1048cbd3654a8cf6d56d34da9db",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Construction/Plans de construction.md": {
@@ -2202,9 +2202,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Construction/Pose et destruction.md": {
-    "mtime": 1795386198.9787464,
-    "seen": 1795386356.8793857,
-    "ast_hash": "bb57e02cc5cdf3e5dde08e73ba6aeccf",
+    "mtime": 1795393067.4502137,
+    "seen": 1795393087.9021099,
+    "ast_hash": "8cdde45ae03128170d2aae97740e39e0",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Construction/Rangements.md": {
@@ -2316,9 +2316,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Inventaire/Donn\u00e9es des items.md": {
-    "mtime": 1795391125.240416,
-    "seen": 1795391163.75814,
-    "ast_hash": "a2754a7b0b39bdbe7f283963cb581998",
+    "mtime": 1795393067.4502137,
+    "seen": 1795393087.9021404,
+    "ast_hash": "c30cc70e724d2b440d888155b5108183",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Inventaire/Inventaire du joueur.md": {
@@ -2400,9 +2400,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Appareils \u00e9lectriques.md": {
-    "mtime": 1795391125.2386909,
-    "seen": 1795391163.7581635,
-    "ast_hash": "0303a5824a4d61b75e21aaae0e857844",
+    "mtime": 1795393067.449214,
+    "seen": 1795393087.9021637,
+    "ast_hash": "ec5f135560a00810e4ab70edfbb04ef1",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/C\u00e2ble \u00e9lectrique.md": {
@@ -2418,9 +2418,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Objets du r\u00e9seau \u00e9lectrique.md": {
-    "mtime": 1795391130.3780432,
-    "seen": 1795391163.758168,
-    "ast_hash": "e8e8629e7c48bd63596ef9c580701266",
+    "mtime": 1795393067.4482033,
+    "seen": 1795393087.9021697,
+    "ast_hash": "907577a862f900cf0bd3955a5c85c3b8",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Panneau de contr\u00f4le.md": {
@@ -2508,9 +2508,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/07 - Objets muraux.md": {
-    "mtime": 1795387323.6114182,
-    "seen": 1795388083.144621,
-    "ast_hash": "507bcabffd0463fa9df23a1104e7fd13",
+    "mtime": 1795393067.4535482,
+    "seen": 1795393087.9022105,
+    "ast_hash": "76eff91a9701baa09c0785b94124c099",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/08 - Vitres.md": {
@@ -2556,21 +2556,21 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/15 - Scripts d'animation Unity.md": {
-    "mtime": 1795387160.835158,
-    "seen": 1795388083.1446302,
-    "ast_hash": "75119f0bc401ea43ab8a8e8b9fd6c5c5",
+    "mtime": 1795393067.4517143,
+    "seen": 1795393087.902221,
+    "ast_hash": "9346d98b89336c2efc36b04d619d0b59",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/16 - Erreurs \u00e0 ne pas refaire.md": {
-    "mtime": 1795387136.436862,
-    "seen": 1795388083.1446319,
-    "ast_hash": "75ca30be62b53d247c87bfb8b6e770f8",
+    "mtime": 1795393074.5249107,
+    "seen": 1795393087.9022229,
+    "ast_hash": "bcc7d7a401468dd957a759c985dbea07",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/17 - Scripts de r\u00e9f\u00e9rence.md": {
-    "mtime": 1795387415.8691301,
-    "seen": 1795388083.144633,
-    "ast_hash": "537d546b63bfa87d0e3639bd03b6d38f",
+    "mtime": 1795393067.4530437,
+    "seen": 1795393087.9022243,
+    "ast_hash": "6ed1f7c4f1883914131ad455142ea1a0",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/00 - Index Code.md": {
@@ -2622,9 +2622,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/08 - Constructions et objets pos\u00e9s.md": {
-    "mtime": 1795388571.8657856,
-    "seen": 1795388607.8324704,
-    "ast_hash": "1e6415c8472bfce089df20cb9f817bda",
+    "mtime": 1795393067.4512095,
+    "seen": 1795393087.9021957,
+    "ast_hash": "84f41053914bf9687a2b5871592edb99",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/09 - Ajouter un appareil \u00e9lectrique.md": {
@@ -2667,6 +2667,48 @@
     "mtime": 1795391110.3177197,
     "seen": 1795391163.7581792,
     "ast_hash": "b70450c7539d24b398dd8b707f2ae5b9",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/bt_build.py": {
+    "mtime": 1795392694.1027312,
+    "seen": 1795393087.9016929,
+    "ast_hash": "ab9df904f2eea304551418515e3d9a3c",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Behaviours/Animations/BatteryAnimator.cs": {
+    "mtime": 1795392779.658439,
+    "seen": 1795393087.9017708,
+    "ast_hash": "b02fb8d94db632a020dd8d91ae984b0f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Behaviours/Energy/BatteryIndicator.cs": {
+    "mtime": 1795392787.1448424,
+    "seen": 1795393087.901814,
+    "ast_hash": "f2897cc5d05bd13ea380aaaade8488ae",
+    "semantic_hash": ""
+  },
+  "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Batteries.md": {
+    "mtime": 1795393042.8652103,
+    "seen": 1795393087.9021652,
+    "ast_hash": "265c3d15e61d887b3ba43d3d60877f2b",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Battery_Bank_34.png": {
+    "mtime": 1795392710.245855,
+    "seen": 1795393087.9022267,
+    "ast_hash": "0ae97927543bb345836692ea401b0ef1",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Battery_Cabinet_34.png": {
+    "mtime": 1795392671.6158154,
+    "seen": 1795393087.9022279,
+    "ast_hash": "1671894569c76ca1c71456c8114ea19b",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Battery_Wall_34.png": {
+    "mtime": 1795392701.7137718,
+    "seen": 1795393087.9022293,
+    "ast_hash": "e45b78d0a5d8bc3c063005c71313c53e",
     "semantic_hash": ""
   }
 }

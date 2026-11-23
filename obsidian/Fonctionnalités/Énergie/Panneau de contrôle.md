@@ -33,7 +33,12 @@ Exemples : `PD1 ---> G1 ---> B1`, panneau dans B1 : G1, PD1 et ce que PD1 alimen
 ## Sélection
 Pour une machine, un générateur ou une batterie, ses informations et un bouton Allumer / Éteindre. Pour un tableau, tous ses réglages, comme dans son interface ([[Tableau de distribution]]).
 
-## Modèles
-Les modèles `ControlPanel` (pupitre holographique) et `WallScreen` sont livrés mais pas encore intégrés au prefab : voir [[F65 - Intégration des modèles 3D|F65]].
+## Modèle
+- Prefab : modèle `ControlPanel` (pupitre holographique, 0,84 × 0,63 × 1,13 m) en enfant `Model`, avec son `Animator` (`ControlPanel.controller`) et `ControlPanelAnimator`.
+- Alimenté (allumé et réseau qui le fournit), la barre du projecteur sort puis l'écran holographique se déploie ; sinon il se replie (`ControlPanel.Update` → `ControlPanelAnimator.SetPowered`). Voyant bleu alimenté, orange sinon, clignotant pendant le mouvement.
+- L'écran holographique (`Hologram_Screen`) reste vierge : la carte ne s'y affiche pas.
+- Collider : une boîte autour du pupitre (l'hologramme n'en a pas). Point d'accroche du câble : `Connector`, en bas de la face arrière.
+- Chargé avec une sauvegarde alors qu'il est alimenté, il rejoue le déploiement (l'animateur n'a pas de pose déployée sans animation).
+- Le modèle `WallScreen` est livré mais n'a pas encore de rôle : voir [[F65 - Intégration des modèles 3D|F65]].
 
 Voir aussi : [[Réseau électrique]] · [[Électricité des bâtiments]]

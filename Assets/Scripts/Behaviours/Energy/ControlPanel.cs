@@ -10,13 +10,28 @@ using UnityEngine;
 // Examples: PD1 ---> G1 ---> B1, panel in B1: G1, PD1 and what else PD1 feeds, not what feeds PD1 (3, 2).
 // G1 ---> B1 ---> B2, panel in B2: B1 from outside, not G1 (4, 2). G1 ---- B1 ==== B2 ---> B3, panel in B1: G1, B1,
 // B2 and B3 with their content (3, 1). PD1 ---> B1 and PD1 ---> B5, panel in B1: B5 from outside (4)
+// Model (child "Model", Resources/Models/ControlPanel): its ControlPanelAnimator deploys the holographic screen while
+// the panel is powered and folds it otherwise
 [RequireComponent(typeof(EnergyConsumer))]
 public class ControlPanel : MonoBehaviour, IInterractable
 {
     private EnergyConsumer consumer;
+    private ControlPanelAnimator display;
 
     public EnergyConsumer Consumer => consumer != null ? consumer : (consumer = GetComponent<EnergyConsumer>());
     public bool IsPowered => Consumer.IsPowered;
+
+    private void Awake()
+    {
+        display = GetComponentInChildren<ControlPanelAnimator>(true);
+
+        if (display == null) Debug.LogWarning(name + ": no ControlPanelAnimator in the children, the screen is not shown", this);
+    }
+
+    private void Update()
+    {
+        if (display != null && display.IsPowered != IsPowered) display.SetPowered(IsPowered);
+    }
 
     // Devices and cables seen from the control panel (itself included)
     public void CollectNetwork(List<EnergyDevice> devices, List<ElectricCable> cables)
