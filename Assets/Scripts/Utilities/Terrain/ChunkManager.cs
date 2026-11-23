@@ -17,9 +17,12 @@ public class ChunkManager : MonoBehaviour
     int worldSeed;
     public int Seed => worldSeed;
     [SerializeField] Transform[] toReplaceConfig = new Transform[0];
+    // Shape of the terrain (relief and ground), tuned with Tools > Terrain Preview. Empty = Resources/Terrain/TerrainShape
+    [SerializeField] TerrainShapeSettings shapeSettings;
 
     Transform playerTransform;
-    Vector2 perlinOffset;
+    // Built from the settings and the world seed: gives the generated height of any point, loaded or not
+    TerrainShape shape;
 
     // Terrain flattenings (constructions): saved, and applied again to the chunks when they are generated
     readonly List<TerrainEditSaveData> terrainEdits = new List<TerrainEditSaveData>();
@@ -61,9 +64,11 @@ public class ChunkManager : MonoBehaviour
             terrainEdits.AddRange(saveManager.SavedTerrainEdits);
         }
 
-        Random.InitState(worldSeed);
-
-        perlinOffset = new Vector2(Random.value * 999999, Random.value * 999999);
+        if (shapeSettings == null)
+        {
+            shapeSettings = TerrainShapeSettings.LoadGameSettings();
+        }
+        shape = new TerrainShape(shapeSettings, unchecked((uint)worldSeed));
 
         foreach (Transform t in toReplaceConfig)
         {
@@ -253,15 +258,8 @@ public class ChunkManager : MonoBehaviour
     // Height the terrain is generated with at a world position (m), loaded or not. The flattenings are not included
     public float GeneratedHeightAt(float x, float z)
     {
-        if (generatorTemplate == null && chunkPrefab != null)
-        {
-            generatorTemplate = chunkPrefab.GetComponent<TerrainGenerator>();
-        }
-
-        return generatorTemplate != null ? generatorTemplate.HeightAt(perlinOffset.x + x, perlinOffset.y + z) : 0f;
+        return shape != null ? shape.Sample(x, z).height : 0f;
     }
-
-    TerrainGenerator generatorTemplate;
 
     public Vector2Int GetChunkPositionFor(Vector3 position)
     {
@@ -461,7 +459,7 @@ public class ChunkManager : MonoBehaviour
         // After the objects to replace (listeners are called in order): a held body is released on the final terrain
         chunkTerrainGenerator.ev_OnTerminateGeneration.AddListener(terrainData => OnChunkReady(coord));
 
-        chunkTerrainGenerator.Initialize(coord, perlinOffset, chunkSize);
+        chunkTerrainGenerator.Initialize(coord, shape, chunkSize);
 
         // Neighbors are managed in LateUpdate: Unity's auto connection must not override them
         Terrain terrain = newChunk.GetComponent<Terrain>();

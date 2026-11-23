@@ -14,12 +14,12 @@ tags: [jeu-colonie, instructions, code]
 | `Behaviours/Camera/` | Caméra du joueur, contour de l'objet pointé |
 | `Behaviours/Energy/` | Réseau électrique : appareils, câbles, tableaux, `EnergyNetworkManager` |
 | `Behaviours/Entities/Player/` | Composants du joueur (déplacement, pointeur, inventaire, `Builder`, `Crafter`, `Searcher`…) |
-| `Behaviours/Environment/` | Monde : `Terrain/` (chunks, génération), `Interractable/` (objets avec lesquels on interagit), cycle jour / nuit |
+| `Behaviours/Environment/` | Monde : `Interractable/` (objets avec lesquels on interagit), cycle jour / nuit, météo |
 | `Behaviours/Scene/` | Chargement de scènes, point de spawn |
 | `Behaviours/UI/<Domaine>/` | Interfaces UI Toolkit, un sous-dossier par domaine (`Inventory`, `Crafting`, `Energy`, `Map`, `Menu`, `Stat`, `Interraction`) ; `ParentUI` et `ParentedUI` à la racine |
 | `Manager/` | Singletons C# statiques (pas des MonoBehaviour) : `ModeManager`, `InterfaceManager`, `PlayingMode`, `PlayerModeOptions` |
 | `Save/` | `SaveManager`, `SaveableObject`, `ISaveableComponent`, `SaveData` |
-| `Utilities/<Domaine>/` | Données et logique sans MonoBehaviour de scène : `Item/` (ItemData et ses sous-classes, `ItemSlot`, `ItemCollection`), `Build/` (`StructureData`, `IPlacementPreview`, aplanissement), `Crafting/`, `Effect/` (modifiers), `Stat/`, `Serialization/` (`SubclassPicker`) |
+| `Utilities/<Domaine>/` | Données et logique sans MonoBehaviour de scène : `Item/` (ItemData et ses sous-classes, `ItemSlot`, `ItemCollection`), `Build/` (`StructureData`, `IPlacementPreview`, aplanissement), `Crafting/`, `Effect/` (modifiers), `Stat/`, `Serialization/` (`SubclassPicker`) ; exception : `Terrain/` regroupe tout le terrain, MonoBehaviour compris (`ChunkManager`, `TerrainGenerator`, `EnvironmentSpawner`), avec la forme du relief (`TerrainShape`, `TerrainNoise`, réglages) et un paysage par fichier dans `Features/` |
 | `Editor/` | Scripts d'éditeur (`ModelImportSetup`) |
 | `Enum/`, `Debug/` | Énumérations partagées, outils de debug |
 

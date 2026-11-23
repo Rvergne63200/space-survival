@@ -2,20 +2,18 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Generates the terrain of a chunk (on the Chunk prefab, created by ChunkManager): computes its heights from the
+/// TerrainShape in the background, applies them, replays the saved flattenings, then raises ev_OnTerminateGeneration.
+/// </summary>
 public class TerrainGenerator : MonoBehaviour
 {
     public UnityEvent<TerrainData> ev_OnTerminateGeneration;
 
+    [Tooltip("Size of the chunk (m), set by ChunkManager")]
     public int size = 64;
-    public float height = 50f;
-
-    public float perlinX = 1f;
-    public float perlinY = 1f;
-
-    public float perlinScale = 25f;
+    [Tooltip("Height range of the terrain (m): the generated heights must stay between 0 and this value")]
     public float maxHeight = 1024;
-
-    public Vector2 perlinOffset = new Vector2(0, 0);
 
     // Ground zones: each terrain layer of the TerrainData is a ground zone (Ground_Rust, Ground_Ochre...). The zones
     // are painted from a world-space noise (one noise per layer, the strongest wins with soft transitions), so they
@@ -31,8 +29,11 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private int zoneResolution = 64;
 
     private Terrain terrain;
+    private TerrainShape shape;
+    // World position (X, Z) of the south-west corner of the chunk
+    private Vector2 origin;
 
-    public void Initialize(Vector2 position, Vector2 perlinOffset, int size)
+    public void Initialize(Vector2Int coord, TerrainShape shape, int size)
     {
         terrain = GetComponent<Terrain>();
         terrain.terrainData = Instantiate(terrain.terrainData);
@@ -42,10 +43,8 @@ public class TerrainGenerator : MonoBehaviour
         Shader.SetGlobalVector("_WorldUVTerrainSize", new Vector4(size, size, 0f, 0f));
 
         this.size = size;
-        this.perlinOffset = new Vector2(
-            position.x * size,
-            position.y * size
-        ) + perlinOffset;
+        this.shape = shape;
+        origin = new Vector2(coord.x * size, coord.y * size);
 
         Generate();
     }
@@ -92,7 +91,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int y = 0; y <= size; y++)
             {
-                heights[y, x] = HeightAt(perlinOffset.x + x, perlinOffset.y + y) / maxHeight;
+                heights[y, x] = Mathf.Clamp01(shape.Sample(origin.x + x, origin.y + y).height / maxHeight);
             }
         }
 
@@ -111,8 +110,8 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < res; x++)
             {
-                float worldX = perlinOffset.x + x * step;
-                float worldY = perlinOffset.y + y * step;
+                float worldX = origin.x + x * step;
+                float worldY = origin.y + y * step;
                 float total = 0f;
                 for (int k = 0; k < layerCount; k++)
                 {
@@ -140,27 +139,5 @@ public class TerrainGenerator : MonoBehaviour
     private float ZoneWeight(int layer)
     {
         return zoneWeights != null && layer < zoneWeights.Length ? zoneWeights[layer] : 1f;
-    }
-
-    // Generated height (m) at a point of the noise: the world position plus the offset of the world (ChunkManager).
-    // Also used by ChunkManager.GeneratedHeightAt for the areas that are not loaded
-    public float HeightAt(float worldX, float worldY)
-    {
-        float xCoord = worldX / perlinX;
-        float yCoord = worldY / perlinY;
-
-        float baseHeigth = height;
-        float localVariation = Mathf.PerlinNoise(xCoord * 0.01f, yCoord * 0.01f) * perlinScale;
-        float globalVariation = Mathf.PerlinNoise(xCoord * 0.005f, yCoord * 0.005f) * 3 * perlinScale;
-
-        float hollowVariation = Mathf.PerlinNoise(xCoord * 0.001f, yCoord * 0.001f);
-        hollowVariation = Mathf.Clamp(hollowVariation - 0.7f, 0f, 1f);
-        hollowVariation *= 35 * perlinScale;
-
-        float mountainsVariation = Mathf.PerlinNoise((xCoord + 1024/perlinX) * 0.001f, (yCoord + 1024/perlinY) * 0.001f);
-        mountainsVariation = Mathf.Clamp(mountainsVariation - 0.5f, 0f, 1f);
-        mountainsVariation *= 40 * Mathf.Exp(mountainsVariation) * perlinScale;
-
-        return baseHeigth + localVariation + globalVariation + mountainsVariation - hollowVariation;
     }
 }

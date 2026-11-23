@@ -755,24 +755,6 @@
     "ast_hash": "053dc31cda4ce1b0eb1893ae4c1010b7",
     "semantic_hash": "053dc31cda4ce1b0eb1893ae4c1010b7"
   },
-  "Assets/Scripts/Behaviours/Environment/Terrain/ChunkManager.cs": {
-    "mtime": 1795283277.7590928,
-    "seen": 1795341668.428584,
-    "ast_hash": "813f44a761b3bb1e58f698e8a988ffe4",
-    "semantic_hash": "813f44a761b3bb1e58f698e8a988ffe4"
-  },
-  "Assets/Scripts/Behaviours/Environment/Terrain/EnvironmentSpawner.cs": {
-    "mtime": 1794842870.498592,
-    "seen": 1795341668.4285855,
-    "ast_hash": "2948cdbbe88f234653d3aac1dbc9dbec",
-    "semantic_hash": "2948cdbbe88f234653d3aac1dbc9dbec"
-  },
-  "Assets/Scripts/Behaviours/Environment/Terrain/TerrainGenerator.cs": {
-    "mtime": 1795006205.3890214,
-    "seen": 1795341668.4285867,
-    "ast_hash": "c89cbc2036bc0f8f6add7d586ffd86f5",
-    "semantic_hash": "c89cbc2036bc0f8f6add7d586ffd86f5"
-  },
   "Assets/Scripts/Behaviours/Scene/PlayerSpawnPoint.cs": {
     "mtime": 1794842821.5285742,
     "seen": 1795341668.428588,
@@ -894,10 +876,10 @@
     "semantic_hash": "52214261b538a77b81a952b62d5cde28"
   },
   "Assets/Scripts/Behaviours/UI/Map/MapUtility.cs": {
-    "mtime": 1795300533.2736168,
-    "seen": 1795341668.4286118,
-    "ast_hash": "63a90ade1d4c47e875db128611d00f41",
-    "semantic_hash": "63a90ade1d4c47e875db128611d00f41"
+    "mtime": 1795461928.3220904,
+    "seen": 1795461980.1585782,
+    "ast_hash": "0637bd37de24a9d915c150b88ec3db26",
+    "semantic_hash": ""
   },
   "Assets/Scripts/Behaviours/UI/Map/MinimapUI.cs": {
     "mtime": 1795039278.3716862,
@@ -1776,9 +1758,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/00 - Index \u00c0 faire.md": {
-    "mtime": 1795391144.151898,
-    "seen": 1795391163.757993,
-    "ast_hash": "bb166e48ef12d1b2330651707c0e7bf6",
+    "mtime": 1795455712.0236697,
+    "seen": 1795455719.6014733,
+    "ast_hash": "78623c04590630581b6ba1125a5c128d",
     "semantic_hash": ""
   },
   "obsidian/A faire/B03 - D\u00e9collage en haut des pentes.md": {
@@ -1854,9 +1836,9 @@
     "semantic_hash": ""
   },
   "obsidian/A faire/F30 - Biomes.md": {
-    "mtime": 1795385967.578753,
-    "seen": 1795386356.8793051,
-    "ast_hash": "b926e19e31b264b66c036cb1235a6a1f",
+    "mtime": 1795455298.1212106,
+    "seen": 1795455303.6639855,
+    "ast_hash": "a143a7c2153c895684a16c410773e83c",
     "semantic_hash": ""
   },
   "obsidian/A faire/F31 - Structures g\u00e9n\u00e9r\u00e9es.md": {
@@ -2388,9 +2370,9 @@
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/Monde/Terrain proc\u00e9dural.md": {
-    "mtime": 1795454712.4772058,
-    "seen": 1795454719.6317544,
-    "ast_hash": "f66e32311ee7f642b53a62eb35e1c1b3",
+    "mtime": 1795462580.0629897,
+    "seen": 1795462588.3621068,
+    "ast_hash": "03fe6da63b64db368324b230a47306e9",
     "semantic_hash": ""
   },
   "obsidian/Fonctionnalit\u00e9s/\u00c9nergie/Appareils \u00e9lectriques.md": {
@@ -2514,9 +2496,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/09 - Textures.md": {
-    "mtime": 1795451780.5499413,
-    "seen": 1795451823.4631019,
-    "ast_hash": "84ff778b59345594ea2e62eb1e9f4ed0",
+    "mtime": 1795455010.698356,
+    "seen": 1795455018.2449822,
+    "ast_hash": "1b1b7b3a0214cc1f67bdd08d75efa566",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/10 - Mod\u00e9lisation Blender.md": {
@@ -2562,9 +2544,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/17 - Scripts de r\u00e9f\u00e9rence.md": {
-    "mtime": 1795451806.02651,
-    "seen": 1795451823.4631126,
-    "ast_hash": "a3e5e35f4090a1f4a8bd1e20e351da84",
+    "mtime": 1795455010.6988602,
+    "seen": 1795455018.2449932,
+    "ast_hash": "227564d831bb604fa19c3e2997a5d6d4",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/00 - Index Code.md": {
@@ -2574,9 +2556,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/01 - Organisation des dossiers.md": {
-    "mtime": 1795388571.1090949,
-    "seen": 1795388607.8324618,
-    "ast_hash": "42783bee6239348c82212af8dedc1b96",
+    "mtime": 1795462074.6564493,
+    "seen": 1795462083.1931472,
+    "ast_hash": "b71a0b709c99005b7e459f445ae9d979",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/02 - Conventions de code.md": {
@@ -2867,12 +2849,6 @@
     "ast_hash": "8e67980785f29c520f4773f11bff98d6",
     "semantic_hash": ""
   },
-  "ArtPipeline/Blender/ground_rust.py": {
-    "mtime": 1795454682.5628576,
-    "seen": 1795454719.6313019,
-    "ast_hash": "51389286ba9e07786737214c083dd85d",
-    "semantic_hash": ""
-  },
   "ArtPipeline/Renders/Deposit_Coal_34.png": {
     "mtime": 1795451403.0466285,
     "seen": 1795451823.4631255,
@@ -3060,14 +3036,14 @@
     "semantic_hash": ""
   },
   "Assets/Terrain/Textures/Ground_Rust_BaseColor.png": {
-    "mtime": 1795454689.9101923,
-    "seen": 1795454719.6319854,
+    "mtime": 1795454804.6494882,
+    "seen": 1795455018.245139,
     "ast_hash": "17ab07a29b3ad60172145ad2783f9aec",
     "semantic_hash": ""
   },
   "Assets/Terrain/Textures/Ground_Rust_Normal.png": {
-    "mtime": 1795454690.3265238,
-    "seen": 1795454719.6319866,
+    "mtime": 1795454805.113371,
+    "seen": 1795455018.2451403,
     "ast_hash": "7c9f11a8e64bc08ba6d00a209fc8cdde",
     "semantic_hash": ""
   },
@@ -3081,6 +3057,210 @@
     "mtime": 1795454702.2485702,
     "seen": 1795454719.631879,
     "ast_hash": "464fccd19d9a91d42ded843936b2b3f1",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Blender/ground_build.py": {
+    "mtime": 1795454797.1882553,
+    "seen": 1795455018.2444503,
+    "ast_hash": "91b80a6daa2e47651472fd636f85ceec",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Ground_zones.png": {
+    "mtime": 1795454983.2639718,
+    "seen": 1795455018.2450264,
+    "ast_hash": "30887776cb35e1e9faeefb4e8ab61aee",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Ground_zones_map.png": {
+    "mtime": 1795454963.0304468,
+    "seen": 1795455018.2450275,
+    "ast_hash": "990020b854486014f2d4963ec45a464f",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Dust_BaseColor.png": {
+    "mtime": 1795454819.8629344,
+    "seen": 1795455018.2451344,
+    "ast_hash": "c6b9ee2567cd2cf77f861e78da084d0c",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Dust_Normal.png": {
+    "mtime": 1795454820.2072933,
+    "seen": 1795455018.2451355,
+    "ast_hash": "0ac454544ecf3251490d4a8344b6cd97",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Ochre_BaseColor.png": {
+    "mtime": 1795454812.254427,
+    "seen": 1795455018.2451367,
+    "ast_hash": "81798ec9aaeff875e825730d8671040e",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Ochre_Normal.png": {
+    "mtime": 1795454812.6536882,
+    "seen": 1795455018.245138,
+    "ast_hash": "2103bd7ae04cf7f46f3ac7df27c1e164",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Sediment_BaseColor.png": {
+    "mtime": 1795454827.5371377,
+    "seen": 1795455018.2451415,
+    "ast_hash": "02957eaf7a48acd0ff24c1703e98bc71",
+    "semantic_hash": ""
+  },
+  "Assets/Terrain/Textures/Ground_Sediment_Normal.png": {
+    "mtime": 1795454827.8645866,
+    "seen": 1795455018.2451425,
+    "ast_hash": "83c0cc340a717580e0dfad3b25f692ff",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Editor/TerrainPreview.cs": {
+    "mtime": 1795462533.3750117,
+    "seen": 1795462588.361849,
+    "ast_hash": "1d4b86247baf15a8cac30b36bdb6ffb2",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainNoise.cs": {
+    "mtime": 1795461889.384575,
+    "seen": 1795461980.158678,
+    "ast_hash": "0b346cde122bcd746fee515897b31246",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainShape.cs": {
+    "mtime": 1795461184.3040917,
+    "seen": 1795461392.1213877,
+    "ast_hash": "e69c71a450891503755c2f71815b5e16",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/F67 - \u00c9l\u00e9ments naturels 3D.md": {
+    "mtime": 1795455711.2813187,
+    "seen": 1795455719.6015189,
+    "ast_hash": "7562e0f42f2cbb5625fa0ec980e4a125",
+    "semantic_hash": ""
+  },
+  "obsidian/A faire/R22 - Refonte de la g\u00e9n\u00e9ration du terrain.md": {
+    "mtime": 1795461968.563101,
+    "seen": 1795461980.1588001,
+    "ast_hash": "4aa51ad43b229cd460410b831b521dbd",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_3d_eye.png": {
+    "mtime": 1795462566.06985,
+    "seen": 1795462588.36224,
+    "ast_hash": "b78ef00183369c33f2c1e3027b7effd9",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_3d_high.png": {
+    "mtime": 1795462565.9772234,
+    "seen": 1795462588.3622417,
+    "ast_hash": "ea90f6fdac72fd848bd9bb5198569abd",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_map.png": {
+    "mtime": 1795461342.092187,
+    "seen": 1795461392.1217036,
+    "ast_hash": "4410c30e5918d9a43357c265fdc11f95",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainCraters.cs": {
+    "mtime": 1795461171.7182877,
+    "seen": 1795461392.121374,
+    "ast_hash": "6b4eed35b19be63681ba744887e88f80",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainDryLakes.cs": {
+    "mtime": 1795461184.0693083,
+    "seen": 1795461392.1213756,
+    "ast_hash": "22fee0d9bb8a391729d21962eeb5f40f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainDryRivers.cs": {
+    "mtime": 1795461171.619789,
+    "seen": 1795461392.1213765,
+    "ast_hash": "04f526bdedabdb18492f0690d159f370",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainDunes.cs": {
+    "mtime": 1795461171.4276862,
+    "seen": 1795461392.1213777,
+    "ast_hash": "fcca2da025a09c24942df8cc4d8db1cd",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainPlains.cs": {
+    "mtime": 1795461171.2386158,
+    "seen": 1795461392.121379,
+    "ast_hash": "c8a76f558fbe1c1b1fd44b13b91cf9f5",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainPlateaus.cs": {
+    "mtime": 1795461277.8767247,
+    "seen": 1795461392.12138,
+    "ast_hash": "9eb865b5232709accf60e542c7f91a0a",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/Features/TerrainRegions.cs": {
+    "mtime": 1795461171.115548,
+    "seen": 1795461392.1213813,
+    "ast_hash": "4c0d7f0bd44e874dc8ccc5a82190e029",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/ITerrainFeature.cs": {
+    "mtime": 1795461113.4671705,
+    "seen": 1795461392.1213827,
+    "ast_hash": "0294a78cac849812468b17e543aa4b14",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainPoint.cs": {
+    "mtime": 1795461113.4671705,
+    "seen": 1795461392.1213856,
+    "ast_hash": "b7291461222e078dc563ef009e6b4835",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainSample.cs": {
+    "mtime": 1795461113.4666653,
+    "seen": 1795461392.1213868,
+    "ast_hash": "4c90e45c9e000ce5bdeec22a8152e73f",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainShapeSettings.cs": {
+    "mtime": 1795461853.0199258,
+    "seen": 1795461980.1586833,
+    "ast_hash": "6dddeb133c42e767a9c6a2de609d0003",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/ChunkManager.cs": {
+    "mtime": 1795461853.296438,
+    "seen": 1795462083.1928866,
+    "ast_hash": "8e489eced5d30db45bdb66b567632f4e",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/EnvironmentSpawner.cs": {
+    "mtime": 1794842870.498592,
+    "seen": 1795462083.1928885,
+    "ast_hash": "2948cdbbe88f234653d3aac1dbc9dbec",
+    "semantic_hash": ""
+  },
+  "Assets/Scripts/Utilities/Terrain/TerrainGenerator.cs": {
+    "mtime": 1795461804.1396065,
+    "seen": 1795462083.1929011,
+    "ast_hash": "83a8a225da035c0f75f5f40f3a30d344",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_3d_cliff.png": {
+    "mtime": 1795462566.1759012,
+    "seen": 1795462588.3622386,
+    "ast_hash": "f4c2cc8ef89fe39c27efe2388e809763",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_cliff_after.png": {
+    "mtime": 1795462566.1759012,
+    "seen": 1795462588.3622432,
+    "ast_hash": "f4c2cc8ef89fe39c27efe2388e809763",
+    "semantic_hash": ""
+  },
+  "ArtPipeline/Renders/Terrain_cliff_before.png": {
+    "mtime": 1795462548.8105545,
+    "seen": 1795462588.3622444,
+    "ast_hash": "4b6d0826c84f8a5c91310931e9599cf3",
     "semantic_hash": ""
   }
 }

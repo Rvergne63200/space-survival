@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d88fae3a7018e8345b4b95c214d7cbdb, type: 3}
+  m_Name: TerrainShape
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainShapeSettings
+  _regions:
+    _size: 3000
+    _warpStrength: 300
+    _warpSize: 900
+  _plains:
+    _baseHeight: 120
+    _relief: 10
+    _reliefSize: 350
+    _hillHeight: 30
+    _hillSize: 180
+    _hillAreaSize: 1100
+  _plateaus:
+    _threshold: 0.1
+    _height: 60
+    _strata: 4
+    _edgeWidth: 0.15
+    _canyonSize: 1200
+    _canyonWidth: 0.08
+  _dunes:
+    _basinThreshold: -0.12
+    _basinDepth: 16
+    _wavelength: 70
+    _height: 10
+    _windAngle: 30
+  _dryLakes:
+    _size: 1300
+    _threshold: 0.66
+    _depth: 4
+  _dryRivers:
+    _size: 1400
+    _width: 0.035
+    _depth: 5
+    _areaSize: 2600
+  _craters:
+    _scales:
+    - _cellSize: 900
+      _chance: 0.35
+    - _cellSize: 260
+      _chance: 0.3
+    - _cellSize: 70
+      _chance: 0.15
+    _maxRadius: 0.16

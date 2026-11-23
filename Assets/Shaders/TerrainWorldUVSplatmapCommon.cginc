@@ -269,6 +269,79 @@ fixed3 HexNormal(sampler2D tex, float scale, HexCells h, float3 W)
 }
 #endif
 
+// Triplanar projection : on the slopes the layers are also projected from the sides (planes ZY and XY), so they are not
+// stretched on the cliffs. The three projections (each hex-tiled) are blended by the orientation of the surface. A
+// projection is only sampled where its weight is not null (flat ground : the top one only).
+#define TRIPLANAR_SHARPNESS 4.0     // higher = narrower transitions between the projections
+
+struct Triplanar
+{
+    HexCells top, sideX, sideZ;     // planes XZ (uv = x, z), ZY (uv = z, y) and XY (uv = x, y)
+    float3 w;                       // weights of sideX, top, sideZ
+};
+
+// Surface normal of the terrain in world space (the terrain is never rotated)
+float3 TerrainGeomNormal(Input IN)
+{
+    #if defined(UNITY_INSTANCING_ENABLED) && !defined(SHADER_API_D3D11_9X) && defined(TERRAIN_INSTANCED_PERPIXEL_NORMAL)
+        #if defined(TERRAIN_USE_SEPARATE_VERTEX_SAMPLER)
+            return normalize(_TerrainNormalmapTexture.Sample(sampler__TerrainNormalmapTexture, IN.tc.zw).xyz * 2 - 1);
+        #else
+            return normalize(tex2D(_TerrainNormalmapTexture, IN.tc.zw).xyz * 2 - 1);
+        #endif
+    #else
+        return float3(0, 1, 0);     // per-vertex normals : top projection only, as before
+    #endif
+}
+
+Triplanar TriplanarSetup(Input IN, float4 splatST, float3 normal)
+{
+    Triplanar t;
+    t.top = HexSetup(WorldSplatUV(IN, splatST));
+    // Tiles per meter of the layer (see WorldSplatUV) ; the derivatives are taken here, outside the branches
+    float2 scale = _WorldUVTerrainSize.x > 0.0f && _WorldUVTerrainSize.y > 0.0f ? splatST.xy / _WorldUVTerrainSize.xy : 0.0f;
+    t.sideX = HexSetup(float2(IN.worldXZ.y, IN.worldY) * scale + splatST.zw);
+    t.sideZ = HexSetup(float2(IN.worldXZ.x, IN.worldY) * scale + splatST.zw);
+    float3 w = pow(abs(normal), TRIPLANAR_SHARPNESS);
+    t.w = scale.x > 0.0f ? w / (w.x + w.y + w.z) : float3(0, 1, 0);
+    return t;
+}
+
+// Diffuse of one layer ; Wx, Wy, Wz return the hex blend weights of each projection, reused for the normal map
+half4 TriplanarDiffuse(sampler2D tex, Triplanar t, out float3 Wx, out float3 Wy, out float3 Wz)
+{
+    half4 c = 0;
+    Wx = 0; Wy = 0; Wz = 0;
+    [branch] if (t.w.y > 0.001) c += t.w.y * HexDiffuse(tex, t.top, Wy);
+    [branch] if (t.w.x > 0.001) c += t.w.x * HexDiffuse(tex, t.sideX, Wx);
+    [branch] if (t.w.z > 0.001) c += t.w.z * HexDiffuse(tex, t.sideZ, Wz);
+    return c;
+}
+
+#ifdef _NORMALMAP
+// Normal map of one layer, as a world space perturbation : each projection bends the normal along its own uv axes
+float3 TriplanarNormal(sampler2D tex, float scale, Triplanar t, float3 Wx, float3 Wy, float3 Wz)
+{
+    float3 p = 0;
+    [branch] if (t.w.y > 0.001)
+    {
+        fixed3 n = HexNormal(tex, scale, t.top, Wy);
+        p += t.w.y * float3(n.x, 0, n.y);
+    }
+    [branch] if (t.w.x > 0.001)
+    {
+        fixed3 n = HexNormal(tex, scale, t.sideX, Wx);
+        p += t.w.x * float3(0, n.y, n.x);
+    }
+    [branch] if (t.w.z > 0.001)
+    {
+        fixed3 n = HexNormal(tex, scale, t.sideZ, Wz);
+        p += t.w.z * float3(n.x, n.y, 0);
+    }
+    return p;
+}
+#endif
+
 #ifdef TERRAIN_STANDARD_SHADER
 void SplatmapMix(Input IN, half4 defaultAlpha, out half4 splat_control, out half weight, out fixed4 mixedDiffuse, inout fixed3 mixedNormal)
 #else
@@ -294,19 +367,19 @@ void SplatmapMix(Input IN, out half4 splat_control, out half weight, out fixed4 
     // lighting result can be correctly weighted.
     splat_control /= (weight + 1e-3f);
 
-    // World UV
-    float2 uvSplat0 = WorldSplatUV(IN, _Splat0_ST);
-    float2 uvSplat1 = WorldSplatUV(IN, _Splat1_ST);
-    float2 uvSplat2 = WorldSplatUV(IN, _Splat2_ST);
-    float2 uvSplat3 = WorldSplatUV(IN, _Splat3_ST);
-
-    // Anti-tiling : every layer is hex-tiled (see HexSetup)
-    HexCells h0 = HexSetup(uvSplat0), h1 = HexSetup(uvSplat1), h2 = HexSetup(uvSplat2), h3 = HexSetup(uvSplat3);
-    float3 W0, W1, W2, W3;
-    half4 d0 = HexDiffuse(_Splat0, h0, W0);
-    half4 d1 = HexDiffuse(_Splat1, h1, W1);
-    half4 d2 = HexDiffuse(_Splat2, h2, W2);
-    half4 d3 = HexDiffuse(_Splat3, h3, W3);
+    // World UV, triplanar on the slopes, every projection hex-tiled (see TriplanarSetup, HexSetup)
+    float3 geomNormal = TerrainGeomNormal(IN);
+    Triplanar t0 = TriplanarSetup(IN, _Splat0_ST, geomNormal);
+    Triplanar t1 = TriplanarSetup(IN, _Splat1_ST, geomNormal);
+    Triplanar t2 = TriplanarSetup(IN, _Splat2_ST, geomNormal);
+    Triplanar t3 = TriplanarSetup(IN, _Splat3_ST, geomNormal);
+    // The layers absent at this pixel are not sampled
+    float3 Wx0 = 0, Wy0 = 0, Wz0 = 0, Wx1 = 0, Wy1 = 0, Wz1 = 0, Wx2 = 0, Wy2 = 0, Wz2 = 0, Wx3 = 0, Wy3 = 0, Wz3 = 0;
+    half4 d0 = 0, d1 = 0, d2 = 0, d3 = 0;
+    [branch] if (splat_control.r > 0.001) d0 = TriplanarDiffuse(_Splat0, t0, Wx0, Wy0, Wz0);
+    [branch] if (splat_control.g > 0.001) d1 = TriplanarDiffuse(_Splat1, t1, Wx1, Wy1, Wz1);
+    [branch] if (splat_control.b > 0.001) d2 = TriplanarDiffuse(_Splat2, t2, Wx2, Wy2, Wz2);
+    [branch] if (splat_control.a > 0.001) d3 = TriplanarDiffuse(_Splat3, t3, Wx3, Wy3, Wz3);
 
     mixedDiffuse = 0.0f;
     #ifdef TERRAIN_STANDARD_SHADER
@@ -322,10 +395,17 @@ void SplatmapMix(Input IN, out half4 splat_control, out half weight, out fixed4 
     #endif
 
     #ifdef _NORMALMAP
-        mixedNormal  = HexNormal(_Normal0, _NormalScale0, h0, W0) * splat_control.r;
-        mixedNormal += HexNormal(_Normal1, _NormalScale1, h1, W1) * splat_control.g;
-        mixedNormal += HexNormal(_Normal2, _NormalScale2, h2, W2) * splat_control.b;
-        mixedNormal += HexNormal(_Normal3, _NormalScale3, h3, W3) * splat_control.a;
+        // Perturbation in world space, added to the surface normal, then expressed in the tangent frame of the surface
+        // (tangent along +X, bitangent along +Z on flat ground : the frame rebuilt below from geomNormal)
+        float3 perturbation = 0;
+        [branch] if (splat_control.r > 0.001) perturbation += TriplanarNormal(_Normal0, _NormalScale0, t0, Wx0, Wy0, Wz0) * splat_control.r;
+        [branch] if (splat_control.g > 0.001) perturbation += TriplanarNormal(_Normal1, _NormalScale1, t1, Wx1, Wy1, Wz1) * splat_control.g;
+        [branch] if (splat_control.b > 0.001) perturbation += TriplanarNormal(_Normal2, _NormalScale2, t2, Wx2, Wy2, Wz2) * splat_control.b;
+        [branch] if (splat_control.a > 0.001) perturbation += TriplanarNormal(_Normal3, _NormalScale3, t3, Wx3, Wy3, Wz3) * splat_control.a;
+        float3 worldNormal = normalize(geomNormal + perturbation);
+        float3 frameTangent = normalize(cross(geomNormal, float3(0, 0, 1)));
+        float3 frameBitangent = normalize(cross(frameTangent, geomNormal));
+        mixedNormal = float3(dot(worldNormal, frameTangent), dot(worldNormal, frameBitangent), dot(worldNormal, geomNormal));
 #if defined(SHADER_API_SWITCH) || defined(SHADER_API_SWITCH2)
         mixedNormal.z += UNITY_HALF_MIN; // to avoid nan after normalizing
 #else
@@ -338,12 +418,6 @@ void SplatmapMix(Input IN, out half4 splat_control, out half weight, out fixed4 
     #endif
 
     #if defined(UNITY_INSTANCING_ENABLED) && !defined(SHADER_API_D3D11_9X) && defined(TERRAIN_INSTANCED_PERPIXEL_NORMAL)
-
-        #if defined(TERRAIN_USE_SEPARATE_VERTEX_SAMPLER)
-            float3 geomNormal = normalize(_TerrainNormalmapTexture.Sample(sampler__TerrainNormalmapTexture, IN.tc.zw).xyz * 2 - 1);
-        #else
-            float3 geomNormal = normalize(tex2D(_TerrainNormalmapTexture, IN.tc.zw).xyz * 2 - 1);
-        #endif
 
         #ifdef _NORMALMAP
             float3 geomTangent = normalize(cross(geomNormal, float3(0, 0, 1)));

@@ -38,15 +38,19 @@ public static class MapUtility
         float minHeight = float.MaxValue;
         float maxHeight = float.MinValue;
 
-        for (int x = 0; x <= width; x++)
+        // The generated height is a pure function (TerrainShape): the columns are sampled in parallel
+        System.Threading.Tasks.Parallel.For(0, width + 1, x =>
         {
             for (int y = 0; y <= height; y++)
             {
-                float value = chunks != null ? chunks.GeneratedHeightAt(southWest.x + x * stepX, southWest.y + y * stepY) : 0f;
-                heights[x, y] = value;
-                minHeight = Mathf.Min(minHeight, value);
-                maxHeight = Mathf.Max(maxHeight, value);
+                heights[x, y] = chunks != null ? chunks.GeneratedHeightAt(southWest.x + x * stepX, southWest.y + y * stepY) : 0f;
             }
+        });
+
+        foreach (float value in heights)
+        {
+            minHeight = Mathf.Min(minHeight, value);
+            maxHeight = Mathf.Max(maxHeight, value);
         }
 
         float range = Mathf.Max(1f, maxHeight - minHeight);

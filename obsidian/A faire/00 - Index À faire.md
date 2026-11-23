@@ -15,7 +15,7 @@ Une note par tâche ouverte. Chaque note a ses propriétés : `id`, `categorie`,
 
 ## Prochains numéros libres
 
-- Bug : **B68** · Feature : **F67** · Optimisation : **O06** · Refonte : **R22**
+- Bug : **B68** · Feature : **F68** · Optimisation : **O06** · Refonte : **R23**
 
 ## Bugs
 
@@ -50,6 +50,7 @@ Une note par tâche ouverte. Chaque note a ses propriétés : `id`, `categorie`,
 - [[F30 - Biomes]] · Terrain
 - [[F31 - Structures générées]] · Terrain
 - [[F32 - Ressources générées]] · Terrain
+- [[F67 - Éléments naturels 3D]] · Terrain
 - [[F65 - Intégration des modèles 3D]] · Modèles · *en cours*
 
 ## Optimisations
@@ -70,6 +71,7 @@ Une note par tâche ouverte. Chaque note a ses propriétés : `id`, `categorie`,
 - [[R12 - Intégration des constructions au terrain]] · Construction
 - [[R13 - Snapping entre points de connexion]] · Construction
 - [[R15 - Ids uniques des objets de scène]] · Global
+- [[R22 - Refonte de la génération du terrain]] · Terrain · *en cours*
 
 ## Historique
 
