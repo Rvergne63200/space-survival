@@ -8,8 +8,10 @@ statut: en cours
 > Jeu de survie et de colonisation spatiale en vue subjective.
 > **La seule vie sur cette planète, c'est celle que le joueur apporte.**
 
+Le concept du jeu (pitch, boucle, systèmes, monde) est dans le game design : [[Fiche du jeu]] · [[00 - Index Game Design]].
+
 ## Sommaire
-1. [[01 - Fiche du jeu]]
+1. *(la fiche du jeu a rejoint le game design : [[Fiche du jeu]])*
 2. [[02 - Intention et piliers du style]]
 3. [[03 - Formes et silhouettes]]
 4. [[04 - Couleur et lumière]]
@@ -27,5 +29,5 @@ statut: en cours
 
 ## Légende
 - *(proposition)* : idée de direction artistique, pas encore validée.
-- Les décisions non prises sont regroupées dans [[12 - Points ouverts]].
+- Les décisions de style non prises sont regroupées dans [[12 - Points ouverts]], celles du gameplay dans [[Points ouverts du game design]].
 - Les règles appliquées à la production des modèles 3D (palette exacte, formes, export, animation) sont dans [[00 - Index Pipeline 3D]].

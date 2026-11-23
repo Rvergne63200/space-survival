@@ -1710,9 +1710,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1795390381.8209465,
-    "seen": 1795390401.9399242,
-    "ast_hash": "60059f528ad1a530f0443872d0d662ed",
+    "mtime": 1795432921.988692,
+    "seen": 1795432941.3553922,
+    "ast_hash": "f62d892f35a8ce3c13b888723fd90129",
     "semantic_hash": ""
   },
   "ArtPipeline/Blender/cp_build.py": {
@@ -2052,15 +2052,9 @@
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/00 - Index DA.md": {
-    "mtime": 1795386845.9855862,
-    "seen": 1795387728.5599608,
-    "ast_hash": "f5f36cd447ef3dac3cd81640e61b4212",
-    "semantic_hash": ""
-  },
-  "obsidian/Direction Artistique/01 - Fiche du jeu.md": {
-    "mtime": 1795384898.102204,
-    "seen": 1795386356.8793557,
-    "ast_hash": "b77937cc183f4ecb01dfa59f1d8827b8",
+    "mtime": 1795432900.0566168,
+    "seen": 1795432941.3554678,
+    "ast_hash": "d899af0da3584461b345a9a7e5dba811",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/02 - Intention et piliers du style.md": {
@@ -2088,33 +2082,33 @@
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/06 - Environnement.md": {
-    "mtime": 1795384898.1491067,
-    "seen": 1795386356.8793619,
-    "ast_hash": "39562dcdcd75f3f85a6c0d58da37b338",
+    "mtime": 1795432913.7537344,
+    "seen": 1795432941.3554754,
+    "ast_hash": "d7be6a03e9b3c6c5f26e8b3bf7951fa7",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/07 - Traces de vie ancienne.md": {
-    "mtime": 1795384898.1562762,
-    "seen": 1795386356.879363,
-    "ast_hash": "ff89133ce82ffb29e5ad1f4afde6ccac",
+    "mtime": 1795432913.9217925,
+    "seen": 1795432941.3554764,
+    "ast_hash": "ba8e88b70a05d40b66b07c3334249b21",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/08 - Technologie humaine.md": {
-    "mtime": 1795387153.024286,
-    "seen": 1795387728.5599718,
-    "ast_hash": "860de7ee391b6fdd2c5d99b169f5382e",
+    "mtime": 1795432914.1632202,
+    "seen": 1795432941.3554778,
+    "ast_hash": "2071b8c1f5cf5ff21f421e439c11e237",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/09 - Colons.md": {
-    "mtime": 1795384898.1718762,
-    "seen": 1795386356.8793654,
-    "ast_hash": "58c8d1c2db534125b193e2ba3daaf657",
+    "mtime": 1795432900.1507394,
+    "seen": 1795432941.3554788,
+    "ast_hash": "0510252088bd2b1885450885798abe21",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/10 - Menaces et lisibilit\u00e9.md": {
-    "mtime": 1795384898.181086,
-    "seen": 1795386356.8793664,
-    "ast_hash": "7290f06892a3655e92748688e72b2725",
+    "mtime": 1795432914.3457327,
+    "seen": 1795432941.3554804,
+    "ast_hash": "618f0a91129b02338160f4201d1665e0",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/11 - La chaleur qui s'installe.md": {
@@ -2124,9 +2118,9 @@
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/12 - Points ouverts.md": {
-    "mtime": 1795384898.1958506,
-    "seen": 1795386356.8793688,
-    "ast_hash": "7582cb6a1f88fab06ca00d2c8601b7f4",
+    "mtime": 1795432900.2494175,
+    "seen": 1795432941.3554826,
+    "ast_hash": "26f1f5c3fa145307a2a0ab1b91c99064",
     "semantic_hash": ""
   },
   "obsidian/Direction Artistique/13 - \u00c0 \u00e9viter et check-list.md": {
@@ -2460,9 +2454,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/00 - Index Instructions.md": {
-    "mtime": 1795388593.6744325,
-    "seen": 1795388607.8324585,
-    "ast_hash": "b930c6bc5134d40e96ce5a05c234d219",
+    "mtime": 1795432914.5099976,
+    "seen": 1795432941.3556094,
+    "ast_hash": "234146dd518178cbaae4534f98ba5fe3",
     "semantic_hash": ""
   },
   "obsidian/Instructions/Pipeline 3D/00 - Index Pipeline 3D.md": {
@@ -2709,6 +2703,138 @@
     "mtime": 1795392701.7137718,
     "seen": 1795393087.9022293,
     "ast_hash": "e45b78d0a5d8bc3c063005c71313c53e",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/00 - Index Game Design.md": {
+    "mtime": 1795432883.982575,
+    "seen": 1795432941.3555825,
+    "ast_hash": "c656919377d82e9de2364ef51a8f79bb",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Colonie/Base de d\u00f4mes.md": {
+    "mtime": 1795432859.3822813,
+    "seen": 1795432941.3555841,
+    "ast_hash": "c54419e0d280b89345609345a7587f46",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Colonie/Colons et sp\u00e9cialit\u00e9s.md": {
+    "mtime": 1795432859.7032683,
+    "seen": 1795432941.3555856,
+    "ast_hash": "2f85dd1d9fa5e7af81411dec2e7b327b",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Colonie/Les scientifiques.md": {
+    "mtime": 1795432859.7975223,
+    "seen": 1795432941.3555868,
+    "ast_hash": "e7e5e288120cd0e992972bd2b74d65f0",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Colonie/Production de nourriture.md": {
+    "mtime": 1795432859.611185,
+    "seen": 1795432941.3555882,
+    "ast_hash": "e83846a7f558ba69dc86b8c582720b60",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Colonie/Ressources vitales.md": {
+    "mtime": 1795432859.5036447,
+    "seen": 1795432941.3555892,
+    "ast_hash": "1b9ce6e5b36a29433f259dd6cca8bec3",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Concept/Boucle de jeu principale.md": {
+    "mtime": 1795432858.4025526,
+    "seen": 1795432941.3555903,
+    "ast_hash": "321d30744b02cda43849629c712a2ddd",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Concept/Fiche du jeu.md": {
+    "mtime": 1795432858.2534103,
+    "seen": 1795432941.3555915,
+    "ast_hash": "4345bb4fd8c6a954a1182498be1c0401",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Concept/Progression de la partie.md": {
+    "mtime": 1795432858.5138867,
+    "seen": 1795432941.3555927,
+    "ast_hash": "a328c629e90d513ccc6163c7ef83b3be",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Concept/\u00c9poque et technologie.md": {
+    "mtime": 1795432858.6195724,
+    "seen": 1795432941.355594,
+    "ast_hash": "5189f185053ea0a0f85d05ade68ee8d6",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Exploration/Collecte de donn\u00e9es scientifiques.md": {
+    "mtime": 1795432859.9084277,
+    "seen": 1795432941.3555956,
+    "ast_hash": "03efb8349ff24ab7ac1d3c16d8478c8d",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Exploration/Exp\u00e9ditions de r\u00e9cup\u00e9ration.md": {
+    "mtime": 1795432860.1259904,
+    "seen": 1795432941.3555968,
+    "ast_hash": "9d02729b739a8471fa0cbecd04e8d74f",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Exploration/Outils scientifiques.md": {
+    "mtime": 1795432860.0239177,
+    "seen": 1795432941.3555977,
+    "ast_hash": "abe8dfc4795450cbfac298296da9cbed",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Exploration/V\u00e9hicules.md": {
+    "mtime": 1795432860.2352235,
+    "seen": 1795432941.3555992,
+    "ast_hash": "fac563c9011662828a32e8f03b07afcc",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Monde/La plan\u00e8te.md": {
+    "mtime": 1795432858.7373023,
+    "seen": 1795432941.3556006,
+    "ast_hash": "3972cb0ad2cb506e4c0f8f2d9652647c",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Monde/Paysages de la plan\u00e8te.md": {
+    "mtime": 1795432858.8491735,
+    "seen": 1795432941.355602,
+    "ast_hash": "2608c5b9c12dcb7785f7c640fd47c90a",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Monde/Vie ancienne de la plan\u00e8te.md": {
+    "mtime": 1795432858.9553256,
+    "seen": 1795432941.3556032,
+    "ast_hash": "d1844547af07955a2464d1cf8b0eda58",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Points ouverts du game design.md": {
+    "mtime": 1795432900.3455691,
+    "seen": 1795432941.3556042,
+    "ast_hash": "ef8250b1609def3e5149401f33789635",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Survie/Catastrophes naturelles.md": {
+    "mtime": 1795432859.1771164,
+    "seen": 1795432941.3556056,
+    "ast_hash": "a70046a1e26804326e098fed61756374",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Survie/Conditions de survie.md": {
+    "mtime": 1795432859.0660105,
+    "seen": 1795432941.3556066,
+    "ast_hash": "6467bd315b9bc1815b1505d888391233",
+    "semantic_hash": ""
+  },
+  "obsidian/Game Design/Survie/Pannes d'\u00e9quipement.md": {
+    "mtime": 1795432859.2772777,
+    "seen": 1795432941.355608,
+    "ast_hash": "56ea63f3af799faba0f29789c5508be5",
+    "semantic_hash": ""
+  },
+  "obsidian/Projet/00 - Index du projet.md": {
+    "mtime": 1795432884.083514,
+    "seen": 1795432941.3556526,
+    "ast_hash": "b573d18278e9881034fef3c605fd2e73",
     "semantic_hash": ""
   }
 }

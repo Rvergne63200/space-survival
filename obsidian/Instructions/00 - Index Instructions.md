@@ -6,7 +6,7 @@ tags: [jeu-colonie, instructions, index]
 
 Les règles que l'IA doit respecter pour produire le jeu, par domaine. Elles sont lues à la demande, au début d'une tâche du domaine concerné.
 
-Le reste du vault décrit le jeu lui-même : [[00 - Index DA]] (style, source de vérité), [[00 - Index Fonctionnalités]] (ce qui existe), [[00 - Index À faire]] (ce qui reste).
+Le reste du vault décrit le jeu lui-même (sommaire général : [[00 - Index du projet]]) : [[00 - Index Game Design]] (concept et systèmes), [[00 - Index DA]] (style, source de vérité), [[00 - Index Fonctionnalités]] (ce qui existe), [[00 - Index À faire]] (ce qui reste).
 
 ## Domaines
 - [[00 - Index Pipeline 3D]] : modélisation et animation des modèles, de Blender à Unity. À lire avant toute session de modélisation, avec la DA.

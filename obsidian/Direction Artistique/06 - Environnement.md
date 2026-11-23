@@ -11,4 +11,4 @@ tags: [jeu-colonie, direction-artistique, environnement]
 - **Atmosphère :** non respirable, mais elle contient de quoi synthétiser de l'oxygène. Une brume de poussière légère donne la profondeur et l'échelle du paysage.
 - **Lisibilité des ressources** *(proposition)* : la glace se trouve en profondeur, les minerais s'annoncent par des teintes ou des veines particulières dans la roche. L'œil apprend à « lire » le terrain.
 
-Voir aussi : [[04 - Couleur et lumière]] · [[07 - Traces de vie ancienne]]
+Voir aussi : [[04 - Couleur et lumière]] · [[07 - Traces de vie ancienne]] · [[La planète]] (game design)

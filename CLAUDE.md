@@ -23,7 +23,7 @@ Le design ne se documente **que** dans Obsidian. Ce fichier ne contient que les 
 | Tâche | À lire d'abord |
 |---|---|
 | Modéliser, animer ou intégrer un modèle | La DA (`03 - Formes et silhouettes`, `05 - Matériaux et textures`, `08 - Technologie humaine`) **et** les notes utiles de `Instructions/Pipeline 3D` |
-| Écrire ou modifier du code | `Instructions/Code` (au moins `02 - Conventions de code` et la note du sujet : sauvegarde, item, interaction, interface, construction, énergie), la note `Fonctionnalités` de la feature et la tâche `A faire` concernée |
+| Écrire ou modifier du code | `Instructions/Code` (au moins `02 - Conventions de code` et la note du sujet : sauvegarde, item, interaction, interface, construction, énergie), la note `Fonctionnalités` de la feature, la tâche `A faire` concernée et, pour une nouvelle mécanique, la note `Game Design` du thème |
 | Toute autre tâche sur le jeu | L'index du dossier Obsidian concerné |
 
 ## Obsidian (`obsidian/`)
@@ -32,6 +32,8 @@ Le vault rassemble toutes les informations sur le jeu, en français, **une note 
 
 | Dossier | Contenu | Règle |
 |---|---|---|
+| `Projet/` | `00 - Index du projet`, le sommaire général du vault | À mettre à jour quand un dossier apparaît. |
+| `Game Design/<Thème>/` | Le concept du jeu : pitch, boucle, monde, survie, colonie, exploration, et `Points ouverts du game design` | **Source de vérité du gameplay voulu.** Ne la modifie que sur demande ou après validation explicite de l'utilisateur ; une idée de Claude y est marquée *(proposition)*. |
 | `Direction Artistique/` | Bible de DA : intention, formes, couleurs, matériaux, technologie, ambiance, à éviter | **Source de vérité du style.** Ne la modifie que sur demande ou après validation explicite de l'utilisateur. |
 | `Fonctionnalités/<Thème>/` | Ce qui est implémenté, une note par feature (comportement et détails de code) | À tenir à jour à chaque changement de comportement. |
 | `A faire/` | Une note par tâche ouverte, et `Historique/` pour les tâches terminées | À tenir à jour à chaque changement de code. |

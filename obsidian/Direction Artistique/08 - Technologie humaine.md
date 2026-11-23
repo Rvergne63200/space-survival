@@ -50,6 +50,6 @@ Envoyées par les scientifiques en cas de mauvaise gestion. Conteneurs largués,
 - **Table d'observation :** un plan de travail lumineux avec une projection agrandie de l'échantillon (fossiles, roches, prélèvements divers).
 
 ## Robots et IA
-*Point ouvert* : voir [[12 - Points ouverts]].
+*Point ouvert* : voir [[12 - Points ouverts]] (apparence) et [[Points ouverts du game design]] (rôle).
 
-Voir aussi : [[02 - Palette des matériaux]] (valeurs exactes des matériaux dans Blender et Unity) · [[00 - Index Pipeline 3D]]
+Voir aussi : [[Époque et technologie]] (game design) · [[02 - Palette des matériaux]] (valeurs exactes des matériaux dans Blender et Unity) · [[00 - Index Pipeline 3D]]

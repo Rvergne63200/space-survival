@@ -15,3 +15,5 @@ tags: [jeu-colonie, direction-artistique, gameplay]
 ## Règles de lisibilité
 - Le danger doit s'annoncer visuellement **avant** de frapper, pour que le joueur puisse anticiper et réagir.
 - Les ressources, les interactions et les dangers ont des codes visuels constants dans tout le jeu (voir [[08 - Technologie humaine#Principes]]).
+
+Voir aussi : [[Conditions de survie]] · [[Catastrophes naturelles]] · [[Pannes d'équipement]] (game design)

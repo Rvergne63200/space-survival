@@ -11,3 +11,5 @@ tags: [jeu-colonie, direction-artistique, science]
 
 Outils associés : voir [[08 - Technologie humaine#Outils du joueur]].
 Décision en attente : voir [[12 - Points ouverts]].
+
+Voir aussi : [[Vie ancienne de la planète]] · [[Outils scientifiques]] (game design)
