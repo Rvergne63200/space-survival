@@ -19,6 +19,7 @@ statut: en cours
 - [ ] Panneau de contrôle : modèles livrés, à intégrer aux prefabs (collider, point `Connector` du câble, branchement de l'animateur sur l'alimentation de `ControlPanel`).
   - `ControlPanel` : pupitre holographique (0,84 × 0,54 m, hologramme jusqu'à 1,78 m), barre de projecteur qui sort à l'allumage puis écran holographique qui se déploie depuis la lentille, et l'inverse à l'extinction (clips `Power_On` / `Power_Off`, écran invisible éteint) ; écran holographique vertical `Hologram_Screen` (UV 0..1, pour la carte du réseau), voyant `_Status`. Script `ControlPanelAnimator` (`PowerOn`, `PowerOff`, `SetPowered`, `HologramScreen`).
   - `WallScreen` : télévision incurvée (1,10 × 0,62 m) à accrocher au mur plein des dômes, statique. Origine au contact du mur, au milieu de l'écran. Dalle `Screen` (UV 0..1) et voyant pilotés par `WallScreenAnimator` (`PowerOn`, `PowerOff`, `SetPowered`, `ScreenSurface`). Son rôle en jeu reste à définir (panneau de contrôle mural ?).
-- Reste : coudes, T et croix des tunnels (`Tunnel_Elbow45`, `Tunnel_Elbow90`, `Tunnel_T`, `Tunnel_Cross`), les autres modèles (générateurs, éolienne, foreuse, antenne, coffres, station de craft…).
+- [x] Éolienne : modèle `WindTurbine` intégré au prefab `WindTurbine` (voir [[Éolienne]]). Il manque une icône d'item, et une pose déployée sans animation dans `WindTurbineAnimator` (pour le chargement d'une sauvegarde, comme `SolarPanelAnimator.SetDeployedImmediate`).
+- Reste : coudes, T et croix des tunnels (`Tunnel_Elbow45`, `Tunnel_Elbow90`, `Tunnel_T`, `Tunnel_Cross`), les autres modèles (générateurs, foreuse, antenne, coffres, station de craft…).
 
 Voir aussi : [[Capsule de départ]] · [[Dômes]] · [[Couloir]] · [[Panneau de contrôle]]

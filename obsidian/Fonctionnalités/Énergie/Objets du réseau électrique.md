@@ -12,6 +12,7 @@ tags: [jeu-colonie, fonctionnalite, energie, items]
 - `28_ChargingStation` : la [[Station de recharge]].
 - `29_SolarPanel` : le [[Panneau solaire]].
 - `30_CoalGenerator` : le [[Générateur à charbon]].
+- `33_WindTurbine` : l'[[Éolienne]].
 
 ## Objets de test
 `ScriptableObjects/TestItems` ; prefabs dans `Prefabs/Environment/Energy`, matériau `Materials/EnergyTest` :

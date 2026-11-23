@@ -9,7 +9,7 @@ using UnityEngine;
 //   - incidence: cosine between the cells (tilted "panelTilt" degrees toward the front of the head) and the sun.
 //     Facing the sun at noon, the cells are square to it: full power. Folded, turned away or still turning: less
 //   - deployment: nothing until the panel is fully deployed
-// No weather for now
+//   - weather: a sand storm leaves only a share of it (WeatherSystem.SolarFactor, 10 % at the height of a storm)
 public class SolarPanel : EnergyGenerator
 {
     // Tilt of the cells from the horizontal, toward the front of the head, once deployed (the Panel_Deploy clip)
@@ -74,7 +74,7 @@ public class SolarPanel : EnergyGenerator
         factor = IsOn ? SunFactor() : 0f;
     }
 
-    // 0 to 1: light of the sun x incidence on the cells x deployment
+    // 0 to 1: light of the sun x incidence on the cells x deployment x weather
     private float SunFactor()
     {
         float deployed = panelAnimator.DeployProgress;
@@ -105,13 +105,16 @@ public class SolarPanel : EnergyGenerator
         Vector3 cells = (panelAnimator.PanelUp * Mathf.Cos(tilt) + panelAnimator.PanelFront * Mathf.Sin(tilt)).normalized;
         float incidence = Mathf.Clamp01(Vector3.Dot(cells, toSun.normalized));
 
-        return light * incidence;
+        float weather = WeatherSystem.Instance != null ? WeatherSystem.Instance.SolarFactor : 1f;
+
+        return light * incidence * weather;
     }
 
     public override string GetInfo()
     {
         return DisplayName + " : " + OffText(false) + EnergyValue.Format(Output, "W") + " / " + EnergyValue.Format(Generation, "W")
-            + " (max " + EnergyValue.Format(base.Generation, "W") + ")";
+            + " (max " + EnergyValue.Format(base.Generation, "W") + ")"
+            + (WeatherSystem.Instance != null && WeatherSystem.Instance.IsStorm ? ", tempête de sable" : "");
     }
 
     public override void RestoreState(string json)

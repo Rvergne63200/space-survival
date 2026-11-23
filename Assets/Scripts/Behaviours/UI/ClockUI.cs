@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 // Clock of the HUD (element "clock" of Hud.uxml, under the minimap): day and time of the world (DayNightCycle), with a
-// sun by day and a moon by night. Hidden when the scene has no day / night cycle
+// sun by day and a moon by night, and the sand storms (WeatherSystem: coming, or blowing). Hidden when the scene has no
+// day / night cycle
 public class ClockUI : MonoBehaviour
 {
     [SerializeField] private UIDocument document;
@@ -52,6 +53,11 @@ public class ClockUI : MonoBehaviour
 
         int minutes = Mathf.FloorToInt(cycle.Hour * 60f) % (24 * 60);
         string text = "Jour " + cycle.Day + "  " + (minutes / 60).ToString("00") + ":" + (minutes % 60).ToString("00");
+
+        WeatherSystem weather = WeatherSystem.Instance;
+
+        if (weather != null && weather.IsStorm) text += "  ·  Tempête de sable";
+        else if (weather != null && weather.IsStormComing) text += "  ·  Tempête en approche";
 
         if (text != shownText)
         {

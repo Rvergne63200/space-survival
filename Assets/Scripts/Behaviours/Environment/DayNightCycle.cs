@@ -9,6 +9,7 @@ using UnityEngine;
 // - Moon: a second directional light (created at runtime), opposite the sun. Each night has its own brightness,
 //   drawn from the world seed: most nights are very dark (flashlight needed), some are bright
 // - Sky, ambient light and reflections: dimmed from the day values (those of the scene) to the brightness of the night
+// - Weather (WeatherSystem): a sand storm dims the sun, the sky and the ambient light
 public class DayNightCycle : MonoBehaviour
 {
     public static DayNightCycle Instance { get; private set; }
@@ -70,8 +71,14 @@ public class DayNightCycle : MonoBehaviour
     // Height of the sun at noon (y of SunDirection, 0 to 1): the highest it goes
     public float NoonSunHeight => Mathf.Cos(sunTilt * Mathf.Deg2Rad);
 
-    // Light of the sun on the ground, 0 (night) to 1 (sun at its highest), for the solar panels and the plants
+    // Light of the sun on the ground, 0 (night) to 1 (sun at its highest), dimmed by the storms, for the plants
     public float Sunlight { get; private set; }
+
+    // Brightness of the world, from the night (its ambient share) to 1 (day): for the color of the fog and of the dust
+    public float LightLevel { get; private set; } = 1f;
+
+    // The sky of the scene (a copy of its skybox, changed at runtime), null without skybox
+    public Material Sky => sky;
 
     // Brightness of the current (or coming) night, 0 (darkest) to 1 (brightest)
     public float NightBrightness => nightBrightness;
@@ -175,8 +182,14 @@ public class DayNightCycle : MonoBehaviour
 
         UpdateNightBrightness();
 
+        WeatherSystem weather = WeatherSystem.Instance;
+        float sunWeather = weather != null ? weather.SunFactor : 1f;
+        float skyWeather = weather != null ? weather.SkyFactor : 1f;
+        float ambientWeather = weather != null ? weather.AmbientFactor : 1f;
+
         // Sun: full a little above the horizon, orange near it
-        Sunlight = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.25f, sunHeight));
+        float clearSunlight = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.25f, sunHeight));
+        Sunlight = clearSunlight * sunWeather;
 
         if (sun != null)
         {
@@ -190,7 +203,7 @@ public class DayNightCycle : MonoBehaviour
         float moonLight = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0f, 0.25f, moonHeight));
         moon.transform.rotation = Quaternion.LookRotation(toSun);
         moon.color = moonColor;
-        moon.intensity = Mathf.Lerp(darkMoonIntensity, brightMoonIntensity, nightBrightness) * moonLight;
+        moon.intensity = Mathf.Lerp(darkMoonIntensity, brightMoonIntensity, nightBrightness) * moonLight * sunWeather;
         moon.enabled = moon.intensity > 0.0001f && (sun == null || !sun.enabled);
 
         // Twilight: the sky and the ambient light fade from a little above to a little below the horizon
@@ -198,12 +211,14 @@ public class DayNightCycle : MonoBehaviour
         float nightAmbient = Mathf.Lerp(darkAmbient, brightAmbient, nightBrightness);
         float nightSky = Mathf.Lerp(darkSky, brightSky, nightBrightness);
 
-        RenderSettings.ambientIntensity = sceneAmbient * Mathf.Lerp(nightAmbient, 1f, daylight);
-        RenderSettings.reflectionIntensity = sceneReflection * Mathf.Lerp(nightAmbient, 1f, daylight);
+        LightLevel = Mathf.Lerp(nightAmbient, 1f, daylight);
+
+        RenderSettings.ambientIntensity = sceneAmbient * LightLevel * ambientWeather;
+        RenderSettings.reflectionIntensity = sceneReflection * LightLevel * ambientWeather;
 
         if (sky != null && sky.HasProperty("_Exposure"))
         {
-            sky.SetFloat("_Exposure", skyExposure * Mathf.Lerp(nightSky, 1f, daylight));
+            sky.SetFloat("_Exposure", skyExposure * Mathf.Lerp(nightSky, 1f, daylight) * skyWeather);
         }
     }
 

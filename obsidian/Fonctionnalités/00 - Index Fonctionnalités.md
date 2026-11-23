@@ -51,6 +51,7 @@ Ce qui existe dans le jeu aujourd'hui, une note par feature. Ce qui reste à fai
 - [[Terrain procédural]]
 - [[Objets du décor]]
 - [[Cycle jour et nuit]]
+- [[Météo]]
 - [[Capsule de départ]]
 
 ## Interfaces
@@ -71,6 +72,7 @@ Ce qui existe dans le jeu aujourd'hui, une note par feature. Ce qui reste à fai
 - [[Électricité des bâtiments]]
 - [[Panneau de contrôle]]
 - [[Panneau solaire]]
+- [[Éolienne]]
 - [[Générateur à charbon]]
 - [[Station de recharge]]
 - [[Objets du réseau électrique]]

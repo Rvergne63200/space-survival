@@ -15,7 +15,7 @@ Une note par tâche ouverte. Chaque note a ses propriétés : `id`, `categorie`,
 
 ## Prochains numéros libres
 
-- Bug : **B68** · Feature : **F66** · Optimisation : **O06** · Refonte : **R22**
+- Bug : **B68** · Feature : **F67** · Optimisation : **O06** · Refonte : **R22**
 
 ## Bugs
 
@@ -43,6 +43,7 @@ Une note par tâche ouverte. Chaque note a ses propriétés : `id`, `categorie`,
 - [[F52 - Machines consommatrices d'oxygène]] · Oxygène
 - [[F53 - Système de plantation]] · Plantations
 - [[F54 - Cycle jour nuit et météo]] · Monde · *en cours*
+- [[F66 - Chutes de météorites]] · Monde
 - [[F55 - Informations des réseaux]] · Interfaces
 - [[F56 - Horaires du tableau de distribution]] · Énergie · *en cours*
 - [[F27 - Réseau d'oxygène]] · Construction

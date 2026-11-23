@@ -1236,16 +1236,16 @@
     "semantic_hash": "51c717880a2cf69524055dc5cb671cc6"
   },
   "Packages/manifest.json": {
-    "mtime": 1776637301.939591,
-    "seen": 1795341668.4286802,
-    "ast_hash": "0fc0558d74adb24b87324953c9e7a62e",
-    "semantic_hash": "0fc0558d74adb24b87324953c9e7a62e"
+    "mtime": 1795389101.1939907,
+    "seen": 1795390401.9398887,
+    "ast_hash": "fc73460130e48d0af2648eef48867fb1",
+    "semantic_hash": ""
   },
   "Packages/packages-lock.json": {
-    "mtime": 1776637301.9408574,
-    "seen": 1795341668.4286814,
-    "ast_hash": "cd0419c8ea252945132c8bce74aaaa78",
-    "semantic_hash": "cd0419c8ea252945132c8bce74aaaa78"
+    "mtime": 1795389101.2072887,
+    "seen": 1795390401.9398909,
+    "ast_hash": "39142a5f9d003db448b7cc792abe17b4",
+    "semantic_hash": ""
   },
   "ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json": {
     "mtime": 1776637301.9503217,
@@ -1704,15 +1704,15 @@
     "semantic_hash": ""
   },
   ".claude/settings.json": {
-    "mtime": 1795341270.4766946,
-    "seen": 1795341668.4284184,
-    "ast_hash": "07edd72b005928f186688124cc721d39",
-    "semantic_hash": "07edd72b005928f186688124cc721d39"
+    "mtime": 1795388825.7591293,
+    "seen": 1795390401.939503,
+    "ast_hash": "269fb93ba6ffac4d8ec97b1d97dd09fb",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1795388593.877285,
-    "seen": 1795388607.8322744,
-    "ast_hash": "f9a6bb6a39a6be04cc420db75dc52f64",
+    "mtime": 1795390381.8209465,
+    "seen": 1795390401.9399242,
+    "ast_hash": "60059f528ad1a530f0443872d0d662ed",
     "semantic_hash": ""
   },
   "ArtPipeline/Blender/cp_build.py": {
@@ -2634,9 +2634,9 @@
     "semantic_hash": ""
   },
   "obsidian/Instructions/Code/10 - V\u00e9rifier son travail.md": {
-    "mtime": 1795388572.08316,
-    "seen": 1795388607.832473,
-    "ast_hash": "1db3e137d13bc7ba6f695924a9944c5d",
+    "mtime": 1795390393.920365,
+    "seen": 1795390401.940127,
+    "ast_hash": "63a6a7652a957494939bf0a0df97cabc",
     "semantic_hash": ""
   }
 }

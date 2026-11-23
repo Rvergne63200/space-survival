@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc241eeee4074f9dbd56893b1678780d, type: 3}
+  m_Name: 33_WindTurbine
+  m_EditorClassIdentifier: 
+  _id: 33
+  _stackMax: 5
+  _name: Wind Turbine
+  _description: Produces power from the wind (up to 800 W from 12 m/s, nothing under
+    3 m/s). It deploys and faces the wind while it is on, and folds when the wind
+    gets too strong (sand storms).
+  _sprite: {fileID: 1789452441, guid: 9d55f8e95e8413c4e812065b71618f6f, type: 3}
+  _model: {fileID: 5747709456442282497, guid: 3ab68f7085e748244bebcce4230f8c4d, type: 3}
+  _placedPrefab: {fileID: 945937209237891276, guid: 60ff069835295e8479e4c590fedc8637, type: 3}
+  _refund: []
+  _outdoorOnly: 1
+  _notInCorridors: 0
