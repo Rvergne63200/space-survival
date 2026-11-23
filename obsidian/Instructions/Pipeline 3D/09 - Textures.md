@@ -21,6 +21,6 @@ tags: [jeu-colonie, pipeline-3d, direction-artistique, materiaux]
 4. **Cuisson** du modèle détaillé vers le modèle du jeu : couleur (`DIFFUSE`, passe couleur), normal map (tangente), rugosité. Cage 8 cm, distance 20 cm.
 5. Les éléments durs (minerai) sont de la **vraie géométrie** à facettes avec une petite texture raccordable, pas une couleur peinte sur la roche.
 
-- Le sol orange existe aussi en texture raccordable pour le terrain : `Assets/Terrain/Ground_Rust.terrainlayer` (`ground_rust.py`, tuile de 8 m).
+- Le sol orange existe aussi en texture raccordable pour le terrain : `Assets/Terrain/Ground_<Zone>.terrainlayer` (`ground_build.py`, tuile de 16 m), une texture par zone de sol (voir [[Terrain procédural]]).
 
 [[00 - Index Pipeline 3D|Index]] · ← [[08 - Vitres]] · [[10 - Modélisation Blender]] →

@@ -1,1 +1,0 @@
-{'model': 'Deposit_Copper', 'body_tris': 25781, 'ore_tris': 3262, 'masses': 9} Mon Nov 23 17:35:41 2026

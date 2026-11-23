@@ -29,7 +29,7 @@ Ces scripts sont exécutés dans Blender via MCP. La variable `SP` en tête de c
 | `dp_build.py` | Gisements, base : `ORES` (couleurs par minerai), fissures (`make_cracks`, progression `T` du centre vers les bouts), champs du relief (`fields`), modèle du jeu (`build_mesh` : décimation pondérée, Delaunay 2D, UV dépliées, normales du relief lissé), `bilinear`, `blur`, `save_png`, `make_material` |
 | `dp_hd.py` | Gisements, cuisson : `grid_mesh` (modèle détaillé avec attributs), `hp_material` (nœuds Cycles : rampes, AO, Bevel, profondeur au pixel), `bake`, `new_img`, `pixels` |
 | `dp_v3.py` | Gisements, version retenue : `build_v3("Coal" / "Iron" / "Copper")` ; dalle en roche cuite, minerai en géométrie (`build_ore_geo` : couche coupée par les fissures, masses incrustées, éclats ; `chunk`, `box_uv`), texture raccordable du minerai (`ore_textures`) |
-| `ground_rust.py` | Texture raccordable du sol orange pour le terrain (`TileNoise`, tuile de 8 m) |
+| `ground_build.py` | Textures raccordables des zones de sol du terrain : `build("Rust" / "Ochre" / "Dust" / "Sediment")` (`GROUNDS`, `TileNoise`, tuile de 16 m, réglages `PATCH` et `NUANCE`) |
 | `zfight.py` | Détecteur de z-fighting (`check2`) |
 
 Pour un nouveau modèle :

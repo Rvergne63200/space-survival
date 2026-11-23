@@ -17,6 +17,19 @@ public class TerrainGenerator : MonoBehaviour
 
     public Vector2 perlinOffset = new Vector2(0, 0);
 
+    // Ground zones: each terrain layer of the TerrainData is a ground zone (Ground_Rust, Ground_Ochre...). The zones
+    // are painted from a world-space noise (one noise per layer, the strongest wins with soft transitions), so they
+    // are continuous between the chunks and the same at every generation.
+    [Header("Ground zones")]
+    [Tooltip("Typical size of a ground zone (m)")]
+    [SerializeField] private float zoneSize = 400f;
+    [Tooltip("Sharpness of the transitions between zones (higher = narrower transitions)")]
+    [SerializeField] private float zoneSharpness = 8f;
+    [Tooltip("Weight of each zone, in the order of the terrain layers (missing = 1). Higher = more frequent")]
+    [SerializeField] private float[] zoneWeights = { 1.25f, 1f, 0.92f, 0.85f };
+    [Tooltip("Texels per side of the zone map of a chunk (power of two, the zones are large)")]
+    [SerializeField] private int zoneResolution = 64;
+
     private Terrain terrain;
 
     public void Initialize(Vector2 position, Vector2 perlinOffset, int size)
@@ -44,11 +57,23 @@ public class TerrainGenerator : MonoBehaviour
         data.heightmapResolution = size + 1;
         data.size = new Vector3(size, maxHeight, size);
 
+        int layerCount = data.terrainLayers.Length;
+        if (layerCount > 1)
+        {
+            data.alphamapResolution = zoneResolution;
+        }
+        int zoneRes = data.alphamapResolution;
+
         float[,] heights = await Task.Run(() => GenerateHeights());
+        float[,,] zones = layerCount > 1 ? await Task.Run(() => GenerateZones(layerCount, zoneRes)) : null;
 
         if (this == null) return;
 
         data.SetHeights(0, 0, heights);
+        if (zones != null)
+        {
+            data.SetAlphamaps(0, 0, zones);
+        }
 
         // Saved terrain flattenings (constructions), before the objects are placed on the terrain
         if (ChunkManager.Instance != null)
@@ -72,6 +97,49 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         return heights;
+    }
+
+    // Weights of the terrain layers (zone map) of the chunk. Texel (x, y) is at x / (res - 1) of the chunk, like
+    // the alphamap of Unity, so the edges of two neighbour chunks get the same values.
+    private float[,,] GenerateZones(int layerCount, int res)
+    {
+        float[,,] map = new float[res, res, layerCount];
+        float[] w = new float[layerCount];
+        float step = size / (float)(res - 1);
+
+        for (int y = 0; y < res; y++)
+        {
+            for (int x = 0; x < res; x++)
+            {
+                float worldX = perlinOffset.x + x * step;
+                float worldY = perlinOffset.y + y * step;
+                float total = 0f;
+                for (int k = 0; k < layerCount; k++)
+                {
+                    w[k] = Mathf.Pow(ZoneNoise(worldX, worldY, k) * ZoneWeight(k), zoneSharpness);
+                    total += w[k];
+                }
+                for (int k = 0; k < layerCount; k++)
+                {
+                    map[y, x, k] = w[k] / total;
+                }
+            }
+        }
+
+        return map;
+    }
+
+    // Noise of the zone of a layer (0..1): its own large noise, plus a smaller one for less regular edges
+    private float ZoneNoise(float worldX, float worldY, int layer)
+    {
+        float x = (worldX + 3000f + 1733f * layer) / zoneSize;
+        float y = (worldY + 5000f + 2311f * layer) / zoneSize;
+        return Mathf.PerlinNoise(x, y) * 0.85f + Mathf.PerlinNoise(x * 2.3f, y * 2.3f) * 0.15f;
+    }
+
+    private float ZoneWeight(int layer)
+    {
+        return zoneWeights != null && layer < zoneWeights.Length ? zoneWeights[layer] : 1f;
     }
 
     // Generated height (m) at a point of the noise: the world position plus the offset of the world (ChunkManager).

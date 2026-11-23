@@ -175,6 +175,100 @@ float2 WorldSplatUV(Input IN, float4 splatST)
     return IN.worldXZ * (splatST.xy / _WorldUVTerrainSize.xy) + splatST.zw;
 }
 
+// Anti-tiling (hex tiling, after Mikkelsen, "Practical Real-Time Hex-Tiling", JCGT 2022): the UV plane is cut into
+// hexagonal cells, each cell samples the layer with its own random offset and rotation, and the three cells around
+// a pixel are blended with weights favouring the most contrasted sample, so the blend keeps the contrast. No visible
+// period any more. Costs 3 samples per texture instead of 1.
+#define HEX_ROTATION 1.0        // 0 = offsets only, 1 = full random rotation
+#define HEX_EXPONENT 4.0        // sharpness of the blend between cells (higher = sharper, hexagon edges show)
+#define HEX_CELL 0.5            // cells per texture tile and per axis (< 1 : cells larger than the features of the texture)
+#define HEX_CONTRAST 0.6        // how much the luminance of each sample drives the blend
+
+void HexTriangleGrid(float2 st, out float3 w, out int2 v1, out int2 v2, out int2 v3)
+{
+    st *= 2.0 * sqrt(3.0);
+    float2 skewed = mul(float2x2(1.0, -0.57735027, 0.0, 1.15470054), st);
+    int2 baseId = int2(floor(skewed));
+    float3 t = float3(frac(skewed), 0.0);
+    t.z = 1.0 - t.x - t.y;
+    float s = step(0.0, -t.z);
+    float s2 = 2.0 * s - 1.0;
+    w = float3(-t.z * s2, s - t.y * s2, s - t.x * s2);
+    v1 = baseId + int2(s, s);
+    v2 = baseId + int2(s, 1 - s);
+    v3 = baseId + int2(1 - s, s);
+}
+
+float2 HexHash(float2 p)
+{
+    float2 r = mul(float2x2(127.1, 311.7, 269.5, 183.3), p);
+    return frac(sin(r) * 43758.5453);
+}
+
+float2x2 HexRotation(int2 id)
+{
+    float angle = abs(id.x * id.y) + abs(id.x + id.y) + 3.14159265;
+    angle = fmod(angle, 6.2831853);
+    if (angle < 0.0) angle += 6.2831853;
+    if (angle > 3.14159265) angle -= 6.2831853;
+    angle *= HEX_ROTATION;
+    float cs = cos(angle), sn = sin(angle);
+    return float2x2(cs, -sn, sn, cs);
+}
+
+float2 HexCenter(int2 id)
+{
+    return mul(float2x2(1.0, 0.5, 0.0, 1.0 / 1.15470054), float2(id)) / (2.0 * sqrt(3.0));
+}
+
+// The three cells around a pixel : their sample coordinates, rotations and blend weights (w, before the contrast term)
+struct HexCells
+{
+    float2 st1, st2, st3;
+    float2x2 r1, r2, r3;
+    float2 dx, dy;
+    float3 w;
+};
+
+HexCells HexSetup(float2 st)
+{
+    HexCells h;
+    h.dx = ddx(st); h.dy = ddy(st);
+    int2 v1, v2, v3;
+    HexTriangleGrid(st * HEX_CELL, h.w, v1, v2, v3);
+    h.r1 = HexRotation(v1); h.r2 = HexRotation(v2); h.r3 = HexRotation(v3);
+    float2 c1 = HexCenter(v1) / HEX_CELL, c2 = HexCenter(v2) / HEX_CELL, c3 = HexCenter(v3) / HEX_CELL;
+    h.st1 = mul(st - c1, h.r1) + c1 + HexHash(float2(v1));
+    h.st2 = mul(st - c2, h.r2) + c2 + HexHash(float2(v2));
+    h.st3 = mul(st - c3, h.r3) + c3 + HexHash(float2(v3));
+    return h;
+}
+
+// Diffuse of one layer, hex-tiled ; W returns the final blend weights, reused for the normal map
+half4 HexDiffuse(sampler2D tex, HexCells h, out float3 W)
+{
+    half4 s1 = tex2Dgrad(tex, h.st1, mul(h.dx, h.r1), mul(h.dy, h.r1));
+    half4 s2 = tex2Dgrad(tex, h.st2, mul(h.dx, h.r2), mul(h.dy, h.r2));
+    half4 s3 = tex2Dgrad(tex, h.st3, mul(h.dx, h.r3), mul(h.dy, h.r3));
+    const float3 L = float3(0.299, 0.587, 0.114);
+    float3 lum = float3(dot(s1.rgb, L), dot(s2.rgb, L), dot(s3.rgb, L));
+    W = lerp(1.0, lum, HEX_CONTRAST) * pow(h.w, HEX_EXPONENT);
+    W /= (W.x + W.y + W.z);
+    return W.x * s1 + W.y * s2 + W.z * s3;
+}
+
+#ifdef _NORMALMAP
+// Normal map of one layer, hex-tiled : each sample is rotated back by the rotation of its cell
+fixed3 HexNormal(sampler2D tex, float scale, HexCells h, float3 W)
+{
+    fixed3 n1 = UnpackNormalWithScale(tex2Dgrad(tex, h.st1, mul(h.dx, h.r1), mul(h.dy, h.r1)), scale);
+    fixed3 n2 = UnpackNormalWithScale(tex2Dgrad(tex, h.st2, mul(h.dx, h.r2), mul(h.dy, h.r2)), scale);
+    fixed3 n3 = UnpackNormalWithScale(tex2Dgrad(tex, h.st3, mul(h.dx, h.r3), mul(h.dy, h.r3)), scale);
+    n1.xy = mul(h.r1, n1.xy); n2.xy = mul(h.r2, n2.xy); n3.xy = mul(h.r3, n3.xy);
+    return W.x * n1 + W.y * n2 + W.z * n3;
+}
+#endif
+
 #ifdef TERRAIN_STANDARD_SHADER
 void SplatmapMix(Input IN, half4 defaultAlpha, out half4 splat_control, out half weight, out fixed4 mixedDiffuse, inout fixed3 mixedNormal)
 #else
@@ -206,24 +300,32 @@ void SplatmapMix(Input IN, out half4 splat_control, out half weight, out fixed4 
     float2 uvSplat2 = WorldSplatUV(IN, _Splat2_ST);
     float2 uvSplat3 = WorldSplatUV(IN, _Splat3_ST);
 
+    // Anti-tiling : every layer is hex-tiled (see HexSetup)
+    HexCells h0 = HexSetup(uvSplat0), h1 = HexSetup(uvSplat1), h2 = HexSetup(uvSplat2), h3 = HexSetup(uvSplat3);
+    float3 W0, W1, W2, W3;
+    half4 d0 = HexDiffuse(_Splat0, h0, W0);
+    half4 d1 = HexDiffuse(_Splat1, h1, W1);
+    half4 d2 = HexDiffuse(_Splat2, h2, W2);
+    half4 d3 = HexDiffuse(_Splat3, h3, W3);
+
     mixedDiffuse = 0.0f;
     #ifdef TERRAIN_STANDARD_SHADER
-        mixedDiffuse += splat_control.r * tex2D(_Splat0, uvSplat0) * half4(1.0, 1.0, 1.0, defaultAlpha.r);
-        mixedDiffuse += splat_control.g * tex2D(_Splat1, uvSplat1) * half4(1.0, 1.0, 1.0, defaultAlpha.g);
-        mixedDiffuse += splat_control.b * tex2D(_Splat2, uvSplat2) * half4(1.0, 1.0, 1.0, defaultAlpha.b);
-        mixedDiffuse += splat_control.a * tex2D(_Splat3, uvSplat3) * half4(1.0, 1.0, 1.0, defaultAlpha.a);
+        mixedDiffuse += splat_control.r * d0 * half4(1.0, 1.0, 1.0, defaultAlpha.r);
+        mixedDiffuse += splat_control.g * d1 * half4(1.0, 1.0, 1.0, defaultAlpha.g);
+        mixedDiffuse += splat_control.b * d2 * half4(1.0, 1.0, 1.0, defaultAlpha.b);
+        mixedDiffuse += splat_control.a * d3 * half4(1.0, 1.0, 1.0, defaultAlpha.a);
     #else
-        mixedDiffuse += splat_control.r * tex2D(_Splat0, uvSplat0);
-        mixedDiffuse += splat_control.g * tex2D(_Splat1, uvSplat1);
-        mixedDiffuse += splat_control.b * tex2D(_Splat2, uvSplat2);
-        mixedDiffuse += splat_control.a * tex2D(_Splat3, uvSplat3);
+        mixedDiffuse += splat_control.r * d0;
+        mixedDiffuse += splat_control.g * d1;
+        mixedDiffuse += splat_control.b * d2;
+        mixedDiffuse += splat_control.a * d3;
     #endif
 
     #ifdef _NORMALMAP
-        mixedNormal  = UnpackNormalWithScale(tex2D(_Normal0, uvSplat0), _NormalScale0) * splat_control.r;
-        mixedNormal += UnpackNormalWithScale(tex2D(_Normal1, uvSplat1), _NormalScale1) * splat_control.g;
-        mixedNormal += UnpackNormalWithScale(tex2D(_Normal2, uvSplat2), _NormalScale2) * splat_control.b;
-        mixedNormal += UnpackNormalWithScale(tex2D(_Normal3, uvSplat3), _NormalScale3) * splat_control.a;
+        mixedNormal  = HexNormal(_Normal0, _NormalScale0, h0, W0) * splat_control.r;
+        mixedNormal += HexNormal(_Normal1, _NormalScale1, h1, W1) * splat_control.g;
+        mixedNormal += HexNormal(_Normal2, _NormalScale2, h2, W2) * splat_control.b;
+        mixedNormal += HexNormal(_Normal3, _NormalScale3, h3, W3) * splat_control.a;
 #if defined(SHADER_API_SWITCH) || defined(SHADER_API_SWITCH2)
         mixedNormal.z += UNITY_HALF_MIN; // to avoid nan after normalizing
 #else
